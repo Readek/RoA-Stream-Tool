@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RoA Stream Controller</title>
+
+    <script src="scoreboard.js"></script>
+    <script src="Resources/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="Resources/Scripts/greensock-js/src/minified/TweenMax.min.js"></script>
+
+    <style>
+        @font-face {
+            font-family: "Deansgate";
+            src: url('Resources/Fonts/DeansgateCondensed-Bold.ttf');
+        }
+
+        @font-face {
+            font-family: "Roboto";
+            src: url('Resources/Fonts/Roboto-Bold.ttf');
+        }
+
+        body {
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+            background: transparent;
+            padding: 0px;
+            margin: 0px;
+            text-transform: uppercase;
+            color: white;
+            font-family: "Deansgate";
+        }
+
+        .scoreboardP1 {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+        }
+
+        #p1CharaMask {
+            -webkit-mask-image: url("Resources/Masks/Icon Mask.svg");
+        }
+
+        #p1Character {
+            opacity: 0;
+            object-position: 0px 0px;
+            transform: scale(1);
+            /* image-rendering: crisp-edges; */
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+        }
+
+        .scoreboardP2 {
+            position: absolute;
+            right: 0px;
+            top: 0px;
+            transform: scaleX(-1);
+        }
+
+        .scoreboardP2Fixed {
+            position: absolute;
+            right: 0px;
+            top: 0px;
+        }
+
+        #iHateMasks {
+            width: 1920px;
+            height: 1080px;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+        }
+
+        #p2CharaMask {
+            -webkit-mask-image: url("Resources/Masks/Icon Mask.svg");
+            transform: scaleX(-1);
+        }
+
+        #p2Character {
+            opacity: 0;
+            object-position: 0px 0px;
+            transform: scale(1);
+            /* image-rendering: crisp-edges; */
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+        }
+
+        #scoreboardVid {
+            /* display: none; */
+        }
+
+        .scoreboardRound {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+        }
+
+        .wrappers {
+            position: absolute;
+            width: 430px;
+            height: 54px;
+            line-height: 54px;
+            text-align: center;
+            top: 0px;
+            font-size: 30px;
+            opacity: 0;
+        }
+
+        #p1Wrapper {
+            left: 158px;
+        }
+
+        #p2Wrapper {
+            right: 158px;
+        }
+
+        .teams {
+            color: lightgray;
+            font-size: 22px;
+        }
+
+        #round {
+            position: absolute;
+            width: 233px;
+            height: 34px;
+            left: 843px;
+            top: 914px;
+            line-height: 34px;
+            text-align: center;
+            font-size: 19px;
+            font-family: "Roboto";
+        }
+    </style>
+</head>
+
+<body>
+    <div id="scoreboardBG">
+        <video id="scoreboardVid" class="scoreboardP1" width="1920" height="1080"></video>
+
+        <img src="Resources/Overlay/BG.png" class="scoreboardP1"/>
+        <img id="wlP1" class="scoreboardP1"/>
+        <img id="p1Color" class="scoreboardP1"/>
+        <div id=p1CharaMask>
+            <img id="p1Character"/>
+        </div>
+        <img id="p1Score" class="scoreboardP1"/>
+        <img id="borderP1" class="scoreboardP1"/>
+        <img id="teamLogoP1" class="scoreboardP1"/>
+
+        <img src="Resources/Overlay/BG.png" class="scoreboardP2"/>
+        <img id="wlP2" class="scoreboardP2Fixed"/>
+        <img id="p2Color" class="scoreboardP2"/>
+        <div id="iHateMasks">
+            <div id="p2CharaMask">
+                <img id="p2Character"/>
+            </div>
+        </div>
+        <img id="p2Score" class="scoreboardP2"/>
+        <img id="borderP2" class="scoreboardP2"/>
+        <img id="teamLogoP2" class="scoreboardP2"/>
+
+        <img src="Resources/Overlay/Round BG Tournament.png" class="scoreboardRound"/>
+    </div>
+
+    <div id="scoreboard">
+        <div id="leftWrapper">
+            <span id="p1Wrapper" class="wrappers">
+                <span id="p1Team" class="teams"></span>
+                <span id="p1Name" class="names"></span>
+            </span>
+        </div>
+        <div id="rightWrapper">
+            <span id="p2Wrapper" class="wrappers">
+                <span id="p2Team" class="teams"></span>
+                <span id="p2Name" class="names"></span>
+            </span>
+        </div>
+        <div id="rdWrapper">
+            <span id="round"></span>
+        </div>
+    </div>
+
+
+    <script>
+        var nameSize = '30px';
+        var roundSize = '19px';
+
+        var p1Move = '-50px';
+        var p2Move = '+50px';
+
+        var pCharaMove = '-20px';
+
+        var nameTime = .3;
+        var nameDelay = .8;
+    </script>
+</body>
+</html>
