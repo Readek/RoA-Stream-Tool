@@ -395,9 +395,7 @@ function init() {
 			}
 
 			if (p2wlPrev != p2WL) {
-				//move it away!
 				TweenMax.to('#wlP2',.5,{css:{y: p1Move},ease:Quad.easeIn,delay:0,onComplete:function(){
-					//change the thing!
 					if (p2WL == "W") {
 						$('#wlP2').attr('src', 'Resources/Overlay/Winners P2.png');
 					} else if (p2WL == "L") {
@@ -405,7 +403,6 @@ function init() {
 					} else {
 						$('#wlP2').attr('src', 'Resources/Literally Nothing.png');
 					}
-					//move it back!
 					TweenMax.to('#wlP2',.5,{css:{y: '+0px', opacity: 1}, ease:Quad.easeOut,delay:0.1});
 				}});
 				p2wlPrev = p2WL;
