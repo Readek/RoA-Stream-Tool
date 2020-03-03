@@ -1,0 +1,14 @@
+Normal
+Blue
+Red
+Green
+Grey
+Pink
+Genesis
+Alt Normal
+Alt Blue
+Alt Red
+Alt Green
+Alt Grey
+Alt Pink
+Alt Genesis
