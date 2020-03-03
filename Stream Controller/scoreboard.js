@@ -394,7 +394,6 @@ function init() {
 				p2SkinPrev = p2Skin;
 			}
 
-			//hola
 			if (p2wlPrev != p2WL) {
 				TweenMax.to('#wlP2',.5,{css:{y: p1Move},ease:Quad.easeIn,delay:0,onComplete:function(){
 					if (p2WL == "W") {
