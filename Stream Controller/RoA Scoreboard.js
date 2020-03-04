@@ -308,7 +308,7 @@ function init() {
 			//player 1 (this is mostly like above's code)
 			if ($('#p1Name').text() != p1Name || $('#p1Team').text() != p1Team) {
 				//move and fade out the player 1's text
-				TweenMax.to('#p1Wrapper',fadeOutTime,{css:{x: p1Move, opacity: 0},ease:Quad.easeOut,delay:0,onComplete:function(){
+				TweenMax.to('#p1Wrapper',fadeOutTime,{css:{x: p1Move, opacity: 0},ease:Quad.easeOut,onComplete:function(){
 					//now that nobody is seeing it, quick, change the text's content!
 					$('#p1Wrapper').css('font-size',nameSize);
 					$('#p1Name').html(p1Name);
@@ -327,7 +327,7 @@ function init() {
 			//player 1's character icon change
 			if (p1CharacterPrev != p1Character || p1SkinPrev != p1Skin) {
 				//fade out the image while also moving it because that always looks cool
-				TweenMax.to('#p1Character',fadeOutTime,{css:{x: pCharaMove, opacity: 0},ease:Quad.easeOut,delay:0,onComplete:function(){
+				TweenMax.to('#p1Character',fadeOutTime,{css:{x: pCharaMove, opacity: 0},ease:Quad.easeOut,onComplete:function(){
 					//depending on the character and skin values, change the img path, or show nothing if it cant be found
 					$('#p1Character').attr('src', 'Resources/Characters/' + p1Character + '/' + p1Skin + '.png').on("error",function () {
 						$('#p1Character').attr('src', 'Resources/Literally Nothing.png')
@@ -338,7 +338,7 @@ function init() {
 					$('#p1Character').css('object-position', charaPosX + "px " + charaPosY + "px");
 					$('#p1Character').css('transform', "scale(" + charaScale + ")");
 					//this keyframe is to scale the character before fading the img, so it just moves on the next key
-					TweenMax.to('#p1Character',0,{css:{scale: charaScale},ease:Quad.easeOut,delay:0});
+					TweenMax.to('#p1Character',0,{css:{scale: charaScale}});
 					//and now, fade in and move back
 					TweenMax.to('#p1Character',fadeInTime,{css:{x: '+0xp', opacity: 1},ease:Quad.easeOut,delay:.15});
 				}});
@@ -349,7 +349,7 @@ function init() {
 			//the [W] and [L] status for grand finals
 			if (p1wlPrev != p1WL) {
 				//move it away!
-				TweenMax.to('#wlP1',.5,{css:{y: p1Move},ease:Quad.easeIn,delay:0,onComplete:function(){
+				TweenMax.to('#wlP1',.5,{css:{y: p1Move},ease:Quad.easeIn,onComplete:function(){
 					//change the thing!
 					if (p1WL == "W") {
 						$('#wlP1').attr('src', 'Resources/Overlay/Winners P1.png');
@@ -374,7 +374,7 @@ function init() {
 
 			//did you pay attention earlier? Well, this is the same as player 1!
 			if($('#p2Name').text() != p2Name || $('#p2Team').text() != p2Team){
-				TweenMax.to('#p2Wrapper',fadeOutTime,{css:{x: p2Move, opacity: 0},ease:Quad.easeOut,delay:0,onComplete:function(){
+				TweenMax.to('#p2Wrapper',fadeOutTime,{css:{x: p2Move, opacity: 0},ease:Quad.easeOut,onComplete:function(){
 					$('#p2Wrapper').css('font-size',nameSize);
 					$('#p2Name').html(p2Name);
 					$('#p2Team').html(p2Team);
@@ -391,7 +391,7 @@ function init() {
 			}
 
 			if (p2CharacterPrev != p2Character || p2SkinPrev != p2Skin) {
-				TweenMax.to('#p2Character',fadeOutTime,{css:{x:pCharaMove, opacity: 0},ease:Quad.easeOut,delay:0,onComplete:function(){
+				TweenMax.to('#p2Character',fadeOutTime,{css:{x:pCharaMove, opacity: 0},ease:Quad.easeOut,onComplete:function(){
 					$('#p2Character').attr('src', 'Resources/Characters/' + p2Character + '/' + p2Skin + '.png').on("error",function () {
 						$('#p2Character').attr('src', 'Resources/Literally Nothing.png')
 					});
@@ -399,7 +399,7 @@ function init() {
 					$('#p2Character').css('object-position', charaPosX + "px " + charaPosY + "px");
 					$('#p2Character').css('transform', "scale(" + charaScale + ")");
 
-					TweenMax.to('#p2Character',0,{css:{scale: charaScale},ease:Quad.easeOut,delay:0});
+					TweenMax.to('#p2Character',0,{css:{scale: charaScale}});
 					TweenMax.to('#p2Character',fadeInTime,{css:{x: '+0xp', opacity: 1},ease:Quad.easeOut,delay:.15});
 				}});
 
@@ -408,7 +408,7 @@ function init() {
 			}
 
 			if (p2wlPrev != p2WL) {
-				TweenMax.to('#wlP2',.5,{css:{y: p1Move},ease:Quad.easeIn,delay:0,onComplete:function(){
+				TweenMax.to('#wlP2',.5,{css:{y: p1Move},ease:Quad.easeIn,onComplete:function(){
 					if (p2WL == "W") {
 						$('#wlP2').attr('src', 'Resources/Overlay/Winners P2.png');
 					} else if (p2WL == "L") {
@@ -430,7 +430,7 @@ function init() {
 			
 			//and finally, update the round text
 			if ($('#round').text() != round){
-				TweenMax.to('#round',fadeOutTime,{css:{opacity: 0},ease:Quad.easeOut,delay:0,onComplete:function(){
+				TweenMax.to('#round',fadeOutTime,{css:{opacity: 0},ease:Quad.easeOut,onComplete:function(){
 					$('#round').css('font-size',roundSize);
 					$('#round').html(round);					
 			
@@ -441,7 +441,7 @@ function init() {
 						}
 					});
 					
-					TweenMax.to('#round',fadeInTime,{css:{opacity: 1},ease:Quad.easeOut,delay:0});
+					TweenMax.to('#round',fadeInTime,{css:{opacity: 1},ease:Quad.easeOut});
 				}});
 			}
 		}	
