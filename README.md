@@ -1,4 +1,10 @@
 # RoA Stream Control
+howto:
+- Extract somewhere
+- Add browser source in OBS
+- Set 1920 width 1080 height
+- Local file -> 'RoA Scoreboard.html'
+
 todo:
 - Add readme
 - Score++ animation
