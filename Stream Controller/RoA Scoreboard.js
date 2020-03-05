@@ -199,7 +199,8 @@ function init() {
 
 			//starting with player 1 first
 			//sets the keyframe position for the player text
-			TweenMax.set('#p1Wrapper',{css:{x: p1Move}});
+				//TweenMax.set('#p1Wrapper',{css:{x: p1Move}});
+			gsap.to("#p1Wrapper", {duration: 1, x: 100});
 			//change the texts
 			$('#p1Name').html(p1Name);
 			$('#p1Team').html(p1Team);
@@ -211,12 +212,12 @@ function init() {
 				};
 			});
 			//fades in and moves the p1 text to this next keyframe
-			TweenMax.to('#p1Wrapper',fadeInTime,{css:{x: '+0px', opacity: 1}, ease:Quad.easeOut,delay:nameDelay});
+				//TweenMax.to('#p1Wrapper',fadeInTime,{css:{x: '+0px', opacity: 1}, ease:Quad.easeOut,delay:nameDelay});
 
 			//check which character is the player using so we know the position
 			positionCharacter(p1Character, p1Skin);
 			//set initial keyframe for the character icon
-			TweenMax.set('#p1Character',{css:{x: pCharaMove, scale: charaScale}});
+				//TweenMax.set('#p1Character',{css:{x: pCharaMove, scale: charaScale}});
 			//change the image path depending on the character and skin, or show nothing if the img is not found
 			$('#p1Character').attr('src', 'Resources/Characters/' + p1Character + '/' + p1Skin + '.png').on("error",function () {
 				$('#p1Character').attr('src', 'Resources/Literally Nothing.png')
@@ -225,7 +226,7 @@ function init() {
 			$('#p1Character').css('object-position', charaPosX + "px " + charaPosY + "px");
 			$('#p1Character').css('transform', "scale(" + charaScale + ")");
 			//fade in move the character icon to the overlay
-			TweenMax.to('#p1Character',fadeInTime,{css:{x: '+0px', scale: charaScale, opacity: 1},ease:Quad.easeOut,delay:nameDelay+.25});
+				//TweenMax.to('#p1Character',fadeInTime,{css:{x: '+0px', scale: charaScale, opacity: 1},ease:Quad.easeOut,delay:nameDelay+.25});
 			//save the character/skin so we fire up the character change code only when this doesnt equal to the previous
 			p1CharacterPrev = p1Character;
 			p1SkinPrev = p1Skin;
@@ -240,15 +241,15 @@ function init() {
 				$('#wlP1').attr('src', 'Resources/Literally Nothing.png');
 			}
 			//set starting position some pixels up (it will be covered by the overlay)
-			TweenMax.set('#wlP1',{css:{y: p1Move}});
+				//TweenMax.set('#wlP1',{css:{y: p1Move}});
 			//and move down to its default position
-			TweenMax.to('#wlP1',0.5,{css:{y: '+0px', opacity: 1}, ease:Quad.easeOut,delay:nameDelay+0.4});
+				//TweenMax.to('#wlP1',0.5,{css:{y: '+0px', opacity: 1}, ease:Quad.easeOut,delay:nameDelay+0.4});
 			//save for later so the animation doesn't repeat over and over
 			p1wlPrev = p1WL;
 
 
 			//took notes from player 1? well, this is exactly the same!
-			TweenMax.set('#p2Wrapper',{css:{x: p2Move}});
+				//TweenMax.set('#p2Wrapper',{css:{x: p2Move}});
 			$('#p2Name').html(p2Name);
 			$('#p2Team').html(p2Team);
 			p2Wrap.each(function(i, p2Wrap) {
@@ -257,16 +258,16 @@ function init() {
 					$(p2Wrap).css('font-size', newFontSize);
 				};
 			});
-			TweenMax.to('#p2Wrapper',fadeInTime,{css:{x: '+0px', opacity: 1}, ease:Quad.easeOut,delay:nameDelay});
+				//TweenMax.to('#p2Wrapper',fadeInTime,{css:{x: '+0px', opacity: 1}, ease:Quad.easeOut,delay:nameDelay});
 
 			positionCharacter(p2Character, p2Skin);
-			TweenMax.set('#p2Character',{css:{x: pCharaMove, scale: charaScale}});
+				//TweenMax.set('#p2Character',{css:{x: pCharaMove, scale: charaScale}});
 			$('#p2Character').attr('src', 'Resources/Characters/' + p2Character + '/' + p2Skin + '.png').on("error",function () {
 				$('#p2Character').attr('src', 'Resources/Literally Nothing.png')
 			});
 			$('#p2Character').css('object-position', charaPosX + "px " + charaPosY + "px");
 			$('#p2Character').css('transform', "scale(" + charaScale + ")");
-			TweenMax.to('#p2Character',fadeInTime,{css:{x: '+0px', scale: charaScale, opacity: 1},ease:Quad.easeOut,delay:nameDelay+.25});
+				//TweenMax.to('#p2Character',fadeInTime,{css:{x: '+0px', scale: charaScale, opacity: 1},ease:Quad.easeOut,delay:nameDelay+.25});
 			p2CharacterPrev = p2Character;
 			p2SkinPrev = p2Skin;
 
@@ -277,8 +278,8 @@ function init() {
 			} else {
 				$('#wlP2').attr('src', 'Resources/Literally Nothing.png');
 			}
-			TweenMax.set('#wlP2',{css:{y: p1Move}});
-			TweenMax.to('#wlP2',0.5,{css:{y: '+0px', opacity: 1}, ease:Quad.easeOut,delay:nameDelay+0.4});
+				//TweenMax.set('#wlP2',{css:{y: p1Move}});
+				//TweenMax.to('#wlP2',0.5,{css:{y: '+0px', opacity: 1}, ease:Quad.easeOut,delay:nameDelay+0.4});
 			p2wlPrev = p2WL;
 
 
@@ -308,7 +309,7 @@ function init() {
 			//player 1 (this is mostly like above's code)
 			if ($('#p1Name').text() != p1Name || $('#p1Team').text() != p1Team) {
 				//move and fade out the player 1's text
-				TweenMax.to('#p1Wrapper',fadeOutTime,{css:{x: p1Move, opacity: 0},ease:Quad.easeOut,onComplete:function(){
+				/* TweenMax.to('#p1Wrapper',fadeOutTime,{css:{x: p1Move, opacity: 0},ease:Quad.easeOut,onComplete:function(){
 					//now that nobody is seeing it, quick, change the text's content!
 					$('#p1Wrapper').css('font-size',nameSize);
 					$('#p1Name').html(p1Name);
@@ -322,12 +323,12 @@ function init() {
 					});
 					//and finally, fade the name back in with a sick movement
 					TweenMax.to('#p1Wrapper',fadeInTime,{css:{x: '+0px', opacity: 1},ease:Quad.easeOut,delay:.1});
-				}})
+				}}) */
 			}
 			//player 1's character icon change
 			if (p1CharacterPrev != p1Character || p1SkinPrev != p1Skin) {
 				//fade out the image while also moving it because that always looks cool
-				TweenMax.to('#p1Character',fadeOutTime,{css:{x: pCharaMove, opacity: 0},ease:Quad.easeOut,onComplete:function(){
+				/* TweenMax.to('#p1Character',fadeOutTime,{css:{x: pCharaMove, opacity: 0},ease:Quad.easeOut,onComplete:function(){
 					//depending on the character and skin values, change the img path, or show nothing if it cant be found
 					$('#p1Character').attr('src', 'Resources/Characters/' + p1Character + '/' + p1Skin + '.png').on("error",function () {
 						$('#p1Character').attr('src', 'Resources/Literally Nothing.png')
@@ -341,7 +342,7 @@ function init() {
 					TweenMax.to('#p1Character',0,{css:{scale: charaScale}});
 					//and now, fade in and move back
 					TweenMax.to('#p1Character',fadeInTime,{css:{x: '+0xp', opacity: 1},ease:Quad.easeOut,delay:.15});
-				}});
+				}}); */
 				p1CharacterPrev = p1Character;
 				p1SkinPrev = p1Skin;
 			}
@@ -349,7 +350,7 @@ function init() {
 			//the [W] and [L] status for grand finals
 			if (p1wlPrev != p1WL) {
 				//move it away!
-				TweenMax.to('#wlP1',.5,{css:{y: p1Move},ease:Quad.easeIn,onComplete:function(){
+				/* TweenMax.to('#wlP1',.5,{css:{y: p1Move},ease:Quad.easeIn,onComplete:function(){
 					//change the thing!
 					if (p1WL == "W") {
 						$('#wlP1').attr('src', 'Resources/Overlay/Winners P1.png');
@@ -360,7 +361,7 @@ function init() {
 					}
 					//move it back!
 					TweenMax.to('#wlP1',.5,{css:{y: '+0px', opacity: 1}, ease:Quad.easeOut,delay:0.1});
-				}});
+				}}); */
 				p1wlPrev = p1WL;
 			}
 			
@@ -374,7 +375,7 @@ function init() {
 
 			//did you pay attention earlier? Well, this is the same as player 1!
 			if($('#p2Name').text() != p2Name || $('#p2Team').text() != p2Team){
-				TweenMax.to('#p2Wrapper',fadeOutTime,{css:{x: p2Move, opacity: 0},ease:Quad.easeOut,onComplete:function(){
+				/* TweenMax.to('#p2Wrapper',fadeOutTime,{css:{x: p2Move, opacity: 0},ease:Quad.easeOut,onComplete:function(){
 					$('#p2Wrapper').css('font-size',nameSize);
 					$('#p2Name').html(p2Name);
 					$('#p2Team').html(p2Team);
@@ -387,11 +388,11 @@ function init() {
 					});
 					
 					TweenMax.to('#p2Wrapper',fadeInTime,{css:{x: '+0px', opacity: 1},ease:Quad.easeOut,delay:.1});
-				}});
+				}}); */
 			}
 
 			if (p2CharacterPrev != p2Character || p2SkinPrev != p2Skin) {
-				TweenMax.to('#p2Character',fadeOutTime,{css:{x:pCharaMove, opacity: 0},ease:Quad.easeOut,onComplete:function(){
+				/* TweenMax.to('#p2Character',fadeOutTime,{css:{x:pCharaMove, opacity: 0},ease:Quad.easeOut,onComplete:function(){
 					$('#p2Character').attr('src', 'Resources/Characters/' + p2Character + '/' + p2Skin + '.png').on("error",function () {
 						$('#p2Character').attr('src', 'Resources/Literally Nothing.png')
 					});
@@ -401,14 +402,14 @@ function init() {
 
 					TweenMax.to('#p2Character',0,{css:{scale: charaScale}});
 					TweenMax.to('#p2Character',fadeInTime,{css:{x: '+0xp', opacity: 1},ease:Quad.easeOut,delay:.15});
-				}});
+				}}); */
 
 				p2CharacterPrev = p2Character;
 				p2SkinPrev = p2Skin;
 			}
 
 			if (p2wlPrev != p2WL) {
-				TweenMax.to('#wlP2',.5,{css:{y: p1Move},ease:Quad.easeIn,onComplete:function(){
+				/* TweenMax.to('#wlP2',.5,{css:{y: p1Move},ease:Quad.easeIn,onComplete:function(){
 					if (p2WL == "W") {
 						$('#wlP2').attr('src', 'Resources/Overlay/Winners P2.png');
 					} else if (p2WL == "L") {
@@ -417,7 +418,7 @@ function init() {
 						$('#wlP2').attr('src', 'Resources/Literally Nothing.png');
 					}
 					TweenMax.to('#wlP2',.5,{css:{y: '+0px', opacity: 1}, ease:Quad.easeOut,delay:0.1});
-				}});
+				}}); */
 				p2wlPrev = p2WL;
 			}
 
@@ -430,7 +431,7 @@ function init() {
 			
 			//and finally, update the round text
 			if ($('#round').text() != round){
-				TweenMax.to('#round',fadeOutTime,{css:{opacity: 0},ease:Quad.easeOut,onComplete:function(){
+				/* TweenMax.to('#round',fadeOutTime,{css:{opacity: 0},ease:Quad.easeOut,onComplete:function(){
 					$('#round').css('font-size',roundSize);
 					$('#round').html(round);					
 			
@@ -442,7 +443,7 @@ function init() {
 					});
 					
 					TweenMax.to('#round',fadeInTime,{css:{opacity: 1},ease:Quad.easeOut});
-				}});
+				}}); */
 			}
 		}	
 	}
