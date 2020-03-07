@@ -1,6 +1,7 @@
 Normal
-Blue
-Red
-Green
-Pink
-GreenDark
+BoTW
+Royal
+Heroic
+Mountaineer
+Minty
+Penny

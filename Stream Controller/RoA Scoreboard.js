@@ -518,9 +518,30 @@ function init() {
 	Epinel = {
 		neutral: [22, 30, 4]
 	};
+	Falco = {
+		neutral: [15, 33, 3.8]
+	};
+	Fox = {
+		neutral: [15, 26, 3.8]
+	};
+	HimeDaisho = {
+		neutral: [22, 13, 4.5]
+	};
+	Kirby = {
+		neutral: [12, 16, 2]
+	};
+	Kris = {
+		neutral: [20, 26, 4.2]
+	};
 	MayuAshikaga = {
 		neutral: [3, 22, 5],
 		alt: [8, 10, 2.5]
+	};
+	Mollo = {
+		neutral: [-2, 20, 4.4]
+	};
+	Mycolich = {
+		neutral: [-2, 11, 3.8]
 	};
 	Olympia = {
 		neutral: [19, 20, 4.5]
@@ -528,12 +549,18 @@ function init() {
 	Pomme = {
 		neutral: [30, 22, 4]
 	};
+	R_00 = { //this should have "-" but it would break :(
+		neutral: [-8, 20, 3.8]
+	};
 	TrummelandAlto = {
 		neutral: [10, 30, 2.5],
 		alt: [27, -7, 2.5]
 	};
 	Valkyrie = {
 		neutral: [-2, -9, 3.5]
+	};
+	Yoyo = {
+		neutral: [14, 22, 3]
 	};
 	ZettaAshikaga = {
 		neutral: [-7, 23, 6],

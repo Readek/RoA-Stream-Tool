@@ -1,0 +1,15 @@
+Normal
+Blue
+Genesis
+Green
+Grey
+LightYellow
+Pink
+Orange
+Black
+Lime
+Purple
+Cyan
+Abyss
+Yellow
+WhitePink

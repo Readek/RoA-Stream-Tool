@@ -3,7 +3,7 @@ Blue
 DarkRed
 Green
 Grey
-Purple
+Dark
 Salmon
 Purple
 Early Access

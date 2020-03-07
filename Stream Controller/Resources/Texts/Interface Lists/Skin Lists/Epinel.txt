@@ -5,5 +5,4 @@ Green
 Purple
 Christmas
 YellowBlue
-LightBlue
 Brown

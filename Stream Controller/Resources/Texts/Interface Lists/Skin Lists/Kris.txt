@@ -1,15 +1,16 @@
 Normal
-Lancer
-Susie
-Ralsei
-Jevil
-Forest
-Field
-Christmas
+Blue
+Red
+Green
+BlackWhite
+Pink
+Valentines
 Abyss
 Early Access
-Chara
-Yellow
+Overworld
+Noelle
 Frisk
-Kaho
+Pride
 Rapetti
+Kaho
+Champion
