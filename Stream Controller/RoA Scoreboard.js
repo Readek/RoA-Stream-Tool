@@ -7,7 +7,7 @@ function init() {
 	var startup = true;
 	var cBust = 0;
 
-	//text sizes
+	//max text sizes (used when resizing back)
 	var nameSize = '30px';
 	var roundSize = '19px';
 
