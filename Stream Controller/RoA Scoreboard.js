@@ -27,11 +27,13 @@ function init() {
 	//to avoid the code constantly running the same method over and over
 	var p1CharacterPrev;
 	var p1SkinPrev;
+	var p1ScorePrev;
 	var p1ColorPrev;
 	var p1wlPrev;
 
 	var p2CharacterPrev;
 	var p2SkinPrev;
+	var p2ScorePrev;
 	var p2ColorPrev;
 	var p2wlPrev;
 
@@ -95,82 +97,26 @@ function init() {
 
 		//first, things that will always happen
 
-		//determine the score and change border depending of the Best Of status
-		//the score ticks actually hide the scores so the logic is reversed
-		if (bestOf == "Bo5") {
-			//player 1 score
-			switch (p1Score) {
-				case "0":
-					$('#p1Score').attr('src', 'Resources/Overlay/Win Tick Bo5 3.png');
-					break;
-				case "1":
-					$('#p1Score').attr('src', 'Resources/Overlay/Win Tick Bo5 2.png');
-					break;
-				case "2":
-					$('#p1Score').attr('src', 'Resources/Overlay/Win Tick Bo5 1.png');
-					break
-				default:
-					$('#p1Score').attr('src', 'Resources/Literally Nothing.png');
-					break;
-			}
-
-			//player 2 score
-			switch (p2Score) {
-				case "0":
-					$('#p2Score').attr('src', 'Resources/Overlay/Win Tick Bo5 3.png');
-					break;
-				case "1":
-					$('#p2Score').attr('src', 'Resources/Overlay/Win Tick Bo5 2.png');
-					break;
-				case "2":
-					$('#p2Score').attr('src', 'Resources/Overlay/Win Tick Bo5 1.png');
-					break
-				default:
-					$('#p2Score').attr('src', 'Resources/Literally Nothing.png');
-					break;
-			}
-
-			//border to fit the score ticks
-			if (bestOfPrev != bestOf) {
-				$('#borderP1').attr('src', 'Resources/Overlay/Border Bo5.png');
-				$('#borderP2').attr('src', 'Resources/Overlay/Border Bo5.png');
-				bestOfPrev = bestOf;
-			}
-		} else {
-			//player 1 score
-			switch (p1Score) {
-				case "0":
-					$('#p1Score').attr('src', 'Resources/Overlay/Win Tick Bo3 2.png');
-					break;
-				case "1":
-					$('#p1Score').attr('src', 'Resources/Overlay/Win Tick Bo3 1.png');
-					break;			
-				default:
-					$('#p1Score').attr('src', 'Resources/Literally Nothing.png');
-					break;
-			}
-
-			//player 2 score
-			switch (p2Score) {
-				case "0":
-					$('#p2Score').attr('src', 'Resources/Overlay/Win Tick Bo3 2.png');
-					break;
-				case "1":
-					$('#p2Score').attr('src', 'Resources/Overlay/Win Tick Bo3 1.png');
-					break;			
-				default:
-					$('#p2Score').attr('src', 'Resources/Literally Nothing.png');
-					break;
-			}
-
-			//border to fit the score ticks
-			if (bestOfPrev != bestOf) {
-				$('#borderP1').attr('src', 'Resources/Overlay/Border Bo3.png');
-				$('#borderP2').attr('src', 'Resources/Overlay/Border Bo3.png');
-				bestOfPrev = bestOf;
-			}
+		//score change, has its own function so it updates when changing the BestOf border
+		function updateScore() {
+			$('#p1Score').attr('src', 'Resources/Overlay/Win Tick ' + bestOf + ' ' + p1Score + '.png');
+			$('#p2Score').attr('src', 'Resources/Overlay/Win Tick ' + bestOf + ' ' + p2Score + '.png');
 		}
-		
+		if (p1ScorePrev != p1Score) {
+			updateScore();
+			p1ScorePrev = p1Score;
+		}
+		if (p2ScorePrev != p2Score) {
+			updateScore();
+			p2ScorePrev = p2Score;
+		}
+		//change border depending of the Best Of status
+		if (bestOfPrev != bestOf) {
+			$('#borderP1').attr('src', 'Resources/Overlay/Border ' + bestOf + '.png');
+			$('#borderP2').attr('src', 'Resources/Overlay/Border ' + bestOf + '.png');
+			updateScore();
+			bestOfPrev = bestOf;
+		}
 		//change the player background colors
 		if (p1ColorPrev != p1Color) {
 			$('#p1Color').attr('src', 'Resources/Overlay/Colors/' + p1Color + '.png');
