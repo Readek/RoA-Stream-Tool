@@ -37,10 +37,6 @@ function init() {
 
 	var bestOfPrev;
 
-	//this will be used to position the character images on the overlay
-	var charaPosX;
-	var charaPosY;
-	var charaScale;
 
 	xhr.overrideMimeType('application/json');
 
@@ -212,20 +208,21 @@ function init() {
 				{x: -pMove}, //from
 				{delay: nameDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}); //to
 
-			//check which character is the player using so we know the position
-			positionCharacter(p1Character, p1Skin);
+
 			//change the image path depending on the character and skin, or show nothing if the img is not found
 			$('#p1Character').attr('src', 'Resources/Characters/' + p1Character + '/' + p1Skin + '.png').on("error",function () {
 				$('#p1Character').attr('src', 'Resources/Literally Nothing.png')
 			});
-			//position the character with the positions we took earlier
-			$('#p1Character').css('object-position', charaPosX + "px " + charaPosY + "px");
-			$('#p1Character').css('transform', "scale(" + charaScale + ")");
+			//check the position of the character that the player is using rn
+			var charPos = positionCharacter(p1Character, p1Skin); //[0]=[x], [1]=[y], [2]=[scale]
+			//position the character with the positions we just took
+			$('#p1Character').css('object-position', charPos[0] + "px " + charPos[1] + "px");
+			$('#p1Character').css('transform', "scale(" + charPos[2] + ")");
 			//set starting position for the character icon, then fade-in-move the character icon to the overlay
 			gsap.fromTo("#p1Character",
 				{x: -pCharMove},
 				{delay: nameDelay+.25, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
-			//save the character/skin so we fire up the character change code only when this doesnt equal to the previous
+			//save the character/skin so we run the character change code only when this doesnt equal to the next
 			p1CharacterPrev = p1Character;
 			p1SkinPrev = p1Skin;
 
@@ -258,12 +255,12 @@ function init() {
 				{x: pMove},
 				{delay: nameDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 
-			positionCharacter(p2Character, p2Skin);
 			$('#p2Character').attr('src', 'Resources/Characters/' + p2Character + '/' + p2Skin + '.png').on("error",function () {
 				$('#p2Character').attr('src', 'Resources/Literally Nothing.png')
 			});
-			$('#p2Character').css('object-position', charaPosX + "px " + charaPosY + "px");
-			$('#p2Character').css('transform', "scale(" + charaScale + ")");
+			charPos = positionCharacter(p2Character, p2Skin);
+			$('#p2Character').css('object-position', charPos[0] + "px " + charPos[1] + "px");
+			$('#p2Character').css('transform', "scale(" + charPos[2] + ")");
 			gsap.fromTo("#p2Character",
 				{x: -pCharMove},
 				{delay: nameDelay+.25, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
@@ -337,13 +334,13 @@ function init() {
 						$('#p1Character').attr('src', 'Resources/Literally Nothing.png')
 					});	
 					//what will the positiions of the next img be?
-					positionCharacter(p1Character, p1Skin);
+					var charPos = positionCharacter(p1Character, p1Skin); //[0]=[x], [1]=[y], [2]=[scale]
 					//now that we know, lets apply those positions
-					$('#p1Character').css('object-position', charaPosX + "px " + charaPosY + "px");
-					$('#p1Character').css('transform', "scale(" + charaScale + ")");
+					$('#p1Character').css('object-position', charPos[0] + "px " + charPos[1] + "px");
+					$('#p1Character').css('transform', "scale(" + charPos[2] + ")");
 					//and now, fade in and move back
 					gsap.fromTo("#p1Character",
-						{scale: charaScale}, //set scale keyframe so it doesnt scale while fading back
+						{scale: charPos[2]}, //set scale keyframe so it doesnt scale while fading back
 						{delay: .2, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}); 
 				}
 				p1CharacterPrev = p1Character;
@@ -400,11 +397,11 @@ function init() {
 					$('#p2Character').attr('src', 'Resources/Characters/' + p2Character + '/' + p2Skin + '.png').on("error",function () {
 						$('#p2Character').attr('src', 'Resources/Literally Nothing.png')
 					});	
-					positionCharacter(p2Character, p2Skin);
-					$('#p2Character').css('object-position', charaPosX + "px " + charaPosY + "px");
-					$('#p2Character').css('transform', "scale(" + charaScale + ")");
+					var charPos = positionCharacter(p2Character, p2Skin);
+					$('#p2Character').css('object-position', charPos[0] + "px " + charPos[1] + "px");
+					$('#p2Character').css('transform', "scale(" + charPos[2] + ")");
 					gsap.fromTo("#p2Character",
-						{scale: charaScale},
+						{scale: charPos[2]},
 						{delay: .2, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}); 
 				}
 				p2CharacterPrev = p2Character;
@@ -571,25 +568,24 @@ function init() {
 	function positionCharacter(pCharacter, pSkin) {
 		//this is so characters with spaces on their names also work
 		var pCharNoSpaces = pCharacter.replace(/ /g, "");
+		//             x, y, scale
+		var charPos = [0, 0, 1];
 				
 		if (window[pCharNoSpaces]) {
-			if (window[pCharNoSpaces][pSkin]) {
-				charaPosX = window[pCharNoSpaces][pSkin][0];
-				charaPosY = window[pCharNoSpaces][pSkin][1];
-				charaScale = window[pCharNoSpaces][pSkin][2];
+			if (window[pCharNoSpaces][pSkin]) { //if the skin has a specific position
+				charPos[0] = window[pCharNoSpaces][pSkin][0];
+				charPos[1] = window[pCharNoSpaces][pSkin][1];
+				charPos[2] = window[pCharNoSpaces][pSkin][2];
 			} else if (pSkin.includes("Alt ")) { //for a group of imgs that have a specific position
-				charaPosX = window[pCharNoSpaces].alt[0];
-				charaPosY = window[pCharNoSpaces].alt[1];
-				charaScale = window[pCharNoSpaces].alt[2];
-			} else {
-				charaPosX = window[pCharNoSpaces].neutral[0];
-				charaPosY = window[pCharNoSpaces].neutral[1];
-				charaScale = window[pCharNoSpaces].neutral[2];
+				charPos[0] = window[pCharNoSpaces].alt[0];
+				charPos[1] = window[pCharNoSpaces].alt[1];
+				charPos[2] = window[pCharNoSpaces].alt[2];
+			} else { //if none of the above, use a default position
+				charPos[0] = window[pCharNoSpaces].neutral[0];
+				charPos[1] = window[pCharNoSpaces].neutral[1];
+				charPos[2] = window[pCharNoSpaces].neutral[2];
 			}
-		} else {
-			charaPosX = 0;
-			charaPosY = 0;
-			charaScale = 1;
-		}	
+		}
+		return charPos;
 	}
 }
