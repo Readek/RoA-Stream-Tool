@@ -54,8 +54,6 @@ MainWindow::~MainWindow()
 }
 
 
-
-
 //swap button
 void MainWindow::on_pushButton_5_clicked()
 {
@@ -641,7 +639,7 @@ void MainWindow::updateRound()
 
     QTextStream out2 (&txt2);
     QString text2 = ui->tournamentText->text();
-    out2 << text;
+    out2 << text2;
     txt2.flush();
     txt2.close();
 }
