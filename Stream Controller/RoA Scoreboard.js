@@ -95,21 +95,8 @@ function init() {
 		var allowIntro = scObj['allowIntro'];
 
 
-		//first, things that will always happen
+		//first, things that will always happen		
 
-		//score change, has its own function so it updates when changing the BestOf border
-		function updateScore() {
-			$('#p1Score').attr('src', 'Resources/Overlay/Win Tick ' + bestOf + ' ' + p1Score + '.png');
-			$('#p2Score').attr('src', 'Resources/Overlay/Win Tick ' + bestOf + ' ' + p2Score + '.png');
-		}
-		if (p1ScorePrev != p1Score) {
-			updateScore();
-			p1ScorePrev = p1Score;
-		}
-		if (p2ScorePrev != p2Score) {
-			updateScore();
-			p2ScorePrev = p2Score;
-		}
 		//change border depending of the Best Of status
 		if (bestOfPrev != bestOf) {
 			$('#borderP1').attr('src', 'Resources/Overlay/Border ' + bestOf + '.png');
@@ -187,6 +174,10 @@ function init() {
 			//save for later so the animation doesn't repeat over and over
 			p1wlPrev = p1WL;
 
+			//score check
+			updateScore();	
+			p1ScorePrev = p1Score; //same as before
+
 
 			//took notes from player 1? well, this is exactly the same!
 			$('#p2Name').html(p2Name);
@@ -225,6 +216,8 @@ function init() {
 				{delay: nameDelay+.5, y: 0, ease: "power2.out", duration: .5});
 			p2wlPrev = p2WL;
 
+			updateScore();	
+			p2ScorePrev = p2Score;
 
 			//WIP WIP WIP
 			$('#teamLogoP1').attr('src', 'Resources/TeamLogos/' + p1Team + '.png').on("error",function () {
@@ -311,7 +304,16 @@ function init() {
 				}
 				p1wlPrev = p1WL;
 			}
-			
+
+			//score check
+			if (p1ScorePrev != p1Score) {
+				//this time we will play a sexy animation so everyone can se when the score changes
+				$('#p1scoreUp').attr('src', 'Resources/Overlay/Score/ScoreUp ' + bestOf + '/' + p1Color + '.webm');
+				document.getElementById('p1scoreUp').play();
+				//set timeout to the actual image change so it fits with the animation
+				setTimeout(() => {updateScore()}, 200);
+				p1ScorePrev = p1Score;
+			}			
 
 			//WIP WIP WIP
 			if ($('#p1Team').text() != p1Team) {
@@ -371,6 +373,13 @@ function init() {
 				p2wlPrev = p2WL;
 			}
 
+			if (p2ScorePrev != p2Score) {
+				$('#p2scoreUp').attr('src', 'Resources/Overlay/Score/ScoreUp ' + bestOf + '/' + p2Color + '.webm');
+				document.getElementById('p2scoreUp').play();
+				setTimeout(() => {updateScore()}, 200);	
+				p2ScorePrev = p2Score;
+			}
+
 			//WIP WIP WIP
 			if ($('#p2Team').text() != p2Team) {
 				$('#teamLogoP2').attr('src', 'Resources/TeamLogos/' + p2Team + '.png').on("error",function () {
@@ -394,7 +403,17 @@ function init() {
 					gsap.to("#round", {delay: .2, opacity: 1, duration: fadeInTime});
 				}
 			}
-		}	
+		}
+
+		//score change
+		function updateScore() {
+			$('#p1Score').attr('src', 'Resources/Overlay/Score/Win Tick ' + bestOf + ' ' + p1Score + '.png').on("error",function () {
+				$('#p1Score').attr('src', 'Resources/Literally Nothing.png')
+			});
+			$('#p2Score').attr('src', 'Resources/Overlay/Score/Win Tick ' + bestOf + ' ' + p2Score + '.png').on("error",function () {
+				$('#p2Score').attr('src', 'Resources/Literally Nothing.png')
+			});
+		}
 	}
 
 	//positions database starts here!
