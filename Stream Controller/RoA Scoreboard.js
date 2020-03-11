@@ -39,7 +39,6 @@ function init() {
 
 	var bestOfPrev;
 
-
 	xhr.overrideMimeType('application/json');
 
 	function getInfo() {
@@ -61,17 +60,14 @@ function init() {
 	}
 	
 	function scoreboard() {
-		if (startup == true) {
+		if (startup) {
 			getData();
 			startup = false;
 		}
 		else {
 			getData();
 		}
-		
 	}
-	//if you want to set the scoreboard to start late (for screen transitions), you can do so here
-	setTimeout(scoreboard, 0); //miliseconds
 
 	function getData() {
 		var p1Name = scObj['p1Name'];
@@ -101,7 +97,9 @@ function init() {
 		if (bestOfPrev != bestOf) {
 			$('#borderP1').attr('src', 'Resources/Overlay/Border ' + bestOf + '.png');
 			$('#borderP2').attr('src', 'Resources/Overlay/Border ' + bestOf + '.png');
-			updateScore();
+			//update the score ticks so they fit the bestOf border
+			updateScore('#p1Score', p1Score, bestOf);
+			updateScore('#p2Score', p2Score, bestOf);
 			bestOfPrev = bestOf;
 		}
 		//change the player background colors
@@ -116,7 +114,7 @@ function init() {
 		
 
 		//now, things that will happen the first time the html loads
-		if (startup == true) {
+		if (startup) {
 			//the intro vid! WIP WIP WIP
 			if (allowIntro == "yes") {
 				setTimeout(() => { 
@@ -126,31 +124,20 @@ function init() {
 			}
 
 			//starting with player 1 first
-			//change the texts
+			//set the texts
 			$('#p1Name').html(p1Name);
 			$('#p1Team').html(p1Team);
-			//keeps making the player name font smaller until it fits the box
-			p1Wrap.each(function(i, p1Wrap) {
-				while (p1Wrap.scrollWidth > p1Wrap.offsetWidth || p1Wrap.scrollHeight > p1Wrap.offsetHeight) {
-					var newFontSize = (parseFloat($(p1Wrap).css('font-size').slice(0,-2)) * .95) + 'px';
-					$(p1Wrap).css('font-size', newFontSize);
-				};
-			});
+			//resize the text so it doesnt get out of the overlay if its too long
+			resizeText(p1Wrap);
 			//sets the starting position for the player text, then fades in and moves the p1 text to the next keyframe
 			gsap.fromTo("#p1Wrapper", 
 				{x: -pMove}, //from
 				{delay: nameDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}); //to
 
-
-			//change the image path depending on the character and skin, or show nothing if the img is not found
-			$('#p1Character').attr('src', 'Resources/Characters/' + p1Character + '/' + p1Skin + '.png').on("error",function () {
-				$('#p1Character').attr('src', 'Resources/Literally Nothing.png')
-			});
-			//check the position of the character that the player is using rn
-			var charPos = positionCharacter(p1Character, p1Skin); //[0]=[x], [1]=[y], [2]=[scale]
-			//position the character with the positions we just took
-			$('#p1Character').css('object-position', charPos[0] + "px " + charPos[1] + "px");
-			$('#p1Character').css('transform', "scale(" + charPos[2] + ")");
+			//set the character image for the player
+			updateChar('#p1Character', p1Character, p1Skin);
+			//check the position of the character that the player is using rn, and position it
+			checkPosChar(p1Character, p1Skin, '#p1Character');
 			//set starting position for the character icon, then fade-in-move the character icon to the overlay
 			gsap.fromTo("#p1Character",
 				{x: -pCharMove},
@@ -160,63 +147,39 @@ function init() {
 			p1SkinPrev = p1Skin;
 
 			//if its grands, we need to show the [W] and/or the [L] on the players
-			if (p1WL == "W") {
-				$('#wlP1').attr('src', 'Resources/Overlay/Winners P1.png');
-			} else if (p1WL == "L") {
-				$('#wlP1').attr('src', 'Resources/Overlay/Losers P1.png');
-			} else {
-				//or dont show anything at all
-				$('#wlP1').attr('src', 'Resources/Literally Nothing.png');
-			}
+			updateWL(p1WL, "1");
 			gsap.fromTo("#wlP1",
 				{y: -pMove}, //set starting position some pixels up (it will be covered by the overlay)
 				{delay: nameDelay+.5, y: 0, ease: "power2.out", duration: .5}); //move down to its default position
 			//save for later so the animation doesn't repeat over and over
 			p1wlPrev = p1WL;
 
-			//score check
-			updateScore();	
-			p1ScorePrev = p1Score; //same as before
+			//score check, we updated score earlier so we will just set the prevs
+			p1ScorePrev = p1Score;
 
 
 			//took notes from player 1? well, this is exactly the same!
 			$('#p2Name').html(p2Name);
 			$('#p2Team').html(p2Team);
-			p2Wrap.each(function(i, p2Wrap) {
-				while (p2Wrap.scrollWidth > p2Wrap.offsetWidth || p2Wrap.scrollHeight > p2Wrap.offsetHeight) {
-					var newFontSize = (parseFloat($(p2Wrap).css('font-size').slice(0,-2)) * .95) + 'px';
-					$(p2Wrap).css('font-size', newFontSize);
-				};
-			});
+			resizeText(p2Wrap);
 			gsap.fromTo("#p2Wrapper", 
 				{x: pMove},
 				{delay: nameDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 
-			$('#p2Character').attr('src', 'Resources/Characters/' + p2Character + '/' + p2Skin + '.png').on("error",function () {
-				$('#p2Character').attr('src', 'Resources/Literally Nothing.png')
-			});
-			charPos = positionCharacter(p2Character, p2Skin);
-			$('#p2Character').css('object-position', charPos[0] + "px " + charPos[1] + "px");
-			$('#p2Character').css('transform', "scale(" + charPos[2] + ")");
+			updateChar('#p2Character', p2Character, p2Skin);
+			checkPosChar(p2Character, p2Skin, '#p2Character');
 			gsap.fromTo("#p2Character",
 				{x: -pCharMove},
 				{delay: nameDelay+.25, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 			p2CharacterPrev = p2Character;
 			p2SkinPrev = p2Skin;
 
-			if (p2WL == "W") {
-				$('#wlP2').attr('src', 'Resources/Overlay/Winners P2.png');
-			} else if (p2WL == "L") {
-				$('#wlP2').attr('src', 'Resources/Overlay/Losers P2.png');
-			} else {
-				$('#wlP2').attr('src', 'Resources/Literally Nothing.png');
-			}
+			updateWL(p2WL, "2");
 			gsap.fromTo("#wlP2",
 				{y: -pMove},
 				{delay: nameDelay+.5, y: 0, ease: "power2.out", duration: .5});
 			p2wlPrev = p2WL;
 
-			updateScore();	
 			p2ScorePrev = p2Score;
 
 			//WIP WIP WIP
@@ -231,14 +194,8 @@ function init() {
 			//update the round text
 			$('#round').html(round);
 			//and of course, resize the round text if it overflows
-			rdResize.each(function(i, rdResize) {
-				while (rdResize.scrollWidth > rdResize.offsetWidth || rdResize.scrollHeight > rdResize.offsetHeight) {
-					var newFontSize = (parseFloat($(rdResize).css('font-size').slice(0,-2)) * .95) + 'px';
-					$(rdResize).css('font-size', newFontSize);
-				};
-			});
+			resizeText(rdResize);
 		}
-
 
 		//now things that will happen not the first time
 		else {
@@ -251,13 +208,8 @@ function init() {
 					$('#p1Wrapper').css('font-size',nameSize);
 					$('#p1Name').html(p1Name);
 					$('#p1Team').html(p1Team);
-					//if the text is too big, resize it until it fits
-					p1Wrap.each(function(i, p1Wrap) {
-						while (p1Wrap.scrollWidth > p1Wrap.offsetWidth || p1Wrap.scrollHeight > p1Wrap.offsetHeight) {
-							var newFontSize = (parseFloat($(p1Wrap).css('font-size').slice(0,-2)) * .95) + 'px';
-							$(p1Wrap).css('font-size', newFontSize);
-						};
-					});
+					//resize the text if its too big
+					resizeText(p1Wrap);
 					//and finally, fade the name back in with a sick movement
 					gsap.to("#p1Wrapper", {delay: .3, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 				}
@@ -268,18 +220,13 @@ function init() {
 				//fade out the image while also moving it because that always looks cool
 				gsap.to("#p1Character", {x: -pCharMove, opacity: 0, ease: "power1.in", duration: fadeOutTime, onComplete: pCharMoved});
 				function pCharMoved() {
-					//depending on the character and skin values, change the img path, or show nothing if it cant be found
-					$('#p1Character').attr('src', 'Resources/Characters/' + p1Character + '/' + p1Skin + '.png').on("error",function () {
-						$('#p1Character').attr('src', 'Resources/Literally Nothing.png')
-					});	
-					//what will the positiions of the next img be?
-					var charPos = positionCharacter(p1Character, p1Skin); //[0]=[x], [1]=[y], [2]=[scale]
-					//now that we know, lets apply those positions
-					$('#p1Character').css('object-position', charPos[0] + "px " + charPos[1] + "px");
-					$('#p1Character').css('transform', "scale(" + charPos[2] + ")");
+					//now that nobody can see this, lets change the image!
+					updateChar('#p1Character', p1Character, p1Skin);
+					//position the next character
+					var charScale = checkPosChar(p1Character, p1Skin, '#p1Character'); //will return scale if asked
 					//and now, fade in and move back
 					gsap.fromTo("#p1Character",
-						{scale: charPos[2]}, //set scale keyframe so it doesnt scale while fading back
+						{scale: charScale}, //set scale keyframe so it doesnt scale while fading back
 						{delay: .2, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}); 
 				}
 				p1CharacterPrev = p1Character;
@@ -292,13 +239,7 @@ function init() {
 				gsap.to("#wlP1", {y: -pMove, ease: "power1.in", duration: .5, onComplete: pwlMoved});
 				function pwlMoved() {
 					//change the thing!
-					if (p1WL == "W") {
-						$('#wlP1').attr('src', 'Resources/Overlay/Winners P1.png');
-					} else if (p1WL == "L") {
-						$('#wlP1').attr('src', 'Resources/Overlay/Losers P1.png');
-					} else {
-						$('#wlP1').attr('src', 'Resources/Literally Nothing.png');
-					}
+					updateWL(p1WL, "1");
 					//move it back!
 					gsap.to("#wlP1", {delay: .1, y: 0, ease: "power2.out", duration: .5});
 				}
@@ -311,7 +252,7 @@ function init() {
 				$('#p1scoreUp').attr('src', 'Resources/Overlay/Score/ScoreUp ' + bestOf + '/' + p1Color + '.webm');
 				document.getElementById('p1scoreUp').play();
 				//set timeout to the actual image change so it fits with the animation
-				setTimeout(() => {updateScore()}, 200);
+				setTimeout(() => {updateScore('#p1Score', p1Score, bestOf)}, 200);
 				p1ScorePrev = p1Score;
 			}			
 
@@ -329,12 +270,7 @@ function init() {
 					$('#p2Wrapper').css('font-size',nameSize);
 					$('#p2Name').html(p2Name);
 					$('#p2Team').html(p2Team);
-					p2Wrap.each(function(i, p2Wrap) {
-						while (p2Wrap.scrollWidth > p2Wrap.offsetWidth || p2Wrap.scrollHeight > p2Wrap.offsetHeight) {
-							var newFontSize = (parseFloat($(p2Wrap).css('font-size').slice(0,-2)) * .95) + 'px';
-							$(p2Wrap).css('font-size', newFontSize);
-						};
-					});
+					resizeText(p2Wrap);
 					gsap.to("#p2Wrapper", {delay: .3, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 				}
 			}
@@ -342,14 +278,10 @@ function init() {
 			if (p2CharacterPrev != p2Character || p2SkinPrev != p2Skin) {
 				gsap.to("#p2Character", {x: -pCharMove, opacity: 0, ease: "power1.in", duration: fadeOutTime, onComplete: pCharMoved});
 				function pCharMoved() {
-					$('#p2Character').attr('src', 'Resources/Characters/' + p2Character + '/' + p2Skin + '.png').on("error",function () {
-						$('#p2Character').attr('src', 'Resources/Literally Nothing.png')
-					});	
-					var charPos = positionCharacter(p2Character, p2Skin);
-					$('#p2Character').css('object-position', charPos[0] + "px " + charPos[1] + "px");
-					$('#p2Character').css('transform', "scale(" + charPos[2] + ")");
+					updateChar('#p2Character', p2Character, p2Skin);
+					var charScale = checkPosChar(p2Character, p2Skin, '#p2Character');
 					gsap.fromTo("#p2Character",
-						{scale: charPos[2]},
+						{scale: charScale},
 						{delay: .2, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}); 
 				}
 				p2CharacterPrev = p2Character;
@@ -359,15 +291,7 @@ function init() {
 			if (p2wlPrev != p2WL) {
 				gsap.to("#wlP2", {y: -pMove, ease: "power1.in", duration: .5, onComplete: pwlMoved});
 				function pwlMoved() {
-					//change the thing!
-					if (p2WL == "W") {
-						$('#wlP2').attr('src', 'Resources/Overlay/Winners P2.png');
-					} else if (p2WL == "L") {
-						$('#wlP2').attr('src', 'Resources/Overlay/Losers P2.png');
-					} else {
-						$('#wlP2').attr('src', 'Resources/Literally Nothing.png');
-					}
-					//move it back!
+					updateWL(p2WL, "2");
 					gsap.to("#wlP2", {delay: .1, y: 0, ease: "power2.out", duration: .5});
 				}
 				p2wlPrev = p2WL;
@@ -376,7 +300,7 @@ function init() {
 			if (p2ScorePrev != p2Score) {
 				$('#p2scoreUp').attr('src', 'Resources/Overlay/Score/ScoreUp ' + bestOf + '/' + p2Color + '.webm');
 				document.getElementById('p2scoreUp').play();
-				setTimeout(() => {updateScore()}, 200);	
+				setTimeout(() => {updateScore('#p2Score', p2Score, bestOf)}, 200);	
 				p2ScorePrev = p2Score;
 			}
 
@@ -393,27 +317,48 @@ function init() {
 				function roundMoved() {
 					$('#round').css('font-size',roundSize);
 					$('#round').html(round);					
-			
-					rdResize.each(function(i, rdResize){
-						while(rdResize.scrollWidth > rdResize.offsetWidth || rdResize.scrollHeight > rdResize.offsetHeight){
-							var newFontSize = (parseFloat($(rdResize).css('font-size').slice(0,-2)) * .95) + 'px';
-							$(rdResize).css('font-size', newFontSize);
-						}
-					});
+					resizeText(rdResize);
 					gsap.to("#round", {delay: .2, opacity: 1, duration: fadeInTime});
 				}
 			}
 		}
+	}
 
-		//score change
-		function updateScore() {
-			$('#p1Score').attr('src', 'Resources/Overlay/Score/Win Tick ' + bestOf + ' ' + p1Score + '.png').on("error",function () {
-				$('#p1Score').attr('src', 'Resources/Literally Nothing.png')
-			});
-			$('#p2Score').attr('src', 'Resources/Overlay/Score/Win Tick ' + bestOf + ' ' + p2Score + '.png').on("error",function () {
-				$('#p2Score').attr('src', 'Resources/Literally Nothing.png')
-			});
+	//image change
+	function updateChar(charID, pCharacter, pSkin) {
+		//change the image path depending on the character and skin
+		$(charID).attr('src', 'Resources/Characters/' + pCharacter + '/' + pSkin + '.png').on("error",function () {
+			$(charID).attr('src', 'Resources/Literally Nothing.png') //safety check if the img is not found
+		});
+	}
+
+	//score change
+	function updateScore(scoreID, pScore, bestOf) {
+		//change the image depending on the bestOf status and, of course, the current score
+		$(scoreID).attr('src', 'Resources/Overlay/Score/Win Tick ' + bestOf + ' ' + pScore + '.png').on("error",function () {
+			$(scoreID).attr('src', 'Resources/Literally Nothing.png') //if the score is 3, nothing is shown
+		});
+	}
+
+	//check if winning or losing in a GF, then change image
+	function updateWL(pWL, playerNum) {
+		if (pWL == "W") {
+			$('#wlP' + playerNum).attr('src', 'Resources/Overlay/Winners P' + playerNum + '.png');
+		} else if (pWL == "L") {
+			$('#wlP' + playerNum).attr('src', 'Resources/Overlay/Losers P' + playerNum + '.png');
+		} else {
+			$('#wlP' + playerNum).attr('src', 'Resources/Literally Nothing.png');
 		}
+	}
+
+	//text resize (not fancy i know), keeps making the text smaller until it fits
+	function resizeText(text) {
+		text.each(function(i, text) {
+			while (text.scrollWidth > text.offsetWidth || text.scrollHeight > text.offsetHeight) {
+				var newFontSize = (parseFloat($(text).css('font-size').slice(0,-2)) * .95) + 'px';
+				$(text).css('font-size', newFontSize);
+			};
+		});
 	}
 
 	//positions database starts here!
@@ -529,13 +474,13 @@ function init() {
 		alt: [-15, 5, 2.7]
 	};
 
-	//this will be called whenever we need to know the positions of a character from above
-	function positionCharacter(pCharacter, pSkin) {
+	//this will be called whenever we want to position a character from above
+	function checkPosChar(pCharacter, pSkin, charID) {
 		//this is so characters with spaces on their names also work
 		var pCharNoSpaces = pCharacter.replace(/ /g, "");
 		//             x, y, scale
 		var charPos = [0, 0, 1];
-				
+		//now, check if the character and skin exist in the database up there
 		if (window[pCharNoSpaces]) {
 			if (window[pCharNoSpaces][pSkin]) { //if the skin has a specific position
 				charPos[0] = window[pCharNoSpaces][pSkin][0];
@@ -551,6 +496,9 @@ function init() {
 				charPos[2] = window[pCharNoSpaces].neutral[2];
 			}
 		}
-		return charPos;
+		//to position the character
+		$(charID).css('object-position', charPos[0] + "px " + charPos[1] + "px");
+		$(charID).css('transform', "scale(" + charPos[2] + ")");
+		return charPos[2]; //we need this one to set scale keyframe when fading back
 	}
 }
