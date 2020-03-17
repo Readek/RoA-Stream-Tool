@@ -25,20 +25,11 @@ function init() {
 	var rdResize = $('#round');
 
 	//to avoid the code constantly running the same method over and over
-	var p1CharacterPrev;
-	var p1SkinPrev;
-	var p1ScorePrev;
-	var p1ColorPrev;
-	var p1wlPrev;
-
-	var p2CharacterPrev;
-	var p2SkinPrev;
-	var p2ScorePrev;
-	var p2ColorPrev;
-	var p2wlPrev;
-
+	var p1CharacterPrev, p1SkinPrev, p1ScorePrev, p1ColorPrev, p1wlPrev;
+	var p2CharacterPrev, p2SkinPrev, p2ScorePrev, p2ColorPrev, p2wlPrev;
 	var bestOfPrev;
 
+	
 	xhr.overrideMimeType('application/json');
 
 	function getInfo() {
