@@ -29,7 +29,7 @@ function init() {
 	var p2CharacterPrev, p2SkinPrev, p2ScorePrev, p2ColorPrev, p2wlPrev;
 	var bestOfPrev;
 
-	
+
 	xhr.overrideMimeType('application/json');
 
 	function getInfo() {
@@ -410,6 +410,12 @@ function init() {
 	};
 
 	//workshop characters:
+	Archen = {
+		neutral: [8, 15, 2.7]
+	};
+	BirdGuy = {
+		neutral: [15, 32, 3]
+	};
 	Astra = {
 		neutral: [25, 18, 3.2]
 	};
@@ -421,6 +427,9 @@ function init() {
 	};
 	Fox = {
 		neutral: [15, 26, 3.8]
+	};
+	Guadua = {
+		neutral: [-20, 19, 3.5]
 	};
 	HimeDaisho = {
 		neutral: [22, 13, 4.5]
@@ -449,6 +458,9 @@ function init() {
 	};
 	R_00 = { //this should have "-" but it would break :(
 		neutral: [-8, 20, 3.8]
+	};
+	Sandbert = {
+		neutral: [22, 22, 2.5]
 	};
 	TrummelandAlto = {
 		neutral: [10, 30, 2.5],
