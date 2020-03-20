@@ -18,4 +18,5 @@ Arcade Green
 Arcade Pink
 Arcade Blue
 Ranked
+HD
 LoA

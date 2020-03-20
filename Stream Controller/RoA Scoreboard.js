@@ -355,58 +355,71 @@ function init() {
 	//positions database starts here!
 	Absa = {
 		neutral: [5, 19.4, 4.7],
-		LoA: [34, 23, 5.75]
+		LoA: [34, 23, 5.75],
+		HD: [6, 17, 4.5]
 	};
 	Clairen = {
 		neutral: [-23, 30, 4.5],
-		LoA: [31, 28, 4.8]
+		LoA: [31, 28, 4.8],
+		HD: [-23, 31, 4.7]
 	};
 	Elliana = {
 		neutral: [-14, 25, 4],
-		LoA: [-19, 22, 3.9]
+		LoA: [-19, 22, 3.9],
+		HD: [-17, 25, 6]
 	};
 	Etalus = {
 		neutral: [-22, 24, 3.4],
-		LoA: [19, 34, 5]
+		LoA: [19, 34, 5],
+		HD: [-22, 33, 3.2]
 	};
 	Forsburn = {
 		neutral: [-24, 13, 4.5],
-		LoA: [7, 23, 5.8]
+		LoA: [7, 23, 5.8],
+		HD: [-31, 12, 5]
 	};
 	Kragg = {
 		neutral: [-7, 7, 3.4],
-		LoA: [-8, 2, 4]
+		LoA: [-8, 2, 4],
+		HD: [-9, -11, 4.5]
 	};
 	Maypul = {
 		neutral: [-7, 30, 3.5],
 		LoA: [25, 29, 5],
-		Ragnir: [-24, -3, 3]
+		Ragnir: [-24, -3, 3],
+		HD: [-22, 18, 4.7]
 	};
 	Orcane = {
 		neutral: [-22, 15, 3],
-		LoA: [-14, 20, 3.2]
+		LoA: [-14, 20, 3.2],
+		HD: [-7, 11, 3]
 	};
 	OriandSein = { //characters with spaces on their name must have them removed
-		neutral: [-4, 8, 2.8]
+		neutral: [-4, 8, 2.8],
+		HD: [-15, 12, 3.4]
 	};
 	Ranno = {
 		neutral: [13, 22, 5],
-		LoA: [25, 39, 4.7]
+		LoA: [25, 39, 4.7],
+		HD: [9, 26, 4.5]
 	};
 	ShovelKnight = {
-		neutral: [-0, 18, 3.2]
+		neutral: [0, 18, 3.2] //also works for HD
 	};
 	Sylvanos = {
 		neutral: [-27, 7, 3.5],
-		LoA: [10, 25.8, 6.3]
+		LoA: [10, 25.8, 6.3],
+		HD: [-21, 16, 4.3]
 	};
 	Wrastor = {
 		neutral: [-12, 28, 4.7],
-		LoA: [28, 30, 6]
+		LoA: [28, 30, 6],
+		neutral: [-12, 26, 4.7]
 	};
 	Zetterburn = {
 		neutral: [-7, 4, 4.1],
-		LoA: [18, 23, 6.1]
+		LoA: [18, 23, 6.1],
+		HD: [-20, 6, 4.7]
 	};
 
 	//workshop characters:
