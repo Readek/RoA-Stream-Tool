@@ -20,6 +20,11 @@
             src: url('Resources/Fonts/Roboto-Bold.ttf');
         }
 
+        @font-face {
+            font-family: "LemonMilk";
+            src: url('Resources/Fonts/LEMONMILK-Medium.otf');
+        }
+
         body {
             width: 1920px;
             height: 1080px;
@@ -44,9 +49,6 @@
 
         #p1Character {
             opacity: 0;
-            object-position: 0px 0px;
-            transform: scale(1);
-            /* image-rendering: crisp-edges; */
             width: 100px;
             height: 100px;
             object-fit: contain;
@@ -80,16 +82,9 @@
 
         #p2Character {
             opacity: 0;
-            object-position: 0px 0px;
-            transform: scale(1);
-            /* image-rendering: crisp-edges; */
             width: 100px;
             height: 100px;
             object-fit: contain;
-        }
-
-        #scoreboardVid {
-            /* display: none; */
         }
 
         .scoreboardRound {
@@ -122,6 +117,10 @@
             font-size: 22px;
         }
 
+        #overlayRound {
+            opacity: 0;
+        }
+
         #round {
             position: absolute;
             width: 215px;
@@ -133,13 +132,113 @@
             font-size: 19px;
             font-family: "Roboto";
         }
+        
+        #introVid {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+        }
+
+        .pIntro {
+            position: absolute;
+            width: 700px;
+            height: 94px;
+            line-height: 74px;
+            bottom: 485px;
+            font-size: 85px;
+            opacity: 0;
+            font-family: "LemonMilk";
+        }
+
+        #p1Intro {
+            text-align: right;
+            left: 155px;
+            text-shadow: 0px 0px 20px;
+        }
+
+        #p2Intro {
+            text-align: left;
+            right: 155px;
+            text-shadow: 0px 0px 20px;
+        }
+
+        #midTextIntro {
+            position: absolute;
+            width: 1100px;
+            height: 74px;
+            left: 410px;
+            font-family: "LemonMilk";
+            text-align: center;
+            line-height: 74px;
+            bottom: 505px;
+            font-size: 110px;
+            opacity: 0;
+        }
+
+        .rtIntro {
+            position: absolute;
+            line-height: 40px;
+            left: 510px;
+            font-size: 48px;
+            opacity: 0;
+            width: 900px;
+            height: 40px;
+        }
+
+        #roundIntro {
+            top: 406px;
+            text-align: center;
+        }
+
+        #tNameIntro {
+            bottom: 400px;
+            text-align: center;
+        }
+
+        #introBG {
+            position: absolute;
+            width: 1920px;
+            height: 1080px;
+            top: 0px;
+            background-color: rgba(0, 0, 0, 0.50);
+        }
+
+        #introTopBar {
+            position: absolute;
+            width: 1920px;
+            height: 100px;
+            top: 0px;
+            background-color: black;
+        }
+
+        #introBotBar {
+            position: absolute;
+            width: 1920px;
+            height: 100px;
+            bottom: 0px;
+            background-color: black;
+        }
+
+        #superCoolInterrogation {
+            position: absolute;
+            height: 74px;
+            right: 550px;
+            font-family: "LemonMilk";
+            line-height: 74px;
+            bottom: 505px;
+            font-size: 110px;
+            opacity: 0;
+        }
+
+        #overlayIntro {
+            opacity: 0;
+        }
+
     </style>
 </head>
 
 <body>
-    <div id="scoreboardBG">
-        <video id="scoreboardVid" class="scoreboardP1" width="1920" height="1080"></video>
-
+    <div id="overlayP1">
         <img src="Resources/Overlay/BG.png" class="scoreboardP1"/>
         <img id="wlP1" class="scoreboardP1"/>
         <img id="p1Color" class="scoreboardP1"/>
@@ -151,6 +250,13 @@
         <img id="teamLogoP1" class="scoreboardP1"/>
         <video id="p1scoreUp" class="scoreboardP1"></video>
 
+        <span id="p1Wrapper" class="wrappers">
+            <span id="p1Team" class="teams"></span>
+            <span id="p1Name" class="names"></span>
+        </span>
+    </div>
+
+    <div id="overlayP2">
         <img src="Resources/Overlay/BG.png" class="scoreboardP2"/>
         <img id="wlP2" class="scoreboardP2Fixed"/>
         <img id="p2Color" class="scoreboardP2"/>
@@ -164,25 +270,31 @@
         <img id="teamLogoP2" class="scoreboardP2"/>
         <video id="p2scoreUp" class="scoreboardP2"></video>
 
-        <img src="Resources/Overlay/Round BG Tournament.png" class="scoreboardRound"/>
+        <span id="p2Wrapper" class="wrappers">
+            <span id="p2Team" class="teams"></span>
+            <span id="p2Name" class="names"></span>
+        </span>
     </div>
 
-    <div id="scoreboard">
-        <div id="leftWrapper">
-            <span id="p1Wrapper" class="wrappers">
-                <span id="p1Team" class="teams"></span>
-                <span id="p1Name" class="names"></span>
-            </span>
-        </div>
-        <div id="rightWrapper">
-            <span id="p2Wrapper" class="wrappers">
-                <span id="p2Team" class="teams"></span>
-                <span id="p2Name" class="names"></span>
-            </span>
-        </div>
-        <div id="rdWrapper">
-            <span id="round"></span>
-        </div>
+    <div id="overlayRound">
+        <img src="Resources/Overlay/Round BG Tournament.png" class="scoreboardRound"/>
+        <span id="round"></span>
+    </div>
+
+    <div id="overlayIntro">
+        <div id="introBG"></div>
+        <div id="introTopBar"></div>
+        <div id="introBotBar"></div>
+
+        <video id="introVid" width="1920" height="1080"></video>
+
+        <span id="p1Intro" class="pIntro"></span>
+        <span id="p2Intro" class="pIntro"></span>
+        <span id="midTextIntro">VS</span>
+        <span id="superCoolInterrogation">?</span>
+
+        <span id="roundIntro" class="rtIntro"></span>
+        <span id="tNameIntro" class="rtIntro"></span>
     </div>
 </body>
 </html>

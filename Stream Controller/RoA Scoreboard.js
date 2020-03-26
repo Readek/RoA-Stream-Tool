@@ -12,17 +12,19 @@ function init() {
 	var roundSize = '19px';
 
 	//animation stuff
-	var pMove = 50;
-	var pCharMove = 20;
+	var pMove = 50; //distance to move for the player names (pixels)
+	var pCharMove = 20; //distance to move for the character icons
 
-	var fadeInTime = .3;
+	var fadeInTime = .3; //(seconds)
 	var fadeOutTime = .2;
-	var nameDelay = .8;
+	var introDelay = .8; //all animations will get this delay when the html loads (use this so it times with your transition)
 
 	//to resize the texts if they are too large
 	var p1Wrap = $('#p1Wrapper'); 
 	var p2Wrap = $('#p2Wrapper');
 	var rdResize = $('#round');
+	var p1IntroResize = $('#p1Intro');
+	var p2IntroResize = $('#p2Intro');
 
 	//to avoid the code constantly running the same method over and over
 	var p1CharacterPrev, p1SkinPrev, p1ScorePrev, p1ColorPrev, p1wlPrev;
@@ -78,6 +80,7 @@ function init() {
 		var p2WL = scObj['p2WL'];
 
 		var round = scObj['round'];
+		var tournamentName = scObj['tournamentName'];
 		var bestOf = scObj['bestOf'];
 		var allowIntro = scObj['allowIntro'];
 
@@ -106,15 +109,72 @@ function init() {
 
 		//now, things that will happen the first time the html loads
 		if (startup) {
-			//the intro vid! WIP WIP WIP
+			//the cool intro video
 			if (allowIntro == "yes") {
+				//lets see that intro
+				$('#overlayIntro').css('opacity', '1');
+
+				//this vid is just the bars moving (todo: maybe do it through javascript?)
 				setTimeout(() => { 
-					$('#scoreboardVid').attr('src', 'Resources/Trails/Absa/LoA Blue.webm');
-					document.getElementById('scoreboardVid').play();
-				 }, 0);				
+					$('#introVid').attr('src', 'Resources/Webms/Intro.webm');
+					document.getElementById('introVid').play();
+				}, 0); //if you need it to start later, change that 0 (and also update the introDelay)
+
+				$('#p1Intro').html(p1Name); //update player 1 intro text
+				$('#p2Intro').html(p2Name); //p2
+				$('#roundIntro').html(round); //round
+				$('#tNameIntro').html(tournamentName); //tournament name
+
+				if (p1Score + p2Score == 0) { //if this is the first game
+					//change the color of the player text shadows
+					$('#p1Intro').css('text-shadow', '0px 0px 20px ' + getHexColor(p1Color));
+					$('#p2Intro').css('text-shadow', '0px 0px 20px ' + getHexColor(p2Color));
+
+					//player 1 name fade in
+					gsap.fromTo("#p1Intro",
+						{x: -pMove}, //from
+						{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}); //to
+					resizeText(p1IntroResize); //resize the text if its too large
+
+					//player 2
+					gsap.fromTo("#p2Intro",
+						{x: pMove},
+						{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
+					resizeText(p2IntroResize);
+
+					//VS text
+					gsap.to("#midTextIntro", {delay: introDelay-.2, opacity: 1, ease: "power2.out", duration: fadeInTime});
+
+				} else { //if its not
+					if (Number(p1Score) + Number(p2Score) != 4) { //if its not the last game of a bo5
+						//just show the game count in the intro
+						$('#midTextIntro').html("Game " + (Number(p1Score) + Number(p2Score) + 1));
+					} else { //if game 5
+						if ((round.toUpperCase() == "True Finals".toUpperCase())) {
+							$('#midTextIntro').html("True Final Game"); //i mean shit gets serious here
+						} else {
+							$('#midTextIntro').html("Final Game");
+							//if GF, we dont know if its the last game or not!
+							if (round.toLocaleUpperCase() == "Grand Finals".toLocaleUpperCase()) {
+								gsap.to("#superCoolInterrogation", {delay: introDelay+.5, opacity: 1, ease: "power2.out", duration: 1.5});
+							}
+						}
+					}
+					//mid text fade in
+					gsap.to("#midTextIntro", {delay: introDelay-.2, opacity: 1, ease: "power2.out", duration: fadeInTime});
+				}
+				
+				//round and tournament fade in
+				gsap.to(".rtIntro", {delay: introDelay-.2, opacity: 1, ease: "power2.out", duration: fadeInTime});
+
+				//aaaaand fade out everything
+				gsap.to("#overlayIntro", {delay: introDelay+1.6, opacity: 0, ease: "power2.out", duration: fadeInTime+.2});
+
+				//lets delay everything that comes after this so it shows after the intro
+				introDelay = 2.6;
 			}
 
-			//starting with player 1 first
+			//lets start with player 1 first
 			//set the texts
 			$('#p1Name').html(p1Name);
 			$('#p1Team').html(p1Team);
@@ -123,7 +183,7 @@ function init() {
 			//sets the starting position for the player text, then fades in and moves the p1 text to the next keyframe
 			gsap.fromTo("#p1Wrapper", 
 				{x: -pMove}, //from
-				{delay: nameDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}); //to
+				{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}); //to
 
 			//set the character image for the player
 			updateChar('#p1Character', p1Character, p1Skin);
@@ -132,7 +192,7 @@ function init() {
 			//set starting position for the character icon, then fade-in-move the character icon to the overlay
 			gsap.fromTo("#p1Character",
 				{x: -pCharMove},
-				{delay: nameDelay+.25, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
+				{delay: introDelay+.25, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 			//save the character/skin so we run the character change code only when this doesnt equal to the next
 			p1CharacterPrev = p1Character;
 			p1SkinPrev = p1Skin;
@@ -141,7 +201,7 @@ function init() {
 			updateWL(p1WL, "1");
 			gsap.fromTo("#wlP1",
 				{y: -pMove}, //set starting position some pixels up (it will be covered by the overlay)
-				{delay: nameDelay+.5, y: 0, ease: "power2.out", duration: .5}); //move down to its default position
+				{delay: introDelay+.5, y: 0, ease: "power2.out", duration: .5}); //move down to its default position
 			//save for later so the animation doesn't repeat over and over
 			p1wlPrev = p1WL;
 
@@ -155,37 +215,41 @@ function init() {
 			resizeText(p2Wrap);
 			gsap.fromTo("#p2Wrapper", 
 				{x: pMove},
-				{delay: nameDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
+				{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 
 			updateChar('#p2Character', p2Character, p2Skin);
 			checkPosChar(p2Character, p2Skin, '#p2Character');
 			gsap.fromTo("#p2Character",
 				{x: -pCharMove},
-				{delay: nameDelay+.25, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
+				{delay: introDelay+.25, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 			p2CharacterPrev = p2Character;
 			p2SkinPrev = p2Skin;
 
 			updateWL(p2WL, "2");
 			gsap.fromTo("#wlP2",
 				{y: -pMove},
-				{delay: nameDelay+.5, y: 0, ease: "power2.out", duration: .5});
+				{delay: introDelay+.5, y: 0, ease: "power2.out", duration: .5});
 			p2wlPrev = p2WL;
 
 			p2ScorePrev = p2Score;
 
-			//WIP WIP WIP
-			$('#teamLogoP1').attr('src', 'Resources/TeamLogos/' + p1Team + '.png').on("error",function () {
-				$('#teamLogoP1').attr('src', 'Resources/Literally Nothing.png');
-			});
-
-			$('#teamLogoP2').attr('src', 'Resources/TeamLogos/' + p2Team + '.png').on("error",function () {
-				$('#teamLogoP2').attr('src', 'Resources/Literally Nothing.png');
-			});
 
 			//update the round text
 			$('#round').html(round);
 			//and of course, resize the round text if it overflows
 			resizeText(rdResize);
+			//fade it in
+			gsap.to("#overlayRound", {delay: introDelay, opacity: 1, ease: "power2.out", duration: fadeInTime+.2});
+
+
+			//WIP WIP WIP
+			/* $('#teamLogoP1').attr('src', 'Resources/TeamLogos/' + p1Team + '.png').on("error",function () {
+				$('#teamLogoP1').attr('src', 'Resources/Literally Nothing.png');
+			});
+
+			$('#teamLogoP2').attr('src', 'Resources/TeamLogos/' + p2Team + '.png').on("error",function () {
+				$('#teamLogoP2').attr('src', 'Resources/Literally Nothing.png');
+			}); */
 		}
 
 		//now things that will happen not the first time
@@ -248,11 +312,11 @@ function init() {
 			}			
 
 			//WIP WIP WIP
-			if ($('#p1Team').text() != p1Team) {
+			/* if ($('#p1Team').text() != p1Team) {
 				$('#teamLogoP1').attr('src', 'Resources/TeamLogos/' + p1Team + '.png').on("error",function () {
 					$('#teamLogoP1').attr('src', 'Resources/Literally Nothing.png');
 				});
-			}
+			} */
 
 			//did you pay attention earlier? Well, this is the same as player 1!
 			if($('#p2Name').text() != p2Name || $('#p2Team').text() != p2Team){
@@ -296,11 +360,11 @@ function init() {
 			}
 
 			//WIP WIP WIP
-			if ($('#p2Team').text() != p2Team) {
+			/* if ($('#p2Team').text() != p2Team) {
 				$('#teamLogoP2').attr('src', 'Resources/TeamLogos/' + p2Team + '.png').on("error",function () {
 					$('#teamLogoP2').attr('src', 'Resources/Literally Nothing.png');
 				});
-			}
+			} */
 			
 			//and finally, update the round text
 			if ($('#round').text() != round){
@@ -350,6 +414,32 @@ function init() {
 				$(text).css('font-size', newFontSize);
 			};
 		});
+	}
+
+	//so we can get the exact color used by the game!
+	function getHexColor(color) {
+		switch (color) {
+			case "Red":
+				return "#ed1c24";
+			case "Blue":
+				return "#00b7ef";
+			case "Pink":
+				return "#ffa3b1";
+			case "Green":
+				return "#a8e61d";
+			case "NetGreen":
+				return "#42e564";
+			case "Purple":
+				return "#846ae9";
+			case "Magenta":
+				return "#ee1c8f";
+			case "Yellow":
+				return "#dc8c00";
+			case "CPU":
+				return "#808080";
+			default:
+				break;
+		}
 	}
 
 	//positions database starts here!
