@@ -10,3 +10,5 @@ Red
 Sunny D
 Rat
 Blue
+Glass
+Wireframe

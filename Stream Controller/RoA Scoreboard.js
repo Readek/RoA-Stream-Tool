@@ -504,7 +504,7 @@ function init() {
 	Wrastor = {
 		neutral: [-12, 28, 4.7],
 		LoA: [28, 30, 6],
-		neutral: [-12, 26, 4.7]
+		HD: [-12, 26, 4.7]
 	};
 	Zetterburn = {
 		neutral: [-7, 4, 4.1],
@@ -548,13 +548,16 @@ function init() {
 		alt: [8, 10, 2.5]
 	};
 	Mollo = {
-		neutral: [-2, 20, 4.4]
+		neutral: [-3, 20, 4.4]
 	};
 	Mycolich = {
 		neutral: [-2, 11, 3.8]
 	};
 	Olympia = {
 		neutral: [19, 20, 4.5]
+	};
+	Otto = {
+		neutral: [0, 6, 2.8]
 	};
 	Pomme = {
 		neutral: [30, 22, 4]

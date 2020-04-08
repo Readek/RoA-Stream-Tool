@@ -4,6 +4,14 @@ Red
 Green
 Grey
 Pink
+Abyss
+Early Access
+Brown
+Lakitu
+Worm
+Orange
+Greenesis
+Yelowsis
 Genesis
 Alt Normal
 Alt Blue
@@ -11,4 +19,12 @@ Alt Red
 Alt Green
 Alt Grey
 Alt Pink
+Alt Abyss
+Alt Early Access
+Alt Brown
+Alt Lakitu
+Alt Worm
+Alt Orange
+Alt Greenesis
+Alt Yellowsis
 Alt Genesis
