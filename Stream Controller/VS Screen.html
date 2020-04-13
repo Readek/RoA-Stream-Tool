@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RoA Stream Controller</title>
+
+    <script src="Resources/Scripts/VS Screen.js"></script>
+    <script src="Resources/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="Resources/Scripts/gsap.min.js"></script>
+    
+
+    <style>
+        @font-face {
+            font-family: "Deansgate";
+            src: url('Resources/Fonts/DeansgateCondensed-Bold.ttf');
+        }
+
+        @font-face {
+            font-family: "LemonMilk";
+            src: url('Resources/Fonts/LEMONMILK-Medium.otf');
+        }
+
+        body {
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+            background: transparent;
+            padding: 0px;
+            margin: 0px;
+            text-transform: uppercase;
+            color: white;
+        }
+
+
+        .absol {
+            position: absolute;
+        }
+
+        .mirror {
+            position: absolute;
+            transform: scaleX(-1);
+        }
+
+        #oneEighty {
+            width: 1920px;
+            height: 1080px;
+            clip: rect(0px, 960px, 1080px, 0px);
+        }
+
+
+        #bgVids {
+            filter: grayscale(1);
+        }
+
+        #vidBGP1 {
+            clip: rect(0px, 960px, 1080px, 0px);
+        }
+
+        #vidBGP2 {
+            clip: rect(0px, 1920px, 1080px, 960px);
+        }
+
+
+        #textBGP1 {
+            bottom: 0px;
+            left: 0px;
+        }
+
+        #textBGP2 {
+            bottom: 0px;
+            right: -2px;
+        }
+
+
+        .character {
+            position: absolute;
+            width: 1920px;
+            height: 1080px;
+            object-fit: contain;
+        }
+
+        #trailP1 {
+            opacity: 0;
+        }
+
+        #trailP2 {
+            opacity: 0;
+        }
+
+
+        .wrappers {
+            position: absolute;
+            width: 940px;
+            height: 120px;
+            font-family: "LemonMilk";
+            line-height: 90px;
+            text-align: center;
+            bottom: 90px;
+            font-size: 90px;
+            opacity: 1;
+            transform: rotate(-3deg);
+            text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.7);
+            opacity: 0;
+        }
+
+        #p1Wrapper {
+            left: 10px;
+        }
+
+        #p2Wrapper {
+            right: 10px;
+        }
+
+        .team {
+            color: lightgray;
+            font-size: 50px;
+        }
+
+
+        #round {
+            position: absolute;
+            width: 275px;
+            height: 36px;
+            left: 823px;
+            top: 62px;
+            color: black;
+            line-height: 30px;
+            text-align: center;
+            font-size: 30px;
+            font-family: "Deansgate";
+        }
+
+        #tournament {
+            position: absolute;
+            width: 375px;
+            height: 30px;
+            left: 773px;
+            top: 128px;
+            color: rgb(65, 65, 65);
+            line-height: 25px;
+            text-align: center;
+            font-size: 25px;
+            font-family: "Deansgate";
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="bgVids">
+        <video autoplay loop class="absol" id="vidBGP1"></video>
+        <video autoplay loop class="absol" id="vidBGP2"></video>
+    </div>
+
+    <div id="colorGrads">
+        <img class="absol" id="colorBGP1"/>
+        <img class="mirror" id="colorBGP2"/>
+    </div>
+
+    <div id="charas">
+        <div class="absol" id="oneEighty">
+            <div id="charaP1">
+                <img class="character" id="trailP1"/>
+                <img class="character" id="charP1"/>
+            </div>
+        </div>
+
+        <div class="mirror" id="oneEighty">
+            <div id="charaP2">
+                <img class="character" id="trailP2"/>
+                <img class="character" id="charP2"/>
+            </div>
+        </div>
+    </div>
+
+    <div id="textBGs">
+        <img class="absol" id="textBGP1"/>
+        <img class="absol" id="textBGP2"/>
+    </div>
+    
+    <div id="playerTexts">
+        <span id="p1Wrapper" class="wrappers">
+            <span id="p1Team" class="team">af</span>
+            <span id="p1Name" class="name">Slimepuffen</span>
+        </span>
+
+        <span id="p2Wrapper" class="wrappers">
+            <span id="p2Team" class="team">set</span>
+            <span id="p2Name" class="name">OliveOily</span>
+        </span>
+
+    </div>
+
+    <img src="Resources/Overlay/VS Screen/VS Screen Overlay.png" class="absol"/>
+
+    <div id="roundInfo">
+        <span id="round"></span>
+        <span id="tournament"></span>
+    </div>
+</body>
+</html>
