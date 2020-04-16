@@ -302,153 +302,88 @@ function init() {
 	}
 
 
-	//positions database starts here!
+	//positions database starts here! scale cant be lower than 1
 	Absa = {
 		neutral: [55, 133, 1.35],
 		LoA: [410, 175, 1.5],
 		HD: [45, 125, 1.3]
 	};
 	Clairen = {
-		neutral: [-430, 160, 1.17],
+		neutral: [-430, 170, 1.17],
 		LoA: [360, 180, 1.4],
-		HD: [-520, 122, 1.07]
+		HD: [-550, 125, 1.07]
 	};
-	//TODO BELOW
 	Elliana = {
-		neutral: [-14, 25, 4],
-		LoA: [-19, 22, 3.9],
-		HD: [-17, 25, 6]
+		neutral: [-280, 160, 1.22],
+		LoA: [-270, 125, 1.1],
+		HD: [-250, 140, 1.34]
 	};
 	Etalus = {
-		neutral: [-22, 24, 3.4],
-		LoA: [19, 34, 5],
-		HD: [-22, 33, 3.2]
+		neutral: [-340, 160, 1.05],
+		LoA: [220, 220, 1.4],
+		HD: [-470, 155, 1]
 	};
 	Forsburn = {
-		neutral: [-24, 13, 4.5],
-		LoA: [7, 23, 5.8],
-		HD: [-31, 12, 5]
+		neutral: [-125, 130, 1.25],
+		LoA: [240, 170, 1.35],
+		HD: [-293, 25, 1.27]
 	};
 	Kragg = {
-		neutral: [-7, 7, 3.4],
-		LoA: [-8, 2, 4],
-		HD: [-9, -11, 4.5]
+		neutral: [-260, 20, 1.03],
+		LoA: [-110, 2, 1.1],
+		HD: [20, -130, 1.4]
 	};
 	Maypul = {
-		neutral: [-7, 30, 3.5],
-		LoA: [25, 29, 5],
-		Ragnir: [-24, -3, 3],
-		HD: [-22, 18, 4.7]
+		neutral: [-260, 225, 1],
+		LoA: [270, 200, 1.3],
+		Ragnir: [-240, 5, 1.15],
+		HD: [-295, 40, 1.12]
 	};
 	Orcane = {
-		neutral: [-22, 15, 3],
-		LoA: [-14, 20, 3.2],
-		HD: [-7, 11, 3]
+		neutral: [-305, 135, 1.02],
+		LoA: [-150, 120, 1.1],
+		HD: [-50, 50, 1.1]
 	};
 	OriandSein = { //characters with spaces on their name must have them removed
-		neutral: [-4, 8, 2.8],
-		HD: [-15, 12, 3.4]
+		neutral: [-50, 100, 1.1],
+		HD: [-280, 35, 1.08]
 	};
 	Ranno = {
-		neutral: [13, 22, 5],
-		LoA: [25, 39, 4.7],
-		HD: [9, 26, 4.5]
+		neutral: [100, 145, 1.3],
+		LoA: [260, 180, 1.2],
+		HD: [120, 155, 1.27]
 	};
 	ShovelKnight = {
-		neutral: [0, 18, 3.2] //also works for HD
+		neutral: [-5, 100, 1.15] //also works for HD
 	};
 	Sylvanos = {
-		neutral: [-27, 7, 3.5],
-		LoA: [10, 25.8, 6.3],
-		HD: [-21, 16, 4.3]
+		neutral: [-400, 50, 1.1],
+		LoA: [150, 130, 1.2],
+		HD: [-440, 30, 1.04]
 	};
 	Wrastor = {
-		neutral: [-12, 28, 4.7],
-		LoA: [28, 30, 6],
-		HD: [-12, 26, 4.7]
+		neutral: [-215, 155, 1.19],
+		LoA: [275, 150, 1.2],
+		HD: [-60, 140, 1.19]
 	};
 	Zetterburn = {
-		neutral: [-7, 4, 4.1],
-		LoA: [18, 23, 6.1],
-		HD: [-20, 6, 4.7]
+		neutral: [-50, 10, 1.35],
+		LoA: [170, 100, 1.2],
+		HD: [-170, -20, 1.25]
 	};
 
-	//workshop characters:
-	Archen = {
-		neutral: [8, 15, 2.7]
-	};
-	BirdGuy = {
-		neutral: [15, 32, 3]
-	};
-	Astra = {
-		neutral: [25, 18, 3.2]
-	};
-	Epinel = {
-		neutral: [22, 30, 4]
-	};
-	Falco = {
-		neutral: [15, 33, 3.8]
-	};
-	Fox = {
-		neutral: [15, 26, 3.8]
-	};
-	Guadua = {
-		neutral: [-20, 19, 3.5]
-	};
-	HimeDaisho = {
-		neutral: [22, 13, 4.5]
-	};
-	Kirby = {
-		neutral: [12, 16, 2]
-	};
-	Kris = {
-		neutral: [20, 26, 4.2]
-	};
-	MayuAshikaga = {
-		neutral: [3, 22, 5],
-		alt: [8, 10, 2.5]
-	};
-	Mollo = {
-		neutral: [-3, 20, 4.4]
-	};
-	Mycolich = {
-		neutral: [-2, 11, 3.8]
-	};
-	Olympia = {
-		neutral: [19, 20, 4.5]
-	};
-	Otto = {
-		neutral: [0, 6, 2.8]
-	};
-	Pomme = {
-		neutral: [30, 22, 4]
-	};
-	R_00 = { //this should have "-" but it would break :(
-		neutral: [-8, 20, 3.8]
-	};
-	Sandbert = {
-		neutral: [22, 22, 2.5]
-	};
-	TrummelandAlto = {
-		neutral: [10, 30, 2.5],
-		alt: [27, -7, 2.5]
-	};
-	Valkyrie = {
-		neutral: [-2, -9, 3.5]
-	};
-	Yoyo = {
-		neutral: [14, 22, 3]
-	};
-	ZettaAshikaga = {
-		neutral: [-7, 23, 6],
-		alt: [-15, 5, 2.7]
-	};
+	//workshop characters NOT DONE YET
 
 
 	//character update!
 	function updateChar(pCharacter, pSkin, color, charID, trailID) {
 
-		//first, change the image path depending on the character and skin
+		//if using an Alt skin, just use the normal version
+		if (pSkin.startsWith("Alt ")) {
+			pSkin = pSkin.substring(4); //removes "Alt " from string
+		}
+
+		//change the image path depending on the character and skin
 		$(charID).attr('src', 'Resources/Characters/' + pCharacter + '/' + pSkin + '.png').on("error",function () {
 			$(charID).attr('src', 'Resources/Literally Nothing.png') //safety check if the img is not found
 		});
@@ -467,15 +402,7 @@ function init() {
 				$(trailID).attr('src', 'Resources/Trails/' + pCharacter + '/' + pSkin + ' ' + color + '.png').on("error",function () {
 					$(trailID).attr('src', 'Resources/Literally Nothing.png');
 				});
-			} else if (pSkin.includes("Alt ")) { //for a group of imgs that have a specific position
-				charPos[0] = window[pCharNoSpaces].alt[0];
-				charPos[1] = window[pCharNoSpaces].alt[1];
-				charPos[2] = window[pCharNoSpaces].alt[2];
-
-				$(trailID).attr('src', 'Resources/Trails/' + pCharacter + '/' + pSkin + ' ' + color + '.png').on("error",function () {
-					$(trailID).attr('src', 'Resources/Literally Nothing.png');
-				});
-			} else { //if none of the above, use a default position
+			} else { //else, use a default position
 				charPos[0] = window[pCharNoSpaces].neutral[0];
 				charPos[1] = window[pCharNoSpaces].neutral[1];
 				charPos[2] = window[pCharNoSpaces].neutral[2];
@@ -499,8 +426,8 @@ function init() {
 		}
 		else
 		{
-			$(charID).css('image-rendering', "crisp-edges"); //sharp scalling
-			$(trailID).css('image-rendering', "crisp-edges");
+			$(charID).css('image-rendering', "pixelated"); //sharp scalling
+			$(trailID).css('image-rendering', "pixelated");
 		}
 
 		return charPos[2]; //we need this one to set scale keyframe when fading back
@@ -512,10 +439,6 @@ function init() {
 		var pCharNoSpaces = pCharacter.replace(/ /g, "");
 		if (window[pCharNoSpaces]) {
 			if (window[pCharNoSpaces][pSkin]) {
-				$(trailID).attr('src', 'Resources/Trails/' + pCharacter + '/' + pSkin + ' ' + color + '.png').on("error",function () {
-					$(trailID).attr('src', 'Resources/Literally Nothing.png');
-				});
-			} else if (pSkin.includes("Alt ")) {
 				$(trailID).attr('src', 'Resources/Trails/' + pCharacter + '/' + pSkin + ' ' + color + '.png').on("error",function () {
 					$(trailID).attr('src', 'Resources/Literally Nothing.png');
 				});

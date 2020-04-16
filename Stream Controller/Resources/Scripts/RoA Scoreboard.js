@@ -107,7 +107,7 @@ function init() {
 		}
 		
 
-		//first, things that will happen only the first time the html loads
+		//now, things that will happen only the first time the html loads
 		if (startup) {
 			//the cool intro video
 			if (allowIntro == "yes") {
@@ -595,7 +595,7 @@ function init() {
 				charPos[0] = window[pCharNoSpaces][pSkin][0];
 				charPos[1] = window[pCharNoSpaces][pSkin][1];
 				charPos[2] = window[pCharNoSpaces][pSkin][2];
-			} else if (pSkin.includes("Alt ")) { //for a group of imgs that have a specific position
+			} else if (pSkin.startsWith("Alt ")) { //for a group of imgs that have a specific position
 				charPos[0] = window[pCharNoSpaces].alt[0];
 				charPos[1] = window[pCharNoSpaces].alt[1];
 				charPos[2] = window[pCharNoSpaces].alt[2];
