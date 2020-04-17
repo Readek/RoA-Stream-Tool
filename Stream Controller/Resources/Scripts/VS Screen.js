@@ -309,8 +309,8 @@ function init() {
 		HD: [45, 125, 1.3]
 	};
 	Clairen = {
-		neutral: [-430, 170, 1.17],
-		LoA: [360, 180, 1.4],
+		neutral: [-400, 170, 1.17],
+		LoA: [370, 180, 1.4],
 		HD: [-550, 125, 1.07]
 	};
 	Elliana = {
@@ -320,12 +320,12 @@ function init() {
 	};
 	Etalus = {
 		neutral: [-340, 160, 1.05],
-		LoA: [220, 220, 1.4],
+		LoA: [235, 220, 1.4],
 		HD: [-470, 155, 1]
 	};
 	Forsburn = {
 		neutral: [-125, 130, 1.25],
-		LoA: [240, 170, 1.35],
+		LoA: [265, 170, 1.35],
 		HD: [-293, 25, 1.27]
 	};
 	Kragg = {
@@ -335,22 +335,22 @@ function init() {
 	};
 	Maypul = {
 		neutral: [-260, 225, 1],
-		LoA: [270, 200, 1.3],
+		LoA: [280, 200, 1.3],
 		Ragnir: [-240, 5, 1.15],
 		HD: [-295, 40, 1.12]
 	};
 	Orcane = {
 		neutral: [-305, 135, 1.02],
 		LoA: [-150, 120, 1.1],
-		HD: [-50, 50, 1.1]
+		HD: [-0, 50, 1.1]
 	};
 	OriandSein = { //characters with spaces on their name must have them removed
 		neutral: [-50, 100, 1.1],
 		HD: [-280, 35, 1.08]
 	};
 	Ranno = {
-		neutral: [100, 145, 1.3],
-		LoA: [260, 180, 1.2],
+		neutral: [140, 145, 1.3],
+		LoA: [270, 180, 1.2],
 		HD: [120, 155, 1.27]
 	};
 	ShovelKnight = {
@@ -362,7 +362,7 @@ function init() {
 		HD: [-440, 30, 1.04]
 	};
 	Wrastor = {
-		neutral: [-215, 155, 1.19],
+		neutral: [-175, 155, 1.19],
 		LoA: [275, 150, 1.2],
 		HD: [-60, 140, 1.19]
 	};
