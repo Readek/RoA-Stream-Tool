@@ -12,7 +12,7 @@ function init() {
 
 	var fadeInTime = .4; //(seconds)
 	var fadeOutTime = .3;
-	var introDelay = .8; //all animations will get this delay when the html loads (use this so it times with your transition)
+	var introDelay = .3; //all animations will get this delay when the html loads (use this so it times with your transition)
 
 	//to resize the texts if they are too large
 	var p1Wrap = $('#p1Wrapper'); 
@@ -266,7 +266,7 @@ function init() {
 	}
 
 	
-	function updateColor(gradID, textBGID, color, trailID, pCharacter, pSkin,) {
+	function updateColor(gradID, textBGID, color) {
 		//change the color gradient image path depending on the color
 		$(gradID).attr('src', 'Resources/Overlay/VS Screen/Grad ' + color + '.png').on("error",function () {
 			$(charID).attr('src', 'Resources/Literally Nothing.png') //safety check if the img is not found
