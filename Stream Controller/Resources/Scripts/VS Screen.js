@@ -354,7 +354,8 @@ function init() {
 		HD: [120, 155, 1.27]
 	};
 	ShovelKnight = {
-		neutral: [-5, 100, 1.15] //also works for HD
+		neutral: [-5, 100, 1.15],
+		HD: [15, 100, 1.15]
 	};
 	Sylvanos = {
 		neutral: [-400, 50, 1.1],
