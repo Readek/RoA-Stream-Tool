@@ -46,6 +46,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lineEdit_2->setPlaceholderText("Player 2");
     ui->lineEdit_3->setPlaceholderText("Current Round");
     ui->tournamentText->setPlaceholderText("Tournament Name");
+
+    //set starting selection of player 2 color to blue
+    ui->comboBox_6->setCurrentIndex(1);
 }
 
 MainWindow::~MainWindow()

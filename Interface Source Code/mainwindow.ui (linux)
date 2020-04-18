@@ -29,7 +29,7 @@
    <enum>Qt::DefaultContextMenu</enum>
   </property>
   <property name="windowTitle">
-   <string>RoA Stream Controller DE 1.0</string>
+   <string>RoA Stream Control</string>
   </property>
   <property name="tabShape">
    <enum>QTabWidget::Rounded</enum>
@@ -352,56 +352,13 @@ things!</string>
      </rect>
     </property>
     <property name="toolTip">
-     <string>If you really want that Green or Yellow, you can manually edit the file yourself.</string>
+     <string>Change the colors of the overlay for this player.</string>
     </property>
     <item>
      <property name="text">
       <string>Red</string>
      </property>
     </item>
-    <item>
-     <property name="text">
-      <string>Blue</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Pink</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>NetGreen</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Purple</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Magenta</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>CPU</string>
-     </property>
-    </item>
-   </widget>
-   <widget class="QComboBox" name="comboBox_6">
-    <property name="geometry">
-     <rect>
-      <x>439</x>
-      <y>10</y>
-      <width>72</width>
-      <height>32</height>
-     </rect>
-    </property>
-    <property name="toolTip">
-     <string>If you really want that Red or Yellow, you can manually edit the file yourself.</string>
-    </property>
     <item>
      <property name="text">
       <string>Blue</string>
@@ -434,6 +391,69 @@ things!</string>
     </item>
     <item>
      <property name="text">
+      <string>Yellow</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>CPU</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QComboBox" name="comboBox_6">
+    <property name="geometry">
+     <rect>
+      <x>439</x>
+      <y>10</y>
+      <width>72</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>Change the colors of the overlay for this player.</string>
+    </property>
+    <item>
+     <property name="text">
+      <string>Red</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Blue</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Pink</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Green</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>NetGreen</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Purple</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Magenta</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Yellow</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
       <string>CPU</string>
      </property>
     </item>
@@ -447,6 +467,9 @@ things!</string>
       <height>22</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string>Set the round to Best of 3.</string>
+    </property>
     <property name="text">
      <string>Bo3</string>
     </property>
@@ -459,6 +482,9 @@ things!</string>
       <width>51</width>
       <height>22</height>
      </rect>
+    </property>
+    <property name="toolTip">
+     <string>Set the round to Best of 5.</string>
     </property>
     <property name="text">
      <string>Bo5</string>
