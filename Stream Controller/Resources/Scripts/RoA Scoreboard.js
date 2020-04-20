@@ -155,7 +155,7 @@ function init() {
 						} else {
 							$('#midTextIntro').html("Final Game");
 							//if GF, we dont know if its the last game or not!
-							if (round.toLocaleUpperCase() == "Grand Finals".toLocaleUpperCase()) {
+							if (round.toLocaleUpperCase() == "Grand Finals".toLocaleUpperCase() && !(p1WL == "L" && p2WL == "L")) {
 								gsap.to("#superCoolInterrogation", {delay: introDelay+.5, opacity: 1, ease: "power2.out", duration: 1.5});
 							}
 						}
