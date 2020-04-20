@@ -400,7 +400,7 @@ function init() {
 				charPos[1] = window[pCharNoSpaces][pSkin][1];
 				charPos[2] = window[pCharNoSpaces][pSkin][2];
 
-				$(trailID).attr('src', 'Resources/Trails/' + pCharacter + '/' + pSkin + ' ' + color + '.png').on("error",function () {
+				$(trailID).attr('src', 'Resources/Trails/' + pCharacter + '/' + color + ' ' + pSkin + '.png').on("error",function () {
 					$(trailID).attr('src', 'Resources/Literally Nothing.png');
 				});
 			} else { //else, use a default position
@@ -408,7 +408,7 @@ function init() {
 				charPos[1] = window[pCharNoSpaces].neutral[1];
 				charPos[2] = window[pCharNoSpaces].neutral[2];
 
-				$(trailID).attr('src', 'Resources/Trails/' + pCharacter + '/Normal ' + color + '.png').on("error",function () {
+				$(trailID).attr('src', 'Resources/Trails/' + pCharacter + '/' + color + '.png').on("error",function () {
 					$(trailID).attr('src', 'Resources/Literally Nothing.png');
 				});
 			}
