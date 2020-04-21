@@ -351,6 +351,7 @@ function init() {
 	Ranno = {
 		neutral: [140, 145, 1.3],
 		LoA: [270, 180, 1.2],
+		Tuxedo: [140, 145, 1.3], //same as neutral, just here so trail shows up
 		HD: [120, 155, 1.27]
 	};
 	ShovelKnight = {
@@ -440,11 +441,11 @@ function init() {
 		var pCharNoSpaces = pCharacter.replace(/ /g, "");
 		if (window[pCharNoSpaces]) {
 			if (window[pCharNoSpaces][pSkin]) {
-				$(trailID).attr('src', 'Resources/Trails/' + pCharacter + '/' + pSkin + ' ' + color + '.png').on("error",function () {
+				$(trailID).attr('src', 'Resources/Trails/' + pCharacter + '/' + color + ' ' + pSkin + '.png').on("error",function () {
 					$(trailID).attr('src', 'Resources/Literally Nothing.png');
 				});
 			} else {
-				$(trailID).attr('src', 'Resources/Trails/' + pCharacter + '/Normal ' + color + '.png').on("error",function () {
+				$(trailID).attr('src', 'Resources/Trails/' + pCharacter + '/' + color + '.png').on("error",function () {
 					$(trailID).attr('src', 'Resources/Literally Nothing.png');
 				});
 			}
