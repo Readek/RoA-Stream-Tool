@@ -188,7 +188,7 @@ function init() {
 				}
 
 				//background change here!
-				if (p1CharacterPrev != p1Character || p1Skin == "Ragnir") { //only when different character or ragnir
+				if (p1CharacterPrev != p1Character || p1Skin == "Ragnir" || p1SkinPrev == "Ragnir") { //only when different character or ragnir
 					//fade it out
 					gsap.to("#vidBGP1", {opacity: 0, ease: "power1.in", duration: fadeOutTime+.2, onComplete: bgFaded});
 					function bgFaded() { //when faded
@@ -213,7 +213,7 @@ function init() {
 						{delay: .5, x: -pCharMove, opacity: 1, ease: "power2.out", duration: fadeInTime+.1});
 				}
 				
-				if (p2CharacterPrev != p2Character || p2Skin == "Ragnir") {
+				if (p2CharacterPrev != p2Character || p2Skin == "Ragnir" || p2SkinPrev == "Ragnir") {
 					gsap.to("#vidBGP2", {opacity: 0, ease: "power1.in", duration: fadeOutTime+.2, onComplete: bgFaded});
 					function bgFaded() {
 						updateBG('#vidBGP2', p2Character, p2Skin);
