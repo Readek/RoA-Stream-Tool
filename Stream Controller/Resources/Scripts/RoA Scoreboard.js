@@ -516,11 +516,11 @@ function init() {
 	Archen = {
 		neutral: [8, 15, 2.7]
 	};
-	BirdGuy = {
-		neutral: [15, 32, 3]
-	};
 	Astra = {
 		neutral: [25, 18, 3.2]
+	};
+	BirdGuy = {
+		neutral: [15, 32, 3]
 	};
 	Epinel = {
 		neutral: [22, 30, 4]
@@ -560,7 +560,7 @@ function init() {
 		neutral: [0, 6, 2.8]
 	};
 	Pomme = {
-		neutral: [30, 22, 4]
+		neutral: [30, 21, 3.5]
 	};
 	R_00 = { //this should have "-" but it would break :(
 		neutral: [-8, 20, 3.8]
@@ -573,13 +573,13 @@ function init() {
 		alt: [27, -7, 2.5]
 	};
 	Valkyrie = {
-		neutral: [-2, -9, 3.5]
+		neutral: [1, -9, 3]
 	};
 	Yoyo = {
 		neutral: [14, 22, 3]
 	};
 	ZettaAshikaga = {
-		neutral: [-7, 23, 6],
+		neutral: [-7, 23, 5.5],
 		alt: [-15, 5, 2.7]
 	};
 

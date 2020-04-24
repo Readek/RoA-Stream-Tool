@@ -374,7 +374,73 @@ function init() {
 		HD: [-170, -20, 1.25]
 	};
 
-	//workshop characters NOT DONE YET
+	//workshop characters:
+	Archen = {
+		neutral: [-50, 0, 1]
+	};
+	Astra = {
+		neutral: [65, 100, 1]
+	};
+	BirdGuy = {
+		neutral: [-30, 200, 1]
+	};
+	Epinel = {
+		neutral: [150, 140, 1.1]
+	};
+	Falco = {
+		neutral: [100, 175, 1.1]
+	};
+	Fox = {
+		neutral: [90, 140, 1.1]
+	};
+	Guadua = {
+		neutral: [-240, 60, 1.1]
+	};
+	HimeDaisho = {
+		neutral: [150, 25, 1.15]
+	};
+	Kirby = {
+		neutral: [-80, 170, 1]
+	};
+	Kris = {
+		neutral: [75, 125, 1.1]
+	};
+	MayuAshikaga = {
+		neutral: [0, 100, 1.1]
+	};
+	Mollo = {
+		neutral: [-20, 120, 1.22]
+	};
+	Mycolich = {
+		neutral: [-120, 25, 1.05]
+	};
+	Olympia = {
+		neutral: [20, 120, 1.1]
+	};
+	Otto = {
+		neutral: [-100, 75, 1]
+	}
+	Pomme = {
+		neutral: [225, 125, 1.15]
+	}
+	R_00 = { //this should have "-" but it would break :(
+		neutral: [-100, 75, 1]
+	}
+	Sandbert = {
+		neutral: [75, 175, 1]
+	}
+	TrummelandAlto = {
+		neutral: [-100, 100, 1]
+	}
+	Valkyrie = {
+		neutral: [-50, 0, 1]
+	}
+	Yoyo = {
+		neutral: [0, 100, 1]
+	}
+	ZettaAshikaga = {
+		neutral: [-50, 100, 1.1]
+	}
 
 
 	//character update!
@@ -413,6 +479,14 @@ function init() {
 					$(trailID).attr('src', 'Resources/Literally Nothing.png');
 				});
 			}
+		} else { //if theres no data, at least make it look half good
+			charPos[0] = 0;
+			charPos[1] = 0;
+			charPos[2] = 1;
+
+			$(trailID).attr('src', 'Resources/Trails/' + pCharacter + '/' + color + '.png').on("error",function () {
+				$(trailID).attr('src', 'Resources/Literally Nothing.png');
+			});
 		}
 
 		//to position the character
