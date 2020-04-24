@@ -80,18 +80,13 @@ function init() {
 		//first, things that will happen only the first time the html loads
 		if (startup) {
 			//starting with the player 1 name
-			$('#p1Name').html(p1Name);
-			$('#p1Team').html(p1Team);
-			//resize the text so it doesnt get out of the overlay if its too long
-			resizeText(p1Wrap);
-			//fades in the player text
-			gsap.to("#p1Wrapper", {delay: introDelay, opacity: 1, duration: fadeInTime});
+			updatePlayerName('#p1Wrapper', '#p1Name', '#p1Team', p1Name, p1Team, p1Wrap);
+			//fade in the player text
+			fadeIn("#p1Wrapper", introDelay+.15);
 
 			//same for player 2
-			$('#p2Name').html(p2Name);
-			$('#p2Team').html(p2Team);
-			resizeText(p2Wrap);
-			gsap.to("#p2Wrapper", {delay: introDelay, opacity: 1, duration: fadeInTime});
+			updatePlayerName('#p2Wrapper', '#p2Name', '#p2Team', p2Name, p2Team, p2Wrap);
+			fadeIn("#p2Wrapper", introDelay+.15);
 
 
 			//set p1 character
@@ -129,15 +124,10 @@ function init() {
 
 
 			//set the round text
-			$('#round').html(round);
-			//resize if it overflows
-			resizeText(rdResize);
+			updateText("#round", round, roundSize, rdResize);
 
-			
 			//set the tournament text
-			$('#tournament').html(tournamentName);
-			//resize if it overflows
-			resizeText(tourneyResize);
+			updateText("#tournament", tournamentName, tournamentSize, tourneyResize);
 		}
 
 		//now things that will happen constantly
@@ -145,29 +135,20 @@ function init() {
 			//player 1 name change
 			if ($('#p1Name').text() != p1Name || $('#p1Team').text() != p1Team) {
 				//fade out player 1 text
-				gsap.to("#p1Wrapper", {opacity: 0, ease: "power1.in", duration: fadeOutTime, onComplete: pNameMoved});
-				function pNameMoved() { //this gets called when the previous animation ends
+				fadeOut("#p1Wrapper", function(){
 					//now that nobody is seeing it, change the text content!
-					$('#p1Wrapper').css('font-size',nameSize);
-					$('#p1Name').html(p1Name);
-					$('#p1Team').html(p1Team);
-					//resize the text if its too big
-					resizeText(p1Wrap);
+					updatePlayerName('#p1Wrapper', '#p1Name', '#p1Team', p1Name, p1Team, p1Wrap);
 					//and fade the name back in
-					gsap.to("#p1Wrapper", {delay: .3, opacity: 1, ease: "power2.out", duration: fadeInTime});
-				}
+					fadeIn("#p1Wrapper", .2);
+				});
 			}
 
 			//same for player 2
 			if($('#p2Name').text() != p2Name || $('#p2Team').text() != p2Team){
-				gsap.to("#p2Wrapper", {opacity: 0, ease: "power1.in", duration: fadeOutTime, onComplete: pNameMoved});
-				function pNameMoved() {
-					$('#p2Wrapper').css('font-size',nameSize);
-					$('#p2Name').html(p2Name);
-					$('#p2Team').html(p2Team);
-					resizeText(p2Wrap);
-					gsap.to("#p2Wrapper", {delay: .3, opacity: 1, ease: "power2.out", duration: fadeInTime});
-				}
+				fadeOut("#p1Wrapper", function(){
+					updatePlayerName('#p2Wrapper', '#p2Name', '#p2Team', p2Name, p2Team, p2Wrap);
+					fadeIn("#p2Wrapper", .2);
+				});
 			}
 
 
@@ -242,25 +223,18 @@ function init() {
 
 			//update round text
 			if ($('#round').text() != round){
-				gsap.to("#round", {opacity: 0, duration: fadeOutTime, onComplete: roundMoved});
-				function roundMoved() {
-					$('#round').css('font-size',roundSize);
-					$('#round').html(round);					
-					resizeText(rdResize);
-					gsap.to("#round", {delay: .2, opacity: 1, duration: fadeInTime});
-				}
+				fadeOut("#round", function(){
+					updateText("#round", round, roundSize, rdResize);
+					fadeIn("#round", .2);
+				});
 			}
-
 
 			//update tournament text
 			if ($('#tournament').text() != tournamentName){
-				gsap.to("#tournament", {opacity: 0, duration: fadeOutTime, onComplete: tournamentMoved});
-				function tournamentMoved() {
-					$('#tournament').css('font-size',tournamentSize);
-					$('#tournament').html(tournamentName);					
-					resizeText(tourneyResize);
-					gsap.to("#tournament", {delay: .2, opacity: 1, duration: fadeInTime});
-				}
+				fadeOut("#tournament", function(){
+					updateText("#tournament", tournamentName, tournamentSize, tourneyResize);
+					fadeIn("#tournament", .2);
+				});
 			}
 		}
 	}
@@ -285,10 +259,32 @@ function init() {
 		if (pSkin == "Ragnir") { //yes, ragnir is the only skin that changes bg
 			$(vidID).attr('src', 'Resources/Backgrounds/Default.webm');
 		} else {
-			$(vidID).attr('src', 'Resources/Backgrounds/' + pCharacter + '.webm').on("error",function () {
+			var pCharNoSpaces = pCharacter.replace(/ /g, ""); //remove spaces just in case
+			if (window[pCharNoSpaces]["vid"]) { //if the character has an specific BG
+				vidName = window[pCharNoSpaces]["vid"];
+			} else { //if not, just use the character name
+				vidName = pCharacter;
+			}
+			
+			$(vidID).attr('src', 'Resources/Backgrounds/' + vidName + '.webm').on("error",function () {
 				$(vidID).attr('src', 'Resources/Backgrounds/Default.webm') //if the character doesnt have a BG
 			});
 		}
+	}
+
+	//player text change
+	function updatePlayerName(wrapperID, nameID, teamID, pName, pTeam, pWrap) {
+		$(wrapperID).css('font-size', nameSize); //set original text size
+		$(nameID).html(pName); //update player name
+		$(teamID).html(pTeam); //update player team
+		resizeText(pWrap); //resize if it overflows
+	}
+
+	//generic text changer
+	function updateText(textID, textToType, maxSize, textResize) {
+		$(textID).css('font-size', maxSize); //set original text size
+		$(textID).html(textToType); //change the actual text
+		resizeText(textResize); //resize it if it overflows
 	}
 
 	//text resize (not fancy i know), keeps making the text smaller until it fits
@@ -299,6 +295,16 @@ function init() {
 				$(text).css('font-size', newFontSize);
 			};
 		});
+	}
+
+	//fade out
+	function fadeOut(itemID, funct) {
+		gsap.to(itemID, {opacity: 0, duration: fadeOutTime, onComplete: funct});
+	}
+
+	//fade in
+	function fadeIn(itemID, timeDelay) {
+		gsap.to(itemID, {delay: timeDelay, opacity: 1, duration: fadeInTime});
 	}
 
 
@@ -382,13 +388,15 @@ function init() {
 		neutral: [-50, 0, 1]
 	};
 	Astra = {
-		neutral: [65, 100, 1]
+		neutral: [65, 100, 1],
+		vid: "Valkyrie" //this is to use a BG belonging to other character
 	};
 	BirdGuy = {
 		neutral: [-30, 200, 1]
 	};
 	Epinel = {
-		neutral: [150, 140, 1.1]
+		neutral: [150, 140, 1.1],
+		vid: "Kragg"
 	};
 	Falco = {
 		neutral: [100, 175, 1.1]
@@ -409,13 +417,16 @@ function init() {
 		neutral: [75, 125, 1.1]
 	};
 	MayuAshikaga = {
-		neutral: [0, 100, 1.1]
+		neutral: [0, 100, 1.1],
+		vid: "Zetta Ashikaga"
 	};
 	Mollo = {
-		neutral: [-20, 120, 1.22]
+		neutral: [-20, 120, 1.22],
+		vid: "Clairen"
 	};
 	Mycolich = {
-		neutral: [-120, 25, 1.05]
+		neutral: [-120, 25, 1.05],
+		vid: "Sylvanos"
 	};
 	Olympia = {
 		neutral: [20, 120, 1.1]
@@ -427,7 +438,8 @@ function init() {
 		neutral: [225, 125, 1.15]
 	}
 	R_00 = { //this should have "-" but it would break :(
-		neutral: [-100, 75, 1]
+		neutral: [-100, 75, 1],
+		vid: "Clairen"
 	}
 	Sandbert = {
 		neutral: [75, 175, 1]
