@@ -375,6 +375,9 @@ function init() {
 	};
 
 	//workshop characters:
+	AcidRainbows = {
+		neutral: [175, 200, 1.2]
+	};
 	Archen = {
 		neutral: [-50, 0, 1]
 	};
