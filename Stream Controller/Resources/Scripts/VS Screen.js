@@ -12,7 +12,7 @@ function init() {
 
 	var fadeInTime = .4; //(seconds)
 	var fadeOutTime = .3;
-	var introDelay = .3; //all animations will get this delay when the html loads (use this so it times with your transition)
+	var introDelay = .5; //all animations will get this delay when the html loads (use this so it times with your transition)
 
 	//to resize the texts if they are too large
 	var p1Wrap = $('#p1Wrapper'); 
@@ -145,7 +145,7 @@ function init() {
 
 			//same for player 2
 			if($('#p2Name').text() != p2Name || $('#p2Team').text() != p2Team){
-				fadeOut("#p1Wrapper", function(){
+				fadeOut("#p2Wrapper", function(){
 					updatePlayerName('#p2Wrapper', '#p2Name', '#p2Team', p2Name, p2Team, p2Wrap);
 					fadeIn("#p2Wrapper", .2);
 				});
@@ -382,7 +382,7 @@ function init() {
 
 	//workshop characters:
 	AcidRainbows = {
-		neutral: [175, 200, 1.2]
+		neutral: [200, 200, 1.2]
 	};
 	Archen = {
 		neutral: [-50, 0, 1]
