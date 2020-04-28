@@ -19,11 +19,17 @@ function init() {
 	var p2Wrap = $('#p2Wrapper');
 	var rdResize = $('#round');
 	var tourneyResize = $('#tournament');
+	var caster1Resize = $('#caster1');
+	var twitter1Resize = $('#twitter1');
+	var caster2Resize = $('#caster2');
+	var twitter2Resize = $('#twitter2');
 
 	//max text sizes (used when resizing back)
 	var nameSize = '90px';
-	var roundSize = '30px';
-	var tournamentSize = '25px';
+	var roundSize = '38px';
+	var tournamentSize = '28px';
+	var casterSize = '25px';
+	var twitterSize = '20px';
 
 	//to avoid the code constantly running the same method over and over
 	var p1CharacterPrev, p1SkinPrev, p1ColorPrev;
@@ -75,7 +81,11 @@ function init() {
 
 		var round = scObj['round'];
 		var tournamentName = scObj['tournamentName'];
-		
+
+		var caster1 = scObj['caster1Name'];
+		var twitter1 = scObj['caster1Twitter'];
+		var caster2 = scObj['caster2Name'];
+		var twitter2 = scObj['caster2Twitter'];
 
 		//first, things that will happen only the first time the html loads
 		if (startup) {
@@ -128,6 +138,12 @@ function init() {
 
 			//set the tournament text
 			updateText("#tournament", tournamentName, tournamentSize, tourneyResize);
+
+			//set the caster info
+			updateText("#caster1", caster1, casterSize, caster1Resize);
+			updateText("#caster2", caster2, casterSize, caster2Resize);
+			updateText("#twitter1", twitter1, twitterSize, twitter1Resize);
+			updateText("#twitter2", twitter2, twitterSize, twitter2Resize);
 		}
 
 		//now things that will happen constantly
@@ -234,6 +250,33 @@ function init() {
 				fadeOut("#tournament", function(){
 					updateText("#tournament", tournamentName, tournamentSize, tourneyResize);
 					fadeIn("#tournament", .2);
+				});
+			}
+
+
+			//same but with caster info
+			if ($('#caster1').text() != caster1){
+				fadeOut("#caster1", function(){
+					updateText("#caster1", caster1, casterSize, caster1Resize);
+					fadeIn("#caster1", .2);
+				});
+			}
+			if ($('#caster2').text() != caster2){
+				fadeOut("#caster2", function(){
+					updateText("#caster2", caster2, casterSize, caster2Resize);
+					fadeIn("#caster2", .2);
+				});
+			}
+			if ($('#twitter1').text() != twitter1){
+				fadeOut("#twitter1", function(){
+					updateText("#twitter1", twitter1, twitterSize, twitter1Resize);
+					fadeIn("#twitter1", .2);
+				});
+			}
+			if ($('#twitter2').text() != twitter2){
+				fadeOut("#twitter2", function(){
+					updateText("#twitter2", twitter2, twitterSize, twitter2Resize);
+					fadeIn("#twitter2", .2);
 				});
 			}
 		}

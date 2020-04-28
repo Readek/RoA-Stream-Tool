@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>RoA Stream Controller</title>
+    <title>RoA VS Screen</title>
 
     <script src="Resources/Scripts/VS Screen.js"></script>
     <script src="Resources/Scripts/jquery-3.4.1.min.js"></script>
@@ -96,7 +96,6 @@
             line-height: 90px;
             text-align: center;
             bottom: 90px;
-            font-size: 90px;
             opacity: 1;
             transform: rotate(-3deg);
             text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.7);
@@ -117,32 +116,72 @@
         }
 
 
+        #roundInfo {
+            text-align: center;
+            font-family: "Deansgate";
+        }
+
         #round {
             position: absolute;
-            width: 275px;
-            height: 36px;
-            left: 823px;
+            width: 319px;
+            height: 50px;
+            left: 800px;
             top: 62px;
             color: black;
-            line-height: 30px;
-            text-align: center;
-            font-size: 30px;
-            font-family: "Deansgate";
+            line-height: 38px;
         }
 
         #tournament {
             position: absolute;
-            width: 375px;
-            height: 30px;
-            left: 773px;
-            top: 128px;
+            width: 365px;
+            height: 40px;
+            left: 777px;
+            top: 29px;
             color: rgb(65, 65, 65);
-            line-height: 25px;
-            text-align: center;
-            font-size: 25px;
-            font-family: "Deansgate";
+            line-height: 28px;
         }
 
+
+        .casterInfo {
+            position: absolute;
+            width: 186px;
+            height: 34px;
+            top: 130px;
+            font-family: "Deansgate";
+            color: black;
+            line-height: 26px;
+        }
+
+        #caster1 {
+            left: 749px;
+            text-align: right;
+        }
+
+        #caster2 {
+            right: 749px;
+            text-align: left;
+        }
+
+
+        .twitterInfo {
+            position: absolute;
+            width: 170px;
+            height: 30px;
+            top: 162px;
+            font-family: "Deansgate";
+            color: rgb(65, 65, 65);
+            line-height: 26px;
+        }
+
+        #twitter1 {
+            left: 765px;
+            text-align: right;
+        }
+
+        #twitter2 {
+            right: 765px;
+            text-align: left;
+        }
     </style>
 </head>
 
@@ -180,13 +219,13 @@
     
     <div id="playerTexts">
         <span id="p1Wrapper" class="wrappers">
-            <span id="p1Team" class="team">af</span>
-            <span id="p1Name" class="name">Slimepuffen</span>
+            <span id="p1Team" class="team"></span>
+            <span id="p1Name" class="name"></span>
         </span>
 
         <span id="p2Wrapper" class="wrappers">
-            <span id="p2Team" class="team">set</span>
-            <span id="p2Name" class="name">OliveOily</span>
+            <span id="p2Team" class="team"></span>
+            <span id="p2Name" class="name"></span>
         </span>
 
     </div>
@@ -196,6 +235,13 @@
     <div id="roundInfo">
         <span id="round"></span>
         <span id="tournament"></span>
+    </div>
+
+    <div id="casterInfo">
+        <span id="caster1" class="casterInfo"></span>
+        <span id="twitter1" class="twitterInfo"></span>
+        <span id="caster2" class="casterInfo"></span>
+        <span id="twitter2" class="twitterInfo"></span>
     </div>
 </body>
 </html>
