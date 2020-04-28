@@ -369,6 +369,7 @@ function init() {
 	};
 	Etalus = {
 		neutral: [-340, 160, 1.05],
+		Panda: [-340, 160, 1.05],	//same as neutral, just here so trail shows up
 		LoA: [235, 220, 1.4],
 		HD: [-470, 155, 1]
 	};
