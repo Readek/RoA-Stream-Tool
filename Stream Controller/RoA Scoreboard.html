@@ -25,6 +25,7 @@
             src: url('Resources/Fonts/LEMONMILK-Medium.otf');
         }
 
+
         body {
             width: 1920px;
             height: 1080px;
@@ -37,6 +38,7 @@
             font-family: "Deansgate";
         }
 
+
         .scoreboardP1 {
             position: absolute;
             left: 0px;
@@ -45,13 +47,6 @@
 
         #p1CharaMask {
             -webkit-mask-image: url("Resources/Icon Mask.svg");
-        }
-
-        #p1Character {
-            opacity: 0;
-            width: 100px;
-            height: 100px;
-            object-fit: contain;
         }
 
         .scoreboardP2 {
@@ -80,18 +75,13 @@
             transform: scaleX(-1);
         }
 
-        #p2Character {
+        .pCharacter {
             opacity: 0;
             width: 100px;
             height: 100px;
             object-fit: contain;
         }
 
-        .scoreboardRound {
-            position: absolute;
-            left: 0px;
-            top: 0px;
-        }
 
         .wrappers {
             position: absolute;
@@ -116,8 +106,14 @@
             font-size: 22px;
         }
 
+
         #overlayRound {
             opacity: 0;
+        }
+
+        #roundBG {
+            position: absolute;
+            top: 0px;
         }
 
         #round {
@@ -131,11 +127,12 @@
             font-family: "Roboto";
         }
         
+
         #introVid {
             position: absolute;
-            left: 0px;
             top: 0px;
         }
+
 
         .pIntro {
             position: absolute;
@@ -160,37 +157,40 @@
             text-shadow: 0px 0px 20px;
         }
 
-        #midTextIntro {
+
+        .textIntro {
             position: absolute;
+            text-align: center;
+            opacity: 0;
+        }
+
+        #midTextIntro {
             width: 1100px;
             height: 74px;
             left: 410px;
-            font-family: "LemonMilk";
-            text-align: center;
-            line-height: 74px;
             bottom: 505px;
+            font-family: "LemonMilk";
+            line-height: 74px;
             font-size: 110px;
-            opacity: 0;
         }
 
-        .rtIntro {
-            position: absolute;
+        #rtIntro {
             line-height: 40px;
-            left: 510px;
             font-size: 48px;
-            opacity: 0;
-            width: 900px;
-            height: 40px;
         }
 
         #roundIntro {
+            left: 510px;
+            width: 900px;
+            height: 40px;
             top: 406px;
-            text-align: center;
         }
 
         #tNameIntro {
+            left: 510px;
+            width: 900px;
+            height: 40px;
             bottom: 400px;
-            text-align: center;
         }
 
         #introBG {
@@ -201,20 +201,20 @@
             background-color: rgba(0, 0, 0, 0.50);
         }
 
-        #introTopBar {
+        .blackBar {
             position: absolute;
             width: 1920px;
-            height: 100px;
-            top: 0px;
             background-color: black;
         }
 
+        #introTopBar {
+            height: 100px;
+            top: 0px;
+        }
+
         #introBotBar {
-            position: absolute;
-            width: 1920px;
             height: 100px;
             bottom: 0px;
-            background-color: black;
         }
 
         #superCoolInterrogation {
@@ -241,7 +241,7 @@
         <img id="wlP1" class="scoreboardP1"/>
         <img id="p1Color" class="scoreboardP1"/>
         <div id=p1CharaMask>
-            <img id="p1Character"/>
+            <img id="p1Character" class="pCharacter"/>
         </div>
         <img id="p1Score" class="scoreboardP1"/>
         <img id="borderP1" class="scoreboardP1"/>
@@ -260,7 +260,7 @@
         <img id="p2Color" class="scoreboardP2"/>
         <div id="iHateMasks">
             <div id="p2CharaMask">
-                <img id="p2Character"/>
+                <img id="p2Character" class="pCharacter"/>
             </div>
         </div>
         <img id="p2Score" class="scoreboardP2"/>
@@ -275,24 +275,31 @@
     </div>
 
     <div id="overlayRound">
-        <img src="Resources/Overlay/Round BG Tournament.png" class="scoreboardRound"/>
+        <img src="Resources/Overlay/Round BG Tournament.png" id="roundBG"/>
         <span id="round"></span>
     </div>
 
     <div id="overlayIntro">
         <div id="introBG"></div>
-        <div id="introTopBar"></div>
-        <div id="introBotBar"></div>
+        <div id="introTopBar" class="blackBar"></div>
+        <div id="introBotBar" class="blackBar"></div>
 
         <video id="introVid" width="1920" height="1080"></video>
 
-        <span id="p1Intro" class="pIntro"></span>
-        <span id="p2Intro" class="pIntro"></span>
-        <span id="midTextIntro">VS</span>
-        <span id="superCoolInterrogation">?</span>
+        <div id="playersIntro">
+            <span id="p1Intro" class="pIntro"></span>
+            <span id="p2Intro" class="pIntro"></span>
+        </div>
+        
+        <div id="textsIntro">
+            <span id="midTextIntro" class="textIntro">VS</span>
+            <div id="rtIntro">
+                <span id="roundIntro" class="textIntro"></span>
+                <span id="tNameIntro" class="textIntro"></span>
+            </div>
+        </div>
 
-        <span id="roundIntro" class="rtIntro"></span>
-        <span id="tNameIntro" class="rtIntro"></span>
+        <span id="superCoolInterrogation">?</span>
     </div>
 </body>
 </html>

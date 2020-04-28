@@ -28,7 +28,6 @@
             padding: 0px;
             margin: 0px;
             text-transform: uppercase;
-            color: white;
         }
 
 
@@ -49,7 +48,7 @@
 
 
         #bgVids {
-            filter: grayscale(1);
+            filter: grayscale(.8);
         }
 
         #vidBGP1 {
@@ -79,14 +78,6 @@
             object-fit: scale-down;
         }
 
-        #trailP1 {
-            opacity: 0;
-        }
-
-        #trailP2 {
-            opacity: 0;
-        }
-
 
         .wrappers {
             position: absolute;
@@ -96,7 +87,6 @@
             line-height: 90px;
             text-align: center;
             bottom: 90px;
-            opacity: 1;
             transform: rotate(-3deg);
             text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.7);
             opacity: 0;
@@ -110,19 +100,23 @@
             right: 10px;
         }
 
+        .name {
+            color: white;
+        }
+
         .team {
             color: lightgray;
             font-size: 50px;
         }
 
 
-        #roundInfo {
+        .roundInfo {
+            position: absolute;
             text-align: center;
             font-family: "Deansgate";
         }
 
         #round {
-            position: absolute;
             width: 319px;
             height: 50px;
             left: 800px;
@@ -132,7 +126,6 @@
         }
 
         #tournament {
-            position: absolute;
             width: 365px;
             height: 40px;
             left: 777px;
@@ -144,22 +137,21 @@
 
         .casterInfo {
             position: absolute;
-            width: 186px;
+            width: 170px;
             height: 34px;
             top: 130px;
+            text-align: center;
             font-family: "Deansgate";
             color: black;
             line-height: 26px;
         }
 
         #caster1 {
-            left: 749px;
-            text-align: right;
+            left: 765px;
         }
 
         #caster2 {
-            right: 749px;
-            text-align: left;
+            right: 765px;
         }
 
 
@@ -168,6 +160,7 @@
             width: 170px;
             height: 30px;
             top: 162px;
+            text-align: center;
             font-family: "Deansgate";
             color: rgb(65, 65, 65);
             line-height: 26px;
@@ -175,12 +168,10 @@
 
         #twitter1 {
             left: 765px;
-            text-align: right;
         }
 
         #twitter2 {
             right: 765px;
-            text-align: left;
         }
     </style>
 </head>
@@ -233,8 +224,8 @@
     <img src="Resources/Overlay/VS Screen/VS Screen Overlay.png" class="absol"/>
 
     <div id="roundInfo">
-        <span id="round"></span>
-        <span id="tournament"></span>
+        <span id="round" class="roundInfo"></span>
+        <span id="tournament" class="roundInfo"></span>
     </div>
 
     <div id="casterInfo">

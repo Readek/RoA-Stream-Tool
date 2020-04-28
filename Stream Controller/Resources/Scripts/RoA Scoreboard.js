@@ -108,7 +108,7 @@ function init() {
 		//now, things that will happen only the first time the html loads
 		if (startup) {
 
-			//the cool intro video
+			//first, we have to start with the cool intro stuff
 			var allowIntro = scObj['allowIntro']; //to know if the intro is allowed
 			if (allowIntro == "yes") {
 
@@ -124,12 +124,13 @@ function init() {
 					document.getElementById('introVid').play();
 				}, 0); //if you need it to start later, change that 0 (and also update the introDelay)
 
-				$('#p1Intro').html(p1Name); //update player 1 intro text
-				$('#p2Intro').html(p2Name); //p2
-				$('#roundIntro').html(round); //round
-				$('#tNameIntro').html(tournamentName); //tournament name
-
 				if (p1Score + p2Score == 0) { //if this is the first game, introduce players
+
+					$('#p1Intro').html(p1Name); //update player 1 intro text
+					resizeText(p1IntroResize); //resize the text if its too large
+					$('#p2Intro').html(p2Name); //p2
+					resizeText(p2IntroResize);
+
 					//change the color of the player text shadows
 					$('#p1Intro').css('text-shadow', '0px 0px 20px ' + getHexColor(p1Color));
 					$('#p2Intro').css('text-shadow', '0px 0px 20px ' + getHexColor(p2Color));
@@ -138,38 +139,43 @@ function init() {
 					gsap.fromTo("#p1Intro",
 						{x: -pMove}, //from
 						{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}); //to
-					resizeText(p1IntroResize); //resize the text if its too large
 
-					//player 2
+					//same for player 2
 					gsap.fromTo("#p2Intro",
 						{x: pMove},
 						{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
-					resizeText(p2IntroResize);
-
-					//VS text
-					gsap.to("#midTextIntro", {delay: introDelay-.2, opacity: 1, ease: "power2.out", duration: fadeInTime});
 
 				} else { //if its not the first game, show game count
+
 					if (Number(p1Score) + Number(p2Score) != 4) { //if its not the last game of a bo5
+
 						//just show the game count in the intro
 						$('#midTextIntro').html("Game " + (Number(p1Score) + Number(p2Score) + 1));
+
 					} else { //if game 5
-						if ((round.toUpperCase() == "True Finals".toUpperCase())) {
+
+						if ((round.toUpperCase() == "True Finals".toUpperCase())) { //if true finals
+
 							$('#midTextIntro').html("True Final Game"); //i mean shit gets serious here
+							
 						} else {
+
 							$('#midTextIntro').html("Final Game");
-							//if GF, we dont know if its the last game or not!
+							
+							//if GF, we dont know if its the last game or not, right?
 							if (round.toLocaleUpperCase() == "Grand Finals".toLocaleUpperCase() && !(p1WL == "L" && p2WL == "L")) {
 								gsap.to("#superCoolInterrogation", {delay: introDelay+.5, opacity: 1, ease: "power2.out", duration: 1.5});
 							}
+
 						}
 					}
-					//mid text fade in
-					gsap.to("#midTextIntro", {delay: introDelay-.2, opacity: 1, ease: "power2.out", duration: fadeInTime});
 				}
+
+				$('#roundIntro').html(round); //update round text
+				$('#tNameIntro').html(tournamentName); //update tournament name
 				
-				//round and tournament fade in
-				gsap.to(".rtIntro", {delay: introDelay-.2, opacity: 1, ease: "power2.out", duration: fadeInTime});
+				//round, tournament and VS/GameX text fade in
+				gsap.to(".textIntro", {delay: introDelay-.2, opacity: 1, ease: "power2.out", duration: fadeInTime});
 
 				//aaaaand fade out everything
 				gsap.to("#overlayIntro", {delay: introDelay+1.6, opacity: 0, ease: "power2.out", duration: fadeInTime+.2});
