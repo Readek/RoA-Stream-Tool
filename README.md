@@ -7,8 +7,8 @@ So you want to do a Rivals of Aether stream, huh? Well, today is your lucky day,
 
 ## Features
 - [Easy and fast setup](https://gfycat.com/fragrantfortunatealbacoretuna) using a browser source.
-- [Handy interface](https://gfycat.com/slimynimbleequestrian) to change everything you need quickly, like player names, character, scores, round, casters...
-- Every single skin the game has to offer is [supported](https://gfycat.com/sandyinsignificantdodobird) (more than 300 different skins!), included high quality renders.
+- [Handy interface](https://gfycat.com/slimynimbleequestrian) to quickly change everything you need, like player names, characters, scores, round, casters...
+- Every single skin the game has to offer is [supported](https://gfycat.com/sandyinsignificantdodobird) (more than 300 different skins!), including high quality renders.
 - Some **Workshop** characters are also [supported](https://gfycat.com/leadingancienthumpbackwhale)!
 - [Dynamic, optional intro](https://gfycat.com/revolvingsmarteuropeanpolecat) to be played when changing to the game scene.
 - A "[VS Screen](https://gfycat.com/giganticshadowyindianjackal)" used to hide the game while changing replays.
@@ -23,8 +23,8 @@ These are instructions for regular OBS Studio, but I imagine you can do the same
 - Get the [latest release](https://github.com/Readek/RoA-Stream-Control/releases).
 - Extract somewhere.
 - Add a new browser source in OBS.
-- Set it to local file -> 'RoA Scoreboard.html'.
-- Set 1920 width and 1080 height. (if it looks weird after this, set your canvas resolution to 1080p or make the source fit the screen).
+- Set it to local file -> *RoA Scoreboard.html*.
+- Set 1920 width and 1080 height. (if it looks weird, set your canvas resolution to 1080p or make the source fit the screen).
 - Use custom frame rate -> 60 (if streaming at 60fps of course).
 - Tick 'Refresh browser when scene becomes active'.
 - Manage it all with the 'RoA Stream Control' executable.
@@ -36,9 +36,9 @@ Repeat from the 3rd step to add the VS Screen (*VS Screen.html*).
 ## Advanced setup
 Yes, the instructions above could be enough, but we can do better. All of this is optional of course.
  
-2 basic transitions are included in the *Webms* folder, intended to be used to change to the game scene and the vs screen, if you don't have a transition yourself of course. To use them:
+2 basic transitions are included in the *Webms* folder, intended to be used to change to the game scene and to the vs screen, if you don't have a transition yourself of course. To use them:
 - Add a new stinger transition.
-- Set the video file to *Game In.webm* if creating the game scene transition, and *Swoosh.webm* if creating a transition for the vs screen.
+- Set the video file to *Game In.webm* if creating the game scene transition, and *Swoosh.webm* if creating a vs screen transition.
 - Transition point -> 300 ms.
 - I recommend you to set the Audio Fade Style to crossfade, just in case.
 - On the scene's right click menu, set it to Transition Override to the transition you just created.
