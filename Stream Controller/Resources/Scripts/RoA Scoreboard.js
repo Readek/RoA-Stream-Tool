@@ -602,7 +602,7 @@ function init() {
 		alt: [27, -7, 2.5]
 	};
 	Valkyrie = {
-		neutral: [1, -9, 3]
+		neutral: [-5, -15, 3]
 	};
 	Yoyo = {
 		neutral: [14, 22, 3]

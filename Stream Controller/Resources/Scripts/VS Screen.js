@@ -439,7 +439,7 @@ function init() {
 		neutral: [-30, 200, 1]
 	};
 	Epinel = {
-		neutral: [150, 140, 1.1],
+		neutral: [100, 140, 1.1],
 		vid: "Kragg"
 	};
 	Falco = {
