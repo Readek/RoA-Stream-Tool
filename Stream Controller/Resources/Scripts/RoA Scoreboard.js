@@ -15,17 +15,6 @@ function init() {
 	var fadeOutTime = .2;
 	var introDelay = .8; //all animations will get this delay when the html loads (use this so it times with your transition)
 
-	//to resize the texts if they are too large
-	var p1Wrap = $('#p1Wrapper'); 
-	var p2Wrap = $('#p2Wrapper');
-	var rdResize = $('#round');
-	var p1IntroResize = $('#p1Intro');
-	var p2IntroResize = $('#p2Intro');
-
-	//max text sizes (used when resizing back)
-	var nameSize = '30px';
-	var roundSize = '19px';
-
 	//to avoid the code constantly running the same method over and over
 	var p1CharacterPrev, p1SkinPrev, p1ScorePrev, p1ColorPrev, p1wlPrev;
 	var p2CharacterPrev, p2SkinPrev, p2ScorePrev, p2ColorPrev, p2wlPrev;
@@ -127,9 +116,9 @@ function init() {
 				if (p1Score + p2Score == 0) { //if this is the first game, introduce players
 
 					$('#p1Intro').html(p1Name); //update player 1 intro text
-					resizeText(p1IntroResize); //resize the text if its too large
+					resizeText('#p1Intro'); //resize the text if its too large
 					$('#p2Intro').html(p2Name); //p2
-					resizeText(p2IntroResize);
+					resizeText('#p2Intro');
 
 					//change the color of the player text shadows
 					$('#p1Intro').css('text-shadow', '0px 0px 20px ' + getHexColor(p1Color));
@@ -186,7 +175,7 @@ function init() {
 
 			//finally out of the intro, now lets start with player 1 first
 			//update player name and team name texts
-			updatePlayerName('#p1Wrapper', '#p1Name', '#p1Team', p1Name, p1Team, p1Wrap);
+			updatePlayerName('#p1Wrapper', '#p1Name', '#p1Team', p1Name, p1Team);
 			//sets the starting position for the player text, then fades in and moves the p1 text to the next keyframe
 			gsap.fromTo("#p1Wrapper", 
 				{x: -pMove}, //from
@@ -215,7 +204,7 @@ function init() {
 
 
 			//took notes from player 1? well, this is exactly the same!
-			updatePlayerName('#p2Wrapper', '#p2Name', '#p2Team', p2Name, p2Team, p2Wrap);
+			updatePlayerName('#p2Wrapper', '#p2Name', '#p2Team', p2Name, p2Team);
 			gsap.fromTo("#p2Wrapper", 
 				{x: pMove},
 				{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
@@ -255,7 +244,7 @@ function init() {
 				//move and fade out the player 1's text
 				fadeOutMove("#p1Wrapper", -pMove, function(){
 					//now that nobody is seeing it, quick, change the text's content!
-					updatePlayerName('#p1Wrapper', '#p1Name', '#p1Team', p1Name, p1Team, p1Wrap);
+					updatePlayerName('#p1Wrapper', '#p1Name', '#p1Team', p1Name, p1Team);
 					//fade the name back in with a sick movement
 					fadeInMove("#p1Wrapper");
 				});
@@ -304,8 +293,8 @@ function init() {
 
 			//did you pay attention earlier? Well, this is the same as player 1!
 			if($('#p2Name').text() != p2Name || $('#p2Team').text() != p2Team){
-				fadeOutMove("#p2Wrapper", -pMove, function(){
-					updatePlayerName('#p2Wrapper', '#p2Name', '#p2Team', p2Name, p2Team, p2Wrap);
+				fadeOutMove("#p2Wrapper", pMove, function(){
+					updatePlayerName('#p2Wrapper', '#p2Name', '#p2Team', p2Name, p2Team);
 					fadeInMove("#p2Wrapper");
 				});
 			}
@@ -379,18 +368,19 @@ function init() {
 	}
 
 	//player text change
-	function updatePlayerName(wrapperID, nameID, teamID, pName, pTeam, pWrap) {
-		$(wrapperID).css('font-size', nameSize); //set original text size
+	function updatePlayerName(wrapperID, nameID, teamID, pName, pTeam) {
+		$(nameID).css('font-size', '30px'); //set original text size
+		$(teamID).css('font-size', '20px');
 		$(nameID).html(pName); //update player name
 		$(teamID).html(pTeam); //update player team
-		resizeText(pWrap); //resize if it overflows
+		resizePlayers(wrapperID, nameID, teamID); //resize if it overflows
 	}
 
 	//round change
 	function updateRound(roundID, round) {
-		$(roundID).css('font-size', roundSize); //set original text size
+		$(roundID).css('font-size', '19px'); //set original text size
 		$(roundID).html(round); //change the actual text
-		resizeText(rdResize); //resize it if it overflows
+		resizeText(roundID); //resize it if it overflows
 	}
 
 	//fade out
@@ -432,12 +422,24 @@ function init() {
 		}
 	}
 
-	//text resize (not fancy i know), keeps making the text smaller until it fits
+	//text resize keeps making the text smaller until it fits
 	function resizeText(text) {
-		text.each(function(i, text) {
+		$(text).each(function(i, text) {
 			while (text.scrollWidth > text.offsetWidth || text.scrollHeight > text.offsetHeight) {
 				var newFontSize = (parseFloat($(text).css('font-size').slice(0,-2)) * .95) + 'px';
 				$(text).css('font-size', newFontSize);
+			};
+		});
+	}
+
+	//text resize but for the players, so team keeps staying smaller than name
+	function resizePlayers(wrap, pName, pTeam) {
+		$(wrap).each(function(i, wrap) {
+			while (wrap.scrollWidth > wrap.offsetWidth || wrap.scrollHeight > wrap.offsetHeight) {
+				var newFontSize = (parseFloat($(pName).css('font-size').slice(0,-2)) * .95) + 'px';
+				$(pName).css('font-size', newFontSize);
+				newFontSize = (parseFloat($(pTeam).css('font-size').slice(0,-2)) * .95) + 'px';
+				$(pTeam).css('font-size', newFontSize);
 			};
 		});
 	}
