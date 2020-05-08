@@ -488,7 +488,8 @@ function init() {
 		vid: "Clairen"
 	}
 	Sandbert = {
-		neutral: [75, 175, 1]
+		neutral: [75, 175, 1],
+		vid: "Absa"
 	}
 	TrummelandAlto = {
 		neutral: [-100, 100, 1]
