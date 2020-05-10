@@ -90,15 +90,15 @@ function init() {
 
 			//set p1 character
 			updateChar(p1Character, p1Skin, p1Color, '#charP1', '#trailP1');
-			//when the image finishes loading, move the character
-			document.getElementById("charP1").addEventListener("load", initCharaFade("charaP1", "trailP1"));
+			//move the character
+			initCharaFade("#charaP1", "#trailP1");
 			//save character info so we change them later if different
 			p1CharacterPrev = p1Character;
 			p1SkinPrev = p1Skin;
 
 			//same for p2
 			updateChar(p2Character, p2Skin, p2Color, '#charP2', '#trailP2');
-			document.getElementById("charP2").addEventListener("load", initCharaFade("charaP2", "trailP2"));
+			initCharaFade("#charaP2", "#trailP2");
 			p2CharacterPrev = p2Character;
 			p2SkinPrev = p2Skin;
 
@@ -157,8 +157,8 @@ function init() {
 				charaFadeOut("#charaP1", function(){
 					//update the character image and trail, and also storing its scale for later
 					charScale = updateChar(p1Character, p1Skin, p1Color, '#charP1', '#trailP1');
-					//wait for the image to load, then move and fade them back
-					document.getElementById("charP1").addEventListener("load", charaFadeIn("charaP1", "trailP1"));
+					//move and fade them back
+					charaFadeIn("#charaP1", "#trailP1");
 				});
 
 				//background change here!
@@ -180,7 +180,7 @@ function init() {
 			if (p2CharacterPrev != p2Character || p2SkinPrev != p2Skin) {
 				charaFadeOut("#charaP2", function(){
 					charScale = updateChar(p2Character, p2Skin, p2Color, '#charP2', '#trailP2');
-					document.getElementById("charP2").addEventListener("load",charaFadeIn("charaP2", "trailP2"));
+					charaFadeIn("#charaP2", "#trailP2");
 				});
 				
 				if (p2CharacterPrev != p2Character || p2Skin == "Ragnir" || p2SkinPrev == "Ragnir") {
@@ -343,24 +343,21 @@ function init() {
 	//fade in characters edition
 	function charaFadeIn(charaID, trailID) {
 		//move the character
-		gsap.to("#" + charaID, {delay: .3, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime+.1});
+		gsap.to(charaID, {delay: .3, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime+.1});
 		//move the trail
-		gsap.fromTo("#" + trailID,
+		gsap.fromTo(trailID,
 			{scale: charScale, x: 0, opacity: 0},
 			{delay: .5, x: -pCharMove, opacity: 1, ease: "power2.out", duration: fadeInTime+.1});
-		document.getElementById(charaID).removeEventListener("load", charaFadeIn);
 	}
 	
 	//initial characters fade in
 	function initCharaFade(charaID, trailID) {
 		//character movement
-		gsap.fromTo("#" + charaID,
+		gsap.fromTo(charaID,
 			{x: -pCharMove, opacity: 0},
 			{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 		//trail movement
-		gsap.to("#" + trailID, {delay: introDelay+.15, x: -pCharMove, opacity: 1, ease: "power2.out", duration: fadeInTime+.1});
-		//remove the listener so it doesnt affect next listeners
-		document.getElementById(charaID).removeEventListener("load", initCharaFade);
+		gsap.to(trailID, {delay: introDelay+.15, x: -pCharMove, opacity: 1, ease: "power2.out", duration: fadeInTime+.1});
 	}
 
 

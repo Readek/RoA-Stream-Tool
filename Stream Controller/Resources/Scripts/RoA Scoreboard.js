@@ -184,7 +184,7 @@ function init() {
 			//set the character image for the player
 			updateChar(p1Character, p1Skin, '#p1Character');
 			//when the image finishes loading, fade-in-move the character icon to the overlay
-			document.getElementById("p1Character").addEventListener("load", initCharaFade("p1Character"));
+			initCharaFade("#p1Character");
 			//save the character/skin so we run the character change code only when this doesnt equal to the next
 			p1CharacterPrev = p1Character;
 			p1SkinPrev = p1Skin;
@@ -208,7 +208,7 @@ function init() {
 				{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 
 			updateChar(p2Character, p2Skin, '#p2Character');
-			document.getElementById("p2Character").addEventListener("load", initCharaFade("p2Character"));
+			initCharaFade("#p2Character");
 			p2CharacterPrev = p2Character;
 			p2SkinPrev = p2Skin;
 
@@ -252,8 +252,8 @@ function init() {
 				fadeOutMove("#p1Character", -pCharMove, function(){
 					//now that nobody can see it, lets change the image!
 					var charScale = updateChar(p1Character, p1Skin, '#p1Character'); //will return scale
-					//and now, fade in and move back when the image loads
-					document.getElementById("p1Character").addEventListener("load", fadeInChara("p1Character", charScale));
+					//and now, fade it in
+					fadeInChara("#p1Character", charScale);
 				});
 				p1CharacterPrev = p1Character;
 				p1SkinPrev = p1Skin;
@@ -298,7 +298,7 @@ function init() {
 			if (p2CharacterPrev != p2Character || p2SkinPrev != p2Skin) {
 				fadeOutMove("#p2Character", -pCharMove, function(){
 					var charScale = updateChar(p2Character, p2Skin, '#p2Character'); //will return scale
-					document.getElementById("p2Character").addEventListener("load", fadeInChara("p2Character", charScale));
+					fadeInChara("#p2Character", charScale);
 				});
 				p2CharacterPrev = p2Character;
 				p2SkinPrev = p2Skin;
@@ -401,21 +401,17 @@ function init() {
 
 	//fade in but for the character image
 	function fadeInChara(itemID, charScale) {
-		gsap.fromTo("#" + itemID,
-			{scale: charScale}, //set scale keyframe so it doesnt scale while fading back
+		gsap.fromTo(itemID,
+			{scale: charScale}, //set scale keyframe so it doesnt scale while transitioning
 			{delay: .2, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}
 		);
-		//stop the listener
-		document.getElementById(itemID).removeEventListener("load", fadeInChara);
 	}
 
 	//fade in for the characters when first loading
 	function initCharaFade(charaID) {
-		gsap.fromTo("#" + charaID,
+		gsap.fromTo(charaID,
 			{x: -pCharMove},
 			{delay: introDelay+.25, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
-		//stop current listener so it doesnt overlap with the next one
-		document.getElementById(charaID).removeEventListener("load", initCharaFade);
 	}
 
 	//check if winning or losing in a GF, then change image
