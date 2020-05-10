@@ -37,19 +37,10 @@ function init() {
 	function parseJSON() {
 		if (xhr.readyState === 4) {
 			scObj = JSON.parse(xhr.responseText);
-			scoreboard();
+			getData();
 		}
 	}
 	
-	function scoreboard() {
-		if (startup) {
-			getData();
-			startup = false;
-		}
-		else {
-			getData();
-		}
-	}
 
 	function getData() {
 		var p1Name = scObj['p1Name'];
@@ -72,32 +63,9 @@ function init() {
 		var bestOf = scObj['bestOf'];
 
 
-		//first, things that will always happen		
-
-		//change border depending of the Best Of status
-		if (bestOfPrev != bestOf) {
-			$('#borderP1').attr('src', 'Resources/Overlay/Border ' + bestOf + '.png');
-			$('#borderP2').attr('src', 'Resources/Overlay/Border ' + bestOf + '.png');
-			//update the score ticks so they fit the bestOf border
-			updateScore('#p1Score', p1Score, bestOf, "p1ScoreUp", p1Color, false);
-			updateScore('#p2Score', p2Score, bestOf, "p2ScoreUp", p2Color, false);
-			bestOfPrev = bestOf;
-		}
-		//change the player background colors
-		if (p1ColorPrev != p1Color) {
-			$('#p1Color').attr('src', 'Resources/Overlay/Colors/' + p1Color + '.png');
-			p1ColorPrev = p1Color;
-		}
-		if (p2ColorPrev != p2Color) {
-			$('#p2Color').attr('src', 'Resources/Overlay/Colors/' + p2Color + '.png');
-			p2ColorPrev = p2Color;
-		}
-		
-
-		//now, things that will happen only the first time the html loads
+		//first, things that will happen only the first time the html loads
 		if (startup) {
-
-			//first, we have to start with the cool intro stuff
+			//of course, we have to start with the cool intro stuff
 			var allowIntro = scObj['allowIntro']; //to know if the intro is allowed
 			if (allowIntro == "yes") {
 
@@ -105,24 +73,27 @@ function init() {
 				var tournamentName = scObj['tournamentName'];
 
 				//lets see that intro
-				$('#overlayIntro').css('opacity', '1');
+				document.getElementById('overlayIntro').style.opacity = 1;
 
 				//this vid is just the bars moving (todo: maybe do it through javascript?)
 				setTimeout(() => { 
-					$('#introVid').attr('src', 'Resources/Webms/Intro.webm');
+					document.getElementById('introVid').setAttribute('src', 'Resources/Webms/Intro.webm');
 					document.getElementById('introVid').play();
 				}, 0); //if you need it to start later, change that 0 (and also update the introDelay)
 
 				if (p1Score + p2Score == 0) { //if this is the first game, introduce players
 
-					$('#p1Intro').html(p1Name); //update player 1 intro text
+					let p1IntroEL = document.getElementById('p1Intro');
+					let p2IntroEL = document.getElementById('p2Intro');
+
+					p1IntroEL.textContent = p1Name; //update player 1 intro text
 					resizeText('#p1Intro'); //resize the text if its too large
-					$('#p2Intro').html(p2Name); //p2
+					p2IntroEL.textContent = p2Name; //p2
 					resizeText('#p2Intro');
 
 					//change the color of the player text shadows
-					$('#p1Intro').css('text-shadow', '0px 0px 20px ' + getHexColor(p1Color));
-					$('#p2Intro').css('text-shadow', '0px 0px 20px ' + getHexColor(p2Color));
+					p1IntroEL.style.textShadow = '0px 0px 20px ' + getHexColor(p1Color);
+					p2IntroEL.style.textShadow = '0px 0px 20px ' + getHexColor(p2Color);
 
 					//player 1 name fade in
 					gsap.fromTo("#p1Intro",
@@ -135,21 +106,21 @@ function init() {
 						{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 
 				} else { //if its not the first game, show game count
-
+					let midTextEL = document.getElementById('midTextIntro');
 					if (Number(p1Score) + Number(p2Score) != 4) { //if its not the last game of a bo5
 
 						//just show the game count in the intro
-						$('#midTextIntro').html("Game " + (Number(p1Score) + Number(p2Score) + 1));
+						midTextEL.textContent = "Game " + (Number(p1Score) + Number(p2Score) + 1);
 
 					} else { //if game 5
 
 						if ((round.toUpperCase() == "True Finals".toUpperCase())) { //if true finals
 
-							$('#midTextIntro').html("True Final Game"); //i mean shit gets serious here
+							midTextEL.textContent = "True Final Game"; //i mean shit gets serious here
 							
 						} else {
 
-							$('#midTextIntro').html("Final Game");
+							midTextEL.textContent = "Final Game";
 							
 							//if GF, we dont know if its the last game or not, right?
 							if (round.toLocaleUpperCase() == "Grand Finals".toLocaleUpperCase() && !(p1WL == "L" && p2WL == "L")) {
@@ -160,8 +131,8 @@ function init() {
 					}
 				}
 
-				$('#roundIntro').html(round); //update round text
-				$('#tNameIntro').html(tournamentName); //update tournament name
+				document.getElementById('roundIntro').textContent = round;
+				document.getElementById('tNameIntro').textContent = tournamentName;
 				
 				//round, tournament and VS/GameX text fade in
 				gsap.to(".textIntro", {delay: introDelay-.2, opacity: 1, ease: "power2.out", duration: fadeInTime});
@@ -175,14 +146,14 @@ function init() {
 
 			//finally out of the intro, now lets start with player 1 first
 			//update player name and team name texts
-			updatePlayerName('#p1Wrapper', '#p1Name', '#p1Team', p1Name, p1Team);
+			updatePlayerName('#p1Wrapper', 'p1Name', 'p1Team', p1Name, p1Team);
 			//sets the starting position for the player text, then fades in and moves the p1 text to the next keyframe
 			gsap.fromTo("#p1Wrapper", 
 				{x: -pMove}, //from
 				{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}); //to
 
 			//set the character image for the player
-			updateChar(p1Character, p1Skin, '#p1Character');
+			updateChar(p1Character, p1Skin, 'p1Character');
 			//when the image finishes loading, fade-in-move the character icon to the overlay
 			initCharaFade("#p1Character");
 			//save the character/skin so we run the character change code only when this doesnt equal to the next
@@ -197,17 +168,22 @@ function init() {
 			//save for later so the animation doesn't repeat over and over
 			p1wlPrev = p1WL;
 
-			//score check, we updated score earlier so we will just set the prevs
+			//set the current score
+			updateScore('p1Score', p1Score, bestOf, "p1ScoreUp", p1Color, false);
 			p1ScorePrev = p1Score;
+
+			//set the color
+			updateColor('p1Color', p1Color);
+			p1ColorPrev = p1Color;
 
 
 			//took notes from player 1? well, this is exactly the same!
-			updatePlayerName('#p2Wrapper', '#p2Name', '#p2Team', p2Name, p2Team);
+			updatePlayerName('#p2Wrapper', 'p2Name', 'p2Team', p2Name, p2Team);
 			gsap.fromTo("#p2Wrapper", 
 				{x: pMove},
 				{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 
-			updateChar(p2Character, p2Skin, '#p2Character');
+			updateChar(p2Character, p2Skin, 'p2Character');
 			initCharaFade("#p2Character");
 			p2CharacterPrev = p2Character;
 			p2SkinPrev = p2Skin;
@@ -218,29 +194,39 @@ function init() {
 				{delay: introDelay+.5, y: 0, ease: "power2.out", duration: .5});
 			p2wlPrev = p2WL;
 
+			updateScore('p2Score', p2Score, bestOf, "p2ScoreUp", p2Color, false);
 			p2ScorePrev = p2Score;
+
+			updateColor('p2Color', p2Color);
+			p2ColorPrev = p2Color;
 
 
 			//update the round text
-			updateRound("#round", round);
+			updateRound(round);
 			//fade it in
 			gsap.to("#overlayRound", {delay: introDelay, opacity: 1, ease: "power2.out", duration: fadeInTime+.2});
 
 
 			//check if the team has a logo we can place on the overlay
-			updateTeamLogo("#teamLogoP1", p1Team);
-			updateTeamLogo("#teamLogoP2", p2Team);
+			updateTeamLogo("teamLogoP1", p1Team);
+			updateTeamLogo("teamLogoP2", p2Team);
+
+			//dont forget to update the border if its Bo3 or Bo5!
+			updateBorder(bestOf);
+
+			startup = false; //next time we run this function, it will skip all we just did
 		}
 
 		//now things that will happen constantly
 		else {
 
 			//player 1 time!
-			if ($('#p1Name').text() != p1Name || $('#p1Team').text() != p1Team) {
+			if (document.getElementById('p1Name').textContent != p1Name ||
+				document.getElementById('p1Team').textContent != p1Team) {
 				//move and fade out the player 1's text
 				fadeOutMove("#p1Wrapper", -pMove, function(){
 					//now that nobody is seeing it, quick, change the text's content!
-					updatePlayerName('#p1Wrapper', '#p1Name', '#p1Team', p1Name, p1Team);
+					updatePlayerName('#p1Wrapper', 'p1Name', 'p1Team', p1Name, p1Team);
 					//fade the name back in with a sick movement
 					fadeInMove("#p1Wrapper");
 				});
@@ -251,7 +237,7 @@ function init() {
 				//fade out the image while also moving it because that always looks cool
 				fadeOutMove("#p1Character", -pCharMove, function(){
 					//now that nobody can see it, lets change the image!
-					var charScale = updateChar(p1Character, p1Skin, '#p1Character'); //will return scale
+					var charScale = updateChar(p1Character, p1Skin, 'p1Character'); //will return scale
 					//and now, fade it in
 					fadeInChara("#p1Character", charScale);
 				});
@@ -274,30 +260,42 @@ function init() {
 
 			//score check
 			if (p1ScorePrev != p1Score) {
-				updateScore('#p1Score', p1Score, bestOf, "p1ScoreUp", p1Color, true);
+				updateScore('p1Score', p1Score, bestOf, "p1ScoreUp", p1Color, true);
 				p1ScorePrev = p1Score;
-			}			
+			}
+
+			//change the player background colors
+			if (p1ColorPrev != p1Color) {
+				fadeOut('#p1Color', function(){
+					updateColor('p1Color', p1Color);
+					fadeIn('#p1Color');
+				})
+				p1ColorPrev = p1Color;
+			}
+
+			document.getElementById('borderP2').setAttribute('src', 'Resources/Overlay/Border ' + bestOf + '.png');
 
 			//check if the team has a logo we can place on the overlay
-			if ($('#p1Team').text() != p1Team) {
+			if (document.getElementById('p1Team').textContent != p1Team) {
 				fadeOut("#teamLogoP1", function(){
-					updateTeamLogo("#teamLogoP1", p1Team);
+					updateTeamLogo("teamLogoP1", p1Team);
 					fadeIn("#teamLogoP1");
 				});
 			}
 
 
 			//did you pay attention earlier? Well, this is the same as player 1!
-			if($('#p2Name').text() != p2Name || $('#p2Team').text() != p2Team){
+			if (document.getElementById('p2Name').textContent != p2Name ||
+				document.getElementById('p2Team').textContent != p2Team){
 				fadeOutMove("#p2Wrapper", pMove, function(){
-					updatePlayerName('#p2Wrapper', '#p2Name', '#p2Team', p2Name, p2Team);
+					updatePlayerName('#p2Wrapper', 'p2Name', 'p2Team', p2Name, p2Team);
 					fadeInMove("#p2Wrapper");
 				});
 			}
 
 			if (p2CharacterPrev != p2Character || p2SkinPrev != p2Skin) {
 				fadeOutMove("#p2Character", -pCharMove, function(){
-					var charScale = updateChar(p2Character, p2Skin, '#p2Character'); //will return scale
+					var charScale = updateChar(p2Character, p2Skin, 'p2Character'); //will return scale
 					fadeInChara("#p2Character", charScale);
 				});
 				p2CharacterPrev = p2Character;
@@ -314,22 +312,39 @@ function init() {
 			}
 
 			if (p2ScorePrev != p2Score) {
-				updateScore('#p2Score', p2Score, bestOf, "p2ScoreUp", p2Color, true);
+				updateScore('p2Score', p2Score, bestOf, "p2ScoreUp", p2Color, true);
 				p2ScorePrev = p2Score;
 			}
 
-			if ($('#p2Team').text() != p2Team) {
+			if (p2ColorPrev != p2Color) {
+				fadeOut('#p2Color', function(){
+					updateColor('p2Color', p2Color);
+					fadeIn('#p2Color');
+				})
+				p2ColorPrev = p2Color;
+			}
+
+			if (document.getElementById('p2Team').textContent != p2Team) {
 				fadeOut("#teamLogoP2", function(){
-					updateTeamLogo("#teamLogoP2", p2Team);
+					updateTeamLogo("teamLogoP2", p2Team);
 					fadeIn("#teamLogoP2");
 				});
 			}
 
+
+			//change border depending of the Best Of status
+			if (bestOfPrev != bestOf) {
+				updateBorder(bestOf); //update the border
+				//update the score ticks so they fit the bestOf border
+				updateScore('p1Score', p1Score, bestOf, "p1ScoreUp", p1Color, false);
+				updateScore('p2Score', p2Score, bestOf, "p2ScoreUp", p2Color, false);
+			}
+
 			
 			//and finally, update the round text
-			if ($('#round').text() != round){
+			if (document.getElementById('round').textContent != round){
 				fadeOut("#round", function(){
-					updateRound("#round", round);
+					updateRound(round);
 					fadeIn("#round");
 				});
 			}
@@ -337,46 +352,69 @@ function init() {
 	}
 
 
+	//did an image fail to load? this will be used to show nothing
+	function showNothing(itemEL) {
+		itemEL.setAttribute('src', 'Resources/Literally Nothing.png');
+	}
+
 	//score change
 	function updateScore(scoreID, pScore, bestOf, scoreUpID, pColor, playAnim) {
 		var delay = 0;
 		if (playAnim) { //do we want to play the score up animation?
 			//depending on the "bestOf" and the color, change the clip
-			$("#" + scoreUpID).attr('src', 'Resources/Overlay/Score/ScoreUp ' + bestOf + '/' + pColor + '.webm');
-			document.getElementById(scoreUpID).play();
-			delay = 200;
+			let scoreUpEL = document.getElementById(scoreUpID);
+			scoreUpEL.setAttribute('src', 'Resources/Overlay/Score/ScoreUp ' + bestOf + '/' + pColor + '.webm');
+			scoreUpEL.play();
+			delay = 200; //add a bit of delay so the score change fits with the vid
 		}
-		//set timeout to the actual image change so it fits with the animation
+		let scoreEL = document.getElementById(scoreID);
+		//set timeout to the actual image change so it fits with the animation (if it played)
 		setTimeout(() => {
 			//change the image depending on the bestOf status and, of course, the current score
-			$(scoreID).attr('src', 'Resources/Overlay/Score/Win Tick ' + bestOf + ' ' + pScore + '.png').on("error",function () {
-				$(scoreID).attr('src', 'Resources/Literally Nothing.png') //if the score is 3, nothing is shown
-			});
+			scoreEL.setAttribute('src', 'Resources/Overlay/Score/Win Tick ' + bestOf + ' ' + pScore + '.png')
 		}, delay);
+		//nothing will show if the score is set to 3 which is intended
+		if (startup) {scoreEL.addEventListener("error", function(){showNothing(scoreEL)})}
+	}
+
+	function updateColor(colorID, pColor) {
+		let colorEL = document.getElementById(colorID);
+		colorEL.setAttribute('src', 'Resources/Overlay/Colors/' + pColor + '.png');
+		if (startup) {colorEL.addEventListener("error", function(){showNothing(colorEL)})}
+	}
+
+	function updateBorder(bestOf) {
+		document.getElementById('borderP1').setAttribute('src', 'Resources/Overlay/Border ' + bestOf + '.png');
+		document.getElementById('borderP2').setAttribute('src', 'Resources/Overlay/Border ' + bestOf + '.png');
+		bestOfPrev = bestOf
 	}
 
 	//team logo change
 	function updateTeamLogo(logoID, pTeam) {
 		//search for an image with the team name
-		$(logoID).attr('src', 'Resources/TeamLogos/' + pTeam + '.png').on("error",function () {
-			$(logoID).attr('src', 'Resources/Literally Nothing.png'); //no image? show nothing
-		});
+		let logoEL = document.getElementById(logoID);
+		logoEL.setAttribute('src', 'Resources/TeamLogos/' + pTeam + '.png');
+		//no image? show nothing
+		if (startup) {logoEL.addEventListener("error", function(){showNothing(logoEL)})}
 	}
 
 	//player text change
 	function updatePlayerName(wrapperID, nameID, teamID, pName, pTeam) {
-		$(nameID).css('font-size', '30px'); //set original text size
-		$(teamID).css('font-size', '20px');
-		$(nameID).html(pName); //update player name
-		$(teamID).html(pTeam); //update player team
-		resizePlayers(wrapperID, nameID, teamID); //resize if it overflows
+		let nameEL = document.getElementById(nameID);
+		nameEL.style.fontSize = '30px'; //set original text size
+		nameEL.textContent = pName; //change the actual text
+		let teamEL = document.getElementById(teamID);
+		teamEL.style.fontSize = '20px';
+		teamEL.textContent = pTeam;
+		resizePlayers(wrapperID, "#" + nameID, "#" + teamID); //resize if it overflows
 	}
 
 	//round change
-	function updateRound(roundID, round) {
-		$(roundID).css('font-size', '19px'); //set original text size
-		$(roundID).html(round); //change the actual text
-		resizeText(roundID); //resize it if it overflows
+	function updateRound(round) {
+		let roundEL = document.getElementById('round');
+		roundEL.style.fontSize = '19px'; //set original text size
+		roundEL.textContent = round; //change the actual text
+		resizeText('#round'); //resize it if it overflows
 	}
 
 	//fade out
@@ -416,13 +454,13 @@ function init() {
 
 	//check if winning or losing in a GF, then change image
 	function updateWL(pWL, playerNum) {
+		let pWLEL = document.getElementById('wlP' + playerNum);
 		if (pWL == "W") {
-			$('#wlP' + playerNum).attr('src', 'Resources/Overlay/Winners P' + playerNum + '.png');
+			pWLEL.setAttribute('src', 'Resources/Overlay/Winners P' + playerNum + '.png')
 		} else if (pWL == "L") {
-			$('#wlP' + playerNum).attr('src', 'Resources/Overlay/Losers P' + playerNum + '.png');
-		} else {
-			$('#wlP' + playerNum).attr('src', 'Resources/Literally Nothing.png');
+			pWLEL.setAttribute('src', 'Resources/Overlay/Losers P' + playerNum + '.png')
 		}
+		if (startup) {pWLEL.addEventListener("error", function(){showNothing(pWLEL)})}
 	}
 
 	//text resize keeps making the text smaller until it fits
@@ -473,6 +511,46 @@ function init() {
 		}
 	}
 
+	//now the complicated "change character image" function!
+	function updateChar(pCharacter, pSkin, charID) {
+
+		//store so code looks cleaner later
+		let charEL = document.getElementById(charID);
+
+		//change the image path depending on the character and skin
+		charEL.setAttribute('src', 'Resources/Characters/' + pCharacter + '/' + pSkin + '.png');
+
+		//this is so characters with spaces on their names also work
+		var pCharNoSpaces = pCharacter.replace(/ /g, "");
+		//             x, y, scale
+		var charPos = [0, 0, 1];
+		//now, check if the character and skin exist in the database down there
+		if (window[pCharNoSpaces]) {
+			if (window[pCharNoSpaces][pSkin]) { //if the skin has a specific position
+				charPos[0] = window[pCharNoSpaces][pSkin][0];
+				charPos[1] = window[pCharNoSpaces][pSkin][1];
+				charPos[2] = window[pCharNoSpaces][pSkin][2];
+			} else if (pSkin.startsWith("Alt ")) { //for a group of imgs that have a specific position
+				charPos[0] = window[pCharNoSpaces].alt[0];
+				charPos[1] = window[pCharNoSpaces].alt[1];
+				charPos[2] = window[pCharNoSpaces].alt[2];
+			} else { //if none of the above, use a default position
+				charPos[0] = window[pCharNoSpaces].neutral[0];
+				charPos[1] = window[pCharNoSpaces].neutral[1];
+				charPos[2] = window[pCharNoSpaces].neutral[2];
+			}
+		}
+		//to position the character
+		charEL.style.objectPosition =  charPos[0] + "px " + charPos[1] + "px";
+		charEL.style.transform = "scale(" + charPos[2] + ")";
+
+		//this will trigger whenever the image loaded cant be found
+		if (startup) {charEL.addEventListener("error", function(){showNothing(charEL)})}
+
+		return charPos[2]; //we need this one to set scale keyframe when fading back
+	}
+
+
 	//positions database starts here!
 	Absa = {
 		neutral: [5, 19.4, 4.7],
@@ -497,7 +575,7 @@ function init() {
 	Forsburn = {
 		neutral: [-24, 13, 4.5],
 		LoA: [7, 23, 5.8],
-		HD: [-31, 12, 5]
+		HD: [-31, 10, 5]
 	};
 	Kragg = {
 		neutral: [-7, 7, 3.4],
@@ -616,39 +694,4 @@ function init() {
 		neutral: [-7, 23, 5.5],
 		alt: [-15, 5, 2.7]
 	};
-
-
-	//now the big "change character image" function!
-	function updateChar(pCharacter, pSkin, charID) {
-
-		//first, change the image path depending on the character and skin
-		$(charID).attr('src', 'Resources/Characters/' + pCharacter + '/' + pSkin + '.png').on("error",function () {
-			$(charID).attr('src', 'Resources/Literally Nothing.png') //safety check if the img is not found
-		});
-
-		//this is so characters with spaces on their names also work
-		var pCharNoSpaces = pCharacter.replace(/ /g, "");
-		//             x, y, scale
-		var charPos = [0, 0, 1];
-		//now, check if the character and skin exist in the database up there
-		if (window[pCharNoSpaces]) {
-			if (window[pCharNoSpaces][pSkin]) { //if the skin has a specific position
-				charPos[0] = window[pCharNoSpaces][pSkin][0];
-				charPos[1] = window[pCharNoSpaces][pSkin][1];
-				charPos[2] = window[pCharNoSpaces][pSkin][2];
-			} else if (pSkin.startsWith("Alt ")) { //for a group of imgs that have a specific position
-				charPos[0] = window[pCharNoSpaces].alt[0];
-				charPos[1] = window[pCharNoSpaces].alt[1];
-				charPos[2] = window[pCharNoSpaces].alt[2];
-			} else { //if none of the above, use a default position
-				charPos[0] = window[pCharNoSpaces].neutral[0];
-				charPos[1] = window[pCharNoSpaces].neutral[1];
-				charPos[2] = window[pCharNoSpaces].neutral[2];
-			}
-		}
-		//to position the character
-		$(charID).css('object-position', charPos[0] + "px " + charPos[1] + "px");
-		$(charID).css('transform', "scale(" + charPos[2] + ")");
-		return charPos[2]; //we need this one to set scale keyframe when fading back
-	}
 }
