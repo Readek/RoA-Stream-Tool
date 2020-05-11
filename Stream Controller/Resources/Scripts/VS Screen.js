@@ -335,7 +335,7 @@ function init() {
 		}
 	}
 
-	//Gets the new fontSize for the given HTML Element */
+	//returns a smaller fontSize for the given element
 	function getFontSize(textElement) {
 		return (parseFloat(textElement.style.fontSize.slice(0, -2)) * .90) + 'px';
 	}
@@ -539,7 +539,7 @@ function init() {
 		vid: "Valkyrie" //this is to use a BG belonging to other character
 	};
 	BirdGuy = {
-		neutral: [-30, 200, 1]
+		neutral: [-20, 0, 1]
 	};
 	Epinel = {
 		neutral: [100, 140, 1.1],
@@ -562,6 +562,9 @@ function init() {
 	};
 	Kris = {
 		neutral: [75, 125, 1.1]
+	};
+	Liz = {
+		neutral: [140, 125, 1.05]
 	};
 	MayuAshikaga = {
 		neutral: [0, 100, 1.1],
@@ -595,6 +598,9 @@ function init() {
 	TrummelandAlto = {
 		neutral: [-100, 100, 1]
 	}
+	UzaCkater = {
+		neutral: [-125, 55, 1]
+	};
 	Valkyrie = {
 		neutral: [-50, 0, 1]
 	}

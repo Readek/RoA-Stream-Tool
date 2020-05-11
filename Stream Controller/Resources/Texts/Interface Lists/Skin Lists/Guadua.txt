@@ -4,3 +4,4 @@ Red
 Yellow
 Grey
 Purple
+Ghost

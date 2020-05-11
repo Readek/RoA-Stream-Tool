@@ -479,7 +479,7 @@ function init() {
 		}
 	}
 
-	//Gets the new fontSize for the given HTML Element */
+	//returns a smaller fontSize for the given element
 	function getFontSize(textElement) {
 		return (parseFloat(textElement.style.fontSize.slice(0, -2)) * .90) + 'px';
 	}
@@ -631,7 +631,7 @@ function init() {
 		neutral: [25, 18, 3.2]
 	};
 	BirdGuy = {
-		neutral: [15, 32, 3]
+		neutral: [3, 10, 2.75]
 	};
 	Epinel = {
 		neutral: [22, 30, 4]
@@ -682,6 +682,10 @@ function init() {
 	TrummelandAlto = {
 		neutral: [10, 30, 2.5],
 		alt: [27, -7, 2.5]
+	};
+	UzaCkater = {
+		neutral: [-3, 17, 3.7],
+		alt: [-5, 14, 2.5]
 	};
 	Valkyrie = {
 		neutral: [-5, -15, 3]

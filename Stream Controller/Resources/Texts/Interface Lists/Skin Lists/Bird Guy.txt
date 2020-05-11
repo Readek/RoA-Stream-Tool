@@ -1,14 +1,14 @@
 Normal
-Blue
-Red
-Green
+Egg
 Pink
-White
-Purple
-Early Access
-DarkGreen
-Genesis
-Lime
+Green
+Dark
 Grey
-EGG
-Brown
+Purple
+Turquoise
+Red
+GreenDark
+Blue
+DarkBlue
+DarkPink
+Early Access

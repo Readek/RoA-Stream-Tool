@@ -1,0 +1,14 @@
+Normal
+Green
+Venom
+Crimsom
+Dark
+Sakura
+Abyss
+Alt Normal
+Alt Green
+Alt Venom
+Alt Crimsom
+Alt Dark
+Alt Sakura
+Alt Abyss
