@@ -1,24 +1,24 @@
 window.onload = init;
 
 function init() {
-	var xhr = new XMLHttpRequest();
-	var scoreboardInfo = 'Resources/Texts/ScoreboardInfo.json';
-	var scObj;
-	var startup = true;
-	var cBust = 0;
+	let xhr = new XMLHttpRequest();
+	let scoreboardInfo = 'Resources/Texts/ScoreboardInfo.json';
+	let scObj;
+	let startup = true;
+	let cBust = 0;
 
 	//animation stuff
-	var pMove = 50; //distance to move for the player names (pixels)
-	var pCharMove = 20; //distance to move for the character icons
+	let pMove = 50; //distance to move for the player names (pixels)
+	let pCharMove = 20; //distance to move for the character icons
 
-	var fadeInTime = .3; //(seconds)
-	var fadeOutTime = .2;
-	var introDelay = .8; //all animations will get this delay when the html loads (use this so it times with your transition)
+	let fadeInTime = .3; //(seconds)
+	let fadeOutTime = .2;
+	let introDelay = .8; //all animations will get this delay when the html loads (use this so it times with your transition)
 
 	//to avoid the code constantly running the same method over and over
-	var p1CharacterPrev, p1SkinPrev, p1ScorePrev, p1ColorPrev, p1wlPrev;
-	var p2CharacterPrev, p2SkinPrev, p2ScorePrev, p2ColorPrev, p2wlPrev;
-	var bestOfPrev;
+	let p1CharacterPrev, p1SkinPrev, p1ScorePrev, p1ColorPrev, p1wlPrev;
+	let p2CharacterPrev, p2SkinPrev, p2ScorePrev, p2ColorPrev, p2wlPrev;
+	let bestOfPrev;
 
 
 	xhr.overrideMimeType('application/json');
@@ -43,34 +43,34 @@ function init() {
 	
 
 	function getData() {
-		var p1Name = scObj['p1Name'];
-		var p1Team = scObj['p1Team'];
-		var p1Score = scObj['p1Score'];
-		var p1Color = scObj['p1Color'];
-		var p1Character = scObj['p1Character'];
-		var p1Skin = scObj['p1Skin'];
-		var p1WL = scObj['p1WL'];
+		let p1Name = scObj['p1Name'];
+		let p1Team = scObj['p1Team'];
+		let p1Score = scObj['p1Score'];
+		let p1Color = scObj['p1Color'];
+		let p1Character = scObj['p1Character'];
+		let p1Skin = scObj['p1Skin'];
+		let p1WL = scObj['p1WL'];
 		
-		var p2Name = scObj['p2Name'];
-		var p2Team = scObj['p2Team'];
-		var p2Score = scObj['p2Score'];
-		var p2Color = scObj['p2Color'];
-		var p2Character = scObj['p2Character'];
-		var p2Skin = scObj['p2Skin'];
-		var p2WL = scObj['p2WL'];
+		let p2Name = scObj['p2Name'];
+		let p2Team = scObj['p2Team'];
+		let p2Score = scObj['p2Score'];
+		let p2Color = scObj['p2Color'];
+		let p2Character = scObj['p2Character'];
+		let p2Skin = scObj['p2Skin'];
+		let p2WL = scObj['p2WL'];
 
-		var round = scObj['round'];
-		var bestOf = scObj['bestOf'];
+		let round = scObj['round'];
+		let bestOf = scObj['bestOf'];
 
 
 		//first, things that will happen only the first time the html loads
 		if (startup) {
 			//of course, we have to start with the cool intro stuff
-			var allowIntro = scObj['allowIntro']; //to know if the intro is allowed
+			let allowIntro = scObj['allowIntro']; //to know if the intro is allowed
 			if (allowIntro == "yes") {
 
 				//get the variables only used in the intro
-				var tournamentName = scObj['tournamentName'];
+				let tournamentName = scObj['tournamentName'];
 
 				//lets see that intro
 				document.getElementById('overlayIntro').style.opacity = 1;
@@ -208,8 +208,8 @@ function init() {
 
 
 			//check if the team has a logo we can place on the overlay
-			updateTeamLogo("teamLogoP1", p1Team);
-			updateTeamLogo("teamLogoP2", p2Team);
+			updateTeamLogo("teamLogoP1", p1Team, "1");
+			updateTeamLogo("teamLogoP2", p2Team, "2");
 
 			//dont forget to update the border if its Bo3 or Bo5!
 			updateBorder(bestOf);
@@ -237,7 +237,7 @@ function init() {
 				//fade out the image while also moving it because that always looks cool
 				fadeOutMove("#p1Character", -pCharMove, function(){
 					//now that nobody can see it, lets change the image!
-					var charScale = updateChar(p1Character, p1Skin, 'p1Character'); //will return scale
+					let charScale = updateChar(p1Character, p1Skin, 'p1Character'); //will return scale
 					//and now, fade it in
 					fadeInChara("#p1Character", charScale);
 				});
@@ -278,7 +278,7 @@ function init() {
 			//check if the team has a logo we can place on the overlay
 			if (document.getElementById('p1Team').textContent != p1Team) {
 				fadeOut("#teamLogoP1", function(){
-					updateTeamLogo("teamLogoP1", p1Team);
+					updateTeamLogo("teamLogoP1", p1Team, "1");
 					fadeIn("#teamLogoP1");
 				});
 			}
@@ -295,7 +295,7 @@ function init() {
 
 			if (p2CharacterPrev != p2Character || p2SkinPrev != p2Skin) {
 				fadeOutMove("#p2Character", -pCharMove, function(){
-					var charScale = updateChar(p2Character, p2Skin, 'p2Character'); //will return scale
+					let charScale = updateChar(p2Character, p2Skin, 'p2Character'); //will return scale
 					fadeInChara("#p2Character", charScale);
 				});
 				p2CharacterPrev = p2Character;
@@ -326,7 +326,7 @@ function init() {
 
 			if (document.getElementById('p2Team').textContent != p2Team) {
 				fadeOut("#teamLogoP2", function(){
-					updateTeamLogo("teamLogoP2", p2Team);
+					updateTeamLogo("teamLogoP2", p2Team, "2");
 					fadeIn("#teamLogoP2");
 				});
 			}
@@ -359,7 +359,7 @@ function init() {
 
 	//score change
 	function updateScore(scoreID, pScore, bestOf, scoreUpID, pColor, playAnim) {
-		var delay = 0;
+		let delay = 0;
 		if (playAnim) { //do we want to play the score up animation?
 			//depending on the "bestOf" and the color, change the clip
 			let scoreUpEL = document.getElementById(scoreUpID);
@@ -390,10 +390,10 @@ function init() {
 	}
 
 	//team logo change
-	function updateTeamLogo(logoID, pTeam) {
+	function updateTeamLogo(logoID, pTeam, player) {
 		//search for an image with the team name
 		let logoEL = document.getElementById(logoID);
-		logoEL.setAttribute('src', 'Resources/TeamLogos/' + pTeam + '.png');
+		logoEL.setAttribute('src', 'Resources/TeamLogos/' + pTeam + ' P' + player + '.png');
 		//no image? show nothing
 		if (startup) {logoEL.addEventListener("error", function(){showNothing(logoEL)})}
 	}
@@ -467,7 +467,7 @@ function init() {
 	function resizeText(text) {
 		$(text).each(function(i, text) {
 			while (text.scrollWidth > text.offsetWidth || text.scrollHeight > text.offsetHeight) {
-				var newFontSize = (parseFloat($(text).css('font-size').slice(0,-2)) * .95) + 'px';
+				let newFontSize = (parseFloat($(text).css('font-size').slice(0,-2)) * .95) + 'px';
 				$(text).css('font-size', newFontSize);
 			};
 		});
@@ -477,7 +477,7 @@ function init() {
 	function resizePlayers(wrap, pName, pTeam) {
 		$(wrap).each(function(i, wrap) {
 			while (wrap.scrollWidth > wrap.offsetWidth || wrap.scrollHeight > wrap.offsetHeight) {
-				var newFontSize = (parseFloat($(pName).css('font-size').slice(0,-2)) * .95) + 'px';
+				let newFontSize = (parseFloat($(pName).css('font-size').slice(0,-2)) * .95) + 'px';
 				$(pName).css('font-size', newFontSize);
 				newFontSize = (parseFloat($(pTeam).css('font-size').slice(0,-2)) * .95) + 'px';
 				$(pTeam).css('font-size', newFontSize);
@@ -521,9 +521,9 @@ function init() {
 		charEL.setAttribute('src', 'Resources/Characters/' + pCharacter + '/' + pSkin + '.png');
 
 		//this is so characters with spaces on their names also work
-		var pCharNoSpaces = pCharacter.replace(/ /g, "");
+		let pCharNoSpaces = pCharacter.replace(/ /g, "");
 		//             x, y, scale
-		var charPos = [0, 0, 1];
+		let charPos = [0, 0, 1];
 		//now, check if the character and skin exist in the database down there
 		if (window[pCharNoSpaces]) {
 			if (window[pCharNoSpaces][pSkin]) { //if the skin has a specific position
