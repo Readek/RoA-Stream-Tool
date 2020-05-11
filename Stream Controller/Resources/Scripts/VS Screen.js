@@ -70,12 +70,12 @@ function init() {
 		//first, things that will happen only the first time the html loads
 		if (startup) {
 			//starting with the player 1 name
-			updatePlayerName('#p1Wrapper', 'p1Name', 'p1Team', p1Name, p1Team, 'p1WS');
+			updatePlayerName('p1Wrapper', 'p1Name', 'p1Team', p1Name, p1Team);
 			//fade in the player text
 			fadeIn("#p1Wrapper", introDelay+.15);
 
 			//same for player 2
-			updatePlayerName('#p2Wrapper', 'p2Name', 'p2Team', p2Name, p2Team, 'p2WS');
+			updatePlayerName('p2Wrapper', 'p2Name', 'p2Team', p2Name, p2Team);
 			fadeIn("#p2Wrapper", introDelay+.15);
 
 
@@ -145,7 +145,7 @@ function init() {
 				//fade out player 1 text
 				fadeOut("#p1Wrapper", function(){
 					//now that nobody is seeing it, change the text content!
-					updatePlayerName('#p1Wrapper', 'p1Name', 'p1Team', p1Name, p1Team, 'p1WS');
+					updatePlayerName('p1Wrapper', 'p1Name', 'p1Team', p1Name, p1Team);
 					//and fade the name back in
 					fadeIn("#p1Wrapper", .2);
 				});
@@ -155,7 +155,7 @@ function init() {
 			if (document.getElementById('p2Name').textContent != p2Name ||
 				document.getElementById('p2Team').textContent != p2Team){
 				fadeOut("#p2Wrapper", function(){
-					updatePlayerName('#p2Wrapper', 'p2Name', 'p2Team', p2Name, p2Team, 'p2WS');
+					updatePlayerName('p2Wrapper', 'p2Name', 'p2Team', p2Name, p2Team);
 					fadeIn("#p2Wrapper", .2);
 				});
 			}
@@ -302,7 +302,7 @@ function init() {
 	}
 
 	//player text change
-	function updatePlayerName(wrapperID, nameID, teamID, pName, pTeam, pWS) {
+	function updatePlayerName(wrapperID, nameID, teamID, pName, pTeam) {
 		let nameEL = document.getElementById(nameID);
 		nameEL.style.fontSize = '90px'; //set original text size
 		nameEL.textContent = pName; //change the actual text
@@ -310,14 +310,7 @@ function init() {
 		teamEL.style.fontSize = '50px';
 		teamEL.textContent = pTeam;
 
-		//the only reason for this is because i wanted some space between team and name
-		if (!pTeam == "") {
-			document.getElementById(pWS).innerHTML = "&nbsp;";
-		} else {
-			document.getElementById(pWS).innerHTML = "";
-		}
-
-		resizePlayers(wrapperID, nameID, teamID); //resize if it overflows
+		resizeText(document.getElementById(wrapperID)); //resize if it overflows
 	}
 
 	//generic text changer
@@ -325,32 +318,26 @@ function init() {
 		let textEL = document.getElementById(textID);
 		textEL.style.fontSize = maxSize; //set original text size
 		textEL.textContent = textToType; //change the actual text
-		resizeText(textID); //resize it if it overflows
+		resizeText(textEL); //resize it if it overflows
 	}
 
 	//text resize, keeps making the text smaller until it fits
-	function resizeText(text) {
-		text = "#" + text;
-		$(text).each(function(i, text) {
-			while (text.scrollWidth > text.offsetWidth || text.scrollHeight > text.offsetHeight) {
-				let newFontSize = (parseFloat($(text).css('font-size').slice(0,-2)) * .95) + 'px';
-				$(text).css('font-size', newFontSize);
-			};
-		});
+	function resizeText(textEL) {
+		let childrens = textEL.children;
+		while (textEL.scrollWidth > textEL.offsetWidth || textEL.scrollHeight > textEL.offsetHeight) {
+			if (childrens.length > 0) { //for team+player texts
+				Array.from(childrens).forEach(function (child) {
+					child.style.fontSize = getFontSize(child);
+				});
+			} else {
+				textEL.style.fontSize = getFontSize(textEL);
+			}
+		}
 	}
 
-	//text resize but for the players, so team keeps staying smaller than name
-	function resizePlayers(wrap, pName, pTeam) {
-		pName = "#" + pName;
-		pTeam = "#" + pTeam;
-		$(wrap).each(function(i, wrap) {
-			while (wrap.scrollWidth > wrap.offsetWidth || wrap.scrollHeight > wrap.offsetHeight) {
-				let newFontSize = (parseFloat($(pName).css('font-size').slice(0,-2)) * .95) + 'px';
-				$(pName).css('font-size', newFontSize);
-				newFontSize = (parseFloat($(pTeam).css('font-size').slice(0,-2)) * .95) + 'px';
-				$(pTeam).css('font-size', newFontSize);
-			};
-		});
+	//Gets the new fontSize for the given HTML Element */
+	function getFontSize(textElement) {
+		return (parseFloat(textElement.style.fontSize.slice(0, -2)) * .90) + 'px';
 	}
 
 	//fade out

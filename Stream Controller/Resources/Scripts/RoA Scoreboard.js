@@ -87,9 +87,11 @@ function init() {
 					let p2IntroEL = document.getElementById('p2Intro');
 
 					p1IntroEL.textContent = p1Name; //update player 1 intro text
-					resizeText('#p1Intro'); //resize the text if its too large
+					p1IntroEL.style.fontSize = '85px'; //resize the font to its max size
+					resizeText(p1IntroEL); //resize the text if its too large
+					p2IntroEL.style.fontSize = '85px';
 					p2IntroEL.textContent = p2Name; //p2
-					resizeText('#p2Intro');
+					resizeText(p2IntroEL);
 
 					//change the color of the player text shadows
 					p1IntroEL.style.textShadow = '0px 0px 20px ' + getHexColor(p1Color);
@@ -146,7 +148,7 @@ function init() {
 
 			//finally out of the intro, now lets start with player 1 first
 			//update player name and team name texts
-			updatePlayerName('#p1Wrapper', 'p1Name', 'p1Team', p1Name, p1Team);
+			updatePlayerName('p1Wrapper', 'p1Name', 'p1Team', p1Name, p1Team);
 			//sets the starting position for the player text, then fades in and moves the p1 text to the next keyframe
 			gsap.fromTo("#p1Wrapper", 
 				{x: -pMove}, //from
@@ -178,7 +180,7 @@ function init() {
 
 
 			//took notes from player 1? well, this is exactly the same!
-			updatePlayerName('#p2Wrapper', 'p2Name', 'p2Team', p2Name, p2Team);
+			updatePlayerName('p2Wrapper', 'p2Name', 'p2Team', p2Name, p2Team);
 			gsap.fromTo("#p2Wrapper", 
 				{x: pMove},
 				{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
@@ -226,7 +228,7 @@ function init() {
 				//move and fade out the player 1's text
 				fadeOutMove("#p1Wrapper", -pMove, function(){
 					//now that nobody is seeing it, quick, change the text's content!
-					updatePlayerName('#p1Wrapper', 'p1Name', 'p1Team', p1Name, p1Team);
+					updatePlayerName('p1Wrapper', 'p1Name', 'p1Team', p1Name, p1Team);
 					//fade the name back in with a sick movement
 					fadeInMove("#p1Wrapper");
 				});
@@ -288,7 +290,7 @@ function init() {
 			if (document.getElementById('p2Name').textContent != p2Name ||
 				document.getElementById('p2Team').textContent != p2Team){
 				fadeOutMove("#p2Wrapper", pMove, function(){
-					updatePlayerName('#p2Wrapper', 'p2Name', 'p2Team', p2Name, p2Team);
+					updatePlayerName('p2Wrapper', 'p2Name', 'p2Team', p2Name, p2Team);
 					fadeInMove("#p2Wrapper");
 				});
 			}
@@ -390,10 +392,10 @@ function init() {
 	}
 
 	//team logo change
-	function updateTeamLogo(logoID, pTeam, player) {
+	function updateTeamLogo(logoID, pTeam, playerNum) {
 		//search for an image with the team name
 		let logoEL = document.getElementById(logoID);
-		logoEL.setAttribute('src', 'Resources/TeamLogos/' + pTeam + ' P' + player + '.png');
+		logoEL.setAttribute('src', 'Resources/TeamLogos/' + pTeam + ' P' + playerNum + '.png');
 		//no image? show nothing
 		if (startup) {logoEL.addEventListener("error", function(){showNothing(logoEL)})}
 	}
@@ -406,7 +408,7 @@ function init() {
 		let teamEL = document.getElementById(teamID);
 		teamEL.style.fontSize = '20px';
 		teamEL.textContent = pTeam;
-		resizePlayers(wrapperID, "#" + nameID, "#" + teamID); //resize if it overflows
+		resizeText(document.getElementById(wrapperID)); //resize if it overflows
 	}
 
 	//round change
@@ -414,7 +416,7 @@ function init() {
 		let roundEL = document.getElementById('round');
 		roundEL.style.fontSize = '19px'; //set original text size
 		roundEL.textContent = round; //change the actual text
-		resizeText('#round'); //resize it if it overflows
+		resizeText(roundEL); //resize it if it overflows
 	}
 
 	//fade out
@@ -463,26 +465,23 @@ function init() {
 		if (startup) {pWLEL.addEventListener("error", function(){showNothing(pWLEL)})}
 	}
 
-	//text resize keeps making the text smaller until it fits
-	function resizeText(text) {
-		$(text).each(function(i, text) {
-			while (text.scrollWidth > text.offsetWidth || text.scrollHeight > text.offsetHeight) {
-				let newFontSize = (parseFloat($(text).css('font-size').slice(0,-2)) * .95) + 'px';
-				$(text).css('font-size', newFontSize);
-			};
-		});
+	//text resize, keeps making the text smaller until it fits
+	function resizeText(textEL) {
+		let childrens = textEL.children;
+		while (textEL.scrollWidth > textEL.offsetWidth || textEL.scrollHeight > textEL.offsetHeight) {
+			if (childrens.length > 0) { //for team+player texts
+				Array.from(childrens).forEach(function (child) {
+					child.style.fontSize = getFontSize(child);
+				});
+			} else {
+				textEL.style.fontSize = getFontSize(textEL);
+			}
+		}
 	}
 
-	//text resize but for the players, so team keeps staying smaller than name
-	function resizePlayers(wrap, pName, pTeam) {
-		$(wrap).each(function(i, wrap) {
-			while (wrap.scrollWidth > wrap.offsetWidth || wrap.scrollHeight > wrap.offsetHeight) {
-				let newFontSize = (parseFloat($(pName).css('font-size').slice(0,-2)) * .95) + 'px';
-				$(pName).css('font-size', newFontSize);
-				newFontSize = (parseFloat($(pTeam).css('font-size').slice(0,-2)) * .95) + 'px';
-				$(pTeam).css('font-size', newFontSize);
-			};
-		});
+	//Gets the new fontSize for the given HTML Element */
+	function getFontSize(textElement) {
+		return (parseFloat(textElement.style.fontSize.slice(0, -2)) * .90) + 'px';
 	}
 
 	//so we can get the exact color used by the game!
