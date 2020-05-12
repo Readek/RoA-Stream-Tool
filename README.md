@@ -29,12 +29,12 @@ These are instructions for regular OBS Studio, but I imagine you can do the same
 - Tick `Refresh browser when scene becomes active`.
 - Manage it all with the 'RoA Stream Control' executable.
 
-Repeat from the 3rd step to add the VS Screen (*VS Screen.html*).
+Repeat from the 3rd step to add the `VS Screen.html`, though I recommend you to do so on another scene.
 
 ---
 
 ## Advanced setup
-Yes, the instructions above could be enough, but we can do better. **All of this is optional** of course.
+Yes, the instructions above are enough, but we can do better. **All of this is optional** of course.
  
 2 basic transitions are included in the `Resources/OBS Transitions` folder, intended to be used to change to the game scene and to the vs screen, if you don't have a transition yourself of course. To use them on OBS:
 - Add a new stinger transition.
