@@ -654,6 +654,9 @@ function init() {
 	Kris = {
 		neutral: [20, 26, 4.2]
 	};
+	Liz = {
+		neutral: [22, 18, 3]
+	};
 	MayuAshikaga = {
 		neutral: [3, 22, 5],
 		alt: [8, 10, 2.5]
