@@ -408,10 +408,13 @@ function init() {
 				charPos[2] = window[pCharNoSpaces].neutral[2];
 				trailEL.setAttribute('src', 'Resources/Trails/' + pCharacter + '/' + color + '.png');
 			}
-		} else { //if theres no data, at least make it look half good
-			charPos[0] = 0;
-			charPos[1] = 0;
-			charPos[2] = 1;
+		} else { //if the character isnt on the database, set positions for the "?" image
+			if (charEL == document.getElementById("charP1")) {
+				charPos[0] = -150; 
+			} else {
+				charPos[0] = -175;
+			}
+			charPos[1] = 150; charPos[2] = .8;
 			trailEL.setAttribute('src', 'Resources/Trails/' + pCharacter + '/' + color + '.png');
 		}
 
@@ -432,7 +435,16 @@ function init() {
 
 		//this will trigger whenever the image loaded cant be found
 		if (startup) {
-			charEL.addEventListener("error", function(){showNothing(charEL)})
+			//if the image fails to load, we will put a placeholder
+			charEL.addEventListener("error", function(){
+				//we need two different images because a "?" flipped looks weird
+				if (charEL == document.getElementById("charP1")) {
+					charEL.setAttribute('src', 'Resources/Characters/Random/P1.png');
+				} else {
+					charEL.setAttribute('src', 'Resources/Characters/Random/P2.png');
+				}
+			})
+			//trail will just show nothing
 			trailEL.addEventListener("error", function(){showNothing(trailEL)})
 		}
 

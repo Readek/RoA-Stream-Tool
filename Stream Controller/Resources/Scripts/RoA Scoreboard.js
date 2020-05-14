@@ -538,13 +538,28 @@ function init() {
 				charPos[1] = window[pCharNoSpaces].neutral[1];
 				charPos[2] = window[pCharNoSpaces].neutral[2];
 			}
+		} else { //if the character isnt on the database, set positions for the "?" image
+			//this condition is used just to position images well on both sides
+			if (charEL == document.getElementById("p1Character")) {
+				charPos[0] = 18; 
+			} else {
+				charPos[0] = 12;
+			}
+			charPos[1] = 3; charPos[2] = 1.5;
 		}
 		//to position the character
 		charEL.style.objectPosition =  charPos[0] + "px " + charPos[1] + "px";
 		charEL.style.transform = "scale(" + charPos[2] + ")";
 
-		//this will trigger whenever the image loaded cant be found
-		if (startup) {charEL.addEventListener("error", function(){showNothing(charEL)})}
+		//if the image fails to load, we will put a placeholder
+			if (startup) {charEL.addEventListener("error", function(){
+				//we need two different images because a "?" flipped looks weird
+				if (charEL == document.getElementById("p1Character")) {
+					charEL.setAttribute('src', 'Resources/Characters/Random/P1.png');
+				} else {
+					charEL.setAttribute('src', 'Resources/Characters/Random/P2.png');
+				}
+		})}
 
 		return charPos[2]; //we need this one to set scale keyframe when fading back
 	}
