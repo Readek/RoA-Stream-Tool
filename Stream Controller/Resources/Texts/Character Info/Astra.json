@@ -1,0 +1,17 @@
+{
+    "scoreboard": {
+        "neutral": {
+            "x": 25,
+            "y": 18,
+            "scale": 3.2
+        }
+    },
+    "vsScreen": {
+        "neutral": {
+            "x": 65,
+            "y": 100,
+            "scale": 1
+        },
+        "background": "Valkyrie"
+    }
+}

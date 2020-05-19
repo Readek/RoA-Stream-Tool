@@ -1,0 +1,42 @@
+{
+    "scoreboard": {
+        "neutral": {
+            "x": -22,
+            "y": 24,
+            "scale": 3.4
+        },
+        "LoA": {
+            "x": 19,
+            "y": 34,
+            "scale": 5
+        },
+        "HD": {
+            "x": -22,
+            "y": 33,
+            "scale": 3.6
+        }
+    },
+    "vsScreen": {
+        "neutral": {
+            "x": -340,
+            "y": 160,
+            "scale": 1.05
+        },
+        "LoA": {
+            "x": 235,
+            "y": 220,
+            "scale": 1.4
+        },
+        "Panda": {
+            "x": -340,
+            "y": 160,
+            "scale": 1.05,
+            "comment": "same as neutral, just here so trail shows up"
+        },
+        "HD": {
+            "x": -470,
+            "y": 155,
+            "scale": 1
+        }
+    }
+}

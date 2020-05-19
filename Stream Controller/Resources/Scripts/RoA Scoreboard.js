@@ -1,12 +1,6 @@
 window.onload = init;
 
 function init() {
-	let xhr = new XMLHttpRequest();
-	let scoreboardInfo = 'Resources/Texts/ScoreboardInfo.json';
-	let scObj;
-	let startup = true;
-	let cBust = 0;
-
 	//animation stuff
 	let pMove = 50; //distance to move for the player names (pixels)
 	let pCharMove = 20; //distance to move for the character icons
@@ -20,57 +14,47 @@ function init() {
 	let p2CharacterPrev, p2SkinPrev, p2ScorePrev, p2ColorPrev, p2wlPrev;
 	let bestOfPrev;
 
+	let startup = true;
 
-	xhr.overrideMimeType('application/json');
 
-	function getInfo() {
-		xhr.open('GET', scoreboardInfo + '?v=' + cBust, true);
-		xhr.send();
-		cBust++;
+	async function mainLoop() {
+		let scInfo = await getInfo();
+		getData(scInfo);
 	}
 
-	getInfo();
-	setInterval(function () { getInfo(); }, 500); //update interval
+	mainLoop();
+	setInterval(function () { mainLoop(); }, 500); //update interval
 
-	xhr.onreadystatechange = parseJSON;
 
-	function parseJSON() {
-		if (xhr.readyState === 4) {
-			scObj = JSON.parse(xhr.responseText);
-			getData();
-		}
-	}
-	
-
-	function getData() {
-		let p1Name = scObj['p1Name'];
-		let p1Team = scObj['p1Team'];
-		let p1Score = scObj['p1Score'];
-		let p1Color = scObj['p1Color'];
-		let p1Character = scObj['p1Character'];
-		let p1Skin = scObj['p1Skin'];
-		let p1WL = scObj['p1WL'];
+	async function getData(scInfo) {
+		let p1Name = scInfo['p1Name'];
+		let p1Team = scInfo['p1Team'];
+		let p1Score = scInfo['p1Score'];
+		let p1Color = scInfo['p1Color'];
+		let p1Character = scInfo['p1Character'];
+		let p1Skin = scInfo['p1Skin'];
+		let p1WL = scInfo['p1WL'];
 		
-		let p2Name = scObj['p2Name'];
-		let p2Team = scObj['p2Team'];
-		let p2Score = scObj['p2Score'];
-		let p2Color = scObj['p2Color'];
-		let p2Character = scObj['p2Character'];
-		let p2Skin = scObj['p2Skin'];
-		let p2WL = scObj['p2WL'];
+		let p2Name = scInfo['p2Name'];
+		let p2Team = scInfo['p2Team'];
+		let p2Score = scInfo['p2Score'];
+		let p2Color = scInfo['p2Color'];
+		let p2Character = scInfo['p2Character'];
+		let p2Skin = scInfo['p2Skin'];
+		let p2WL = scInfo['p2WL'];
 
-		let round = scObj['round'];
-		let bestOf = scObj['bestOf'];
+		let round = scInfo['round'];
+		let bestOf = scInfo['bestOf'];
 
 
 		//first, things that will happen only the first time the html loads
 		if (startup) {
 			//of course, we have to start with the cool intro stuff
-			let allowIntro = scObj['allowIntro']; //to know if the intro is allowed
+			let allowIntro = scInfo['allowIntro']; //to know if the intro is allowed
 			if (allowIntro == "yes") {
 
 				//get the variables only used in the intro
-				let tournamentName = scObj['tournamentName'];
+				let tournamentName = scInfo['tournamentName'];
 
 				//lets see that intro
 				document.getElementById('overlayIntro').style.opacity = 1;
@@ -155,7 +139,7 @@ function init() {
 				{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}); //to
 
 			//set the character image for the player
-			updateChar(p1Character, p1Skin, 'p1Character');
+			await updateChar(p1Character, p1Skin, 'p1Character');
 			//when the image finishes loading, fade-in-move the character icon to the overlay
 			initCharaFade("#p1Character");
 			//save the character/skin so we run the character change code only when this doesnt equal to the next
@@ -185,7 +169,7 @@ function init() {
 				{x: pMove},
 				{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 
-			updateChar(p2Character, p2Skin, 'p2Character');
+			await updateChar(p2Character, p2Skin, 'p2Character');
 			initCharaFade("#p2Character");
 			p2CharacterPrev = p2Character;
 			p2SkinPrev = p2Skin;
@@ -237,9 +221,9 @@ function init() {
 			//player 1's character icon change
 			if (p1CharacterPrev != p1Character || p1SkinPrev != p1Skin) {
 				//fade out the image while also moving it because that always looks cool
-				fadeOutMove("#p1Character", -pCharMove, function(){
+				fadeOutMove("#p1Character", -pCharMove, async function(){
 					//now that nobody can see it, lets change the image!
-					let charScale = updateChar(p1Character, p1Skin, 'p1Character'); //will return scale
+					let charScale = await updateChar(p1Character, p1Skin, 'p1Character'); //will return scale
 					//and now, fade it in
 					fadeInChara("#p1Character", charScale);
 				});
@@ -296,8 +280,8 @@ function init() {
 			}
 
 			if (p2CharacterPrev != p2Character || p2SkinPrev != p2Skin) {
-				fadeOutMove("#p2Character", -pCharMove, function(){
-					let charScale = updateChar(p2Character, p2Skin, 'p2Character'); //will return scale
+				fadeOutMove("#p2Character", -pCharMove, async function(){
+					let charScale = await updateChar(p2Character, p2Skin, 'p2Character'); //will return scale
 					fadeInChara("#p2Character", charScale);
 				});
 				p2CharacterPrev = p2Character;
@@ -510,33 +494,75 @@ function init() {
 		}
 	}
 
+	//searches for the main json file
+	function getInfo() {
+		return new Promise(function (resolve) {
+			let oReq = new XMLHttpRequest();
+			oReq.addEventListener("load", reqListener);
+			oReq.open("GET", 'Resources/Texts/ScoreboardInfo.json');
+			oReq.send();
+
+			//will trigger when file loads
+			function reqListener () {
+				resolve(JSON.parse(oReq.responseText))
+			}
+		})
+		//i would gladly have used fetch, but OBS local files wont support that :(
+	}
+
+	//searches for a json file with character data
+	function getCharInfo(pCharacter) {
+		return new Promise(function (resolve) {
+			let oReq = new XMLHttpRequest();
+			oReq.addEventListener("load", reqListener);
+			oReq.onerror = function(){resolve("notFound")}; //for obs local file browser sources
+			oReq.open("GET", 'Resources/Texts/Character Info/' + pCharacter + '.json');
+			oReq.send();
+
+			function reqListener () {
+				try {resolve(JSON.parse(oReq.responseText))}
+				catch {resolve("notFound")} //for live servers
+			}
+		})
+	}
+
 	//now the complicated "change character image" function!
-	function updateChar(pCharacter, pSkin, charID) {
+	async function updateChar(pCharacter, pSkin, charID) {
 
 		//store so code looks cleaner later
 		let charEL = document.getElementById(charID);
 
+		//if the image fails to load, we will put a placeholder
+		if (startup) {charEL.addEventListener("error", function(){
+			//we need two different images because a "?" flipped looks weird
+			if (charEL == document.getElementById("p1Character")) {
+				charEL.setAttribute('src', 'Resources/Characters/Random/P1.png');
+			} else {
+				charEL.setAttribute('src', 'Resources/Characters/Random/P2.png');
+			}
+		})}
+
 		//change the image path depending on the character and skin
 		charEL.setAttribute('src', 'Resources/Characters/' + pCharacter + '/' + pSkin + '.png');
 
-		//this is so characters with spaces on their names also work
-		let pCharNoSpaces = pCharacter.replace(/ /g, "");
+		//get the character positions
+		let charInfo = await getCharInfo(pCharacter);
 		//             x, y, scale
 		let charPos = [0, 0, 1];
 		//now, check if the character and skin exist in the database down there
-		if (window[pCharNoSpaces]) {
-			if (window[pCharNoSpaces][pSkin]) { //if the skin has a specific position
-				charPos[0] = window[pCharNoSpaces][pSkin][0];
-				charPos[1] = window[pCharNoSpaces][pSkin][1];
-				charPos[2] = window[pCharNoSpaces][pSkin][2];
+		if (charInfo != "notFound") {
+			if (charInfo.scoreboard[pSkin]) { //if the skin has a specific position
+				charPos[0] = charInfo.scoreboard[pSkin].x;
+				charPos[1] = charInfo.scoreboard[pSkin].y;
+				charPos[2] = charInfo.scoreboard[pSkin].scale;
 			} else if (pSkin.startsWith("Alt ")) { //for a group of imgs that have a specific position
-				charPos[0] = window[pCharNoSpaces].alt[0];
-				charPos[1] = window[pCharNoSpaces].alt[1];
-				charPos[2] = window[pCharNoSpaces].alt[2];
+				charPos[0] = charInfo.scoreboard.alt.x;
+				charPos[1] = charInfo.scoreboard.alt.y;
+				charPos[2] = charInfo.scoreboard.alt.scale;
 			} else { //if none of the above, use a default position
-				charPos[0] = window[pCharNoSpaces].neutral[0];
-				charPos[1] = window[pCharNoSpaces].neutral[1];
-				charPos[2] = window[pCharNoSpaces].neutral[2];
+				charPos[0] = charInfo.scoreboard.neutral.x;
+				charPos[1] = charInfo.scoreboard.neutral.y;
+				charPos[2] = charInfo.scoreboard.neutral.scale;
 			}
 		} else { //if the character isnt on the database, set positions for the "?" image
 			//this condition is used just to position images well on both sides
@@ -551,168 +577,6 @@ function init() {
 		charEL.style.objectPosition =  charPos[0] + "px " + charPos[1] + "px";
 		charEL.style.transform = "scale(" + charPos[2] + ")";
 
-		//if the image fails to load, we will put a placeholder
-			if (startup) {charEL.addEventListener("error", function(){
-				//we need two different images because a "?" flipped looks weird
-				if (charEL == document.getElementById("p1Character")) {
-					charEL.setAttribute('src', 'Resources/Characters/Random/P1.png');
-				} else {
-					charEL.setAttribute('src', 'Resources/Characters/Random/P2.png');
-				}
-		})}
-
 		return charPos[2]; //we need this one to set scale keyframe when fading back
 	}
-
-
-	//positions database starts here!
-	Absa = {
-		neutral: [5, 19.4, 4.7],
-		LoA: [34, 23, 5.75],
-		HD: [6, 17, 4.5]
-	};
-	Clairen = {
-		neutral: [-23, 30, 4.5],
-		LoA: [31, 28, 4.8],
-		HD: [-23, 31, 4.7]
-	};
-	Elliana = {
-		neutral: [-14, 25, 4],
-		LoA: [-19, 22, 3.9],
-		HD: [-17, 25, 6]
-	};
-	Etalus = {
-		neutral: [-22, 24, 3.4],
-		LoA: [19, 34, 5],
-		HD: [-22, 33, 3.2]
-	};
-	Forsburn = {
-		neutral: [-24, 13, 4.5],
-		LoA: [7, 23, 5.8],
-		HD: [-31, 10, 5]
-	};
-	Kragg = {
-		neutral: [-7, 7, 3.4],
-		LoA: [-8, 2, 4],
-		HD: [-9, -11, 4.5]
-	};
-	Maypul = {
-		neutral: [-7, 30, 3.5],
-		LoA: [25, 29, 5],
-		Ragnir: [-24, -3, 3],
-		HD: [-22, 18, 4.7]
-	};
-	Orcane = {
-		neutral: [-22, 15, 3],
-		LoA: [-14, 20, 3.2],
-		HD: [-7, 11, 3]
-	};
-	OriandSein = { //characters with spaces on their name must have them removed
-		neutral: [-4, 8, 2.8],
-		HD: [-15, 12, 3.4]
-	};
-	Ranno = {
-		neutral: [13, 22, 5],
-		LoA: [25, 39, 4.7],
-		HD: [9, 26, 4.5]
-	};
-	ShovelKnight = {
-		neutral: [0, 18, 3.2] //also works for HD
-	};
-	Sylvanos = {
-		neutral: [-27, 7, 3.5],
-		LoA: [10, 25.8, 6.3],
-		HD: [-21, 16, 4.3]
-	};
-	Wrastor = {
-		neutral: [-12, 28, 4.7],
-		LoA: [28, 30, 6],
-		HD: [-12, 26, 4.7]
-	};
-	Zetterburn = {
-		neutral: [-7, 4, 4.1],
-		LoA: [18, 23, 6.1],
-		HD: [-20, 6, 4.7]
-	};
-
-	//workshop characters:
-	AcidRainbows = {
-		neutral: [17, 28, 4.75]
-	};
-	Archen = {
-		neutral: [8, 15, 2.7]
-	};
-	Astra = {
-		neutral: [25, 18, 3.2]
-	};
-	BirdGuy = {
-		neutral: [3, 10, 2.75]
-	};
-	Epinel = {
-		neutral: [22, 30, 4]
-	};
-	Falco = {
-		neutral: [15, 33, 3.8]
-	};
-	Fox = {
-		neutral: [15, 26, 3.8]
-	};
-	Guadua = {
-		neutral: [-20, 19, 3.5]
-	};
-	HimeDaisho = {
-		neutral: [22, 13, 4.5]
-	};
-	Kirby = {
-		neutral: [12, 16, 2]
-	};
-	Kris = {
-		neutral: [20, 26, 4.2]
-	};
-	Liz = {
-		neutral: [22, 18, 3]
-	};
-	MayuAshikaga = {
-		neutral: [3, 22, 5],
-		alt: [8, 10, 2.5]
-	};
-	Mollo = {
-		neutral: [-3, 20, 4.4]
-	};
-	Mycolich = {
-		neutral: [-2, 11, 3.8]
-	};
-	Olympia = {
-		neutral: [19, 20, 4.5]
-	};
-	Otto = {
-		neutral: [0, 6, 2.8]
-	};
-	Pomme = {
-		neutral: [30, 21, 3.5]
-	};
-	R_00 = { //this should have "-" but it would break :(
-		neutral: [-8, 20, 3.8]
-	};
-	Sandbert = {
-		neutral: [22, 22, 2.5]
-	};
-	TrummelandAlto = {
-		neutral: [10, 30, 2.5],
-		alt: [27, -7, 2.5]
-	};
-	UzaCkater = {
-		neutral: [-3, 17, 3.7],
-		alt: [-5, 14, 2.5]
-	};
-	Valkyrie = {
-		neutral: [-5, -15, 3]
-	};
-	Yoyo = {
-		neutral: [14, 22, 3]
-	};
-	ZettaAshikaga = {
-		neutral: [-7, 23, 5.5],
-		alt: [-15, 5, 2.7]
-	};
 }

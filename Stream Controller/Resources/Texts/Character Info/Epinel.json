@@ -1,0 +1,17 @@
+{
+    "scoreboard": {
+        "neutral": {
+            "x": 22,
+            "y": 30,
+            "scale": 4
+        }
+    },
+    "vsScreen": {
+        "neutral": {
+            "x": 100,
+            "y": 140,
+            "scale": 1.1
+        },
+        "background": "Kragg"
+    }
+}

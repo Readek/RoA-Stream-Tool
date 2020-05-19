@@ -1,0 +1,16 @@
+{
+    "scoreboard": {
+        "neutral": {
+            "x": 17,
+            "y": 28,
+            "scale": 4.75
+        }
+    },
+    "vsScreen": {
+        "neutral": {
+            "x": 200,
+            "y": 200,
+            "scale": 1.2
+        }
+    }
+}

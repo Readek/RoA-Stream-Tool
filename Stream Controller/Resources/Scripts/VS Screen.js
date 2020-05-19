@@ -1,12 +1,6 @@
 window.onload = init;
 
 function init() {
-	let xhr = new XMLHttpRequest();
-	let scoreboardInfo = 'Resources/Texts/ScoreboardInfo.json';
-	let scObj;
-	let startup = true;
-	let cBust = 0;
-
 	//animation stuff
 	let pCharMove = 30; //distance to move for the character images
 
@@ -24,48 +18,38 @@ function init() {
 	let p1CharacterPrev, p1SkinPrev, p1ColorPrev;
 	let p2CharacterPrev, p2SkinPrev, p2ColorPrev;
 
+	let startup = true;
 
-	xhr.overrideMimeType('application/json');
 
-	function getInfo() {
-		xhr.open('GET', scoreboardInfo + '?v=' + cBust, true);
-		xhr.send();
-		cBust++;
+	async function mainLoop() {
+		let scInfo = await getInfo();
+		getData(scInfo);
 	}
 
-	getInfo();
-	setInterval(function () { getInfo(); }, 500); //update interval
-
-	xhr.onreadystatechange = parseJSON;
-
-	function parseJSON() {
-		if (xhr.readyState === 4) {
-			scObj = JSON.parse(xhr.responseText);
-			getData();
-		}
-	}
+	mainLoop();
+	setInterval(function () { mainLoop(); }, 500); //update interval
 
 	
-	function getData() {
-		let p1Name = scObj['p1Name'];
-		let p1Team = scObj['p1Team'];
-		let p1Color = scObj['p1Color'];
-		let p1Character = scObj['p1Character'];
-		let p1Skin = scObj['p1Skin'];
+	function getData(scInfo) {
+		let p1Name = scInfo['p1Name'];
+		let p1Team = scInfo['p1Team'];
+		let p1Color = scInfo['p1Color'];
+		let p1Character = scInfo['p1Character'];
+		let p1Skin = scInfo['p1Skin'];
 		
-		let p2Name = scObj['p2Name'];
-		let p2Team = scObj['p2Team'];
-		let p2Color = scObj['p2Color'];
-		let p2Character = scObj['p2Character'];
-		let p2Skin = scObj['p2Skin'];
+		let p2Name = scInfo['p2Name'];
+		let p2Team = scInfo['p2Team'];
+		let p2Color = scInfo['p2Color'];
+		let p2Character = scInfo['p2Character'];
+		let p2Skin = scInfo['p2Skin'];
 
-		let round = scObj['round'];
-		let tournamentName = scObj['tournamentName'];
+		let round = scInfo['round'];
+		let tournamentName = scInfo['tournamentName'];
 
-		let caster1 = scObj['caster1Name'];
-		let twitter1 = scObj['caster1Twitter'];
-		let caster2 = scObj['caster2Name'];
-		let twitter2 = scObj['caster2Twitter'];
+		let caster1 = scInfo['caster1Name'];
+		let twitter1 = scInfo['caster1Twitter'];
+		let caster2 = scInfo['caster2Name'];
+		let twitter2 = scInfo['caster2Twitter'];
 
 		//first, things that will happen only the first time the html loads
 		if (startup) {
@@ -139,6 +123,7 @@ function init() {
 				p2ColorPrev = p2Color;
 			}
 
+
 			//player 1 name change
 			if (document.getElementById('p1Name').textContent != p1Name ||
 				document.getElementById('p1Team').textContent != p1Team) {
@@ -165,11 +150,11 @@ function init() {
 			if (p1CharacterPrev != p1Character || p1SkinPrev != p1Skin) {
 
 				//move and fade out the character
-				charaFadeOut("#charaP1", function(){
+				charaFadeOut("#charaP1", async function(){
 					//update the character image and trail, and also storing its scale for later
-					charScale = updateChar(p1Character, p1Skin, p1Color, 'charP1', 'trailP1');
+					let charScale = await updateChar(p1Character, p1Skin, p1Color, 'charP1', 'trailP1');
 					//move and fade them back
-					charaFadeIn("#charaP1", "#trailP1");
+					charaFadeIn("#charaP1", "#trailP1", charScale);
 				});
 
 				//background change here!
@@ -189,9 +174,9 @@ function init() {
 
 			//same for player 2
 			if (p2CharacterPrev != p2Character || p2SkinPrev != p2Skin) {
-				charaFadeOut("#charaP2", function(){
-					charScale = updateChar(p2Character, p2Skin, p2Color, 'charP2', 'trailP2');
-					charaFadeIn("#charaP2", "#trailP2");
+				charaFadeOut("#charaP2", async function(){
+					let charScale = await updateChar(p2Character, p2Skin, p2Color, 'charP2', 'trailP2');
+					charaFadeIn("#charaP2", "#trailP2", charScale);
 				});
 				
 				if (p2CharacterPrev != p2Character || p2Skin == "Ragnir" || p2SkinPrev == "Ragnir") {
@@ -272,32 +257,33 @@ function init() {
 	}
 
 	//background change
-	function updateBG(vidID, pCharacter, pSkin) {
+	async function updateBG(vidID, pCharacter, pSkin) {
 		let vidEL = document.getElementById(vidID);
+
+		if (startup) {
+			//if the video cant be found, show aethereal gates
+			vidEL.addEventListener("error", function(){
+				vidEL.setAttribute('src', 'Resources/Backgrounds/Default.webm')
+			});
+		}
+
+		//get character info for later
+		let charInfo = await getCharInfo(pCharacter);
+
 		//change the BG path depending on the character
 		if (pSkin == "Ragnir") { //yes, ragnir is the only skin that changes bg
 			vidEL.setAttribute('src', 'Resources/Backgrounds/Default.webm');
 		} else {
-			let pCharNoSpaces = pCharacter.replace(/ /g, ""); //remove spaces just in case
 			let vidName;
-
-			if (window[pCharNoSpaces]) { //safety check
-				if (window[pCharNoSpaces]["vid"]) { //if the character has an specific BG
-					vidName = window[pCharNoSpaces]["vid"];
+			if (charInfo != "notFound") { //safety check
+				if (charInfo.vsScreen["background"]) { //if the character has a specific BG
+					vidName = charInfo.vsScreen["background"];
 				} else { //if not, just use the character name
 					vidName = pCharacter;
 				}
 			}
-
 			//actual video path change
 			vidEL.setAttribute('src', 'Resources/Backgrounds/' + vidName + '.webm');
-
-			if (startup) {
-				//if the character doesnt have a vid, show aethereal gates
-				vidEL.addEventListener("error", function(){
-					vidEL.setAttribute('src', 'Resources/Backgrounds/Default.webm')
-				});
-			}
 		}
 	}
 
@@ -356,7 +342,7 @@ function init() {
 	}
 
 	//fade in characters edition
-	function charaFadeIn(charaID, trailID) {
+	function charaFadeIn(charaID, trailID, charScale) {
 		//move the character
 		gsap.to(charaID, {delay: .3, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime+.1});
 		//move the trail
@@ -375,13 +361,59 @@ function init() {
 		gsap.to(trailID, {delay: introDelay+.15, x: -pCharMove, opacity: 1, ease: "power2.out", duration: fadeInTime+.1});
 	}
 
+	//searches for the main json file
+	function getInfo() {
+		return new Promise(function (resolve) {
+			let oReq = new XMLHttpRequest();
+			oReq.addEventListener("load", reqListener);
+			oReq.open("GET", 'Resources/Texts/ScoreboardInfo.json');
+			oReq.send();
+
+			//will trigger when file loads
+			function reqListener () {
+				resolve(JSON.parse(oReq.responseText))
+			}
+		})
+		//i would gladly have used fetch, but OBS local files wont support that :(
+	}
+
+	//searches for a json file with character data
+	function getCharInfo(pCharacter) {
+		return new Promise(function (resolve) {
+			let oReq = new XMLHttpRequest();
+			oReq.addEventListener("load", reqListener);
+			oReq.onerror = function(){resolve("notFound")}; //for obs local file browser sources
+			oReq.open("GET", 'Resources/Texts/Character Info/' + pCharacter + '.json');
+			oReq.send();
+
+			function reqListener () {
+				try {resolve(JSON.parse(oReq.responseText))}
+				catch {resolve("notFound")} //for live servers
+			}
+		})
+	}
 
 	//character update!
-	function updateChar(pCharacter, pSkin, color, charID, trailID) {
+	async function updateChar(pCharacter, pSkin, color, charID, trailID) {
 
 		//store so code looks cleaner later
 		let charEL = document.getElementById(charID);
 		let trailEL = document.getElementById(trailID);
+
+		//this will trigger whenever the image loaded cant be found
+		if (startup) {
+			//if the image fails to load, we will put a placeholder
+			charEL.addEventListener("error", function(){
+				//we need two different images because a "?" flipped looks weird
+				if (charEL == document.getElementById("charP1")) {
+					charEL.setAttribute('src', 'Resources/Characters/Random/P1.png');
+				} else {
+					charEL.setAttribute('src', 'Resources/Characters/Random/P2.png');
+				}
+			})
+			//trail will just show nothing
+			trailEL.addEventListener("error", function(){showNothing(trailEL)})
+		}
 
 		//if using an Alt skin, just use the normal version
 		if (pSkin.startsWith("Alt ")) {
@@ -391,24 +423,25 @@ function init() {
 		//change the image path depending on the character and skin
 		charEL.setAttribute('src', 'Resources/Characters/' + pCharacter + '/' + pSkin + '.png');
 
-		//this is so characters with spaces on their names also work
-		let pCharNoSpaces = pCharacter.replace(/ /g, "");
+		//get the character positions
+		let charInfo = await getCharInfo(pCharacter);
 		//             x, y, scale
 		let charPos = [0, 0, 1];
-		//now, check if the character and skin exist in the database down there
-		if (window[pCharNoSpaces]) {
-			if (window[pCharNoSpaces][pSkin]) { //if the skin has a specific position
-				charPos[0] = window[pCharNoSpaces][pSkin][0];
-				charPos[1] = window[pCharNoSpaces][pSkin][1];
-				charPos[2] = window[pCharNoSpaces][pSkin][2];
+		//now, check if the character or skin exists in the json file we checked earler
+		if (charInfo != "notFound") {
+			if (charInfo.vsScreen[pSkin]) { //if the skin has a specific position
+				charPos[0] = charInfo.vsScreen[pSkin].x;
+				charPos[1] = charInfo.vsScreen[pSkin].y;
+				charPos[2] = charInfo.vsScreen[pSkin].scale;
 				trailEL.setAttribute('src', 'Resources/Trails/' + pCharacter + '/' + color + ' ' + pSkin + '.png');
-			} else { //else, use a default position
-				charPos[0] = window[pCharNoSpaces].neutral[0];
-				charPos[1] = window[pCharNoSpaces].neutral[1];
-				charPos[2] = window[pCharNoSpaces].neutral[2];
+			} else { //if not, use a default position
+				charPos[0] = charInfo.vsScreen.neutral.x;
+				charPos[1] = charInfo.vsScreen.neutral.y;
+				charPos[2] = charInfo.vsScreen.neutral.scale;
 				trailEL.setAttribute('src', 'Resources/Trails/' + pCharacter + '/' + color + '.png');
 			}
 		} else { //if the character isnt on the database, set positions for the "?" image
+			//this condition is used just to position images well on both sides
 			if (charEL == document.getElementById("charP1")) {
 				charPos[0] = -150; 
 			} else {
@@ -433,193 +466,19 @@ function init() {
 			trailEL.style.imageRendering = "pixelated";
 		}
 
-		//this will trigger whenever the image loaded cant be found
-		if (startup) {
-			//if the image fails to load, we will put a placeholder
-			charEL.addEventListener("error", function(){
-				//we need two different images because a "?" flipped looks weird
-				if (charEL == document.getElementById("charP1")) {
-					charEL.setAttribute('src', 'Resources/Characters/Random/P1.png');
-				} else {
-					charEL.setAttribute('src', 'Resources/Characters/Random/P2.png');
-				}
-			})
-			//trail will just show nothing
-			trailEL.addEventListener("error", function(){showNothing(trailEL)})
-		}
-
 		return charPos[2]; //we need this one to set scale keyframe when fading back
 	}
 
-
 	//this gets called just to change the color of a trail
-	function colorTrail(trailID, pCharacter, pSkin, color) {
+	async function colorTrail(trailID, pCharacter, pSkin, color) {
 		let trailEL = document.getElementById(trailID);
-		let pCharNoSpaces = pCharacter.replace(/ /g, "");
-		if (window[pCharNoSpaces]) {
-			if (window[pCharNoSpaces][pSkin]) {
+		let charInfo = await getCharInfo(pCharacter);
+		if (charInfo != "notFound") {
+			if (charInfo.vsScreen[pSkin]) {
 				trailEL.setAttribute('src', 'Resources/Trails/' + pCharacter + '/' + color + ' ' + pSkin + '.png');
 			} else {
 				trailEL.setAttribute('src', 'Resources/Trails/' + pCharacter + '/' + color + '.png');
 			}
 		}
-	}
-
-
-	//positions database starts here! scale cant be lower than 1
-	Absa = {
-		neutral: [55, 133, 1.35],
-		LoA: [410, 175, 1.5],
-		HD: [45, 125, 1.3]
-	};
-	Clairen = {
-		neutral: [-400, 170, 1.17],
-		LoA: [370, 180, 1.4],
-		HD: [-550, 125, 1.07]
-	};
-	Elliana = {
-		neutral: [-280, 160, 1.22],
-		LoA: [-270, 125, 1.1],
-		HD: [-250, 140, 1.34]
-	};
-	Etalus = {
-		neutral: [-340, 160, 1.05],
-		Panda: [-340, 160, 1.05],	//same as neutral, just here so trail shows up
-		LoA: [235, 220, 1.4],
-		HD: [-470, 155, 1]
-	};
-	Forsburn = {
-		neutral: [-125, 130, 1.25],
-		LoA: [265, 170, 1.35],
-		HD: [-293, 25, 1.27]
-	};
-	Kragg = {
-		neutral: [-260, 20, 1.03],
-		LoA: [-110, 2, 1.1],
-		HD: [20, -130, 1.4]
-	};
-	Maypul = {
-		neutral: [-260, 225, 1],
-		LoA: [280, 200, 1.3],
-		Ragnir: [-240, 5, 1.15],
-		HD: [-295, 40, 1.12]
-	};
-	Orcane = {
-		neutral: [-305, 135, 1.02],
-		LoA: [-150, 120, 1.1],
-		HD: [-0, 50, 1.1]
-	};
-	OriandSein = { //characters with spaces on their name must have them removed
-		neutral: [-50, 100, 1.1],
-		HD: [-280, 35, 1.08]
-	};
-	Ranno = {
-		neutral: [140, 145, 1.3],
-		LoA: [270, 180, 1.2],
-		Tuxedo: [140, 145, 1.3], //same as neutral, just here so trail shows up
-		HD: [120, 155, 1.27]
-	};
-	ShovelKnight = {
-		neutral: [-5, 100, 1.15],
-		HD: [15, 100, 1.15]
-	};
-	Sylvanos = {
-		neutral: [-400, 50, 1.1],
-		LoA: [150, 130, 1.2],
-		HD: [-440, 30, 1.04]
-	};
-	Wrastor = {
-		neutral: [-175, 155, 1.19],
-		LoA: [275, 150, 1.2],
-		HD: [-60, 140, 1.19]
-	};
-	Zetterburn = {
-		neutral: [-50, 10, 1.35],
-		LoA: [170, 100, 1.2],
-		HD: [-170, -20, 1.25]
-	};
-
-	//workshop characters:
-	AcidRainbows = {
-		neutral: [200, 200, 1.2]
-	};
-	Archen = {
-		neutral: [-50, 0, 1]
-	};
-	Astra = {
-		neutral: [65, 100, 1],
-		vid: "Valkyrie" //this is to use a BG belonging to other character
-	};
-	BirdGuy = {
-		neutral: [-20, 0, 1]
-	};
-	Epinel = {
-		neutral: [100, 140, 1.1],
-		vid: "Kragg"
-	};
-	Falco = {
-		neutral: [100, 175, 1.1]
-	};
-	Fox = {
-		neutral: [90, 140, 1.1]
-	};
-	Guadua = {
-		neutral: [-240, 60, 1.1]
-	};
-	HimeDaisho = {
-		neutral: [150, 25, 1.15]
-	};
-	Kirby = {
-		neutral: [-80, 170, 1]
-	};
-	Kris = {
-		neutral: [75, 125, 1.1]
-	};
-	Liz = {
-		neutral: [140, 125, 1.05]
-	};
-	MayuAshikaga = {
-		neutral: [0, 100, 1.1],
-		vid: "Zetta Ashikaga"
-	};
-	Mollo = {
-		neutral: [-20, 120, 1.22],
-		vid: "Clairen"
-	};
-	Mycolich = {
-		neutral: [-120, 25, 1.05],
-		vid: "Sylvanos"
-	};
-	Olympia = {
-		neutral: [20, 120, 1.1]
-	};
-	Otto = {
-		neutral: [-100, 75, 1]
-	}
-	Pomme = {
-		neutral: [225, 125, 1.15]
-	}
-	R_00 = { //this should have "-" but it would break :(
-		neutral: [-100, 75, 1],
-		vid: "Clairen"
-	}
-	Sandbert = {
-		neutral: [100, 175, 1],
-		vid: "Absa"
-	}
-	TrummelandAlto = {
-		neutral: [-100, 100, 1]
-	}
-	UzaCkater = {
-		neutral: [-125, 55, 1]
-	};
-	Valkyrie = {
-		neutral: [-50, 0, 1]
-	}
-	Yoyo = {
-		neutral: [0, 100, 1]
-	}
-	ZettaAshikaga = {
-		neutral: [-50, 100, 1.1]
 	}
 }

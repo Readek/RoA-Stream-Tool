@@ -1,0 +1,17 @@
+{
+    "scoreboard": {
+        "neutral": {
+            "x": -2,
+            "y": 11,
+            "scale": 3.8
+        }
+    },
+    "vsScreen": {
+        "neutral": {
+            "x": -120,
+            "y": 25,
+            "scale": 1.05
+        },
+        "background": "Sylvanos"
+    }
+}

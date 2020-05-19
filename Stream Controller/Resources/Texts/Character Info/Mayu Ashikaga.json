@@ -1,0 +1,22 @@
+{
+    "scoreboard": {
+        "neutral": {
+            "x": 3,
+            "y": 22,
+            "scale": 5
+        },
+        "alt": {
+            "x": 8,
+            "y": 10,
+            "scale": 2.5
+        }
+    },
+    "vsScreen": {
+        "neutral": {
+            "x": 0,
+            "y": 100,
+            "scale": 1.1
+        },
+        "background": "Zetta Ashikaga"
+    }
+}

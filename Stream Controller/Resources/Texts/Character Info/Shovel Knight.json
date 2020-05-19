@@ -1,0 +1,22 @@
+{
+    "scoreboard": {
+        "neutral": {
+            "x": 0,
+            "y": 18,
+            "scale": 3.2,
+            "comment": "Also works for HD"
+        }
+    },
+    "vsScreen": {
+        "neutral": {
+            "x": -5,
+            "y": 100,
+            "scale": 1.15
+        },
+        "HD": {
+            "x": -15,
+            "y":100,
+            "scale": 1.15
+        }
+    }
+}
