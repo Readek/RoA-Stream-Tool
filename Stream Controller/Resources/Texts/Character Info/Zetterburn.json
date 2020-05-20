@@ -1,4 +1,30 @@
 {
+    "skinList": [
+        "Normal",
+        "Blue",
+        "Red",
+        "Green",
+        "Grey",
+        "Purple",
+        "Halloween",
+        "Christmas",
+        "Valentines",
+        "Summer",
+        "Custom 1",
+        "Custom 2",
+        "Champion",
+        "Excaliburn",
+        "Golden",
+        "Abyss",
+        "Early Access",
+        "Shine",
+        "Ranked",
+        "HD",
+        "LoA"
+    ],
+    "playerCustoms": [
+        "Lzgpom"
+    ],
     "scoreboard": {
         "neutral": {
             "x": -7,

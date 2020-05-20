@@ -1,0 +1,9 @@
+Red
+Blue
+Pink
+Green
+NetGreen
+Purple
+Magenta
+Yellow
+CPU

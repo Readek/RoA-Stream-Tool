@@ -1,4 +1,31 @@
 {
+    "skinList": [
+        "Normal",
+        "Blue",
+        "Red",
+        "Green",
+        "Grey",
+        "Purple",
+        "Halloween",
+        "Christmas",
+        "Valentines",
+        "Summer",
+        "Custom 1",
+        "Custom 2",
+        "Twitch",
+        "Champion",
+        "Abyss",
+        "Early Access",
+        "Penguin",
+        "Ranked",
+        "HD",
+        "LoA"
+    ],
+    "playerCustoms": [
+        "Kilgore",
+        "OliveOily",
+        "Wauschi"
+    ],
     "scoreboard": {
         "neutral": {
             "x": 5,

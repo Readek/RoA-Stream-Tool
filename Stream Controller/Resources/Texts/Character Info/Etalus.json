@@ -1,4 +1,30 @@
 {
+    "skinList": [
+        "Normal",
+        "Cyan",
+        "Yellow",
+        "Green",
+        "Brown",
+        "Pink",
+        "Halloween",
+        "Christmas",
+        "Valentines",
+        "Summer",
+        "Custom 1",
+        "Custom 2",
+        "Champion",
+        "Golden",
+        "Abyss",
+        "Early Access",
+        "Panda",
+        "Genesis",
+        "Ranked",
+        "HD",
+        "LoA"
+    ],
+    "playerCustoms": [
+        "Swordsplay"
+    ],
     "scoreboard": {
         "neutral": {
             "x": -22,

@@ -1,4 +1,34 @@
 {
+    "skinList": [
+        "Normal",
+        "Blue",
+        "Pink",
+        "Green",
+        "Grey",
+        "Purple",
+        "Halloween",
+        "Christmas",
+        "Valentines",
+        "Summer",
+        "Custom 1",
+        "Custom 2",
+        "Summit",
+        "Burrito",
+        "Champion",
+        "Abyss",
+        "Early Access",
+        "Golden",
+        "Ranked",
+        "HD",
+        "LoA"
+    ],
+    "playerCustoms": [
+        "Caldozo",
+        "Junkyards",
+        "Peteru",
+        "Sorio",
+        "Transco"
+    ],
     "scoreboard": {
         "neutral": {
             "x": -7,

@@ -1,4 +1,19 @@
 {
+    "skinList": [
+        "Normal",
+        "Blue",
+        "Red",
+        "Green",
+        "Purple",
+        "Abyss",
+        "Yellow",
+        "Genesis",
+        "Pink",
+        "Grey",
+        "Orange",
+        "DarkGreen",
+        "TransRights"
+    ],
     "scoreboard": {
         "neutral": {
             "x": 30,

@@ -1,4 +1,22 @@
 {
+    "skinList": [
+        "Normal",
+        "Blue",
+        "Red",
+        "Green",
+        "Yellow",
+        "Pink",
+        "Abyss",
+        "Early Access",
+        "BlueRed",
+        "Orange",
+        "YellowPurple",
+        "YellowRed",
+        "Grey",
+        "OrangeBlue",
+        "GreenRed",
+        "Brown"
+    ],
     "scoreboard": {
         "neutral": {
             "x": 0,

@@ -1,4 +1,15 @@
 {
+    "skinList": [
+        "Normal",
+        "Blue",
+        "Red",
+        "Green",
+        "Grey",
+        "Pink",
+        "Shifting",
+        "Yellowish",
+        "Christmas"
+    ],
     "scoreboard": {
         "neutral": {
             "x": -5,

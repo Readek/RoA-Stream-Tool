@@ -1,4 +1,32 @@
 {
+    "skinList": [
+        "Normal",
+        "Blue",
+        "Red",
+        "Green",
+        "Grey",
+        "Pink",
+        "Halloween",
+        "Christmas",
+        "Valentines",
+        "Summer",
+        "Custom 1",
+        "Custom 2",
+        "Pool Party",
+        "Champion",
+        "Abyss",
+        "Early Access",
+        "Tuxedo",
+        "Golden",
+        "Ranked",
+        "HD",
+        "LoA"
+    ],
+    "playerCustoms": [
+        "Dima",
+        "Kaeru",
+        "Kerus"
+    ],
     "scoreboard": {
         "neutral": {
             "x": 13,

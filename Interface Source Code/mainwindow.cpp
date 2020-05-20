@@ -6,6 +6,7 @@
 #include <QShortcut>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QJsonArray>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -13,15 +14,15 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+
     //this loads the Characters.txt list on the character combo boxes on startup
     ui->comboBox->clear();
     ui->comboBox_4->clear();
-    QString path = "Resources/Texts/Interface Lists/Characters.txt";
-    QFile txt(path);
+    QFile txt("Resources/Texts/Character List.txt");
 
     if (!txt.open(QFile::ReadOnly | QFile::Text))
     {
-        QMessageBox::warning(this, "Oh no", "Coudn't find the character lists.");
+        QMessageBox::warning(this, "Oh no", "Coudn't find the characters list.");
     }
 
     QTextStream in(&txt);
@@ -34,6 +35,29 @@ MainWindow::MainWindow(QWidget *parent) :
 
     txt.flush();
     txt.close();
+
+
+    //this loads the colors from the Color Slots.txt file
+    ui->comboBox_5->clear();
+    ui->comboBox_6->clear();
+    QFile txt2("Resources/Texts/Color Slots.txt");
+
+    if (!txt2.open(QFile::ReadOnly | QFile::Text))
+    {
+        QMessageBox::warning(this, "Oh no", "Coudn't find the color slots list.");
+    }
+
+    QTextStream in2(&txt2);
+    while (!in2.atEnd())
+    {
+        QString line = in2.readLine();
+        ui->comboBox_5->addItem(line);
+        ui->comboBox_6->addItem(line);
+    }
+
+    txt2.flush();
+    txt2.close();
+
 
     //disable [W] and [L] at startup
     ui->checkWP1->setEnabled(false);
@@ -181,53 +205,36 @@ void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
         player = pSplit[0];
     }
 
-    //now we will check the skin list txt files and add an entry line by line
-
-    //this down here is for the exclusive player skins
-    QString pathc = "Resources/Texts/Interface Lists/Player Skins/" + character + ".txt";
-    QFile txtc(pathc);
-
-    if (!txtc.open(QFile::ReadOnly | QFile::Text))
+    //now we will check the character info json file
+    QFile jsonFile("Resources/Texts/Character Info/" + character + ".json");
+    if (!jsonFile.open(QFile::ReadOnly | QFile::Text))
     {
         //i was going to include error messages here but they would show on startup
     }
+    QJsonDocument jsonDoc = QJsonDocument().fromJson(jsonFile.readAll());
+    QJsonObject jsonObj = jsonDoc.object();
+    jsonFile.close();
 
-    QTextStream inc(&txtc);
-    while (!inc.atEnd())
-    {
-        QString line = inc.readLine();
-        if (player == "")
-        {
-            //this is to prevent it from adding an empty option to the combo box in case there is no player name
-        }
-        else if (line.contains(player, Qt::CaseInsensitive))
-        {
-            ui->comboBox_2->addItem(player);
+    //this down here is for the custom player skins
+    if (jsonObj.contains("playerCustoms")) {
+        QJsonArray pCustArray = jsonObj["playerCustoms"].toArray();
+        for (int i = 0; i < pCustArray.size(); i++) {
+            if (player == "")
+            {
+                //this is to prevent it from adding an empty option to the combo box in case there is no player name
+            }
+            else if (pCustArray[i].toString().contains(player, Qt::CaseInsensitive))
+            {
+                ui->comboBox_2->addItem(player);
+            }
         }
     }
-
-    txtc.flush();
-    txtc.close();
-
 
     //now for the normal skins
-    QString path = "Resources/Texts/Interface Lists/Skin Lists/" + character + ".txt";
-    QFile txt(path);
-
-    if (!txt.open(QFile::ReadOnly | QFile::Text))
-    {
-        //i was going to include error messages here but they would show on startup
+    QJsonArray skinArray = jsonObj["skinList"].toArray();
+    for (int i = 0; i < skinArray.size(); i++) {
+        ui->comboBox_2->addItem(skinArray[i].toString());
     }
-
-    QTextStream in(&txt);
-    while (!in.atEnd())
-    {
-        QString line = in.readLine();
-        ui->comboBox_2->addItem(line);
-    }
-
-    txt.flush();
-    txt.close();
 }
 
 //this is copied from P1's (above's) code, changing some numbers
@@ -236,7 +243,7 @@ void MainWindow::on_comboBox_4_currentIndexChanged(const QString &arg1)
     ui->comboBox_3->clear();
     QString character = ui->comboBox_4->currentText();
     QString player = ui->lineEdit_2->text();
-
+    //this is so it doesnt read the player team tag
     QStringList pSplit = player.split("|");
     if (pSplit.length() == 2)
     {
@@ -247,50 +254,36 @@ void MainWindow::on_comboBox_4_currentIndexChanged(const QString &arg1)
         player = pSplit[0];
     }
 
-
-    QString pathc = "Resources/Texts/Interface Lists/Player Skins/" + character + ".txt";
-    QFile txtc(pathc);
-
-    if (!txtc.open(QFile::ReadOnly | QFile::Text))
+    //now we will check the character info json file
+    QFile jsonFile("Resources/Texts/Character Info/" + character + ".json");
+    if (!jsonFile.open(QFile::ReadOnly | QFile::Text))
     {
         //i was going to include error messages here but they would show on startup
     }
+    QJsonDocument jsonDoc = QJsonDocument().fromJson(jsonFile.readAll());
+    QJsonObject jsonObj = jsonDoc.object();
+    jsonFile.close();
 
-    QTextStream inc(&txtc);
-    while (!inc.atEnd())
-    {
-        QString line = inc.readLine();
-        if (player == "")
-        {
-            //this is to prevent it from adding an empty option to the combo box in case there is no player name
+    //this down here is for the custom player skins
+    if (jsonObj.contains("playerCustoms")) {
+        QJsonArray pCustArray = jsonObj["playerCustoms"].toArray();
+        for (int i = 0; i < pCustArray.size(); i++) {
+            if (player == "")
+            {
+                //this is to prevent it from adding an empty option to the combo box in case there is no player name
+            }
+            else if (pCustArray[i].toString().contains(player, Qt::CaseInsensitive))
+            {
+                ui->comboBox_3->addItem(player);
+            }
         }
-        else if (line.contains(player, Qt::CaseInsensitive))
-        {
-            ui->comboBox_3->addItem(player);
-        }
     }
 
-    txtc.flush();
-    txtc.close();
-
-
-    QString path = "Resources/Texts/Interface Lists/Skin Lists/" + character + ".txt";
-    QFile txt(path);
-
-    if (!txt.open(QFile::ReadOnly | QFile::Text))
-    {
-        //i was going to include error messages here but they would show on startup
+    //now for the normal skins
+    QJsonArray skinArray = jsonObj["skinList"].toArray();
+    for (int i = 0; i < skinArray.size(); i++) {
+        ui->comboBox_3->addItem(skinArray[i].toString());
     }
-
-    QTextStream in(&txt);
-    while (!in.atEnd())
-    {
-        QString line = in.readLine();
-        ui->comboBox_3->addItem(line);
-    }
-
-    txt.flush();
-    txt.close();
 }
 
 
@@ -407,7 +400,7 @@ void MainWindow::on_buttonUpdate_clicked()
     QJsonObject jsonData;
 
 
-    //player name
+    //player 1 name
     QString p1FullName = ui->lineEdit->text();
     QStringList pSplit = p1FullName.split("|");
     if (pSplit.length() == 2)
@@ -422,22 +415,22 @@ void MainWindow::on_buttonUpdate_clicked()
     }
 
     //this is for the player's score, not fancy i know i know
-    QString scoreP1;
+    int scoreP1;
     if (ui->CheckWinP1_3->isChecked())
     {
-        scoreP1 = "3";
+        scoreP1 = 3;
     }
     else if (ui->CheckWinP1_2->isChecked())
     {
-        scoreP1 = "2";
+        scoreP1 = 2;
     }
     else if (ui->CheckWinP1_1->isChecked())
     {
-        scoreP1 = "1";
+        scoreP1 = 1;
     }
     else
     {
-        scoreP1 = "0";
+        scoreP1 = 0;
     }
     jsonData["p1Score"] = scoreP1;
 
@@ -478,22 +471,22 @@ void MainWindow::on_buttonUpdate_clicked()
     }
 
     //player score
-    QString scoreP2;
+    int scoreP2;
     if (ui->CheckWinP2_3->isChecked())
     {
-        scoreP2 = "3";
+        scoreP2 = 3;
     }
     else if (ui->CheckWinP2_2->isChecked())
     {
-        scoreP2 = "2";
+        scoreP2 = 2;
     }
     else if (ui->CheckWinP2_1->isChecked())
     {
-        scoreP2 = "1";
+        scoreP2 = 1;
     }
     else
     {
-        scoreP2 = "0";
+        scoreP2 = 0;
     }
     jsonData["p2Score"] = scoreP2;
 
@@ -544,11 +537,11 @@ void MainWindow::on_buttonUpdate_clicked()
     //and finally, the allow intro bool (which isnt really a bool but whatevs)
     if (ui->allowIntro->isChecked())
     {
-        jsonData["allowIntro"] = "yes";
+        jsonData["allowIntro"] = true;
     }
     else
     {
-        jsonData["allowIntro"] = "no";
+        jsonData["allowIntro"] = false;
     }
 
 
@@ -567,7 +560,7 @@ void MainWindow::on_buttonUpdate_clicked()
 void MainWindow::updateP1()
 {
     //player 1 name
-    QFile txtP1("Resources/Texts/Player 1.txt");
+    QFile txtP1("Resources/Texts/Simple Texts/Player 1.txt");
 
     if (!txtP1.open(QFile::WriteOnly | QFile::Text))
     {
@@ -593,7 +586,7 @@ void MainWindow::updateP1()
 void MainWindow::updateP2()
 {
     //player 2 name
-    QFile txtP2("Resources/Texts/Player 2.txt");
+    QFile txtP2("Resources/Texts/Simple Texts/Player 2.txt");
 
     if (!txtP2.open(QFile::WriteOnly | QFile::Text))
     {
@@ -619,7 +612,7 @@ void MainWindow::updateP2()
 void MainWindow::updateRound()
 {
     //round text
-    QFile txt("Resources/Texts/Round.txt");
+    QFile txt("Resources/Texts/Simple Texts/Round.txt");
 
     if (!txt.open(QFile::WriteOnly | QFile::Text))
     {
@@ -633,7 +626,7 @@ void MainWindow::updateRound()
     txt.close();
 
     //tournament text
-    QFile txt2("Resources/Texts/Tournament Name.txt");
+    QFile txt2("Resources/Texts/Simple Texts/Tournament Name.txt");
 
     if (!txt2.open(QFile::WriteOnly | QFile::Text))
     {
@@ -649,7 +642,7 @@ void MainWindow::updateRound()
 
 void MainWindow::updateCasters()
 {
-    QFile txt("Resources/Texts/Caster 1 Name.txt");
+    QFile txt("Resources/Texts/Simple Texts/Caster 1 Name.txt");
 
     if (!txt.open(QFile::WriteOnly | QFile::Text))
     {
@@ -663,7 +656,7 @@ void MainWindow::updateCasters()
     txt.close();
 
 
-    QFile txt2("Resources/Texts/Caster 1 Twitter.txt");
+    QFile txt2("Resources/Texts/Simple Texts/Caster 1 Twitter.txt");
 
     if (!txt2.open(QFile::WriteOnly | QFile::Text))
     {
@@ -677,7 +670,7 @@ void MainWindow::updateCasters()
     txt2.close();
 
 
-    QFile txt3("Resources/Texts/Caster 2 Name.txt");
+    QFile txt3("Resources/Texts/Simple Texts/Caster 2 Name.txt");
 
     if (!txt3.open(QFile::WriteOnly | QFile::Text))
     {
@@ -691,7 +684,7 @@ void MainWindow::updateCasters()
     txt3.close();
 
 
-    QFile txt4("Resources/Texts/Caster 2 Twitter.txt");
+    QFile txt4("Resources/Texts/Simple Texts/Caster 2 Twitter.txt");
 
     if (!txt4.open(QFile::WriteOnly | QFile::Text))
     {
@@ -721,61 +714,40 @@ void MainWindow::on_lineEdit_textChanged(const QString &arg1)
         player = pSplit[0];
     }
 
-    //now we will check the skin list txt files and add an entry line by line
-
-    //this down here is for the exclusive player skins
-    QString pathc = "Resources/Texts/Interface Lists/Player Skins/" + character + ".txt";
-    QFile txtc(pathc);
-
-    if (!txtc.open(QFile::ReadOnly | QFile::Text))
+    //now we will check the character info json file
+    QFile jsonFile("Resources/Texts/Character Info/" + character + ".json");
+    if (!jsonFile.open(QFile::ReadOnly | QFile::Text))
     {
         //i was going to include error messages here but they would show on startup
     }
+    QJsonDocument jsonDoc = QJsonDocument().fromJson(jsonFile.readAll());
+    QJsonObject jsonObj = jsonDoc.object();
+    jsonFile.close();
 
-    QTextStream inc(&txtc);
-    bool stop = true;
-    while (!inc.atEnd())
-    {
-        QString line = inc.readLine();
-        int x = QString::compare(player, line, Qt::CaseInsensitive);
-        if (player == "")
-        {
-            //this is to prevent it from adding an empty option to the combo box in case there is no player name
+    //this down here is for the custom player skins
+    if (jsonObj.contains("playerCustoms")) {
+        QJsonArray pCustArray = jsonObj["playerCustoms"].toArray();
+        for (int i = 0; i < pCustArray.size(); i++) {
+            int x = QString::compare(player, pCustArray[i].toString(), Qt::CaseInsensitive);
+            if (player == "")
+            {
+                //this is to prevent it from adding an empty option to the combo box in case there is no player name
+            }
+            else if (x == 0)
+            {
+                ui->comboBox_2->clear();
+                ui->comboBox_2->addItem(player);
+                //yeah im just redoing the whole list
+                QJsonArray skinArray = jsonObj["skinList"].toArray();
+                for (int i = 0; i < skinArray.size(); i++) {
+                    ui->comboBox_2->addItem(skinArray[i].toString());
+                }
+            }
         }
-        else if (x == 0)
-        {
-            ui->comboBox_2->clear();
-            ui->comboBox_2->addItem(player);
-            stop = false;
-        }
-    }
-
-    txtc.flush();
-    txtc.close();
-
-    if (!stop)
-    {
-        //now for the normal skins
-        QString path = "Resources/Texts/Interface Lists/Skin Lists/" + character + ".txt";
-        QFile txt(path);
-
-        if (!txt.open(QFile::ReadOnly | QFile::Text))
-        {
-            //i was going to include error messages here but they would show on startup
-        }
-
-        QTextStream in(&txt);
-        while (!in.atEnd())
-        {
-            QString line = in.readLine();
-            ui->comboBox_2->addItem(line);
-        }
-
-        txt.flush();
-        txt.close();
     }
 }
 
+//same code as above
 void MainWindow::on_lineEdit_2_textChanged(const QString &arg1)
 {
     QString character = ui->comboBox_4->currentText();
@@ -791,57 +763,32 @@ void MainWindow::on_lineEdit_2_textChanged(const QString &arg1)
         player = pSplit[0];
     }
 
-    //now we will check the skin list txt files and add an entry line by line
-
-    //this down here is for the exclusive player skins
-    QString pathc = "Resources/Texts/Interface Lists/Player Skins/" + character + ".txt";
-    QFile txtc(pathc);
-
-    if (!txtc.open(QFile::ReadOnly | QFile::Text))
+    QFile jsonFile("Resources/Texts/Character Info/" + character + ".json");
+    if (!jsonFile.open(QFile::ReadOnly | QFile::Text))
     {
-        //i was going to include error messages here but they would show on startup
+        //
     }
+    QJsonDocument jsonDoc = QJsonDocument().fromJson(jsonFile.readAll());
+    QJsonObject jsonObj = jsonDoc.object();
+    jsonFile.close();
 
-    QTextStream inc(&txtc);
-    bool stop = true;
-    while (!inc.atEnd())
-    {
-        QString line = inc.readLine();
-        int x = QString::compare(player, line, Qt::CaseInsensitive);
-        if (player == "")
-        {
-            //this is to prevent it from adding an empty option to the combo box in case there is no player name
+    if (jsonObj.contains("playerCustoms")) {
+        QJsonArray pCustArray = jsonObj["playerCustoms"].toArray();
+        for (int i = 0; i < pCustArray.size(); i++) {
+            int x = QString::compare(player, pCustArray[i].toString(), Qt::CaseInsensitive);
+            if (player == "")
+            {
+                //this is to prevent it from adding an empty option to the combo box in case there is no player name
+            }
+            else if (x == 0)
+            {
+                ui->comboBox_3->clear();
+                ui->comboBox_3->addItem(player);
+                QJsonArray skinArray = jsonObj["skinList"].toArray();
+                for (int i = 0; i < skinArray.size(); i++) {
+                    ui->comboBox_3->addItem(skinArray[i].toString());
+                }
+            }
         }
-        else if (x == 0)
-        {
-            ui->comboBox_3->clear();
-            ui->comboBox_3->addItem(player);
-            stop = false;
-        }
-    }
-
-    txtc.flush();
-    txtc.close();
-
-    if (!stop)
-    {
-        //now for the normal skins
-        QString path = "Resources/Texts/Interface Lists/Skin Lists/" + character + ".txt";
-        QFile txt(path);
-
-        if (!txt.open(QFile::ReadOnly | QFile::Text))
-        {
-            //i was going to include error messages here but they would show on startup
-        }
-
-        QTextStream in(&txt);
-        while (!in.atEnd())
-        {
-            QString line = in.readLine();
-            ui->comboBox_3->addItem(line);
-        }
-
-        txt.flush();
-        txt.close();
     }
 }

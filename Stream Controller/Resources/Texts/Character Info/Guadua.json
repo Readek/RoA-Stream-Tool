@@ -1,4 +1,13 @@
 {
+    "skinList": [
+        "Normal",
+        "Blue",
+        "Red",
+        "Yellow",
+        "Grey",
+        "Purple",
+        "Ghost"
+    ],
     "scoreboard": {
         "neutral": {
             "x": -20,

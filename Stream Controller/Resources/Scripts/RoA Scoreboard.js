@@ -51,7 +51,7 @@ function init() {
 		if (startup) {
 			//of course, we have to start with the cool intro stuff
 			let allowIntro = scInfo['allowIntro']; //to know if the intro is allowed
-			if (allowIntro == "yes") {
+			if (allowIntro) {
 
 				//get the variables only used in the intro
 				let tournamentName = scInfo['tournamentName'];
@@ -93,10 +93,10 @@ function init() {
 
 				} else { //if its not the first game, show game count
 					let midTextEL = document.getElementById('midTextIntro');
-					if (Number(p1Score) + Number(p2Score) != 4) { //if its not the last game of a bo5
+					if ((p1Score + p2Score) != 4) { //if its not the last game of a bo5
 
 						//just show the game count in the intro
-						midTextEL.textContent = "Game " + (Number(p1Score) + Number(p2Score) + 1);
+						midTextEL.textContent = "Game " + (p1Score + p2Score + 1);
 
 					} else { //if game 5
 

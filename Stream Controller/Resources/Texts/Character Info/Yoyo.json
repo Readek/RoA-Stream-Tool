@@ -1,4 +1,21 @@
 {
+    "skinList": [
+        "Normal",
+        "Color Picker",
+        "G7",
+        "Christmas",
+        "Chosen One",
+        "PinkYellow",
+        "PurpleWhite",
+        "OrangeMagenta",
+        "Umbrella",
+        "FLLFFL",
+        "Nhazul",
+        "Tentionmaru",
+        "One",
+        "Gildedguy",
+        "Y.U.P.I.A."
+    ],
     "scoreboard": {
         "neutral": {
             "x": 14,

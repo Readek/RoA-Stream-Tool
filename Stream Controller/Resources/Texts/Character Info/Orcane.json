@@ -1,4 +1,31 @@
 {
+    "skinList": [
+        "Normal",
+        "Cyan",
+        "Red",
+        "Green",
+        "Grey",
+        "Purple",
+        "Halloween",
+        "Christmas",
+        "Valentines",
+        "Summer",
+        "Custom 1",
+        "Custom 2",
+        "Summit",
+        "Golden",
+        "Abyss",
+        "Early Access",
+        "Pool Party",
+        "Champion",
+        "Ranked",
+        "HD",
+        "LoA"
+    ],
+    "playerCustoms": [
+        "Hukon",
+        "Satosha"
+    ],
     "scoreboard": {
         "neutral": {
             "x": -22,

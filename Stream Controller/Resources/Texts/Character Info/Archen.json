@@ -1,4 +1,19 @@
 {
+    "skinList": [
+        "Normal",
+        "Blue",
+        "Red",
+        "Shiny",
+        "Grey",
+        "White",
+        "Cyan",
+        "Purple",
+        "Christmas",
+        "Braviary",
+        "Mandibuzz",
+        "Zygarde",
+        "Hydreigon"
+    ],
     "scoreboard": {
         "neutral": {
             "x": 8,

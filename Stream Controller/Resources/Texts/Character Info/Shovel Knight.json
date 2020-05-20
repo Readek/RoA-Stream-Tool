@@ -1,4 +1,26 @@
 {
+    "skinList": [
+        "Normal",
+        "Cyan",
+        "Red",
+        "Green",
+        "Grey",
+        "Purple",
+        "Halloween",
+        "Christmas",
+        "Valentines",
+        "Summer",
+        "Custom 1",
+        "Custom 2",
+        "Abyss",
+        "Early Access",
+        "Golden",
+        "Ranked",
+        "HD"
+    ],
+    "playerCustoms": [
+        "Slimepuffen"
+    ],
     "scoreboard": {
         "neutral": {
             "x": 0,

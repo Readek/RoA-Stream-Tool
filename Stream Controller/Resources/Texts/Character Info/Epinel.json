@@ -1,4 +1,20 @@
 {
+    "skinList": [
+        "Normal",
+        "Slush",
+        "Illusion",
+        "Mobius",
+        "Stalker",
+        "Catastrophe",
+        "Adamantite",
+        "Weave",
+        "Virus",
+        "Vapor",
+        "Gold",
+        "Tech",
+        "Thirteen",
+        "Virulisk"
+    ],
     "scoreboard": {
         "neutral": {
             "x": 22,

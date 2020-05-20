@@ -1,4 +1,20 @@
 {
+    "skinList": [
+        "Normal",
+        "Egg",
+        "Pink",
+        "Green",
+        "Dark",
+        "Grey",
+        "Purple",
+        "Turquoise",
+        "Red",
+        "GreenDark",
+        "Blue",
+        "DarkBlue",
+        "DarkPink",
+        "Early Access"
+    ],
     "scoreboard": {
         "neutral": {
             "x": 3,

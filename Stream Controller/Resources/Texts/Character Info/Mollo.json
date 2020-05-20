@@ -1,4 +1,22 @@
 {
+    "skinList": [
+        "Normal",
+        "L.I.A.U.A.",
+        "Cecropia",
+        "Lucky",
+        "Ashen",
+        "Trans Rights",
+        "NB Rights",
+        "Ace Rights",
+        "S'mores",
+        "Holiday",
+        "Neon",
+        "Kaiju",
+        "Rosy Maple",
+        "Tournament",
+        "Luna",
+        "Seafoam"
+    ],
     "scoreboard": {
         "neutral": {
             "x": -3,

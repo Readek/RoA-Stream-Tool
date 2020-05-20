@@ -1,4 +1,19 @@
 {
+    "skinList": [
+        "Normal",
+        "Blue",
+        "Genesis",
+        "Yellow",
+        "Pink",
+        "Golden",
+        "Alt Normal",
+        "Alt Blue",
+        "Alt Green",
+        "Alt Genesis",
+        "Alt Yellow",
+        "Alt Pink",
+        "Alt Golden"
+    ],
     "scoreboard": {
         "neutral": {
             "x": -7,

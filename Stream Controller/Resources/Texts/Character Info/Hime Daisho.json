@@ -1,4 +1,22 @@
 {
+    "skinList": [
+        "Normal",
+        "BoTW",
+        "Royal",
+        "Heroic",
+        "Mountaineer",
+        "Minty",
+        "Penny",
+        "Lumi",
+        "Liz",
+        "Youmu",
+        "Sakura",
+        "Rokesha",
+        "Early Access",
+        "Glass",
+        "Metal",
+        "Rainbow"
+    ],
     "scoreboard": {
         "neutral": {
             "x": 22,

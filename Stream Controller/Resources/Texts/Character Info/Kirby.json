@@ -1,4 +1,20 @@
 {
+    "skinList": [
+        "Normal",
+        "Blue",
+        "DarkRed",
+        "Green",
+        "Grey",
+        "Dark",
+        "Salmon",
+        "Purple",
+        "Early Access",
+        "Brown",
+        "White",
+        "LightRed",
+        "LightYellow",
+        "Shifting"
+    ],
     "scoreboard": {
         "neutral": {
             "x": 12,

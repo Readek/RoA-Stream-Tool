@@ -1,4 +1,28 @@
 {
+    "skinList": [
+        "Normal",
+        "Cyan",
+        "Red",
+        "Green",
+        "Dark",
+        "Pink",
+        "Halloween",
+        "Christmas",
+        "Valentines",
+        "Summer",
+        "Custom 1",
+        "Custom 2",
+        "Abyss",
+        "Early Access",
+        "Ranked",
+        "HD"
+    ],
+    "playerCustoms": [
+        "Cyberstorm",
+        "Hermoise",
+        "Nyantic",
+        "Readek"
+    ],
     "scoreboard": {
         "neutral": {
             "x": -4,

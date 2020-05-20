@@ -1,4 +1,22 @@
 {
+    "skinList": [
+        "Normal",
+        "Blue",
+        "Red",
+        "Green",
+        "Grey",
+        "Purple",
+        "Valentines",
+        "Pink",
+        "Orange",
+        "GreenGrey",
+        "NormalPink",
+        "Abyss Light",
+        "Yellow",
+        "RedBlue",
+        "Abyss Dark",
+        "Genesis"
+    ],
     "scoreboard": {
         "neutral": {
             "x": 19,
