@@ -1,0 +1,37 @@
+{
+    "skinList": [
+        "Normal",
+        "Featuring Dante from the Devil May Cry series",
+        "Purple",
+        "Green",
+        "Red-Blue",
+        "Light Blue",
+        "Dark Blue",
+        "Alt Normal",
+        "Alt Featuring Dante from the Devil May Cry series",
+        "Alt Purple",
+        "Alt Green",
+        "Alt Red-Blue",
+        "Alt Light Blue",
+        "Alt Dark Blue"
+    ],
+    "scoreboard": {
+        "neutral": {
+            "x": -10,
+            "y": 20,
+            "scale": 4.5
+        },
+        "alt": {
+            "x": 5,
+            "y": 15,
+            "scale": 2.2
+        }
+    },
+    "vsScreen": {
+        "neutral": {
+            "x": -125,
+            "y": 100,
+            "scale": 1.05
+        }
+    }
+}
