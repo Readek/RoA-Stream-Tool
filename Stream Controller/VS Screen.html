@@ -42,7 +42,12 @@
         #oneEighty {
             width: 1920px;
             height: 1080px;
-            -webkit-mask-image: url("Resources/Masks/VS Mask.png");
+            clip: rect(0px, 960px, 1080px, 0px);
+        }
+
+        .mirrorP2 {
+            position: absolute;
+            transform: rotateY(182deg);
         }
 
 
@@ -194,7 +199,7 @@
             </div>
         </div>
 
-        <div class="mirror" id="oneEighty">
+        <div class="mirrorP2" id="oneEighty">
             <div id="charaP2">
                 <img class="character" id="trailP2"/>
                 <img class="character" id="charP2"/>
