@@ -573,6 +573,7 @@ function init() {
 			}
 			charPos[1] = 3; charPos[2] = 1.5;
 		}
+		
 		//to position the character
 		charEL.style.objectPosition =  charPos[0] + "px " + charPos[1] + "px";
 		charEL.style.transform = "scale(" + charPos[2] + ")";
