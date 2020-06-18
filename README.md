@@ -31,6 +31,8 @@ These are instructions for regular OBS Studio, but I imagine you can do the same
 
 Repeat from the 3rd step to add the `VS Screen.html`, though I recommend you to do so on another scene.
 
+Note: The Scoreboard's intro will only play when refreshing the browser. If you tick the intro box while having the scoreboard's scene open, nothing will change until you go out and back to the scoreboard's scene.
+
 ---
 
 ## Advanced setup
@@ -39,7 +41,7 @@ Yes, the instructions above are enough, but we can do better. **All of this is o
 2 basic transitions are included in the `Resources/OBS Transitions` folder, intended to be used to change to the game scene and to the vs screen, if you don't have a transition yourself of course. To use them on OBS:
 - Add a new stinger transition.
 - Set the video file to `Game In.webm` if creating the game scene transition, and `Swoosh.webm` if creating a vs screen transition.
-- Transition point -> `300 ms`.
+- Transition point -> `350 ms`.
 - I recommend you to set the Audio Fade Style to crossfade, just in case.
 - On the scene's right click menu, set it to Transition Override to the transition you just created.
 - Also, you may want to set a hotkey to transition to the game scene so you can press enter ingame to start the replay and press the transition key at the same time. The transition is timed to do so.
