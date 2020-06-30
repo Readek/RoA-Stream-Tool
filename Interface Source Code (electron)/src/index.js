@@ -11,6 +11,8 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 600,
     height: 300,
+    minWidth: 600,
+    minHeight: 300,
   });
 
   // we dont like menus
@@ -41,6 +43,3 @@ app.on('activate', () => {
     createWindow();
   }
 });
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.

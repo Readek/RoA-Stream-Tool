@@ -2,11 +2,121 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello Electron!</title>
+    <title>Rivals Stream Tool</title>
     <link rel="stylesheet" href="index.css">
+    <script src="gui.js" defer></script>
   </head>
+  
   <body>
-    <h1>💖 Hello World!</h1>
-    <p>It all starts here.</p>
+    <div id="navbar">
+      <span class="nav-text" id="nav-bracket">BRACKET</span>
+      <span class="nav-text" id="nav-overlay">OVERLAY</span>
+      <span class="nav-text" id="nav-settings">SETTINGS</span>
+    </div>
+
+    <div id="viewport"> <!-- so we can move the viewport easily -->
+
+      <div id="overlay">
+
+        <div id="playerRegion">
+          <div id="player1" class="player">
+
+            <div id="p1Info" class="pInfo">
+              <input type="text" name="p1Name" id="p1Name" class="textInput" placeholder="Player 1" spellcheck="false">
+            </div>
+
+            <div id="charInfo">
+              <select name="p1Char" id="p1Char" class="charCombo">
+                <option value="Absa">Absa</option>
+                <option value="Clairen">Clairen</option>
+                <option value="Elliana">Elliana</option>
+                <option value="Etalus">Etalus</option>
+              </select>
+              <select name="p1Char" id="p1Skin" class="charCombo">
+                <option value="Default">Default</option>
+                <option value="Blue">Blue</option>
+                <option value="Red">Red</option>
+              </select>
+            </div>
+
+            <div class="scoreInfo">
+              <span>Score</span>
+              <input type="checkbox" name="" id="">
+              <input type="checkbox" name="" id="">
+              <input type="checkbox" name="" id="">
+            </div>
+
+          </div>
+          
+          <div id="playerSep">
+  
+          </div>
+  
+          <div id="player2" class="player">
+            
+            <div id="p2Info" class="pInfo">
+              <input type="text" name="p2Name" id="p2Name" class="textInput" placeholder="Player 2" spellcheck="false">
+            </div>
+
+            <div id="charInfo">
+              <select name="p2Char" id="p2Char" class="charCombo">
+                <option value="Absa">Absa</option>
+                <option value="Clairen">Clairen</option>
+                <option value="Elliana">Elliana</option>
+                <option value="Etalus">Etalus</option>
+              </select>
+              <select name="p2Char" id="p2Skin" class="charCombo">
+                <option value="Default">Default</option>
+                <option value="Blue">Blue</option>
+                <option value="Red">Red</option>
+              </select>
+            </div>
+
+            <div class="scoreInfo">
+              <span>Score</span>
+              <input type="checkbox" name="" id="">
+              <input type="checkbox" name="" id="">
+              <input type="checkbox" name="" id="">
+            </div>
+
+          </div>
+        </div>
+        
+        <div id="roundInfo">
+          <div id="bestOf">
+            <div id="bo3Div">
+              <input type="radio" name="bo3" value="Bo3">
+              <label for="bo3">Best of 3</label>
+            </div>
+            <div id=bo5Div>
+              <input type="radio" name="bo5" value="Bo5">
+              <label for="bo5">Best of 5</label>
+            </div>
+          </div>
+          <input type="text" name="round" id="roundName" class="textInput" placeholder="Current Round" spellcheck="false">
+          <input type="text" name="tournament" id="tournamentName" class="textInput" placeholder="Tournament Name" spellcheck="false">
+        </div>
+
+        <div id=casterInfo>
+          <div id=caster1>
+            <span>Caster 1</span>
+            <input type="text" name="cName1" id="cName1" class="textInput" placeholder="Caster name" spellcheck="false">
+          </div>
+          <div id=caster2>
+            <span>Caster 2</span>
+            <input type="text" name="cName2" id="cName2" class="textInput" placeholder="Caster name" spellcheck="false">
+          </div>
+        </div>
+        
+        <div id="updateRegion">
+          <div class="rectangle"></div>
+          <span id="updateText">UPDATE</span>
+          <div class="rectangle"></div>
+        </div>
+
+      </div>
+
+    </div>
+    
   </body>
 </html>

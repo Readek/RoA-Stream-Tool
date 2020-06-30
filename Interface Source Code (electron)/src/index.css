@@ -1,6 +1,194 @@
+:root {
+  font-size: 16px;
+  font-family: 'Open Sans';
+  --text1: #ececec;
+  --text2: #b6b6b6;
+  --bg1: #131318;
+  --bg2: #383838;
+  --bg3: #1e1e24;
+  --bg4: #444444;
+  --bg5: #2b2b2b;
+}
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  margin: auto;
-  max-width: 38rem;
-  padding: 2rem;
+  overflow: hidden;
+  padding: 0px;
+  margin: 0px;
+  background-color: var(--bg2);
+  color: var(--text1);
+}
+
+/* general text input class*/
+ .textInput {
+  outline: none;
+  border: none;
+  background: var(--bg4);
+  color: var(--text1);
+  height: 30px;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+
+/* top nav bar */
+#navbar {
+  width: 100%;
+  height: 28px;
+  position: fixed;
+  background-color: var(--bg1);
+  transition: top 150ms ease;
+  top: -18px;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+}
+
+#navbar:hover {
+  top: 0;
+}
+
+.nav-text {
+  color: var(--text2);
+  opacity: 0;
+  transition: opacity 150ms;
+  width: 100%;
+}
+
+.nav-text:hover {
+  background-color: var(--bg3);
+}
+
+#navbar:hover .nav-text {
+  opacity: 1;
+}
+
+.nav-text:active{
+  background-color: var(--bg2);
+}
+
+
+/* main viewport */
+#viewport {
+  position: relative;
+  width: 300%;
+  height: 100%;
+  top: 10px; /* nav bar offset */
+  z-index: 1;
+}
+
+/* where all the magic happens*/
+#overlay {
+  width: calc(100% / 3);
+  height: 100%;
+  display: grid;
+}
+
+/* player stuff */
+#playerRegion {
+  display: flex;
+  height: 140px;
+}
+
+.player {
+  width: 49%;
+  display: grid;
+  align-items: center;
+}
+
+#p1Name, #p2Name{
+  width: 60%;
+  font-size: 16px;
+  margin-left: 10px;
+}
+
+#charInfo {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.charCombo {
+  width: 45%;
+  height: 30px;
+  outline: none;
+  color: var(--text1);
+  background: var(--bg4);
+}
+
+.scoreInfo {
+  margin-left: 10px;
+}
+
+#playerSep {
+  width: 2%;
+  height: 100%;
+  background-color: var(--bg4);
+}
+
+/* round propierties */
+#roundInfo {
+  height: 40px;
+  border-top: thin;
+  border-bottom: thin;
+  border-style: solid none solid;
+  border-color: var(--bg4);
+  display: flex;
+  align-items: center;
+}
+
+#bestOf {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+#roundName, #tournamentName {
+  width: 100%;
+  text-align: center;
+  margin-right: 4px;
+}
+
+/* caster region */
+#casterInfo {
+  height: 60px;
+  padding: 10px;
+}
+
+#cName1, #cName2 {
+  width: 200px;
+}
+
+/* the cool update button */
+#updateRegion {
+  width: 100%;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  background-color: var(--bg5);
+  cursor: pointer;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+#updateRegion:hover {
+  background-color: var(--bg3);
+}
+
+#updateRegion:active{
+  background-color: var(--bg5);
+}
+
+#updateText {
+  text-align: center;
+  color: var(--text2);
+  flex: 1;
+}
+
+.rectangle {
+  height: 2px;
+  background-color: var(--text2);
+  flex: 2;
 }
