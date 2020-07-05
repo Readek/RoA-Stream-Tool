@@ -16,34 +16,44 @@
 
     <div id="viewport"> <!-- so we can move the viewport easily -->
 
+      <div id="bracket">
+
+      </div>
+
       <div id="overlay">
 
         <div id="playerRegion">
+
           <div id="player1" class="player">
 
-            <div id="p1Info" class="pInfo">
-              <input type="text" name="p1Name" id="p1Name" class="textInput" placeholder="Player 1" spellcheck="false">
+            <div class="charImgBox">
+              <img id="p1CharImg" class="charImg"/>
             </div>
 
-            <div id="charInfo">
-              <select name="p1Char" id="p1Char" class="charCombo">
-                <option value="Absa">Absa</option>
-                <option value="Clairen">Clairen</option>
-                <option value="Elliana">Elliana</option>
-                <option value="Etalus">Etalus</option>
-              </select>
-              <select name="p1Char" id="p1Skin" class="charCombo">
-                <option value="Default">Default</option>
-                <option value="Blue">Blue</option>
-                <option value="Red">Red</option>
-              </select>
-            </div>
+            <div class="pEditor">
 
-            <div class="scoreInfo">
-              <span>Score</span>
-              <input type="checkbox" name="" id="">
-              <input type="checkbox" name="" id="">
-              <input type="checkbox" name="" id="">
+              <div id="p1Info" class="pInfo">
+                <input type="text" id="p1Tag" class="textInput" placeholder="Tag" spellcheck="false">
+                <input type="text" id="p1Name" class="textInput" placeholder="Player 1" spellcheck="false">
+                <select id="p1Color"></select>
+              </div>
+  
+              <div id="charInfo">
+                <select id="p1Char" class="charCombo"></select>
+                <select id="p1Skin" class="charCombo"></select>
+              </div>
+  
+              <div class="scoreInfo">
+                <span>Score</span>
+                <input type="checkbox" id="winP1-1">
+                <input type="checkbox" id="winP1-2">
+                <input type="checkbox" id="winP1-3">
+                <span>[W]</span>
+                <input type="checkbox" id="p1W">
+                <span>[L]</span>
+                <input type="checkbox" id="p1L">
+              </div>
+
             </div>
 
           </div>
@@ -53,30 +63,35 @@
           </div>
   
           <div id="player2" class="player">
+
+            <div class="charImgBox">
+              <img id="p2CharImg" class="charImg"/>
+            </div>
             
-            <div id="p2Info" class="pInfo">
-              <input type="text" name="p2Name" id="p2Name" class="textInput" placeholder="Player 2" spellcheck="false">
-            </div>
+            <div class="pEditor">
 
-            <div id="charInfo">
-              <select name="p2Char" id="p2Char" class="charCombo">
-                <option value="Absa">Absa</option>
-                <option value="Clairen">Clairen</option>
-                <option value="Elliana">Elliana</option>
-                <option value="Etalus">Etalus</option>
-              </select>
-              <select name="p2Char" id="p2Skin" class="charCombo">
-                <option value="Default">Default</option>
-                <option value="Blue">Blue</option>
-                <option value="Red">Red</option>
-              </select>
-            </div>
-
-            <div class="scoreInfo">
-              <span>Score</span>
-              <input type="checkbox" name="" id="">
-              <input type="checkbox" name="" id="">
-              <input type="checkbox" name="" id="">
+              <div id="p2Info" class="pInfo">
+                <input type="text" id="p2Tag" class="textInput" placeholder="Tag" spellcheck="false">
+                <input type="text" id="p2Name" class="textInput" placeholder="Player 2" spellcheck="false">
+                <select id="p2Color"></select>
+              </div>
+  
+              <div id="charInfo">
+                <select id="p2Char" class="charCombo"></select>
+                <select id="p2Skin" class="charCombo"></select>
+              </div>
+  
+              <div class="scoreInfo">
+                <span>Score</span>
+                <input type="checkbox" id="winP2-1">
+                <input type="checkbox" id="winP2-2">
+                <input type="checkbox" id="winP2-3">
+                <span>[W]</span>
+                <input type="checkbox" id="p2W">
+                <span>[L]</span>
+                <input type="checkbox" id="p2L">
+              </div>
+              
             </div>
 
           </div>
@@ -85,26 +100,28 @@
         <div id="roundInfo">
           <div id="bestOf">
             <div id="bo3Div">
-              <input type="radio" name="bo3" value="Bo3">
-              <label for="bo3">Best of 3</label>
+              <input type="radio" id="Bo3Check">
+              <span>Best of 3</span>
             </div>
             <div id=bo5Div>
-              <input type="radio" name="bo5" value="Bo5">
-              <label for="bo5">Best of 5</label>
+              <input type="radio" id="Bo5Check" checked>
+              <span>Best of 5</span>
             </div>
           </div>
-          <input type="text" name="round" id="roundName" class="textInput" placeholder="Current Round" spellcheck="false">
-          <input type="text" name="tournament" id="tournamentName" class="textInput" placeholder="Tournament Name" spellcheck="false">
+          <input type="text" id="roundName" class="textInput" placeholder="Current Round" spellcheck="false">
+          <input type="text" id="tournamentName" class="textInput" placeholder="Tournament Name" spellcheck="false">
         </div>
 
         <div id=casterInfo>
           <div id=caster1>
             <span>Caster 1</span>
-            <input type="text" name="cName1" id="cName1" class="textInput" placeholder="Caster name" spellcheck="false">
+            <input type="text" id="cName1" class="textInput" placeholder="Caster name" spellcheck="false">
+            <input type="text" id="cTwitter1" class="textInput" placeholder="Caster twitter" spellcheck="false">
           </div>
           <div id=caster2>
             <span>Caster 2</span>
-            <input type="text" name="cName2" id="cName2" class="textInput" placeholder="Caster name" spellcheck="false">
+            <input type="text" id="cName2" class="textInput" placeholder="Caster name" spellcheck="false">
+            <input type="text" id="cTwitter2" class="textInput" placeholder="Caster twitter" spellcheck="false">
           </div>
         </div>
         
@@ -114,6 +131,18 @@
           <div class="rectangle"></div>
         </div>
 
+      </div>
+
+      <div id="settings">
+        <div>
+          <input type="checkbox" id="allowIntro">
+          <span>Allow Intro</span>
+        </div>
+        <div>
+          <input type="checkbox" id="workshopToggle">
+          <span>Use Workshop characters</span>
+        </div>
+        
       </div>
 
     </div>

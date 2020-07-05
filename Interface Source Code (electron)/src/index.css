@@ -6,7 +6,7 @@
   --bg1: #131318;
   --bg2: #383838;
   --bg3: #1e1e24;
-  --bg4: #444444;
+  --bg4: #444444b6;
   --bg5: #2b2b2b;
 }
 
@@ -38,7 +38,7 @@ body {
   background-color: var(--bg1);
   transition: top 150ms ease;
   top: -18px;
-  z-index: 2;
+  z-index: 3;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -76,14 +76,17 @@ body {
   width: 300%;
   height: 100%;
   top: 10px; /* nav bar offset */
-  z-index: 1;
+  z-index: 2;
+  display: flex;
+  transition: right 300ms ease;
 }
 
-/* where all the magic happens*/
+
+/* where all the magic happens */
 #overlay {
   width: calc(100% / 3);
   height: 100%;
-  display: grid;
+  transition: opacity 300ms;
 }
 
 /* player stuff */
@@ -94,14 +97,36 @@ body {
 
 .player {
   width: 49%;
+  position: relative;
+}
+
+.pEditor {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  z-index: 80;
+  width: 100%;
+  height: 100%;
   display: grid;
   align-items: center;
 }
 
-#p1Name, #p2Name{
-  width: 60%;
-  font-size: 16px;
+#p1Tag, #p2Tag {
+  width: 15%;
   margin-left: 10px;
+}
+
+#p1Name, #p2Name {
+  width: 50%;
+  font-size: 16px;
+}
+
+#p1Color, #p2Color {
+  width: 25%;
+  height: 30px;
+  outline: none;
+  color: var(--text1);
+  background: var(--bg4);
 }
 
 #charInfo {
@@ -127,6 +152,22 @@ body {
   height: 100%;
   background-color: var(--bg4);
 }
+
+
+.charImgBox {
+  width: 100%;
+  height: 100%;
+  transform: scaleX(-1);
+}
+
+.charImg {
+  left: 0px;
+  top: 0px;
+  height: 100%;
+  object-fit: contain;
+  z-index: -1;
+}
+
 
 /* round propierties */
 #roundInfo {
@@ -192,3 +233,19 @@ body {
   background-color: var(--text2);
   flex: 2;
 }
+
+
+/* bracket section */
+#bracket {
+  width: calc(100% / 3);
+  height: 200px;
+}
+
+
+/* settings section */
+#settings {
+  width: calc(100% / 3);
+  height: 300px;
+  background-color: var(--bg5);
+}
+
