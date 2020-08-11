@@ -8,6 +8,8 @@
   --bg3: #1e1e24;
   --bg4: #444444b6;
   --bg5: #2b2b2b;
+  --selected: #0898eb;
+  --focused: #686868;
 }
 
 body {
@@ -16,7 +18,9 @@ body {
   margin: 0px;
   background-color: var(--bg2);
   color: var(--text1);
+  user-select: none;
 }
+
 
 /* general text input class*/
  .textInput {
@@ -27,46 +31,17 @@ body {
   height: 30px;
   padding: 5px;
   box-sizing: border-box;
+  border-radius: 3px;
+  border: 1px solid var(--bg4);
+  transition: border-color 100ms;
 }
 
-
-/* top nav bar */
-#navbar {
-  width: 100%;
-  height: 28px;
-  position: fixed;
-  background-color: var(--bg1);
-  transition: top 150ms ease;
-  top: -18px;
-  z-index: 3;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  cursor: pointer;
+.textInput:hover {
+  border-color: var(--selected);
 }
 
-#navbar:hover {
-  top: 0;
-}
-
-.nav-text {
-  color: var(--text2);
-  opacity: 0;
-  transition: opacity 150ms;
-  width: 100%;
-}
-
-.nav-text:hover {
-  background-color: var(--bg3);
-}
-
-#navbar:hover .nav-text {
-  opacity: 1;
-}
-
-.nav-text:active{
-  background-color: var(--bg2);
+.textInput:focus {
+  border-color: var(--focused);
 }
 
 
@@ -75,7 +50,6 @@ body {
   position: relative;
   width: 300%;
   height: 100%;
-  top: 10px; /* nav bar offset */
   z-index: 2;
   display: flex;
   transition: right 300ms ease;
@@ -92,7 +66,7 @@ body {
 /* player stuff */
 #playerRegion {
   display: flex;
-  height: 140px;
+  height: 150px;
 }
 
 .player {
@@ -111,23 +85,75 @@ body {
   align-items: center;
 }
 
+#p1Info, #p2Info {
+  display: flex;
+  padding-left: 10px;
+}
+
 #p1Tag, #p2Tag {
-  width: 15%;
-  margin-left: 10px;
+  width: 40px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
 }
 
 #p1Name, #p2Name {
-  width: 50%;
-  font-size: 16px;
+  width: 90px;
+  border-radius: 0px;
 }
 
-#p1Color, #p2Color {
-  width: 25%;
+.pColor {
+  width: 30px;
   height: 30px;
-  outline: none;
   color: var(--text1);
   background: var(--bg4);
+  cursor: pointer;
+  position: relative;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border: 1px solid var(--bg4);
+  box-sizing: border-box;
+  outline: none;
 }
+
+.pColor:focus {
+  border-color: var(--focused);
+}
+.pColor:hover {
+  border-color: var(--selected);
+}
+
+.colorContainer {
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.pColorRect {
+  height: 15px;
+  width: 15px;
+}
+
+.dropdownColor {
+  display: none;
+  position: absolute;
+  background-color: var(--bg5);
+  width: 110px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  font-size: 15px;
+}
+
+.colorEntry:hover {
+  background-color: var(--bg2);
+}
+
+#p1Color:focus #dropdownColorP1,
+#p2Color:focus #dropdownColorP2 {
+  display: block;
+}
+
 
 #charInfo {
   display: flex;
@@ -141,6 +167,12 @@ body {
   outline: none;
   color: var(--text1);
   background: var(--bg4);
+  border-radius: 3px;
+  transition: border-color 100ms;
+}
+
+.charCombo:hover {
+  border-color: var(--selected);
 }
 
 .scoreInfo {
@@ -151,6 +183,10 @@ body {
   width: 2%;
   height: 100%;
   background-color: var(--bg4);
+  cursor: pointer;
+}
+#playerSep:hover {
+  filter: brightness(1.3);
 }
 
 
@@ -166,6 +202,8 @@ body {
   height: 100%;
   object-fit: contain;
   z-index: -1;
+  padding: 3px;
+  box-sizing: border-box;
 }
 
 
@@ -202,16 +240,37 @@ body {
   width: 200px;
 }
 
-/* the cool update button */
-#updateRegion {
+/* the bottom bar */
+#botBar {
   width: 100%;
   height: 28px;
   display: flex;
-  align-items: center;
-  background-color: var(--bg5);
+  background-color:var(--bg5);
   cursor: pointer;
-  padding: 10px;
-  box-sizing: border-box;
+}
+
+.botRegion {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#botText {
+  color: var(--text2);
+  width: 100%;
+}
+
+#updateRegion {
+  
+}
+
+.rectangle {
+  height: 2px;
+  width: 100%;
+  margin: 10px;
+  background-color: var(--text2);
 }
 
 #updateRegion:hover {
@@ -222,16 +281,16 @@ body {
   background-color: var(--bg5);
 }
 
-#updateText {
-  text-align: center;
-  color: var(--text2);
-  flex: 1;
+#settingsRegion {
+  width: 120px;
 }
 
-.rectangle {
-  height: 2px;
-  background-color: var(--text2);
-  flex: 2;
+#settingsRegion:hover {
+  background-color: var(--bg3);
+}
+
+#settingsRegion:active{
+  background-color: var(--bg5);
 }
 
 
@@ -249,3 +308,23 @@ body {
   background-color: var(--bg5);
 }
 
+#actualSettings {
+  width: 40%;
+  padding: 10px;
+}
+
+
+/* clickable area that gets enabled when moving the viewport */
+#goBack {
+  position: absolute;
+  width: calc(100% / 3);
+  height: 300px;
+  left: calc(100% / 3);
+  z-index: 90;
+  display: none;
+}
+
+
+.playerCustom {
+  background-color: var(--bg2);
+}

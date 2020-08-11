@@ -8,11 +8,6 @@
   </head>
   
   <body>
-    <div id="navbar">
-      <span class="nav-text" id="nav-bracket">BRACKET</span>
-      <span class="nav-text" id="nav-overlay">OVERLAY</span>
-      <span class="nav-text" id="nav-settings">SETTINGS</span>
-    </div>
 
     <div id="viewport"> <!-- so we can move the viewport easily -->
 
@@ -30,12 +25,19 @@
               <img id="p1CharImg" class="charImg"/>
             </div>
 
-            <div class="pEditor">
+            <div class="pEditor" id="p1Editor">
 
               <div id="p1Info" class="pInfo">
-                <input type="text" id="p1Tag" class="textInput" placeholder="Tag" spellcheck="false">
-                <input type="text" id="p1Name" class="textInput" placeholder="Player 1" spellcheck="false">
-                <select id="p1Color"></select>
+                <input type="text" id="p1Tag" class="textInput" tabindex="1" placeholder="Tag" title="Insert the tag/team/sponsor here." spellcheck="false">
+                <input type="text" id="p1Name" class="textInput" tabindex="2" placeholder="Player 1" title="Insert P1's name here." spellcheck="false">
+                <div id="p1Color" class="pColor" tabindex="3" title="Change the colors of the overlay for this player.">
+                  <div class="colorContainer">
+                    <div id="p1ColorRect" class="pColorRect"></div>
+                  </div>
+                  <div class="dropdownColor" id="dropdownColorP1">
+
+                  </div>
+                </div>
               </div>
   
               <div id="charInfo">
@@ -44,14 +46,14 @@
               </div>
   
               <div class="scoreInfo">
-                <span>Score</span>
+                <span>Wins</span>
                 <input type="checkbox" id="winP1-1">
                 <input type="checkbox" id="winP1-2">
                 <input type="checkbox" id="winP1-3">
                 <span>[W]</span>
-                <input type="checkbox" id="p1W">
+                <input type="radio" name="p1WL" disabled id="p1W" class="pWL">
                 <span>[L]</span>
-                <input type="checkbox" id="p1L">
+                <input type="radio" name="p1WL" disabled id="p1L" class="pWL">
               </div>
 
             </div>
@@ -71,9 +73,14 @@
             <div class="pEditor">
 
               <div id="p2Info" class="pInfo">
-                <input type="text" id="p2Tag" class="textInput" placeholder="Tag" spellcheck="false">
-                <input type="text" id="p2Name" class="textInput" placeholder="Player 2" spellcheck="false">
-                <select id="p2Color"></select>
+                <input type="text" id="p2Tag" class="textInput" placeholder="Tag" title="Insert the tag/team/sponsor here." spellcheck="false">
+                <input type="text" id="p2Name" class="textInput" placeholder="Player 2" title="Insert P2's name here." spellcheck="false">
+                <div id="p2Color" class="pColor" tabindex="4">
+                  <div class="colorContainer" title="Change the colors of the overlay for this player.">
+                    <div id="p2ColorRect" class="pColorRect"></div>
+                  </div>
+                  <div class="dropdownColor" id="dropdownColorP2"></div>
+                </div>
               </div>
   
               <div id="charInfo">
@@ -82,14 +89,14 @@
               </div>
   
               <div class="scoreInfo">
-                <span>Score</span>
+                <span>Wins</span>
                 <input type="checkbox" id="winP2-1">
                 <input type="checkbox" id="winP2-2">
                 <input type="checkbox" id="winP2-3">
                 <span>[W]</span>
-                <input type="checkbox" id="p2W">
+                <input type="radio" name="p2WL" disabled id="p2W" class="pWL">
                 <span>[L]</span>
-                <input type="checkbox" id="p2L">
+                <input type="radio" name="p2WL" disabled id="p2L" class="pWL">
               </div>
               
             </div>
@@ -100,11 +107,11 @@
         <div id="roundInfo">
           <div id="bestOf">
             <div id="bo3Div">
-              <input type="radio" id="Bo3Check">
+              <input type="radio" name="bo" id="Bo3Check">
               <span>Best of 3</span>
             </div>
             <div id=bo5Div>
-              <input type="radio" id="Bo5Check" checked>
+              <input type="radio" name="bo" id="Bo5Check" checked>
               <span>Best of 5</span>
             </div>
           </div>
@@ -125,25 +132,33 @@
           </div>
         </div>
         
-        <div id="updateRegion">
-          <div class="rectangle"></div>
-          <span id="updateText">UPDATE</span>
-          <div class="rectangle"></div>
+        <div id="botBar">
+          <div id="updateRegion" class="botRegion">
+            <div class="rectangle"></div>
+            <span class="botText">UPDATE</span>
+            <div class="rectangle"></div>
+          </div>
+          <div id="settingsRegion" class="botRegion">
+            <span class="botText">SETTINGS</span>
+          </div>
         </div>
 
       </div>
 
       <div id="settings">
-        <div>
-          <input type="checkbox" id="allowIntro">
-          <span>Allow Intro</span>
-        </div>
-        <div>
-          <input type="checkbox" id="workshopToggle">
-          <span>Use Workshop characters</span>
-        </div>
-        
+        <div id="actualSettings">
+          <div>
+            <input type="checkbox" id="allowIntro" tabindex="-1">
+            <span>Allow Intro</span>
+          </div>
+          <div>
+            <input type="checkbox" id="workshopToggle" tabindex="-1">
+            <span>Use Workshop characters</span>
+          </div>
+        </div>        
       </div>
+
+      <div id="goBack"></div>
 
     </div>
     

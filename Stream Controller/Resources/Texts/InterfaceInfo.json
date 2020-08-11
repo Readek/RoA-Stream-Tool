@@ -44,15 +44,42 @@
         "Yoyo",
         "Zetta Ashikaga"
     ],
-    "colorSlots": [
-        "Red",
-        "Blue",
-        "Pink",
-        "Green",
-        "NetGreen",
-        "Purple",
-        "Magenta",
-        "Yellow",
-        "CPU"
-    ]
+    "colorSlots": {
+        "color0": {
+            "name": "Red",
+            "hex": "#ed1c23"
+        },
+        "color1": {
+            "name": "Blue",
+            "hex": "#00b7ef"
+        },
+        "color2": {
+            "name": "Pink",
+            "hex": "#ffa3b1"
+        },
+        "color3": {
+            "name": "Green",
+            "hex": "#a8e61d"
+        },
+        "color4": {
+            "name": "NetGreen",
+            "hex": "#42e564"
+        },
+        "color5": {
+            "name": "Purple",
+            "hex": "#846ae9"
+        },
+        "color6": {
+            "name": "Magenta",
+            "hex": "#ee1c8f"
+        },
+        "color7": {
+            "name": "Yellow",
+            "hex": "#dc8c00"
+        },
+        "color8": {
+            "name": "CPU",
+            "hex": "#808080"
+        }
+    }
 }

@@ -2,22 +2,20 @@ window.onload = init;
 
 const fs = require('fs');
 const path = require('path');
+const { isUndefined } = require('util');
 
 const mainPath = path.join(__dirname, '..', '..', 'Stream Controller', 'Resources', 'Texts');
 const charPath = path.join(__dirname, '..', '..', 'Stream Controller', 'Resources', 'Characters');
 
-const viewport = document.getElementById('viewport');
+//yes we all like global variables
+let colorP1, colorP2;
 
-const navBracket = document.getElementById('nav-bracket');
-const navOverlay = document.getElementById('nav-overlay');
-const navSettings = document.getElementById('nav-settings');
+const viewport = document.getElementById('viewport');
 
 const p1NameInp = document.getElementById('p1Name');
 const p1TagInp = document.getElementById('p1Tag');
-const p1ColorList = document.getElementById('p1Color');
 const p2NameInp = document.getElementById('p2Name');
 const p2TagInp = document.getElementById('p2Tag');
-const p2ColorList = document.getElementById('p2Color');
 
 const p1CharList = document.getElementById('p1Char');
 const p1SkinList = document.getElementById('p1Skin');
@@ -48,22 +46,27 @@ const updateEL = document.getElementById('updateRegion');
 
 const workshopCheck = document.getElementById('workshopToggle');
 
+let movedSettings = false;
+
 function init() {
+    console.log(mainPath)
 
-    //first, add listeners for the top nav bar
-    navBracket.addEventListener("click", moveViewport);
-    navOverlay.addEventListener("click", moveViewport);
-    navSettings.addEventListener("click", moveViewport);
+    //first, add listeners for the bottom bar
+    updateEL.addEventListener("click", writeScoreboard); //write json
+    document.getElementById('settingsRegion').addEventListener("click", moveViewport);
 
-    //move the viewport to the center
+    //if the viewport is moved, click anywhere on the center to go back
+    document.getElementById('goBack').addEventListener("click", goBack);
+
+    //move the viewport to the center (this is to avoid animation bugs)
     viewport.style.right = "100%";
 
     
     /* OVERLAY */
 
     //load the character list on startup
-    loadCharacters(p1CharList);
-    loadCharacters(p2CharList);
+    loadCharacters(p1CharList, 1);
+    loadCharacters(p2CharList, 2);
 
     //set listeners that will trigger when character changes
     p1CharList.addEventListener("change", charChange);
@@ -82,8 +85,18 @@ function init() {
     });
 
     //load color slot list
-    loadColors(p1ColorList);
-    loadColors(p2ColorList);
+    loadColors(1);
+    loadColors(2);
+
+    //check whenever the player's name has a skin
+    p1NameInp.addEventListener("input", checkPlayerSkin);
+    p2NameInp.addEventListener("input", checkPlayerSkin);
+
+    //check if the round is grand finals
+    roundInp.addEventListener("input", checkRound);
+
+    //add a listener to the swap button
+    document.getElementById('playerSep').addEventListener("click", swap);
 
 
     /* SETTINGS */
@@ -92,21 +105,25 @@ function init() {
     workshopCheck.addEventListener("click", workshopChange);
 
 
-    //whenever clicking the update region, write a new json file
-    updateEL.addEventListener("click", writeScoreboard);
+    //for keyboard shortcuts
+    document.onkeypress = function (key) { keyShortcuts(key) };
 }
 
 
 function moveViewport() {
-    if (this == navBracket) {
-        viewport.style.right = "0%";
-    } else if (this == navOverlay) {
-        viewport.style.right = "100%";
-        document.getElementById('overlay').style.opacity = "100%";
-    } else if (this == navSettings) {
+    if (!movedSettings) {
         viewport.style.right = "140%";
         document.getElementById('overlay').style.opacity = "25%";
+        document.getElementById('goBack').style.display = "block"
+        movedSettings = true;
     }
+}
+
+function goBack() {
+    viewport.style.right = "100%";
+    document.getElementById('overlay').style.opacity = "100%";
+    document.getElementById('goBack').style.display = "none";
+    movedSettings = false;
 }
 
 
@@ -122,7 +139,7 @@ function getJson(fileName) {
 
 
 //calls the main settings file and fills a combo list
-function loadCharacters(comboList) {
+function loadCharacters(comboList, nPlayer) {
     guiSettings = getJson("InterfaceInfo"); //check the character list
     
     //use the character list to add entries
@@ -141,11 +158,7 @@ function loadCharacters(comboList) {
     comboList.selectedIndex = comboList.length - 1;
 
     //update the image (to random)
-    if (comboList == p1CharList) {
-        charImgChange(p1CharImg, "Random", undefined);
-    } else {
-        charImgChange(p2CharImg, "Random", undefined);
-    }
+    charImgChange(document.getElementById('p' + nPlayer + 'CharImg'), "Random", undefined);
 }
 
 
@@ -153,52 +166,77 @@ function loadCharacters(comboList) {
 function charChange() {
     const currentChar = this.selectedOptions[0].text; //current selection
 
+    let pNum; //just a simple 'which player are we' test
     if (this == p1CharList) {
-        loadSkins(p1SkinList, currentChar); //load a new skin list
+        pNum = 1;
     } else {
-        loadSkins(p2SkinList, currentChar);
+        pNum = 2;
     }
 
+    //load a new skin list
+    loadSkins(document.getElementById('p'+pNum+'Skin'), currentChar);
+
     let currentSkin;
-    //check if skinlist exists first so we dont bug the code later
-    try {
-        if (this == p1CharList) {
-            currentSkin = p1SkinList.selectedOptions[0].text;
-        } else {
-            currentSkin = p2SkinList.selectedOptions[0].text;
-        }
+    try { //check if skinlist exists first so we dont bug the code later
+        currentSkin = document.getElementById('p'+pNum+'Skin').selectedOptions[0].text;
     } catch (error) {
         currentSkin = undefined;
     }
 
-    if (this == p1CharList) {
-        charImgChange(p1CharImg, currentChar, currentSkin);
-    } else {
-        charImgChange(p2CharImg, currentChar, currentSkin);
-    }
+    //change the character image of the interface
+    charImgChange(document.getElementById('p'+pNum+'CharImg'), currentChar, currentSkin);
 }
+//same but with parameters
+function charChangeManual(list, pNum) {
+    const currentChar = list.selectedOptions[0].text; //current selection
 
-function skinChange() {
-    let currentChar;
-    if (this == p1SkinList) {
-        currentChar = p1CharList.selectedOptions[0].text;
-    } else {
-        currentChar = p2CharList.selectedOptions[0].text;
-    }
+    //load a new skin list
+    loadSkins(document.getElementById('p'+pNum+'Skin'), currentChar);
 
     let currentSkin;
+    try { //check if skinlist exists first so we dont bug the code later
+        currentSkin = document.getElementById('p'+pNum+'Skin').selectedOptions[0].text;
+    } catch (error) {
+        currentSkin = undefined;
+    }
 
+    //change the character image of the interface
+    charImgChange(document.getElementById('p'+pNum+'CharImg'), currentChar, currentSkin);
+}
+
+
+function skinChange() {
+
+    let pNum;
+    if (this == p1SkinList) {
+        pNum = 1;
+    } else {
+        pNum = 2;
+    }
+
+    let currentChar = document.getElementById('p'+pNum+'Char').selectedOptions[0].text;
+
+    let currentSkin;
     try {
         currentSkin = this.selectedOptions[0].text;
     } catch (error) {
         currentSkin = undefined;
     }
 
-    if (this == p1SkinList) {
-        charImgChange(p1CharImg, currentChar, currentSkin);
-    } else {
-        charImgChange(p2CharImg, currentChar, currentSkin);
+    charImgChange(document.getElementById('p'+pNum+'CharImg'), currentChar, currentSkin);
+}
+//same but with parameters
+function skinChangeManual(list, pNum) {
+    let currentChar = document.getElementById('p'+pNum+'Char').selectedOptions[0].text;
+
+    let currentSkin;
+    try {
+        currentSkin = list.selectedOptions[0].text;
+    } catch (error) {
+        currentSkin = undefined;
     }
+
+    charImgChange(document.getElementById('p'+pNum+'CharImg'), currentChar, currentSkin);
 }
 
 
@@ -213,17 +251,89 @@ function loadSkins(comboList, character) {
 }
 
 //will load the color list to a color slot combo box
-function loadColors(colorList) {
-    guiSettings = getJson("InterfaceInfo"); //check the color list
-    
-    //use the color list to add entries
-    addEntries(colorList, guiSettings.colorSlots)
+function loadColors(pNum) {
+    let colorList = getJson("InterfaceInfo"); //check the color list
 
-    //if second player, select the second entry by default
-    if (colorList == p2ColorList) {
-        colorList.selectedIndex = 1;
+    //for each color found, add them to the color list
+    for (let i = 0; i < Object.keys(colorList.colorSlots).length; i++) {
+
+        //create a new div that will have the color info
+        let newDiv = document.createElement('div');
+        newDiv.style.display = "flex"; //so everything is in 1 line
+        newDiv.title = "Also known as " + colorList.colorSlots["color"+i].hex;
+        newDiv.className = "colorEntry";
+
+        //if the div gets clicked, update the colors
+        newDiv.addEventListener("click", updateColor);
+
+        //create the color's name
+        let newText = document.createElement('div');
+        newText.innerHTML = colorList.colorSlots["color"+i].name;
+        
+        //create the color's rectangle
+        let newRect = document.createElement('div');
+        newRect.style.width = "13px";
+        newRect.style.height = "13px";
+        newRect.style.margin = "5px";
+        newRect.style.backgroundColor = colorList.colorSlots["color"+i].hex;
+
+        //add them to the div we created before
+        newDiv.appendChild(newRect);
+        newDiv.appendChild(newText);
+
+        //now add them to the actual interface
+        document.getElementById("dropdownColorP"+pNum).appendChild(newDiv);
     }
+
+    //set the initial colors for the interface (the first color for p1, and the second for p2)
+    if (pNum == 1) {
+        document.getElementById("player1").style.backgroundImage = "linear-gradient(to bottom left, "+colorList.colorSlots["color"+0].hex+"50, #00000000, #00000000)";
+        document.getElementById("p1ColorRect").style.backgroundColor = colorList.colorSlots["color"+0].hex;
+    } else {
+        document.getElementById("player2").style.backgroundImage = "linear-gradient(to bottom left, "+colorList.colorSlots["color"+1].hex+"50, #00000000, #00000000)";
+        document.getElementById("p2ColorRect").style.backgroundColor = colorList.colorSlots["color"+1].hex;
+    }
+
+    //finally, set initial values for the global color variables
+    colorP1 = "Red";
+    colorP2 = "Blue";
 }
+
+function updateColor() {
+    let pNum;
+    if (this.parentElement.parentElement == document.getElementById("p1Color")) {
+        pNum = 1;
+    } else {
+        pNum = 2;
+    }
+
+    let clickedColor = this.textContent;
+    let colorList = getJson("InterfaceInfo");
+
+    //search for the color we just clicked
+    for (let i = 0; i < Object.keys(colorList.colorSlots).length; i++) {
+        if (colorList.colorSlots["color"+i].name == clickedColor) {
+            let colorRectangle, colorGrad;
+
+            colorRectangle = document.getElementById("p"+pNum+"ColorRect");
+            colorGrad = document.getElementById("player"+pNum);
+            
+            //change the variable that will be read when clicking the update button
+            if (pNum == 1) {
+                colorP1 = colorList.colorSlots["color"+i].name;
+            } else {
+                colorP2 = colorList.colorSlots["color"+i].name;
+            }
+
+            //then change both the color rectangle and the background gradient
+            colorRectangle.style.backgroundColor = colorList.colorSlots["color"+i].hex;
+            colorGrad.style.backgroundImage = "linear-gradient(to bottom left, "+colorList.colorSlots["color"+i].hex+"50, #00000000, #00000000)";
+        }
+    }
+    //remove focus from the menu so it hides on click
+    this.parentElement.parentElement.blur();
+}
+
 
 //will add entries to a combo box with a given array
 function addEntries(comboList, list) {
@@ -265,9 +375,9 @@ function checkScore(tick1, tick2, tick3) {
 
 function checkWL(win, los) {
     if (win.checked) {
-        return "Winners";
+        return "W"; //to change
     } else if (los.checked) {
-        return "Losers";
+        return "L"; //to change
     }
     return "Nada";
 }
@@ -280,6 +390,120 @@ function checkBo() {
     return "Bo3";
 }
 
+function checkPlayerSkin() {
+    let pNum;
+    if (this == p1NameInp) {
+        pNum = 1;
+    } else {
+        pNum = 2;
+    }
+    const skinList = getJson("Character Info/" + document.getElementById('p'+pNum+'Char').selectedOptions[0].text);
+    
+    if (skinList != undefined) {
+        for (let i = 0; i < skinList.playerCustoms.length; i++) {
+            //if the player name matchs a custom skin
+            if (skinList.playerCustoms[i] == document.getElementById('p'+pNum+'Name').value) {
+
+                //first, check if theres a custom skin already
+                if (document.getElementById('p'+pNum+'Skin').selectedOptions[0].className == "playerCustom") {
+                    document.getElementById('p'+pNum+'Skin').remove(document.getElementById('p'+pNum+'Skin').selectedIndex);
+                }
+
+                let option = document.createElement('option'); //create new entry
+                option.className = "playerCustom";
+                option.text = skinList.playerCustoms[i]; //set the text of entry
+                document.getElementById('p'+pNum+'Skin').add(option, 0); //add the entry to the beginning of the list
+                document.getElementById('p'+pNum+'Skin').selectedIndex = 0; //leave it selected
+                skinChangeManual(document.getElementById('p'+pNum+'Skin'), pNum); //update the image
+            }
+        }
+    }
+}
+
+function checkRound() {
+    let radios = document.getElementsByClassName("pWL");
+    for (let i = 0; i < radios.length; i++) {
+        if (roundInp.value.toLocaleUpperCase() == "Grand Finals".toLocaleUpperCase()) {
+            radios[i].disabled = false;
+        } else {
+            radios[i].disabled = true;
+        }
+    }
+}
+
+
+function swap() {
+    let tempP1Name = p1NameInp.value;
+    let tempP1Team = p1TagInp.value;
+    let tempP2Name = p2NameInp.value;
+    let tempP2Team = p2TagInp.value;
+
+    p1NameInp.value = tempP2Name;
+    p1TagInp.value = tempP2Team;
+    p2NameInp.value = tempP1Name;
+    p2TagInp.value = tempP1Team;
+
+
+    let tempP1Char = p1CharList.selectedOptions[0].text;
+    let tempP2Char = p2CharList.selectedOptions[0].text;
+    
+    //we need to perform this check since the program would halt when reading from undefined
+    let p1RealSkin, p2RealSkin;
+    try {
+        p1RealSkin = p1SkinList.selectedOptions[0].text
+    } catch (error) {
+        p1RealSkin = "";
+    }
+    try {
+        p2RealSkin = p2SkinList.selectedOptions[0].text
+    } catch (error) {
+        p2RealSkin = "";
+    }
+
+    let tempP1Skin = p1RealSkin;
+    let tempP2Skin = p2RealSkin;
+
+    changeListValue(p1CharList, tempP2Char);
+    changeListValue(p2CharList, tempP1Char);
+    //the change event doesnt fire up on its own so we have to change the image ourselves
+    charChangeManual(p1CharList, 1);
+    charChangeManual(p2CharList, 2);
+
+    changeListValue(p1SkinList, tempP2Skin);
+    changeListValue(p2SkinList, tempP1Skin);
+    skinChangeManual(p1SkinList, 1);
+    skinChangeManual(p2SkinList, 2);
+
+
+    tempP1Score = checkScore(p1Win1, p1Win2, p1Win3);
+    tempP2Score = checkScore(p2Win1, p2Win2, p2Win3);
+    setScore(tempP2Score, p1Win1, p1Win2, p1Win3);
+    setScore(tempP1Score, p2Win1, p2Win2, p2Win3);
+}
+
+function changeListValue(list, name) {
+    for (let i = 0; i < list.length; i++) {
+        if (list.options[i].text == name) {
+            list.selectedIndex = i;
+        }
+    }
+}
+
+function setScore(score, tick1, tick2, tick3) {
+    tick1.checked = false;
+    tick2.checked = false;
+    tick3.checked = false;
+    if (score > 0) {
+        tick1.checked = true;
+        if (score > 1) {
+            tick2.checked = true;
+            if (score > 2) {
+                tick3.checked = true;
+            }
+        }
+    }
+}
+
 
 //called whenever the user clicks on the workshop toggle
 function workshopChange() {
@@ -287,8 +511,8 @@ function workshopChange() {
     clearList(p1CharList);
     clearList(p2CharList);
     //then reload both character lists
-    loadCharacters(p1CharList);
-    loadCharacters(p2CharList);
+    loadCharacters(p1CharList, 1);
+    loadCharacters(p2CharList, 2);
     //dont forget to clear the skin lists
     clearList(p1SkinList);
     clearList(p2SkinList);
@@ -316,17 +540,16 @@ function writeScoreboard() {
         p1Team: p1TagInp.value,
         p1Character: p1CharList.selectedOptions[0].text,
         p1Skin: p1RealSkin,
-        p1Color: p1ColorList.selectedOptions[0].text,
+        p1Color: colorP1,
         p1Score: checkScore(p1Win1, p1Win2, p1Win3),
         p1WL: checkWL(document.getElementById("p1W"), document.getElementById("p1L")),
         p2Name: p2NameInp.value,
         p2Team: p2TagInp.value,
         p2Character: p2CharList.selectedOptions[0].text,
         p2Skin: p2RealSkin,
-        p2Color: p2ColorList.selectedOptions[0].text,
+        p2Color: colorP2,
         p2Score: checkScore(p2Win1, p2Win2, p2Win3),
         p2WL: checkWL(document.getElementById("p2W"), document.getElementById("p2L")),
-        allowIntro: document.getElementById('allowIntro').checked,
         bestOf: checkBo(),
         round: roundInp.value,
         tournamentName: tournamentInp.value,
@@ -334,9 +557,20 @@ function writeScoreboard() {
         caster1Twitter: caster1TInp.value,
         caster2Name: caster2NInp.value,
         caster2Twitter: caster2TInp.value,
+        allowIntro: document.getElementById('allowIntro').checked,
         workshop: workshopCheck.checked
     };
 
     let data = JSON.stringify(scoreboardJson, null, 2);
-    fs.writeFileSync(mainPath + "/test.json", data);
+    fs.writeFileSync(mainPath + "/ScoreboardInfo.json", data);
+}
+
+
+function keyShortcuts(key) {
+
+    //when pressing "Enter"
+    if (key.keyCode == 13) {
+        writeScoreboard();
+    }
+
 }
