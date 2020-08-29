@@ -159,7 +159,7 @@
         }
 
 
-        .twitterInfo {
+        .socialBox {
             position: absolute;
             width: 170px;
             height: 30px;
@@ -169,12 +169,31 @@
             color: rgb(65, 65, 65);
             line-height: 26px;
         }
-
-        #twitter1 {
-            left: 765px;
+        .twitterIcon {
+            height: 19px;
+            width: 19px;
+            fill: rgb(65, 65, 65);
+            transform: translate(0px, 2px);
+        }
+        .twitchIcon {
+            height: 17px;
+            width: 17px;
+            fill: rgb(65, 65, 65);
+            transform: translate(0px, 1px);
+            padding-right: 1px;
         }
 
-        #twitter2 {
+        #twitter1Wrapper, #twitter2Wrapper {
+            opacity: 0;
+        }
+        #twitch1Wrapper, #twitch2Wrapper {
+            opacity: 0;
+        }
+
+        #twitter1Wrapper, #twitch1Wrapper {
+            left: 765px;
+        }
+        #twitter2Wrapper, #twitch2Wrapper {
             right: 765px;
         }
     </style>
@@ -233,10 +252,40 @@
     </div>
 
     <div id="casterInfo">
+
         <span id="caster1" class="casterInfo"></span>
-        <span id="twitter1" class="twitterInfo"></span>
+        <span id="twitter1Wrapper" class="socialBox">
+            <svg class="twitterIcon" viewBox="0 0 20 20">
+                <path d="M18.258,3.266c-0.693,0.405-1.46,0.698-2.277,0.857c-0.653-0.686-1.586-1.115-2.618-1.115c-1.98,0-3.586,1.581-3.586,3.53c0,0.276,0.031,0.545,0.092,0.805C6.888,7.195,4.245,5.79,2.476,3.654C2.167,4.176,1.99,4.781,1.99,5.429c0,1.224,0.633,2.305,1.596,2.938C2.999,8.349,2.445,8.19,1.961,7.925C1.96,7.94,1.96,7.954,1.96,7.97c0,1.71,1.237,3.138,2.877,3.462c-0.301,0.08-0.617,0.123-0.945,0.123c-0.23,0-0.456-0.021-0.674-0.062c0.456,1.402,1.781,2.422,3.35,2.451c-1.228,0.947-2.773,1.512-4.454,1.512c-0.291,0-0.575-0.016-0.855-0.049c1.588,1,3.473,1.586,5.498,1.586c6.598,0,10.205-5.379,10.205-10.045c0-0.153-0.003-0.305-0.01-0.456c0.7-0.499,1.308-1.12,1.789-1.827c-0.644,0.28-1.334,0.469-2.06,0.555C17.422,4.782,17.99,4.091,18.258,3.266"></path>
+            </svg>
+            <span id="twitter1" class="socialText"></span>
+        </span>
+        <span id="twitch1Wrapper" class="socialBox">
+            <svg class="twitchIcon" viewBox="0 0 24 24">
+                <path d="m.975 4.175v16.694h5.749v3.131h3.139l3.134-3.132h4.705l6.274-6.258v-14.61h-21.434zm3.658-2.09h17.252v11.479l-3.66 3.652h-5.751l-3.134 3.127v-3.127h-4.707z"/>
+                <path d="m10.385 6.262h2.09v6.26h-2.09z"/>
+                <path d="m16.133 6.262h2.091v6.26h-2.091z"/>
+            </svg>
+            <span id="twitch1" class="socialText"></span>
+        </span>
+
+
         <span id="caster2" class="casterInfo"></span>
-        <span id="twitter2" class="twitterInfo"></span>
+        <span id="twitter2Wrapper" class="socialBox">
+            <svg class="twitterIcon" id="twitterIcon" viewBox="0 0 20 20">
+                <path d="M18.258,3.266c-0.693,0.405-1.46,0.698-2.277,0.857c-0.653-0.686-1.586-1.115-2.618-1.115c-1.98,0-3.586,1.581-3.586,3.53c0,0.276,0.031,0.545,0.092,0.805C6.888,7.195,4.245,5.79,2.476,3.654C2.167,4.176,1.99,4.781,1.99,5.429c0,1.224,0.633,2.305,1.596,2.938C2.999,8.349,2.445,8.19,1.961,7.925C1.96,7.94,1.96,7.954,1.96,7.97c0,1.71,1.237,3.138,2.877,3.462c-0.301,0.08-0.617,0.123-0.945,0.123c-0.23,0-0.456-0.021-0.674-0.062c0.456,1.402,1.781,2.422,3.35,2.451c-1.228,0.947-2.773,1.512-4.454,1.512c-0.291,0-0.575-0.016-0.855-0.049c1.588,1,3.473,1.586,5.498,1.586c6.598,0,10.205-5.379,10.205-10.045c0-0.153-0.003-0.305-0.01-0.456c0.7-0.499,1.308-1.12,1.789-1.827c-0.644,0.28-1.334,0.469-2.06,0.555C17.422,4.782,17.99,4.091,18.258,3.266"></path>
+            </svg>
+            <span id="twitter2" class="twitterInfo"></span>
+        </span>
+        <span id="twitch2Wrapper" class="socialBox">
+            <svg class="twitchIcon" viewBox="0 0 24 24">
+                <path d="m.975 4.175v16.694h5.749v3.131h3.139l3.134-3.132h4.705l6.274-6.258v-14.61h-21.434zm3.658-2.09h17.252v11.479l-3.66 3.652h-5.751l-3.134 3.127v-3.127h-4.707z"/>
+                <path d="m10.385 6.262h2.09v6.26h-2.09z"/>
+                <path d="m16.133 6.262h2.091v6.26h-2.091z"/>
+            </svg>
+            <span id="twitch2" class="socialText"></span>
+        </span>
+
     </div>
 </body>
 </html>

@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, globalShortcut, BrowserWindow } = require('electron');
 const path = require('path');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -14,6 +14,8 @@ const createWindow = () => {
     
     minWidth: 600,
     minHeight: 300,
+    maxWidth: 600,
+    maxHeight: 300,
 
     webPreferences: {
       nodeIntegration: true,
@@ -23,7 +25,7 @@ const createWindow = () => {
   // we dont like menus
   mainWindow.removeMenu();
 
-  mainWindow.webContents.openDevTools();
+  /* mainWindow.webContents.openDevTools(); */
 
   // load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, 'index.html'));
