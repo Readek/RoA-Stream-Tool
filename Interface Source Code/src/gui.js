@@ -3,8 +3,8 @@ window.onload = init;
 const fs = require('fs');
 const path = require('path');
 
-const mainPath = path.join(__dirname, '..', '..', 'Stream Controller', 'Resources', 'Texts');
-const charPath = path.join(__dirname, '..', '..', 'Stream Controller', 'Resources', 'Characters');
+const mainPath = path.join(__dirname, '..', '..', 'Stream Tool', 'Resources', 'Texts');
+const charPath = path.join(__dirname, '..', '..', 'Stream Tool', 'Resources', 'Characters');
 
 //yes we all like global variables
 let colorP1, colorP2;
