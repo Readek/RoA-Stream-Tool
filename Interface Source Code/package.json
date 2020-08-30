@@ -1,8 +1,8 @@
 {
   "name": "roa-st-gui",
-  "productName": "roa-st-gui",
-  "version": "1.0.0",
-  "description": "An electron interface for Rivals of Aether tournament streams.",
+  "productName": "RoA ST",
+  "version": "v4",
+  "description": "An electron interface for RoA tournament streams.",
   "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",
@@ -26,7 +26,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "roa_st_gui"
+            "name": "RoA_ST_GUI"
           }
         },
         {
