@@ -1,13 +1,13 @@
-![preview](https://cdn.discordapp.com/attachments/574303886869790730/700308095779340298/unknown.png)
-# RoA Stream Control
+![preview](https://cdn.discordapp.com/attachments/574303886869790730/749570123701944390/unknown.png)
+# RoA Stream Tool
 
 So you want to do a Rivals of Aether stream, huh? Well, today is your lucky day, because I have done tons of work so you don’t have to! With this, you will be able to set up a RoA tournament oriented stream in no time.
 
 ---
 
 ## Features
-- [Easy and fast setup](https://gfycat.com/fragrantfortunatealbacoretuna) using a browser source.
-- [Handy interface](https://gfycat.com/slimynimbleequestrian) to quickly change everything you need, like player names, characters, scores, round, casters...
+- [Easy and fast setup](https://gfycat.com/entireinconsequentialafricangroundhornbill) using a browser source. Drag and drop!
+- [Handy interface](https://gfycat.com/thirstyripeeyra) to quickly change everything you need, like player names, characters, scores, round, casters...
 - Every single skin the game has to offer is [supported](https://gfycat.com/sandyinsignificantdodobird) (more than 300 different skins!), including high quality renders.
 - Some **Workshop** characters are also [supported](https://gfycat.com/leadingancienthumpbackwhale)!
 - [Dynamic, optional intro](https://gfycat.com/revolvingsmarteuropeanpolecat) to be played when changing to the game scene.
@@ -22,12 +22,11 @@ So you want to do a Rivals of Aether stream, huh? Well, today is your lucky day,
 These are instructions for regular OBS Studio, but I imagine you can do the same with other streaming software:
 - Get the [latest release](https://github.com/Readek/RoA-Stream-Control/releases).
 - Extract somewhere.
-- Add a new browser source in OBS.
-- Set it to local file -> `RoA Scoreboard.html`.
-- Set 1920 width and 1080 height. (if it looks weird, set your canvas resolution to 1080p or make the source fit the screen).
-- Use custom frame rate -> 60 (if streaming at 60fps of course).
-- Tick `Refresh browser when scene becomes active`.
-- Manage it all with the 'RoA Stream Control' executable.
+- Drag and drop `RoA Scoreboard.htlm` into OBS, or add a new browser source in OBS pointing at the local file.
+- If the source looks weird, manually set the source's propierties to 1920 width and 1080 height, or set your OBS canvas resolution to 1080p, or make the source fit the screen.
+- In the source's propierties, change *Use custom frame rate* -> `60` (if streaming at 60fps of course).
+- Also tick `Refresh browser when scene becomes active`.
+- Manage it all with the `RoA Stream Tool` executable.
 
 Repeat from the 3rd step to add the `VS Screen.html`, though I recommend you to do so on another scene.
 
@@ -56,6 +55,8 @@ Let's do something a bit more advanced. We now have 2 tiny problems. On online r
 
 ## Other stuff...
 Do you want to customize something? Do you need some OBS tips and tricks for a RoA stream? **Please, go to the [wiki](https://github.com/Readek/RoA-Stream-Control/wiki)**!
+
+Do you want to adapt this project to another game but can't figure out how to? Lucky for you, I'm open for commisions! Contact me on twitter [@Readeku](https://twitter.com/Readeku) or on Discord `Readek#5869`!.
 
 ---
 
