@@ -30,6 +30,11 @@ These are instructions for regular OBS Studio, but I imagine you can do the same
 
 Repeat from the 3rd step to add the `VS Screen.html`, though I recommend you to do so on another scene.
 
+### Interface shortcuts!
+- Press `Enter` to update.
+- Press either `F1` or `F2` to increase P1's or P2's score.
+- Press `ESC` to clear player info.
+
 Note: The Scoreboard's intro will only play when refreshing the browser. If you tick the intro box while having the scoreboard's scene open, nothing will change until you go out and back to the scoreboard's scene.
 
 ---
