@@ -1,5 +1,6 @@
 ![preview](https://cdn.discordapp.com/attachments/574303886869790730/749570123701944390/unknown.png)
 # RoA Stream Tool
+*Also available for [Melee](https://github.com/Readek/Melee-Stream-Tool)!*
 
 So you want to do a Rivals of Aether stream, huh? Well, today is your lucky day, because I have done tons of work so you don’t have to! With this, you will be able to set up a RoA tournament oriented stream in no time.
 
@@ -23,8 +24,8 @@ These are instructions for regular OBS Studio, but I imagine you can do the same
 - Get the [latest release](https://github.com/Readek/RoA-Stream-Control/releases).
 - Extract somewhere.
 - Drag and drop `RoA Scoreboard.htlm` into OBS, or add a new browser source in OBS pointing at the local file.
-- If the source looks weird, manually set the source's propierties to 1920 width and 1080 height, or set your OBS canvas resolution to 1080p, or make the source fit the screen.
-- In the source's propierties, change *Use custom frame rate* -> `60` (if streaming at 60fps of course).
+- If the source looks weird, manually set the source's properties to 1920 width and 1080 height, or set your OBS canvas resolution to 1080p, or make the source fit the screen.
+- In the source's properties, change *Use custom frame rate* -> `60` (if streaming at 60fps of course).
 - Also tick `Refresh browser when scene becomes active`.
 - Manage it all with the `RoA Stream Tool` executable.
 
@@ -61,7 +62,7 @@ Let's do something a bit more advanced. We now have 2 tiny problems. On online r
 ## Other stuff...
 Do you want to customize something? Do you need some OBS tips and tricks for a RoA stream? **Please, go to the [wiki](https://github.com/Readek/RoA-Stream-Control/wiki)**!
 
-Do you want to adapt this project to another game but can't figure out how to? Lucky for you, I'm open for commisions! Contact me on twitter [@Readeku](https://twitter.com/Readeku) or on Discord `Readek#5869`!.
+Do you want to adapt this project to another game but can't figure out how to? Lucky for you, I'm open for commisions! Contact me on Twitter [@Readeku](https://twitter.com/Readeku) or on Discord `Readek#5869`!.
 
 ---
 
