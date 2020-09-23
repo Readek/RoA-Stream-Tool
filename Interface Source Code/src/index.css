@@ -335,8 +335,7 @@ input[type="text"] {
   fill: #b6b6b6;
   opacity: 0;
   transform: scale(1.5, 1.5);
-  transition: opacity 200ms;
-  transition: transform 200ms ease;
+  transition: opacity 200ms, transform 200ms;
 }
 #swapButton:hover #swapIcon {
   opacity: 1;
