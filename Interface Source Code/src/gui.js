@@ -41,6 +41,7 @@ const p2L = document.getElementById('p2L');
 const roundInp = document.getElementById('roundName');
 
 const workshopCheck = document.getElementById('workshopToggle');
+const forceWL = document.getElementById('forceWLToggle');
 
 
 function init() {
@@ -127,8 +128,9 @@ function init() {
 
     /* SETTINGS */
 
-    //set a listener for the workshop check
+    //set listeners for the settings checkboxes
     workshopCheck.addEventListener("click", workshopChange);
+    forceWL.addEventListener("click", forceWLtoggles);
 
 
     /* KEYBOARD SHORTCUTS */
@@ -658,16 +660,18 @@ function changeBestOf() {
 
 
 function checkRound() {
-    let wlButtons = document.getElementsByClassName("wlButtons");
+    if (!forceWL.checked) {
+        const wlButtons = document.getElementsByClassName("wlButtons");
 
-    if (roundInp.value.toLocaleUpperCase().includes("Grand".toLocaleUpperCase())) {
-        for (let i = 0; i < wlButtons.length; i++) {
-            wlButtons[i].style.display = "inline";
-        }
-    } else {
-        for (let i = 0; i < wlButtons.length; i++) {
-            wlButtons[i].style.display = "none";
-            deactivateWL();
+        if (roundInp.value.toLocaleUpperCase().includes("Grand".toLocaleUpperCase())) {
+            for (let i = 0; i < wlButtons.length; i++) {
+                wlButtons[i].style.display = "inline";
+            }
+        } else {
+            for (let i = 0; i < wlButtons.length; i++) {
+                wlButtons[i].style.display = "none";
+                deactivateWL();
+            }
         }
     }
 }
@@ -799,6 +803,21 @@ function workshopChange() {
     //hide the skin lists
     p1SkinList.style.display = "none";
     p2SkinList.style.display = "none";
+}
+
+//forces the W/L buttons to appear, or unforces them
+function forceWLtoggles() {
+    const wlButtons = document.getElementsByClassName("wlButtons");
+        if (forceWL.checked) {
+            for (let i = 0; i < wlButtons.length; i++) {
+                wlButtons[i].style.display = "inline";
+            }
+        } else {
+            for (let i = 0; i < wlButtons.length; i++) {
+                wlButtons[i].style.display = "none";
+                deactivateWL();
+            }
+        }
 }
 
 
