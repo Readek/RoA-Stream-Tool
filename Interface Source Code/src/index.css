@@ -188,7 +188,7 @@ input[type="text"] {
 
 .charCombo {
   width: auto;
-  max-width: 137px;
+  max-width: 141px;
   height: 30px;
   outline: none;
   color: var(--text1);

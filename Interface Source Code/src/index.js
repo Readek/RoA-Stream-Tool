@@ -9,6 +9,8 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
+
+    //linux
     width: 600,
     height: 300,
     
@@ -16,6 +18,15 @@ const createWindow = () => {
     minHeight: 300,
     maxWidth: 600,
     maxHeight: 300,
+
+    //windows
+    /* width: 600,
+    height: 300,
+    
+    minWidth: 600,
+    minHeight: 358,
+    maxWidth: 600,
+    maxHeight: 358, */
 
     webPreferences: {
       nodeIntegration: true,
@@ -25,6 +36,7 @@ const createWindow = () => {
   // we dont like menus
   mainWindow.removeMenu();
 
+  //web console
   /* mainWindow.webContents.openDevTools(); */
 
   // load the index.html of the app.

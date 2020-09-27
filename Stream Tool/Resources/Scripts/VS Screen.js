@@ -1,28 +1,30 @@
-
 //animation stuff
-let pCharMove = 30; //distance to move for the character images
+const pCharMove = 30; //distance to move for the character images
 
-let fadeInTime = .4; //(seconds)
-let fadeOutTime = .3;
-let introDelay = .5; //all animations will get this delay when the html loads (use this so it times with your transition)
+const fadeInTime = .4; //(seconds)
+const fadeOutTime = .3;
+const introDelay = .5; //all animations will get this delay when the html loads (use this so it times with your transition)
 
 //max text sizes (used when resizing back)
-let roundSize = '38px';
-let tournamentSize = '28px';
-let casterSize = '25px';
-let twitterSize = '20px';
+const playerSize = '90px';
+const teamSize = '50px';
+const roundSize = '38px';
+const tournamentSize = '28px';
+const casterSize = '25px';
+const twitterSize = '20px';
+
+//to store the current character info
+let p1CharInfo, p2CharInfo;
 
 //to avoid the code constantly running the same method over and over
 let p1CharacterPrev, p1SkinPrev, p1ColorPrev;
 let p2CharacterPrev, p2SkinPrev, p2ColorPrev;
 
 //variables for the twitter/twitch constant change
-let socialInt1;
-let socialInt2;
+let socialInt1, socialInt2;
 let twitter1, twitch1, twitter2, twitch2;
 let socialSwitch = true; //true = twitter, false = twitch
-let socialInterval = 6000;
-
+const socialInterval = 7000;
 
 let startup = true;
 
@@ -30,43 +32,40 @@ let startup = true;
 window.onload = init;
 function init() {
 	async function mainLoop() {
-		let scInfo = await getInfo();
+		const scInfo = await getInfo();
 		getData(scInfo);
 	}
 
 	mainLoop();
-	setInterval( () => { mainLoop(); }, 500); //update interval
+	setInterval( () => { mainLoop() }, 500); //update interval
 }
 
 	
-function getData(scInfo) {
-	let p1Name = scInfo['p1Name'];
-	let p1Team = scInfo['p1Team'];
-	let p1Color = scInfo['p1Color'];
-	let p1Character = scInfo['p1Character'];
-	let p1Skin = scInfo['p1Skin'];
+async function getData(scInfo) {
+	const forceHD = scInfo['forceHD'];
+
+	const p1Name = scInfo['p1Name'];
+	const p1Team = scInfo['p1Team'];
+	const p1Color = scInfo['p1Color'];
+	const p1Character = scInfo['p1Character'];
+	const p1Skin = forceHD ? 'HD' : scInfo['p1Skin']; //check if we are forcing HD skins
 	
-	let p2Name = scInfo['p2Name'];
-	let p2Team = scInfo['p2Team'];
-	let p2Color = scInfo['p2Color'];
-	let p2Character = scInfo['p2Character'];
-	let p2Skin = scInfo['p2Skin'];
+	const p2Name = scInfo['p2Name'];
+	const p2Team = scInfo['p2Team'];
+	const p2Color = scInfo['p2Color'];
+	const p2Character = scInfo['p2Character'];
+	const p2Skin = forceHD ? 'HD' : scInfo['p2Skin'];
 
-	let round = scInfo['round'];
-	let tournamentName = scInfo['tournamentName'];
+	const round = scInfo['round'];
+	const tournamentName = scInfo['tournamentName'];
 
-	let caster1 = scInfo['caster1Name'];
+	const caster1 = scInfo['caster1Name'];
 	twitter1 = scInfo['caster1Twitter'];
 	twitch1 = scInfo['caster1Twitch'];
-	let caster2 = scInfo['caster2Name'];
+	const caster2 = scInfo['caster2Name'];
 	twitter2 = scInfo['caster2Twitter'];
 	twitch2 = scInfo['caster2Twitch'];
 
-	let forceHD = scInfo['forceHD'];
-	if (forceHD) {
-		p1Skin = 'HD';
-		p2Skin = 'HD';
-	}
 
 	//first, things that will happen only the first time the html loads
 	if (startup) {
@@ -80,8 +79,10 @@ function getData(scInfo) {
 		fadeIn("#p2Wrapper", introDelay+.15);
 
 
+		//set the character info for p1
+		p1CharInfo = await getCharInfo(p1Character);
 		//set p1 character
-		updateChar(p1Character, p1Skin, p1Color, 'charP1', 'trailP1');
+		updateChar(p1Character, p1Skin, p1Color, 'charP1', 'trailP1', p1CharInfo);
 		//move the character
 		initCharaFade("#charaP1", "#trailP1");
 		//save character info so we change them later if different
@@ -89,15 +90,16 @@ function getData(scInfo) {
 		p1SkinPrev = p1Skin;
 
 		//same for p2
-		updateChar(p2Character, p2Skin, p2Color, 'charP2', 'trailP2');
+		p2CharInfo = await getCharInfo(p2Character);
+		updateChar(p2Character, p2Skin, p2Color, 'charP2', 'trailP2', p2CharInfo);
 		initCharaFade("#charaP2", "#trailP2");
 		p2CharacterPrev = p2Character;
 		p2SkinPrev = p2Skin;
 
 		
 		//set the character backgrounds
-		updateBG('vidBGP1', p1Character, p1Skin);
-		updateBG('vidBGP2', p2Character, p2Skin);
+		updateBG('vidBGP1', p1Character, p1Skin, p1CharInfo);
+		updateBG('vidBGP2', p2Character, p2Skin, p2CharInfo);
 
 
 		//set the colors
@@ -128,7 +130,7 @@ function getData(scInfo) {
 		socialInt1 = setInterval( () => {
 			socialChange1("twitter1Wrapper", "twitch1Wrapper");
 		}, socialInterval);
-		socialInt2 = setInterval(() => {
+		socialInt2 = setInterval( () => {
 			socialChange2("twitter2Wrapper", "twitch2Wrapper");
 		}, socialInterval);
 
@@ -139,7 +141,7 @@ function getData(scInfo) {
 			} else {
 				socialSwitch = true;
 			}
-		}, 6000);
+		}, socialInterval);
 
 
 		startup = false; //next time we run this function, it will skip all we just did
@@ -152,13 +154,13 @@ function getData(scInfo) {
 		//trail to the next one if the character has changed, but it will change its color
 		if (p1ColorPrev != p1Color) {
 			updateColor('colorBGP1', 'textBGP1', p1Color);
-			colorTrail('trailP1', p1CharacterPrev, p1SkinPrev, p1Color);
+			colorTrail('trailP1', p1CharacterPrev, p1SkinPrev, p1Color, p1CharInfo);
 			p1ColorPrev = p1Color;
 		}
 
 		if (p2ColorPrev != p2Color) {
 			updateColor('colorBGP2', 'textBGP2', p2Color);
-			colorTrail('trailP2', p2CharacterPrev, p2SkinPrev, p2Color);
+			colorTrail('trailP2', p2CharacterPrev, p2SkinPrev, p2Color, p2CharInfo);
 			p2ColorPrev = p2Color;
 		}
 
@@ -188,10 +190,15 @@ function getData(scInfo) {
 		//player 1 character, skin and background change
 		if (p1CharacterPrev != p1Character || p1SkinPrev != p1Skin) {
 
+			//if the character has changed, update the info
+			if (p1CharacterPrev != p1Character) {
+				p1CharInfo = await getCharInfo(p1Character);
+			}
+
 			//move and fade out the character
-			charaFadeOut("#charaP1", async () => {
+			charaFadeOut("#charaP1", () => {
 				//update the character image and trail, and also storing its scale for later
-				let charScale = await updateChar(p1Character, p1Skin, p1Color, 'charP1', 'trailP1');
+				const charScale = updateChar(p1Character, p1Skin, p1Color, 'charP1', 'trailP1', p1CharInfo);
 				//move and fade them back
 				charaFadeIn("#charaP1", "#trailP1", charScale);
 			});
@@ -201,7 +208,7 @@ function getData(scInfo) {
 				//fade it out
 				fadeOut("#vidBGP1", () => {
 					//update the bg vid
-					updateBG('vidBGP1', p1Character, p1Skin);
+					updateBG('vidBGP1', p1Character, p1Skin, p1CharInfo);
 					//fade it back
 					fadeIn("#vidBGP1", .3, fadeInTime+.2);
 				}, fadeOutTime+.2);
@@ -213,14 +220,19 @@ function getData(scInfo) {
 
 		//same for player 2
 		if (p2CharacterPrev != p2Character || p2SkinPrev != p2Skin) {
-			charaFadeOut("#charaP2", async () => {
-				let charScale = await updateChar(p2Character, p2Skin, p2Color, 'charP2', 'trailP2');
+
+			if (p2CharacterPrev != p2Character) {
+				p2CharInfo = await getCharInfo(p2Character);
+			}
+
+			charaFadeOut("#charaP2", () => {
+				const charScale = updateChar(p2Character, p2Skin, p2Color, 'charP2', 'trailP2', p2CharInfo);
 				charaFadeIn("#charaP2", "#trailP2", charScale);
 			});
 			
 			if (p2CharacterPrev != p2Character || p2Skin == "Ragnir" || p2SkinPrev == "Ragnir") {
 				fadeOut("#vidBGP2", () => {
-					updateBG('vidBGP2', p2Character, p2Skin); //update the bg vid
+					updateBG('vidBGP2', p2Character, p2Skin, p2CharInfo);
 					fadeIn("#vidBGP2", .3, fadeInTime+.2);
 				}, fadeOutTime+.2);
 			};
@@ -256,22 +268,11 @@ function getData(scInfo) {
 		}
 		//caster 1's twitter
 		if (document.getElementById('twitter1').textContent != twitter1){
-			fadeOut("#twitter1Wrapper", () => {
-				updateSocialText("twitter1", twitter1, twitterSize, "twitter1Wrapper");
-				//check if its twitter's turn to show up
-				if (socialSwitch) {
-					fadeIn("#twitter1Wrapper", .2);
-				}
-			});
+			updateSocial(twitter1, "twitter1", "twitter1Wrapper", twitch1, "twitch1Wrapper");
 		}
 		//caster 2's twitch (same as above)
 		if (document.getElementById('twitch1').textContent != twitch1){
-			fadeOut("#twitch1Wrapper", () => {
-				updateSocialText("twitch1", twitch1, twitterSize, "twitch1Wrapper");
-				if (!socialSwitch) {
-					fadeIn("#twitch1Wrapper", .2);
-				}
-			});	
+			updateSocial(twitch1, "twitch1", "twitch1Wrapper", twitter1, "twitter1Wrapper");
 		}
 
 		//caster 2, same as above
@@ -282,21 +283,11 @@ function getData(scInfo) {
 			});
 		}
 		if (document.getElementById('twitter2').textContent != twitter2){
-			fadeOut("#twitter2Wrapper", () => {
-				updateSocialText("twitter2", twitter2, twitterSize, "twitter2Wrapper");
-				if (socialSwitch) {
-					fadeIn("#twitter2Wrapper", .2);
-				}
-			});
+			updateSocial(twitter2, "twitter2", "twitter2Wrapper", twitch2, "twitch2Wrapper");
 		}
 
 		if (document.getElementById('twitch2').textContent != twitch2){
-			fadeOut("#twitch2Wrapper", () => {
-				updateSocialText("twitch2", twitch2, twitterSize, "twitch2Wrapper");
-				if (!socialSwitch) {
-					fadeIn("#twitch2Wrapper", .2);
-				}
-			});
+			updateSocial(twitch2, "twitch2", "twitch2Wrapper", twitter2, "twitter2Wrapper");
 		}
 	}
 }
@@ -309,31 +300,28 @@ function showNothing(itemEL) {
 
 //color change
 function updateColor(gradID, textBGID, color) {
-	let gradEL = document.getElementById(gradID);
+	const gradEL = document.getElementById(gradID);
 	//change the color gradient image path depending on the color
 	gradEL.setAttribute('src', 'Resources/Overlay/VS Screen/Grad ' + color + '.png');
 	//did that path not work? show absolutely nothing
-	if (startup) {gradEL.addEventListener("error", function(){showNothing(gradEL)})}
+	if (startup) {gradEL.addEventListener("error", () => {showNothing(gradEL)})}
 
 	//same but with the text background
-	let textBGEL = document.getElementById(textBGID);
+	const textBGEL = document.getElementById(textBGID);
 	textBGEL.setAttribute('src', 'Resources/Overlay/VS Screen/Text BG ' + color + '.png');
-	if (startup) {textBGEL.addEventListener("error", function(){showNothing(textBGEL)})}
+	if (startup) {textBGEL.addEventListener("error", () => {showNothing(textBGEL)})}
 }
 
 //background change
-async function updateBG(vidID, pCharacter, pSkin) {
-	let vidEL = document.getElementById(vidID);
+function updateBG(vidID, pCharacter, pSkin, charInfo) {
+	const vidEL = document.getElementById(vidID);
 
 	if (startup) {
 		//if the video cant be found, show aethereal gates
-		vidEL.addEventListener("error", function(){
+		vidEL.addEventListener("error", () => {
 			vidEL.setAttribute('src', 'Resources/Backgrounds/Default.webm')
 		});
 	}
-
-	//get character info for later
-	let charInfo = await getCharInfo(pCharacter);
 
 	//change the BG path depending on the character
 	if (pSkin == "Ragnir") { //yes, ragnir is the only skin that changes bg
@@ -420,14 +408,39 @@ function socialChange2(twitterWrapperID, twitchWrapperID) {
 
 	}
 }
+//function to decide when to change to what
+function updateSocial(mainSocial, mainText, mainWrapper, otherSocial, otherWrapper) {
+	//check if this is for twitch or twitter
+	let localSwitch = socialSwitch;
+	if (mainText == "twitch1" || mainText == "twitch2") {
+		localSwitch = !localSwitch;
+	}
+	//check if this is their turn so we fade out the other one
+	if (localSwitch) {
+		fadeOut("#"+otherWrapper, () => {})
+	}
+
+	//now do the classics
+	fadeOut("#"+mainWrapper, () => {
+		updateSocialText(mainText, mainSocial, twitterSize, mainWrapper);
+		//check if its twitter's turn to show up
+		if (otherSocial == "" && mainSocial != "") {
+			fadeIn("#"+mainWrapper, .2);
+		} else if (localSwitch && mainSocial != "") {
+			fadeIn("#"+mainWrapper, .2);
+		} else if (otherSocial != "") {
+			fadeIn("#"+otherWrapper, .2);
+		}
+	});
+}
 
 //player text change
 function updatePlayerName(wrapperID, nameID, teamID, pName, pTeam) {
-	let nameEL = document.getElementById(nameID);
-	nameEL.style.fontSize = '90px'; //set original text size
+	const nameEL = document.getElementById(nameID);
+	nameEL.style.fontSize = playerSize; //set original text size
 	nameEL.textContent = pName; //change the actual text
-	let teamEL = document.getElementById(teamID);
-	teamEL.style.fontSize = '50px';
+	const teamEL = document.getElementById(teamID);
+	teamEL.style.fontSize = teamSize;
 	teamEL.textContent = pTeam;
 
 	resizeText(document.getElementById(wrapperID)); //resize if it overflows
@@ -435,14 +448,14 @@ function updatePlayerName(wrapperID, nameID, teamID, pName, pTeam) {
 
 //generic text changer
 function updateText(textID, textToType, maxSize) {
-	let textEL = document.getElementById(textID);
+	const textEL = document.getElementById(textID);
 	textEL.style.fontSize = maxSize; //set original text size
 	textEL.textContent = textToType; //change the actual text
 	resizeText(textEL); //resize it if it overflows
 }
 //social text changer
 function updateSocialText(textID, textToType, maxSize, wrapper) {
-	let textEL = document.getElementById(textID);
+	const textEL = document.getElementById(textID);
 	textEL.style.fontSize = maxSize; //set original text size
 	textEL.textContent = textToType; //change the actual text
 	const wrapperEL = document.getElementById(wrapper)
@@ -451,7 +464,7 @@ function updateSocialText(textID, textToType, maxSize, wrapper) {
 
 //text resize, keeps making the text smaller until it fits
 function resizeText(textEL) {
-	let childrens = textEL.children;
+	const childrens = textEL.children;
 	while (textEL.scrollWidth > textEL.offsetWidth || textEL.scrollHeight > textEL.offsetHeight) {
 		if (childrens.length > 0) { //for team+player texts
 			Array.from(childrens).forEach(function (child) {
@@ -506,7 +519,7 @@ function initCharaFade(charaID, trailID) {
 //searches for the main json file
 function getInfo() {
 	return new Promise(function (resolve) {
-		let oReq = new XMLHttpRequest();
+		const oReq = new XMLHttpRequest();
 		oReq.addEventListener("load", reqListener);
 		oReq.open("GET", 'Resources/Texts/ScoreboardInfo.json');
 		oReq.send();
@@ -522,9 +535,9 @@ function getInfo() {
 //searches for a json file with character data
 function getCharInfo(pCharacter) {
 	return new Promise(function (resolve) {
-		let oReq = new XMLHttpRequest();
+		const oReq = new XMLHttpRequest();
 		oReq.addEventListener("load", reqListener);
-		oReq.onerror = function(){resolve("notFound")}; //for obs local file browser sources
+		oReq.onerror = () => {resolve("notFound")}; //for obs local file browser sources
 		oReq.open("GET", 'Resources/Texts/Character Info/' + pCharacter + '.json');
 		oReq.send();
 
@@ -536,25 +549,24 @@ function getCharInfo(pCharacter) {
 }
 
 //character update!
-async function updateChar(pCharacter, pSkin, color, charID, trailID) {
+function updateChar(pCharacter, pSkin, color, charID, trailID, charInfo) {
 
 	//store so code looks cleaner later
-	let charEL = document.getElementById(charID);
-	let trailEL = document.getElementById(trailID);
+	const charEL = document.getElementById(charID);
+	const trailEL = document.getElementById(trailID);
 
 	//this will trigger whenever the image loaded cant be found
 	if (startup) {
 		//if the image fails to load, we will put a placeholder
-		charEL.addEventListener("error", function(){
-			//we need two different images because a "?" flipped looks weird
-			if (charEL == document.getElementById("charP1")) {
-				charEL.setAttribute('src', 'Resources/Characters/Random/P1.png');
-			} else {
-				charEL.setAttribute('src', 'Resources/Characters/Random/P2.png');
-			}
+		charEL.addEventListener("error", () => {
+
+			//simple check to see if we are updating P1 or P2
+			const pNum = charEL == document.getElementById("charP1") ? 1 : 2;
+
+			charEL.setAttribute('src', 'Resources/Characters/Random/P'+pNum+'.png');
 		})
 		//trail will just show nothing
-		trailEL.addEventListener("error", function(){showNothing(trailEL)})
+		trailEL.addEventListener("error", () => {showNothing(trailEL)})
 	}
 
 	//if using an Alt skin, just use the normal version
@@ -565,8 +577,6 @@ async function updateChar(pCharacter, pSkin, color, charID, trailID) {
 	//change the image path depending on the character and skin
 	charEL.setAttribute('src', 'Resources/Characters/' + pCharacter + '/' + pSkin + '.png');
 
-	//get the character positions
-	let charInfo = await getCharInfo(pCharacter);
 	//             x, y, scale
 	let charPos = [0, 0, 1];
 	//now, check if the character or skin exists in the json file we checked earler
@@ -585,7 +595,7 @@ async function updateChar(pCharacter, pSkin, color, charID, trailID) {
 	} else { //if the character isnt on the database, set positions for the "?" image
 		//this condition is used just to position images well on both sides
 		if (charEL == document.getElementById("charP1")) {
-			charPos[0] = -150; 
+			charPos[0] = -150;
 		} else {
 			charPos[0] = -175;
 		}
@@ -612,11 +622,10 @@ async function updateChar(pCharacter, pSkin, color, charID, trailID) {
 }
 
 //this gets called just to change the color of a trail
-async function colorTrail(trailID, pCharacter, pSkin, color) {
-	let trailEL = document.getElementById(trailID);
-	let charInfo = await getCharInfo(pCharacter);
+function colorTrail(trailID, pCharacter, pSkin, color, charInfo) {
+	const trailEL = document.getElementById(trailID);
 	if (charInfo != "notFound") {
-		if (charInfo.vsScreen[pSkin]) {
+		if (charInfo.vsScreen[pSkin]) { //if the skin positions are not the default ones
 			trailEL.setAttribute('src', 'Resources/Trails/' + pCharacter + '/' + color + ' ' + pSkin + '.png');
 		} else {
 			trailEL.setAttribute('src', 'Resources/Trails/' + pCharacter + '/' + color + '.png');

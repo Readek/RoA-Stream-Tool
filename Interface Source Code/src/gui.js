@@ -3,8 +3,9 @@ window.onload = init;
 const fs = require('fs');
 const path = require('path');
 
-const mainPath = path.join(__dirname, '..', '..', 'Stream Tool', 'Resources', 'Texts');
-const charPath = path.join(__dirname, '..', '..', 'Stream Tool', 'Resources', 'Characters');
+//change these paths when building the executable
+const mainPath = path.resolve(__dirname, '..', '..', 'Stream Tool', 'Resources', 'Texts');
+const charPath = path.resolve(__dirname, '..', '..', 'Stream Tool', 'Resources', 'Characters');
 
 //yes we all like global variables
 let colorP1, colorP2;
@@ -135,6 +136,7 @@ function init() {
 
     /* KEYBOARD SHORTCUTS */
 
+    //enter to update scoreboard info (updates botBar color for visual feedback)
     Mousetrap.bind('enter', () => { 
         writeScoreboard();
         document.getElementById('botBar').style.backgroundColor = "var(--bg3)";
@@ -143,6 +145,7 @@ function init() {
         document.getElementById('botBar').style.backgroundColor = "var(--bg5)";
      }, 'keyup');
 
+     //esc to clear player info
     Mousetrap.bind('esc', () => {
         if (movedSettings) { //if settings are open, close them
             goBack();
@@ -151,6 +154,7 @@ function init() {
         }
     });
 
+    //F1 or F2 to give players a score tick
     Mousetrap.bind('f1', () => { giveWinP1() });
     Mousetrap.bind('f2', () => { giveWinP2() });
 }
@@ -176,7 +180,7 @@ function goBack() {
 //called whenever we need to read a json file
 function getJson(fileName) {
     try {
-        let settingsRaw = fs.readFileSync(mainPath + "/" + fileName + ".json");
+        const settingsRaw = fs.readFileSync(mainPath + "/" + fileName + ".json");
         return JSON.parse(settingsRaw);
     } catch (error) {
         return undefined;
@@ -196,7 +200,7 @@ function loadCharacters(comboList, nPlayer) {
     }
 
     //add random to the end of the list
-    let option = document.createElement('option');
+    const option = document.createElement('option');
     option.text = "Random";
     comboList.add(option);
 
@@ -214,13 +218,9 @@ function loadCharacters(comboList, nPlayer) {
 function charChange() {
     const currentChar = this.selectedOptions[0].text; //current selection
 
-    let pNum; //just a simple 'which player are we' test
-    if (this == p1CharList) {
-        pNum = 1;
-    } else {
-        pNum = 2;
-    }
-    
+    //just a simple 'which player are we' test
+    const pNum = this == p1CharList ? 1 : 2;
+
     const skinList = document.getElementById('p'+pNum+'Skin');
 
     //load a new skin list
@@ -281,15 +281,11 @@ function charChangeManual(list, pNum) {
 //for when skin changes, same logic as above
 function skinChange() {
 
-    let pNum; //which player is it?
-    if (this == p1SkinList) {
-        pNum = 1;
-    } else {
-        pNum = 2;
-    }
+    //which player is it?
+    const pNum = this == p1SkinList ? 1 : 2;
 
     //which character is it?
-    let currentChar = document.getElementById('p'+pNum+'Char').selectedOptions[0].text;
+    const currentChar = document.getElementById('p'+pNum+'Char').selectedOptions[0].text;
 
     let currentSkin; //which skin is it?
     try {
@@ -306,7 +302,7 @@ function skinChange() {
 }
 //same but with parameters
 function skinChangeManual(list, pNum) {
-    let currentChar = document.getElementById('p'+pNum+'Char').selectedOptions[0].text;
+    const currentChar = document.getElementById('p'+pNum+'Char').selectedOptions[0].text;
 
     let currentSkin;
     try {
@@ -338,7 +334,7 @@ function loadSkins(comboList, character) {
 //will add entries to a combo box with a given array
 function addEntries(comboList, list) {
     for (let i = 0; i < list.length; i++) {
-        let option = document.createElement('option'); //create new entry
+        const option = document.createElement('option'); //create new entry
         option.text = list[i]; //set the text of entry
         option.className = "theEntry";
         comboList.add(option); //add the entry to the combo list
@@ -367,13 +363,13 @@ function changeListWidth(list) {
 
 //will load the color list to a color slot combo box
 function loadColors(pNum) {
-    let colorList = getJson("InterfaceInfo"); //check the color list
+    const colorList = getJson("InterfaceInfo"); //check the color list
 
     //for each color found, add them to the color list
     for (let i = 0; i < Object.keys(colorList.colorSlots).length; i++) {
 
         //create a new div that will have the color info
-        let newDiv = document.createElement('div');
+        const newDiv = document.createElement('div');
         newDiv.style.display = "flex"; //so everything is in 1 line
         newDiv.title = "Also known as " + colorList.colorSlots["color"+i].hex;
         newDiv.className = "colorEntry";
@@ -382,11 +378,11 @@ function loadColors(pNum) {
         newDiv.addEventListener("click", updateColor);
 
         //create the color's name
-        let newText = document.createElement('div');
+        const newText = document.createElement('div');
         newText.innerHTML = colorList.colorSlots["color"+i].name;
         
         //create the color's rectangle
-        let newRect = document.createElement('div');
+        const newRect = document.createElement('div');
         newRect.style.width = "13px";
         newRect.style.height = "13px";
         newRect.style.margin = "5px";
@@ -416,23 +412,18 @@ function loadColors(pNum) {
 
 function updateColor() {
 
-    let pNum; //you've seen this one enough already, right?
-    if (this.parentElement.parentElement == document.getElementById("p1Color")) {
-        pNum = 1;
-    } else {
-        pNum = 2;
-    }
+    //you've seen this one enough already, right?
+    const pNum = this.parentElement.parentElement == document.getElementById("p1Color") ? 1 : 2;
 
-    let clickedColor = this.textContent;
-    let colorList = getJson("InterfaceInfo");
+    const clickedColor = this.textContent;
+    const colorList = getJson("InterfaceInfo");
 
     //search for the color we just clicked
     for (let i = 0; i < Object.keys(colorList.colorSlots).length; i++) {
         if (colorList.colorSlots["color"+i].name == clickedColor) {
-            let colorRectangle, colorGrad;
 
-            colorRectangle = document.getElementById("p"+pNum+"ColorRect");
-            colorGrad = document.getElementById("player"+pNum);
+            const colorRectangle = document.getElementById("p"+pNum+"ColorRect");
+            const colorGrad = document.getElementById("player"+pNum);
             
             //change the variable that will be read when clicking the update button
             if (pNum == 1) {
@@ -454,10 +445,7 @@ function updateColor() {
 
 //whenever clicking on the first score tick
 function changeScoreTicks1() {
-    let pNum = 1;
-    if (this == p2Win1) {
-        pNum = 2;
-    }
+    const pNum = this == p1Win1 ? 1 : 2;
 
     //deactivate wins 2 and 3
     document.getElementById('winP'+pNum+'-2').checked = false;
@@ -465,23 +453,17 @@ function changeScoreTicks1() {
 }
 //whenever clicking on the second score tick
 function changeScoreTicks2() {
-    let pNum = 1;
-    if (this == p2Win2) {
-        pNum = 2;
-    }
+    const pNum = this == p1Win2 ? 1 : 2;
 
-    //deactivate wins 2 and 3
+    //deactivate win 3, activate win 1
     document.getElementById('winP'+pNum+'-1').checked = true;
     document.getElementById('winP'+pNum+'-3').checked = false;
 }
 //something something the third score tick
 function changeScoreTicks3() {
-    let pNum = 1;
-    if (this == p2Win3) {
-        pNum = 2;
-    }
+    const pNum = this == p1Win3 ? 1 : 2;
 
-    //deactivate wins 2 and 3
+    //activate wins 1 and 2
     document.getElementById('winP'+pNum+'-1').checked = true;
     document.getElementById('winP'+pNum+'-2').checked = true;
 }
@@ -573,12 +555,7 @@ function deactivateWL() {
 function checkPlayerSkin() {
 
     //the classic player check
-    let pNum;
-    if (this == p1NameInp) {
-        pNum = 1;
-    } else {
-        pNum = 2;
-    }
+    const pNum = this == p1NameInp ? 1 : 2;
 
     checkCustomSkin(pNum);
 
@@ -601,7 +578,7 @@ function checkCustomSkin(pNum) {
                     document.getElementById('p'+pNum+'Skin').remove(document.getElementById('p'+pNum+'Skin').selectedIndex);
                 }
 
-                let option = document.createElement('option'); //create new entry
+                const option = document.createElement('option'); //create new entry
                 option.className = "playerCustom"; //set class so the background changes
                 option.text = skinList.playerCustoms[i]; //set the text of entry
                 document.getElementById('p'+pNum+'Skin').add(option, 0); //add the entry to the beginning of the list
@@ -628,10 +605,10 @@ function changeInputWidth(input) {
 
 //used to get the exact width of a text considering the font used
 function getTextWidth(text, font) {
-    let canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
-    let context = canvas.getContext("2d");
+    const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+    const context = canvas.getContext("2d");
     context.font = font;
-    let metrics = context.measureText(text);
+    const metrics = context.measureText(text);
     return metrics.width;
 }
 
@@ -659,6 +636,7 @@ function changeBestOf() {
 }
 
 
+//for checking if its "Grands" so we make the WL buttons visible
 function checkRound() {
     if (!forceWL.checked) {
         const wlButtons = document.getElementsByClassName("wlButtons");
@@ -678,10 +656,10 @@ function checkRound() {
 
 
 function swap() {
-    let tempP1Name = p1NameInp.value;
-    let tempP1Team = p1TagInp.value;
-    let tempP2Name = p2NameInp.value;
-    let tempP2Team = p2TagInp.value;
+    const tempP1Name = p1NameInp.value;
+    const tempP1Team = p1TagInp.value;
+    const tempP2Name = p2NameInp.value;
+    const tempP2Team = p2TagInp.value;
 
     p1NameInp.value = tempP2Name;
     p1TagInp.value = tempP2Team;
@@ -694,8 +672,8 @@ function swap() {
     changeInputWidth(p2TagInp);
 
 
-    let tempP1Char = p1CharList.selectedOptions[0].text;
-    let tempP2Char = p2CharList.selectedOptions[0].text;
+    const tempP1Char = p1CharList.selectedOptions[0].text;
+    const tempP2Char = p2CharList.selectedOptions[0].text;
     
     //we need to perform this check since the program would halt when reading from undefined
     let p1RealSkin, p2RealSkin;
@@ -710,8 +688,8 @@ function swap() {
         p2RealSkin = "";
     }
 
-    let tempP1Skin = p1RealSkin;
-    let tempP2Skin = p2RealSkin;
+    const tempP1Skin = p1RealSkin;
+    const tempP2Skin = p2RealSkin;
 
     changeListValue(p1CharList, tempP2Char);
     changeListValue(p2CharList, tempP1Char);
@@ -728,8 +706,8 @@ function swap() {
     checkCustomSkin(2);
 
 
-    tempP1Score = checkScore(p1Win1, p1Win2, p1Win3);
-    tempP2Score = checkScore(p2Win1, p2Win2, p2Win3);
+    const tempP1Score = checkScore(p1Win1, p1Win2, p1Win3);
+    const tempP2Score = checkScore(p2Win1, p2Win2, p2Win3);
     setScore(tempP2Score, p1Win1, p1Win2, p1Win3);
     setScore(tempP1Score, p2Win1, p2Win2, p2Win3);
 }
@@ -740,6 +718,10 @@ function clearPlayers() {
     p1NameInp.value = "";
     p2TagInp.value = "";
     p2NameInp.value = "";
+    changeInputWidth(p1TagInp);
+    changeInputWidth(p1NameInp);
+    changeInputWidth(p2TagInp);
+    changeInputWidth(p2NameInp);
 
     //reset characters to random
     clearList(p1CharList);
@@ -752,12 +734,13 @@ function clearPlayers() {
     p2SkinList.style.display = "none";
 
     //clear player scores
-    let checks = document.getElementsByClassName("scoreCheck");
+    const checks = document.getElementsByClassName("scoreCheck");
     for (let i = 0; i < checks.length; i++) {
         checks[i].checked = false;
     }
 }
 
+//to force the list to use a specific entry
 function changeListValue(list, name) {
     for (let i = 0; i < list.length; i++) {
         if (list.options[i].text == name) {
@@ -766,6 +749,7 @@ function changeListValue(list, name) {
     }
 }
 
+//manually sets the player's score
 function setScore(score, tick1, tick2, tick3) {
     tick1.checked = false;
     tick2.checked = false;
@@ -837,7 +821,8 @@ function writeScoreboard() {
         p2RealSkin = "";
     }
 
-    let scoreboardJson = {
+    //this is what's going to be in the json file
+    const scoreboardJson = {
         p1Name: p1NameInp.value,
         p1Team: p1TagInp.value,
         p1Character: p1CharList.selectedOptions[0].text,
@@ -866,7 +851,8 @@ function writeScoreboard() {
         forceHD: document.getElementById('forceHD').checked
     };
 
-    let data = JSON.stringify(scoreboardJson, null, 2);
+    //now convert it to a text we can save intro a file
+    const data = JSON.stringify(scoreboardJson, null, 2);
     fs.writeFileSync(mainPath + "/ScoreboardInfo.json", data);
 
 

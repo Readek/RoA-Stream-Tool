@@ -1,9 +1,9 @@
 //animation stuff
-let pMove = 50; //distance to move for the player names (pixels)
-let pCharMove = 20; //distance to move for the character icons
+const pMove = 50; //distance to move for the player names (pixels)
+const pCharMove = 20; //distance to move for the character icons
 
-let fadeInTime = .3; //(seconds)
-let fadeOutTime = .2;
+const fadeInTime = .3; //(seconds)
+const fadeOutTime = .2;
 let introDelay = .8; //all animations will get this delay when the html loads (use this so it times with your transition)
 
 //to avoid the code constantly running the same method over and over
@@ -17,43 +17,39 @@ window.onload = init;
 
 function init() {
 	async function mainLoop() {
-		let scInfo = await getInfo();
+		const scInfo = await getInfo();
 		getData(scInfo);
 	}
 
 	mainLoop();
-	setInterval(function () { mainLoop(); }, 500); //update interval
+	setInterval( () => { mainLoop(); }, 500); //update interval
 }
 
 async function getData(scInfo) {
-	let p1Name = scInfo['p1Name'];
-	let p1Team = scInfo['p1Team'];
-	let p1Score = scInfo['p1Score'];
-	let p1Color = scInfo['p1Color'];
-	let p1Character = scInfo['p1Character'];
-	let p1Skin = scInfo['p1Skin'];
-	let p1WL = scInfo['p1WL'];
+	const p1Name = scInfo['p1Name'];
+	const p1Team = scInfo['p1Team'];
+	const p1Score = scInfo['p1Score'];
+	const p1Color = scInfo['p1Color'];
+	const p1Character = scInfo['p1Character'];
+	const p1Skin = scInfo['p1Skin'];
+	const p1WL = scInfo['p1WL'];
 	
-	let p2Name = scInfo['p2Name'];
-	let p2Team = scInfo['p2Team'];
-	let p2Score = scInfo['p2Score'];
-	let p2Color = scInfo['p2Color'];
-	let p2Character = scInfo['p2Character'];
-	let p2Skin = scInfo['p2Skin'];
-	let p2WL = scInfo['p2WL'];
+	const p2Name = scInfo['p2Name'];
+	const p2Team = scInfo['p2Team'];
+	const p2Score = scInfo['p2Score'];
+	const p2Color = scInfo['p2Color'];
+	const p2Character = scInfo['p2Character'];
+	const p2Skin = scInfo['p2Skin'];
+	const p2WL = scInfo['p2WL'];
 
-	let round = scInfo['round'];
-	let bestOf = scInfo['bestOf'];
+	const round = scInfo['round'];
+	const bestOf = scInfo['bestOf'];
 
 
 	//first, things that will happen only the first time the html loads
 	if (startup) {
 		//of course, we have to start with the cool intro stuff
-		let allowIntro = scInfo['allowIntro']; //to know if the intro is allowed
-		if (allowIntro) {
-
-			//get the variables only used in the intro
-			let tournamentName = scInfo['tournamentName'];
+		if (scInfo['allowIntro']) {
 
 			//lets see that intro
 			document.getElementById('overlayIntro').style.opacity = 1;
@@ -66,8 +62,8 @@ async function getData(scInfo) {
 
 			if (p1Score + p2Score == 0) { //if this is the first game, introduce players
 
-				let p1IntroEL = document.getElementById('p1Intro');
-				let p2IntroEL = document.getElementById('p2Intro');
+				const p1IntroEL = document.getElementById('p1Intro');
+				const p2IntroEL = document.getElementById('p2Intro');
 
 				p1IntroEL.textContent = p1Name; //update player 1 intro text
 				p1IntroEL.style.fontSize = '85px'; //resize the font to its max size
@@ -91,7 +87,7 @@ async function getData(scInfo) {
 					{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 
 			} else { //if its not the first game, show game count
-				let midTextEL = document.getElementById('midTextIntro');
+				const midTextEL = document.getElementById('midTextIntro');
 				if ((p1Score + p2Score) != 4) { //if its not the last game of a bo5
 
 					//just show the game count in the intro
@@ -117,7 +113,7 @@ async function getData(scInfo) {
 			}
 
 			document.getElementById('roundIntro').textContent = round;
-			document.getElementById('tNameIntro').textContent = tournamentName;
+			document.getElementById('tNameIntro').textContent = scInfo['tournamentName'];
 			
 			//round, tournament and VS/GameX text fade in
 			gsap.to(".textIntro", {delay: introDelay-.2, opacity: 1, ease: "power2.out", duration: fadeInTime});
@@ -209,7 +205,7 @@ async function getData(scInfo) {
 		if (document.getElementById('p1Name').textContent != p1Name ||
 			document.getElementById('p1Team').textContent != p1Team) {
 			//move and fade out the player 1's text
-			fadeOutMove("#p1Wrapper", -pMove, function(){
+			fadeOutMove("#p1Wrapper", -pMove, () => {
 				//now that nobody is seeing it, quick, change the text's content!
 				updatePlayerName('p1Wrapper', 'p1Name', 'p1Team', p1Name, p1Team);
 				//fade the name back in with a sick movement
@@ -220,9 +216,9 @@ async function getData(scInfo) {
 		//player 1's character icon change
 		if (p1CharacterPrev != p1Character || p1SkinPrev != p1Skin) {
 			//fade out the image while also moving it because that always looks cool
-			fadeOutMove("#p1Character", -pCharMove, async function(){
+			fadeOutMove("#p1Character", -pCharMove, async () => {
 				//now that nobody can see it, lets change the image!
-				let charScale = await updateChar(p1Character, p1Skin, 'p1Character'); //will return scale
+				const charScale = await updateChar(p1Character, p1Skin, 'p1Character'); //will return scale
 				//and now, fade it in
 				fadeInChara("#p1Character", charScale);
 			});
@@ -251,7 +247,7 @@ async function getData(scInfo) {
 
 		//change the player background colors
 		if (p1ColorPrev != p1Color) {
-			fadeOut('#p1Color', function(){
+			fadeOut('#p1Color', () => {
 				updateColor('p1Color', p1Color);
 				fadeIn('#p1Color');
 			})
@@ -262,7 +258,7 @@ async function getData(scInfo) {
 
 		//check if the team has a logo we can place on the overlay
 		if (document.getElementById('p1Team').textContent != p1Team) {
-			fadeOut("#teamLogoP1", function(){
+			fadeOut("#teamLogoP1", () => {
 				updateTeamLogo("teamLogoP1", p1Team, "1");
 				fadeIn("#teamLogoP1");
 			});
@@ -272,15 +268,15 @@ async function getData(scInfo) {
 		//did you pay attention earlier? Well, this is the same as player 1!
 		if (document.getElementById('p2Name').textContent != p2Name ||
 			document.getElementById('p2Team').textContent != p2Team){
-			fadeOutMove("#p2Wrapper", pMove, function(){
+			fadeOutMove("#p2Wrapper", pMove, () => {
 				updatePlayerName('p2Wrapper', 'p2Name', 'p2Team', p2Name, p2Team);
 				fadeInMove("#p2Wrapper");
 			});
 		}
 
 		if (p2CharacterPrev != p2Character || p2SkinPrev != p2Skin) {
-			fadeOutMove("#p2Character", -pCharMove, async function(){
-				let charScale = await updateChar(p2Character, p2Skin, 'p2Character'); //will return scale
+			fadeOutMove("#p2Character", -pCharMove, async () => {
+				const charScale = await updateChar(p2Character, p2Skin, 'p2Character'); //will return scale
 				fadeInChara("#p2Character", charScale);
 			});
 			p2CharacterPrev = p2Character;
@@ -302,7 +298,7 @@ async function getData(scInfo) {
 		}
 
 		if (p2ColorPrev != p2Color) {
-			fadeOut('#p2Color', function(){
+			fadeOut('#p2Color', () => {
 				updateColor('p2Color', p2Color);
 				fadeIn('#p2Color');
 			})
@@ -310,7 +306,7 @@ async function getData(scInfo) {
 		}
 
 		if (document.getElementById('p2Team').textContent != p2Team) {
-			fadeOut("#teamLogoP2", function(){
+			fadeOut("#teamLogoP2", () => {
 				updateTeamLogo("teamLogoP2", p2Team, "2");
 				fadeIn("#teamLogoP2");
 			});
@@ -328,7 +324,7 @@ async function getData(scInfo) {
 		
 		//and finally, update the round text
 		if (document.getElementById('round').textContent != round){
-			fadeOut("#round", function(){
+			fadeOut("#round", () => {
 				updateRound(round);
 				fadeIn("#round");
 			});
@@ -347,25 +343,25 @@ function updateScore(scoreID, pScore, bestOf, scoreUpID, pColor, playAnim) {
 	let delay = 0;
 	if (playAnim) { //do we want to play the score up animation?
 		//depending on the "bestOf" and the color, change the clip
-		let scoreUpEL = document.getElementById(scoreUpID);
+		const scoreUpEL = document.getElementById(scoreUpID);
 		scoreUpEL.setAttribute('src', 'Resources/Overlay/Score/ScoreUp ' + bestOf + '/' + pColor + '.webm');
 		scoreUpEL.play();
 		delay = 200; //add a bit of delay so the score change fits with the vid
 	}
-	let scoreEL = document.getElementById(scoreID);
+	const scoreEL = document.getElementById(scoreID);
 	//set timeout to the actual image change so it fits with the animation (if it played)
 	setTimeout(() => {
 		//change the image depending on the bestOf status and, of course, the current score
 		scoreEL.setAttribute('src', 'Resources/Overlay/Score/Win Tick ' + bestOf + ' ' + pScore + '.png')
 	}, delay);
 	//nothing will show if the score is set to 3 which is intended
-	if (startup) {scoreEL.addEventListener("error", function(){showNothing(scoreEL)})}
+	if (startup) {scoreEL.addEventListener("error", () => {showNothing(scoreEL)})}
 }
 
 function updateColor(colorID, pColor) {
-	let colorEL = document.getElementById(colorID);
+	const colorEL = document.getElementById(colorID);
 	colorEL.setAttribute('src', 'Resources/Overlay/Colors/' + pColor + '.png');
-	if (startup) {colorEL.addEventListener("error", function(){showNothing(colorEL)})}
+	if (startup) {colorEL.addEventListener("error", () => {showNothing(colorEL)})}
 }
 
 function updateBorder(bestOf) {
@@ -377,18 +373,18 @@ function updateBorder(bestOf) {
 //team logo change
 function updateTeamLogo(logoID, pTeam, playerNum) {
 	//search for an image with the team name
-	let logoEL = document.getElementById(logoID);
+	const logoEL = document.getElementById(logoID);
 	logoEL.setAttribute('src', 'Resources/TeamLogos/' + pTeam + ' P' + playerNum + '.png');
 	//no image? show nothing
-	if (startup) {logoEL.addEventListener("error", function(){showNothing(logoEL)})}
+	if (startup) {logoEL.addEventListener("error", () => {showNothing(logoEL)})}
 }
 
 //player text change
 function updatePlayerName(wrapperID, nameID, teamID, pName, pTeam) {
-	let nameEL = document.getElementById(nameID);
+	const nameEL = document.getElementById(nameID);
 	nameEL.style.fontSize = '30px'; //set original text size
 	nameEL.textContent = pName; //change the actual text
-	let teamEL = document.getElementById(teamID);
+	const teamEL = document.getElementById(teamID);
 	teamEL.style.fontSize = '20px';
 	teamEL.textContent = pTeam;
 	resizeText(document.getElementById(wrapperID)); //resize if it overflows
@@ -396,7 +392,7 @@ function updatePlayerName(wrapperID, nameID, teamID, pName, pTeam) {
 
 //round change
 function updateRound(round) {
-	let roundEL = document.getElementById('round');
+	const roundEL = document.getElementById('round');
 	roundEL.style.fontSize = '19px'; //set original text size
 	roundEL.textContent = round; //change the actual text
 	resizeText(roundEL); //resize it if it overflows
@@ -439,18 +435,18 @@ function initCharaFade(charaID) {
 
 //check if winning or losing in a GF, then change image
 function updateWL(pWL, playerNum) {
-	let pWLEL = document.getElementById('wlP' + playerNum);
+	const pWLEL = document.getElementById('wlP' + playerNum);
 	if (pWL == "W") {
 		pWLEL.setAttribute('src', 'Resources/Overlay/Winners P' + playerNum + '.png')
 	} else if (pWL == "L") {
 		pWLEL.setAttribute('src', 'Resources/Overlay/Losers P' + playerNum + '.png')
 	}
-	if (startup) {pWLEL.addEventListener("error", function(){showNothing(pWLEL)})}
+	if (startup) {pWLEL.addEventListener("error", () => {showNothing(pWLEL)})}
 }
 
 //text resize, keeps making the text smaller until it fits
 function resizeText(textEL) {
-	let childrens = textEL.children;
+	const childrens = textEL.children;
 	while (textEL.scrollWidth > textEL.offsetWidth || textEL.scrollHeight > textEL.offsetHeight) {
 		if (childrens.length > 0) { //for team+player texts
 			Array.from(childrens).forEach(function (child) {
@@ -496,7 +492,7 @@ function getHexColor(color) {
 //searches for the main json file
 function getInfo() {
 	return new Promise(function (resolve) {
-		let oReq = new XMLHttpRequest();
+		const oReq = new XMLHttpRequest();
 		oReq.addEventListener("load", reqListener);
 		oReq.open("GET", 'Resources/Texts/ScoreboardInfo.json');
 		oReq.send();
@@ -512,9 +508,9 @@ function getInfo() {
 //searches for a json file with character data
 function getCharInfo(pCharacter) {
 	return new Promise(function (resolve) {
-		let oReq = new XMLHttpRequest();
+		const oReq = new XMLHttpRequest();
 		oReq.addEventListener("load", reqListener);
-		oReq.onerror = function(){resolve("notFound")}; //for obs local file browser sources
+		oReq.onerror = () => {resolve("notFound")}; //for obs local file browser sources
 		oReq.open("GET", 'Resources/Texts/Character Info/' + pCharacter + '.json');
 		oReq.send();
 
@@ -529,23 +525,21 @@ function getCharInfo(pCharacter) {
 async function updateChar(pCharacter, pSkin, charID) {
 
 	//store so code looks cleaner later
-	let charEL = document.getElementById(charID);
+	const charEL = document.getElementById(charID);
 
 	//if the image fails to load, we will put a placeholder
-	if (startup) {charEL.addEventListener("error", function(){
-		//we need two different images because a "?" flipped looks weird
-		if (charEL == document.getElementById("p1Character")) {
-			charEL.setAttribute('src', 'Resources/Characters/Random/P1.png');
-		} else {
-			charEL.setAttribute('src', 'Resources/Characters/Random/P2.png');
-		}
+	if (startup) {charEL.addEventListener("error", () => {
+		//simple check to see if we are updating P1 or P2
+		const pNum = charEL == document.getElementById("p1Character") ? 1 : 2;
+
+		charEL.setAttribute('src', 'Resources/Characters/Random/P'+pNum+'.png');
 	})}
 
 	//change the image path depending on the character and skin
 	charEL.setAttribute('src', 'Resources/Characters/' + pCharacter + '/' + pSkin + '.png');
 
 	//get the character positions
-	let charInfo = await getCharInfo(pCharacter);
+	const charInfo = await getCharInfo(pCharacter);
 	//             x, y, scale
 	let charPos = [0, 0, 1];
 	//now, check if the character and skin exist in the database down there
@@ -566,7 +560,7 @@ async function updateChar(pCharacter, pSkin, charID) {
 	} else { //if the character isnt on the database, set positions for the "?" image
 		//this condition is used just to position images well on both sides
 		if (charEL == document.getElementById("p1Character")) {
-			charPos[0] = 18; 
+			charPos[0] = 18;
 		} else {
 			charPos[0] = 12;
 		}
