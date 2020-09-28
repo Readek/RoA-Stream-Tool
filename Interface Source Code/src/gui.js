@@ -132,6 +132,7 @@ function init() {
     //set listeners for the settings checkboxes
     workshopCheck.addEventListener("click", workshopChange);
     forceWL.addEventListener("click", forceWLtoggles);
+    document.getElementById('forceHD').addEventListener("click", HDtoggle);
 
 
     /* KEYBOARD SHORTCUTS */
@@ -768,13 +769,6 @@ function setScore(score, tick1, tick2, tick3) {
 
 //called whenever the user clicks on the workshop toggle
 function workshopChange() {
-    //disable the HD toggle since workshop doesnt have those
-    if (this.checked) {
-        document.getElementById('forceHD').checked = false;
-        document.getElementById('forceHD').disabled = true;
-    } else {
-        document.getElementById('forceHD').disabled = false;
-    }
     //clear current character lists
     clearList(p1CharList);
     clearList(p2CharList);
@@ -802,6 +796,15 @@ function forceWLtoggles() {
                 deactivateWL();
             }
         }
+}
+
+//just enables or disables the second forceHD option
+function HDtoggle() {
+    if (this.checked) {
+        document.getElementById('noLoAHD').disabled = false;
+    } else {
+        document.getElementById('noLoAHD').disabled = true;
+    }
 }
 
 
@@ -848,7 +851,8 @@ function writeScoreboard() {
         caster2Twitch: document.getElementById('cTwitch2').value,
         allowIntro: document.getElementById('allowIntro').checked,
         workshop: workshopCheck.checked,
-        forceHD: document.getElementById('forceHD').checked
+        forceHD: document.getElementById('forceHD').checked,
+        noLoAHD: document.getElementById('noLoAHD').checked
     };
 
     //now convert it to a text we can save intro a file

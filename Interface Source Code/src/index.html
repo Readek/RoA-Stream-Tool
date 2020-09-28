@@ -203,7 +203,7 @@
         <div id="actualSettings">
 
           <div class="settingBox" title="Plays an intro on 'Scoreboard.html' whenever the file loads">
-            <input type="checkbox" id="allowIntro" class="settingsCheck" checked tabindex="-1">
+            <input type="checkbox" id="allowIntro" class="settingsCheck" tabindex="-1">
             <label for="allowIntro" class="settingsText">Allow Intro</span>
           </div>
 
@@ -213,14 +213,19 @@
           </div>
 
           <div class="settingBox" title="Forces HD skins to appear on the VS screen,
-while keeping the regular skins for the scoreboard.
-Disabled for workshop characters.">
+while keeping the regular skins for the scoreboard.">
             <input type="checkbox" id="forceHD" class="settingsCheck" tabindex="-1">
             <label for="forceHD" class="settingsText">HD renders in VS Screen</span>
           </div>
+
+          <div class="settingBox" title="Will just show regular HD renders in the
+VS Screen even when LoA skins are selected.">
+            <input type="checkbox" id="noLoAHD" class="settingsCheck" disabled tabindex="-1">
+            <label for="noLoAHD" class="settingsText">No LoA HD renders</span>
+          </div>
           
           <div class="settingBox" title="Forces the [W]/[L] buttons to appear on the interface.
-They will always appear when typing 'Grand' on the round box.">
+They will always appear when typing 'Grand' in the round box.">
             <input type="checkbox" id="forceWLToggle" class="settingsCheck" tabindex="-1">
             <label for="forceWLToggle" class="settingsText">Force [W] / [L]</span>
           </div>
