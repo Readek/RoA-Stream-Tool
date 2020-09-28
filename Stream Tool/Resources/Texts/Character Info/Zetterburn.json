@@ -19,8 +19,9 @@
         "Early Access",
         "Shine",
         "Ranked",
+        "LoA",
         "HD",
-        "LoA"
+        "LoA HD"
     ],
     "playerCustoms": [
         "Lzgpom"
@@ -32,6 +33,11 @@
             "scale": 4.1
         },
         "LoA": {
+            "x": -8,
+            "y": 7,
+            "scale": 4.5
+        },
+        "LoA HD": {
             "x": 18,
             "y": 23,
             "scale": 6.1
@@ -49,6 +55,11 @@
             "scale": 1.35
         },
         "LoA": {
+            "x": 0,
+            "y": 50,
+            "scale": 1.35
+        },
+        "LoA HD": {
             "x": 170,
             "y": 100,
             "scale": 1.2

@@ -20,7 +20,7 @@
         "Genesis",
         "Ranked",
         "HD",
-        "LoA"
+        "LoA HD"
     ],
     "playerCustoms": [
         "Swordsplay"
@@ -31,7 +31,7 @@
             "y": 24,
             "scale": 3.4
         },
-        "LoA": {
+        "LoA HD": {
             "x": 19,
             "y": 34,
             "scale": 5
@@ -48,7 +48,7 @@
             "y": 160,
             "scale": 1.05
         },
-        "LoA": {
+        "LoA HD": {
             "x": 235,
             "y": 220,
             "scale": 1.4

@@ -18,8 +18,9 @@
         "Early Access",
         "Penguin",
         "Ranked",
+        "LoA",
         "HD",
-        "LoA"
+        "LoA HD"
     ],
     "playerCustoms": [
         "Kilgore",
@@ -32,6 +33,11 @@
             "scale": 4.7
         },
         "LoA": {
+            "x": 19,
+            "y": 22.5,
+            "scale": 4.7
+        },
+        "LoA HD": {
             "x": 34,
             "y": 23,
             "scale": 5.75
@@ -49,6 +55,11 @@
             "scale": 1.35
         },
         "LoA": {
+            "x": 185,
+            "y": 175,
+            "scale": 1.35
+        },
+        "LoA HD": {
             "x": 410,
             "y": 175,
             "scale": 1.5

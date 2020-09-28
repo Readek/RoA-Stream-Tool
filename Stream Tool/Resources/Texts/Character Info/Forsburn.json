@@ -19,8 +19,9 @@
         "Champion",
         "Dreamscape",
         "Ranked",
+        "LoA",
         "HD",
-        "LoA"
+        "LoA HD"
     ],
     "playerCustoms": [
         "Blark"
@@ -32,6 +33,11 @@
             "scale": 4.5
         },
         "LoA": {
+            "x": -24,
+            "y": 18,
+            "scale": 4.6
+        },
+        "LoA HD": {
             "x": 7,
             "y": 23,
             "scale": 5.8
@@ -49,6 +55,11 @@
             "scale": 1.25
         },
         "LoA": {
+            "x": -175,
+            "y": 160,
+            "scale": 1.2
+        },
+        "LoA HD": {
             "x": 265,
             "y": 170,
             "scale": 1.35

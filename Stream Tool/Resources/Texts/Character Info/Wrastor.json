@@ -18,8 +18,9 @@
         "Early Access",
         "Collegiate",
         "Ranked",
+        "Bradshaw",
         "HD",
-        "LoA"
+        "LoA HD"
     ],
     "playerCustoms": [
         "OliveOily",
@@ -32,7 +33,12 @@
             "y": 28,
             "scale": 4.7
         },
-        "LoA": {
+        "Bradshaw": {
+            "x": -4,
+            "y": 26.5,
+            "scale": 4.5
+        },
+        "LoA HD": {
             "x": 28,
             "y": 30,
             "scale": 6
@@ -49,7 +55,12 @@
             "y": 155,
             "scale": 1.19
         },
-        "LoA": {
+        "Bradshaw": {
+            "x": -50,
+            "y": 150,
+            "scale": 1.19
+        },
+        "LoA HD": {
             "x": 275,
             "y": 150,
             "scale": 1.2

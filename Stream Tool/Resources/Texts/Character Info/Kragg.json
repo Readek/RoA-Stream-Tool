@@ -20,7 +20,7 @@
         "Golden",
         "Ranked",
         "HD",
-        "LoA"
+        "LoA HD"
     ],
     "playerCustoms": [
         "Caldozo",
@@ -36,7 +36,7 @@
             "y": 7,
             "scale": 3.4
         },
-        "LoA": {
+        "LoA HD": {
             "x": -8,
             "y": 2,
             "scale": 4
@@ -53,7 +53,7 @@
             "y": 20,
             "scale": 1.03
         },
-        "LoA": {
+        "LoA HD": {
             "x": -110,
             "y": 2,
             "scale": 1.1
