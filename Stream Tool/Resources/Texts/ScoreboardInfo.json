@@ -1,14 +1,14 @@
 {
   "p1Name": "Player 1",
   "p1Team": "",
-  "p1Character": "Zetterburn",
-  "p1Skin": "LoA",
+  "p1Character": "Elliana",
+  "p1Skin": "Normal",
   "p1Color": "Red",
   "p1Score": 1,
   "p1WL": "Nada",
   "p2Name": "Player 2",
   "p2Team": "Team",
-  "p2Character": "Zetterburn",
+  "p2Character": "Kragg",
   "p2Skin": "Normal",
   "p2Color": "Blue",
   "p2Score": 2,
@@ -22,7 +22,7 @@
   "caster2Name": "Caster 2",
   "caster2Twitter": "Twitter 2",
   "caster2Twitch": "Twitch 2",
-  "allowIntro": false,
+  "allowIntro": true,
   "workshop": false,
   "forceHD": false
 }

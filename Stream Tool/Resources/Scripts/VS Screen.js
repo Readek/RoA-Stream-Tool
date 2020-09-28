@@ -48,13 +48,13 @@ async function getData(scInfo) {
 	const p1Team = scInfo['p1Team'];
 	const p1Color = scInfo['p1Color'];
 	const p1Character = scInfo['p1Character'];
-	const p1Skin = forceHD ? 'HD' : scInfo['p1Skin']; //check if we are forcing HD skins
+	let p1Skin = scInfo['p1Skin']; 
 	
 	const p2Name = scInfo['p2Name'];
 	const p2Team = scInfo['p2Team'];
 	const p2Color = scInfo['p2Color'];
 	const p2Character = scInfo['p2Character'];
-	const p2Skin = forceHD ? 'HD' : scInfo['p2Skin'];
+	let p2Skin = scInfo['p2Skin'];
 
 	const round = scInfo['round'];
 	const tournamentName = scInfo['tournamentName'];
@@ -66,6 +66,20 @@ async function getData(scInfo) {
 	twitter2 = scInfo['caster2Twitter'];
 	twitch2 = scInfo['caster2Twitch'];
 
+	//check if we are forcing HD skins
+	if (forceHD) {
+		if (p1Skin.includes("LoA")) {
+			p1Skin = "LoA HD"
+		} else {
+			p1Skin = "HD";
+		}
+
+		if (p2Skin.includes("LoA")) {
+			p2Skin = "LoA HD"
+		} else {
+			p2Skin = "HD";
+		}
+	}
 
 	//first, things that will happen only the first time the html loads
 	if (startup) {
@@ -324,7 +338,9 @@ function updateBG(vidID, pCharacter, pSkin, charInfo) {
 	}
 
 	//change the BG path depending on the character
-	if (pSkin == "Ragnir") { //yes, ragnir is the only skin that changes bg
+	if (pSkin.includes("LoA")) {
+		vidEL.setAttribute('src', 'Resources/Backgrounds/LoA.webm');
+	} else if (pSkin == "Ragnir") { //yes, ragnir is the only skin that changes bg
 		vidEL.setAttribute('src', 'Resources/Backgrounds/Default.webm');
 	} else {
 		let vidName;
