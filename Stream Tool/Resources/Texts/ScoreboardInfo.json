@@ -22,7 +22,8 @@
   "caster2Name": "Caster 2",
   "caster2Twitter": "Twitter 2",
   "caster2Twitch": "Twitch 2",
-  "allowIntro": true,
+  "allowIntro": false,
   "workshop": false,
-  "forceHD": false
+  "forceHD": false,
+  "noLoAHD": false
 }

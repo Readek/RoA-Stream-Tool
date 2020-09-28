@@ -68,13 +68,13 @@ async function getData(scInfo) {
 
 	//check if we are forcing HD skins
 	if (forceHD) {
-		if (p1Skin.includes("LoA")) {
+		if (p1Skin.includes("LoA") && !scInfo['noLoAHD']) {
 			p1Skin = "LoA HD"
 		} else {
 			p1Skin = "HD";
 		}
 
-		if (p2Skin.includes("LoA")) {
+		if (p2Skin.includes("LoA") && !scInfo['noLoAHD']) {
 			p2Skin = "LoA HD"
 		} else {
 			p2Skin = "HD";
