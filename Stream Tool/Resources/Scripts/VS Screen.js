@@ -626,7 +626,7 @@ function updateChar(pCharacter, pSkin, color, charID, trailID, charInfo) {
 	trailEL.style.transform = "scale(" + charPos[2] + ")";
 
 	//to decide scalling
-	if (pSkin == "HD" || pSkin == "LoA") {
+	if (pSkin.includes("HD")) {
 		charEL.style.imageRendering = "auto"; //default scalling
 		trailEL.style.imageRendering = "auto";
 	} else {

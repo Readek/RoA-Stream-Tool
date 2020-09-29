@@ -120,6 +120,44 @@ input[type="text"] {
   border-radius: 0px;
 }
 
+.pFinderPosition {
+  float: left;
+}
+.playerFinder {
+  margin-top: 30px;
+  display: none;
+  position: absolute;
+  background-color: var(--bg5);
+  width: 230px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 3;
+  font-size: 15px;
+}
+
+.finderEntry {
+  display: flex;
+  align-items: center;
+  height: 30px;
+}
+.finderEntry:hover {
+  background-color: var(--bg2);
+}
+
+.pfTag {
+  color: var(--text2);
+  font-size: 13px;
+  margin-left: 5px;
+}
+.pfName {
+  font-family: "Roboto-Medium";
+  margin-right: 5px;
+  margin-left: 5px;
+}
+.pfChar {
+  font-style: italic;
+  font-size: 13px;
+}
+
 .pColor {
   float: left;
   width: 30px;

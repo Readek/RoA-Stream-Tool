@@ -85,7 +85,7 @@ function init() {
     loadColors(1);
     loadColors(2);
 
-    //
+    //score tick listeners, to automatically check/uncheck the other ticks
     p1Win1.addEventListener("click", changeScoreTicks1);
     p2Win1.addEventListener("click", changeScoreTicks1);
     p1Win2.addEventListener("click", changeScoreTicks2);
@@ -371,7 +371,6 @@ function loadColors(pNum) {
 
         //create a new div that will have the color info
         const newDiv = document.createElement('div');
-        newDiv.style.display = "flex"; //so everything is in 1 line
         newDiv.title = "Also known as " + colorList.colorSlots["color"+i].hex;
         newDiv.className = "colorEntry";
 
@@ -555,13 +554,73 @@ function deactivateWL() {
 //called whenever the user types something in the player name box
 function checkPlayerSkin() {
 
-    //the classic player check
+    /* //the classic player check
     const pNum = this == p1NameInp ? 1 : 2;
 
     checkCustomSkin(pNum);
 
     //take the chance to resize the box
-    changeInputWidth(this);
+    changeInputWidth(this); */
+
+    // list all files in the directory
+    if (this.value.length >= 3) {
+
+        const pNum = this == p1NameInp ? 1 : 2;
+        const pFinderEL = document.getElementById("pFinder"+pNum);
+
+        pFinderEL.innerHTML = "";
+
+        const files = fs.readdirSync(mainPath + "/Player Info/");
+
+        files.forEach(file => {
+
+            file = file.substring(0, file.length - 5);
+
+            if (file.includes(this.value)) {
+
+                const playerInfo = getJson("Player Info/" + file);
+
+                pFinderEL.style.display = "block";
+
+                playerInfo.characters.forEach(char => {
+
+                    const newDiv = document.createElement('div');
+                    newDiv.className = "finderEntry";
+
+                    //if the div gets clicked, update the colors
+                    newDiv.addEventListener("click", playerPreset);
+                    
+
+                    const spanTag = document.createElement('span');
+                    if (playerInfo.tag != "") {
+                        spanTag.innerHTML = playerInfo.tag;
+                        spanTag.className = "pfTag";
+                    }
+
+                    const spanName = document.createElement('span');
+                    spanName.innerHTML = playerInfo.name;
+                    spanName.className = "pfName";
+
+                    const spanChar = document.createElement('span');
+                    spanChar.innerHTML = char.character;
+                    spanChar.className = "pfChar";
+
+
+                    //add them to the div we created before
+                    newDiv.appendChild(spanTag);
+                    newDiv.appendChild(spanName);
+                    newDiv.appendChild(spanChar);
+
+                    //now add them to the actual interface
+                    pFinderEL.appendChild(newDiv);
+                });
+            }
+        });
+    }
+
+    function playerPreset() {
+        
+    }
 }
 
 function checkCustomSkin(pNum) {
