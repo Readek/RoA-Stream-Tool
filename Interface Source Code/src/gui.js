@@ -103,6 +103,9 @@ function init() {
     //check whenever the player's name has a skin
     p1NameInp.addEventListener("input", checkPlayerSkin);
     p2NameInp.addEventListener("input", checkPlayerSkin);
+    //hide the player presets menu if losing focus
+    /* p1NameInp.addEventListener("focusout", () => {document.getElementById("pFinder1").style.display = "none"});
+    p2NameInp.addEventListener("focusout", () => {document.getElementById("pFinder2").style.display = "none"}); */
 
     //resize the box whenever the user types
     p1TagInp.addEventListener("input", resizeInput);
@@ -563,12 +566,13 @@ function checkPlayerSkin() {
     changeInputWidth(this); */
 
     // list all files in the directory
+
+    const pNum = this == p1NameInp ? 1 : 2;
+    const pFinderEL = document.getElementById("pFinder"+pNum);
+
+    pFinderEL.innerHTML = "";
+
     if (this.value.length >= 3) {
-
-        const pNum = this == p1NameInp ? 1 : 2;
-        const pFinderEL = document.getElementById("pFinder"+pNum);
-
-        pFinderEL.innerHTML = "";
 
         const files = fs.readdirSync(mainPath + "/Player Info/");
 
@@ -605,6 +609,11 @@ function checkPlayerSkin() {
                     spanChar.innerHTML = char.character;
                     spanChar.className = "pfChar";
 
+                    //we will use css variables to store data to read if clicked
+                    newDiv.style.setProperty("--tag", playerInfo.tag);
+                    newDiv.style.setProperty("--name", playerInfo.name);
+                    newDiv.style.setProperty("--char", char.character);
+                    newDiv.style.setProperty("--skin", char.skin);
 
                     //add them to the div we created before
                     newDiv.appendChild(spanTag);
@@ -617,10 +626,24 @@ function checkPlayerSkin() {
             }
         });
     }
+}
 
-    function playerPreset() {
-        
-    }
+function playerPreset() {
+
+    p1TagInp.value = this.style.getPropertyValue("--tag");
+    changeInputWidth(p1TagInp);
+
+    p1NameInp.value = this.style.getPropertyValue("--name");
+    changeInputWidth(p1NameInp);
+
+    changeListValue(p1CharList, this.style.getPropertyValue("--char"));
+    //the change event doesnt fire up on its own so we have to change the image ourselves
+    charChangeManual(p1CharList, 1);
+
+    changeListValue(p1SkinList, this.style.getPropertyValue("--skin"));
+    skinChangeManual(p1SkinList, 1);
+
+    checkCustomSkin(1);
 }
 
 function checkCustomSkin(pNum) {
