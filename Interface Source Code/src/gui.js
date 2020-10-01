@@ -1,5 +1,3 @@
-window.onload = init;
-
 const fs = require('fs');
 const path = require('path');
 
@@ -14,6 +12,7 @@ let currentP2WL = "Nada";
 let currentBestOf = "Bo5";
 
 let movedSettings = false;
+let inPF = false;
 
 const viewport = document.getElementById('viewport');
 
@@ -21,6 +20,9 @@ const p1NameInp = document.getElementById('p1Name');
 const p1TagInp = document.getElementById('p1Tag');
 const p2NameInp = document.getElementById('p2Name');
 const p2TagInp = document.getElementById('p2Tag');
+
+const p1PF = document.getElementById('pFinder1');
+const p2PF = document.getElementById('pFinder2');
 
 const p1CharList = document.getElementById('p1Char');
 const p1SkinList = document.getElementById('p1Skin');
@@ -44,7 +46,7 @@ const roundInp = document.getElementById('roundName');
 const workshopCheck = document.getElementById('workshopToggle');
 const forceWL = document.getElementById('forceWLToggle');
 
-
+window.onload = init;
 function init() {
 
     //first, add listeners for the bottom bar buttons
@@ -100,14 +102,16 @@ function init() {
     p2L.addEventListener("click", setWLP2);
 
 
-    //check whenever the player's name has a skin
-    p1NameInp.addEventListener("input", checkPlayerSkin);
-    p2NameInp.addEventListener("input", checkPlayerSkin);
-    //hide the player presets menu if losing focus
-    /* p1NameInp.addEventListener("focusout", () => {document.getElementById("pFinder1").style.display = "none"});
-    p2NameInp.addEventListener("focusout", () => {document.getElementById("pFinder2").style.display = "none"}); */
+    //prepare the player finder (player presets)
+    preparePF(1);
+    preparePF(2);
+    //check if theres a player preset every time we type in the player box
+    p1NameInp.addEventListener("input", checkPlayerPreset);
+    p1NameInp.addEventListener("focusin", checkPlayerPreset);
+    p2NameInp.addEventListener("input", checkPlayerPreset);
+    p2NameInp.addEventListener("focusin", checkPlayerPreset);
 
-    //resize the box whenever the user types
+    //resize the tag box whenever the user types
     p1TagInp.addEventListener("input", resizeInput);
     p2TagInp.addEventListener("input", resizeInput);
 
@@ -153,8 +157,12 @@ function init() {
     Mousetrap.bind('esc', () => {
         if (movedSettings) { //if settings are open, close them
             goBack();
+        } else if (p1PF.style.display == "block") { //if player presets visible
+            p1PF.style.display = "none";
+        } else if (p2PF.style.display == "block") {
+            p2PF.style.display = "none";
         } else {
-            clearPlayers();
+            clearPlayers(); //by default, clear player info
         }
     });
 
@@ -554,62 +562,77 @@ function deactivateWL() {
 }
 
 
+//player finder setup
+function preparePF(pNum) {
+    const pFinderEL = document.getElementById("pFinder"+pNum);
+
+    //if the mouse is hovering a player preset, let us know
+    pFinderEL.addEventListener("mouseenter", () => { inPF = true });
+    pFinderEL.addEventListener("mouseleave", () => { inPF = false });
+
+    //hide the player presets menu if text input loses focus
+    document.getElementById('p'+pNum+'Name').addEventListener("focusout", () => {
+        if (!inPF) { //but not if the mouse is hovering a player preset
+            pFinderEL.style.display = "none";
+        }
+    });
+}
+
 //called whenever the user types something in the player name box
-function checkPlayerSkin() {
+function checkPlayerPreset() {
 
-    /* //the classic player check
-    const pNum = this == p1NameInp ? 1 : 2;
-
-    checkCustomSkin(pNum);
-
-    //take the chance to resize the box
-    changeInputWidth(this); */
-
-    // list all files in the directory
-
+    //player check once again
     const pNum = this == p1NameInp ? 1 : 2;
     const pFinderEL = document.getElementById("pFinder"+pNum);
 
+    //clear the current list each time we type
     pFinderEL.innerHTML = "";
 
+    //if we typed at least 3 letters
     if (this.value.length >= 3) {
 
+        //check the files in that folder
         const files = fs.readdirSync(mainPath + "/Player Info/");
-
         files.forEach(file => {
 
+            //removes ".json" from the file name
             file = file.substring(0, file.length - 5);
 
-            if (file.includes(this.value)) {
+            //if the current text matches a file from that folder
+            if (file.toLocaleLowerCase().includes(this.value.toLocaleLowerCase())) {
 
-                const playerInfo = getJson("Player Info/" + file);
-
+                //un-hides the player presets div
                 pFinderEL.style.display = "block";
 
+                //go inside that file to get the player info
+                const playerInfo = getJson("Player Info/" + file);
+                //for each character that player plays
                 playerInfo.characters.forEach(char => {
 
+                    //this will be the div to click
                     const newDiv = document.createElement('div');
                     newDiv.className = "finderEntry";
-
-                    //if the div gets clicked, update the colors
                     newDiv.addEventListener("click", playerPreset);
                     
-
+                    //create the texts for the div, starting with the tag
                     const spanTag = document.createElement('span');
+                    //if the tag is empty, dont do anything
                     if (playerInfo.tag != "") {
                         spanTag.innerHTML = playerInfo.tag;
                         spanTag.className = "pfTag";
                     }
 
+                    //player name
                     const spanName = document.createElement('span');
                     spanName.innerHTML = playerInfo.name;
                     spanName.className = "pfName";
 
+                    //player character
                     const spanChar = document.createElement('span');
                     spanChar.innerHTML = char.character;
                     spanChar.className = "pfChar";
 
-                    //we will use css variables to store data to read if clicked
+                    //we will use css variables to store data to read when clicked
                     newDiv.style.setProperty("--tag", playerInfo.tag);
                     newDiv.style.setProperty("--name", playerInfo.name);
                     newDiv.style.setProperty("--char", char.character);
@@ -620,41 +643,56 @@ function checkPlayerSkin() {
                     newDiv.appendChild(spanName);
                     newDiv.appendChild(spanChar);
 
-                    //now add them to the actual interface
+                    //now add the div to the actual interface
                     pFinderEL.appendChild(newDiv);
                 });
             }
         });
     }
+
+    //take the chance to resize the box
+    changeInputWidth(this);
 }
 
+//called when the user clicks on a player preset
 function playerPreset() {
 
-    p1TagInp.value = this.style.getPropertyValue("--tag");
-    changeInputWidth(p1TagInp);
+    //we all know what this is by now
+    const pNum = this.parentElement == pFinder1 ? 1 : 2;
 
-    p1NameInp.value = this.style.getPropertyValue("--name");
-    changeInputWidth(p1NameInp);
+    const pTagEL = document.getElementById('p'+pNum+'Tag');
+    const pNameEL = document.getElementById('p'+pNum+'Name');
+    const pCharEL = document.getElementById('p'+pNum+'Char');
+    const pSkinEL = document.getElementById('p'+pNum+'Skin');
 
-    changeListValue(p1CharList, this.style.getPropertyValue("--char"));
-    //the change event doesnt fire up on its own so we have to change the image ourselves
-    charChangeManual(p1CharList, 1);
+    pTagEL.value = this.style.getPropertyValue("--tag");
+    changeInputWidth(pTagEL); //resizes the text box if it overflows
 
-    changeListValue(p1SkinList, this.style.getPropertyValue("--skin"));
-    skinChangeManual(p1SkinList, 1);
+    pNameEL.value = this.style.getPropertyValue("--name");
+    changeInputWidth(pNameEL);
 
-    checkCustomSkin(1);
+    changeListValue(pCharEL, this.style.getPropertyValue("--char"));
+    charChangeManual(pCharEL, pNum);
+
+    changeListValue(pSkinEL, this.style.getPropertyValue("--skin"));
+    skinChangeManual(pSkinEL, pNum);
+
+    checkCustomSkin(pNum);
+
+    document.getElementById("pFinder"+pNum).style.display = "none";
 }
 
 function checkCustomSkin(pNum) {
-    //get the current character list where we can look for player customs
-    const skinList = getJson("Character Info/" + document.getElementById('p'+pNum+'Char').selectedOptions[0].text);
-    
-    if (skinList != undefined && skinList.playerCustoms != undefined) { //safety check
-        for (let i = 0; i < skinList.playerCustoms.length; i++) {
 
-            //if the player name matchs a custom skin
-            if (skinList.playerCustoms[i] == document.getElementById('p'+pNum+'Name').value) {
+    //get the player preset list for the current text
+    const playerList = getJson("Player Info/" + document.getElementById('p'+pNum+'Name').value);
+    
+    if (playerList != undefined) { //safety check
+
+        playerList.characters.forEach(char => { //for each possible character
+
+            //if the current character is on the list
+            if (char.character == document.getElementById('p'+pNum+'Char').selectedOptions[0].text) {
 
                 //first, check if theres a custom skin already
                 if (document.getElementById('p'+pNum+'Skin').selectedOptions[0].className == "playerCustom") {
@@ -663,12 +701,14 @@ function checkCustomSkin(pNum) {
 
                 const option = document.createElement('option'); //create new entry
                 option.className = "playerCustom"; //set class so the background changes
-                option.text = skinList.playerCustoms[i]; //set the text of entry
+                option.text = char.skin; //set the text of entry
                 document.getElementById('p'+pNum+'Skin').add(option, 0); //add the entry to the beginning of the list
                 document.getElementById('p'+pNum+'Skin').selectedIndex = 0; //leave it selected
                 skinChangeManual(document.getElementById('p'+pNum+'Skin'), pNum); //update the image
             }
-        }
+
+        });
+
     }
 }
 
