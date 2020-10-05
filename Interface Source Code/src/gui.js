@@ -1,9 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 
-//change these paths when building the executable
 const mainPath = path.resolve(__dirname, '..', '..', 'Stream Tool', 'Resources', 'Texts');
 const charPath = path.resolve(__dirname, '..', '..', 'Stream Tool', 'Resources', 'Characters');
+//change to these paths when building the executable
+/* const mainPath = path.resolve('.', 'Stream Tool', 'Resources', 'Texts');
+const charPath = path.resolve('.', 'Stream Tool', 'Resources', 'Characters'); */
+
 
 //yes we all like global variables
 let colorP1, colorP2;
@@ -643,7 +646,23 @@ function checkPlayerPreset() {
                     newDiv.appendChild(spanName);
                     newDiv.appendChild(spanChar);
 
-                    //now add the div to the actual interface
+                    //now for the character image, this is the mask/mirror div
+                    const charImgBox = document.createElement("div");
+                    charImgBox.className = "pfCharImgBox";
+
+                    //actual image
+                    const charImg = document.createElement('img');
+                    charImg.className = "pfCharImg";
+                    charImg.setAttribute('src', charPath+'/'+char.character+'/'+char.skin+'.png');
+                    //we have to position it
+                    positionChar(char.character, char.skin, charImg);
+                    //and add it to the mask
+                    charImgBox.appendChild(charImg);
+
+                    //add it to the main div
+                    newDiv.appendChild(charImgBox);
+
+                    //and now add the div to the actual interface
                     pFinderEL.appendChild(newDiv);
                 });
             }
@@ -654,11 +673,54 @@ function checkPlayerPreset() {
     changeInputWidth(this);
 }
 
+//now the complicated "change character image" function!
+async function positionChar(character, skin, charEL) {
+
+    //get the character positions
+    const charInfo = getJson("Character Info/" + character);
+	
+	//             x, y, scale
+	let charPos = [0, 0, 1];
+	//now, check if the character and skin exist in the database down there
+	if (charInfo != undefined) {
+		if (charInfo.gui[skin]) { //if the skin has a specific position
+			charPos[0] = charInfo.gui[skin].x;
+			charPos[1] = charInfo.gui[skin].y;
+			charPos[2] = charInfo.gui[skin].scale;
+		} else if (skin.startsWith("Alt ")) { //for a group of imgs that have a specific position
+			charPos[0] = charInfo.gui.alt.x;
+			charPos[1] = charInfo.gui.alt.y;
+			charPos[2] = charInfo.gui.alt.scale;
+		} else { //if none of the above, use a default position
+			charPos[0] = charInfo.gui.neutral.x;
+			charPos[1] = charInfo.gui.neutral.y;
+			charPos[2] = charInfo.gui.neutral.scale;
+		}
+	} else { //if the character isnt on the database, set positions for the "?" image
+		charPos[0] = 0;
+        charPos[1] = 0;
+        charPos[2] = 1.2;
+	}
+    
+    //to position the character
+    charEL.style.left = charPos[0] + "px";
+    charEL.style.top = charPos[1] + "px";
+    charEL.style.transform = "scale(" + charPos[2] + ")";
+    
+    //if the image fails to load, we will put a placeholder
+	charEL.addEventListener("error", () => {
+        charEL.setAttribute('src', charPath + '/Random/P2.png');
+        charEL.style.left = "0px";
+        charEL.style.top = "-2px";
+        charEL.style.transform = "scale(1.2)";
+	});
+}
+
 //called when the user clicks on a player preset
 function playerPreset() {
 
     //we all know what this is by now
-    const pNum = this.parentElement == pFinder1 ? 1 : 2;
+    const pNum = this.parentElement == p1PF ? 1 : 2;
 
     const pTagEL = document.getElementById('p'+pNum+'Tag');
     const pNameEL = document.getElementById('p'+pNum+'Name');

@@ -25,11 +25,6 @@
         "HD",
         "LoA HD"
     ],
-    "playerCustoms": [
-        "Readek",
-        "Slimepuffen",
-        "Zakip"
-    ],
     "scoreboard": {
         "neutral": {
             "x": -7,
@@ -72,6 +67,28 @@
             "x": -295,
             "y": 40,
             "scale": 1.12
+        }
+    },
+    "gui": {
+        "neutral": {
+            "x": -17,
+            "y": 35,
+            "scale": 3.2
+        },
+        "LoA HD": {
+            "x": 25,
+            "y": 58,
+            "scale": 4.5
+        },
+        "Ragnir": {
+            "x": -27,
+            "y": 0,
+            "scale": 3.2
+        },
+        "HD": {
+            "x": -37,
+            "y": 21,
+            "scale": 4
         }
     }
 }

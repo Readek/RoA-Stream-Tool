@@ -128,7 +128,7 @@ input[type="text"] {
   display: none;
   position: absolute;
   background-color: var(--bg5);
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  filter: drop-shadow(0px 0px 5px var(--bg3));
   z-index: 3;
   font-size: 15px;
 }
@@ -136,7 +136,11 @@ input[type="text"] {
 .finderEntry {
   display: flex;
   align-items: center;
-  height: 30px;
+  height: 35px;
+  width: 225px;
+}
+.finderEntry:not(:first-child) {
+  border-top: 1px solid var(--bg2);
 }
 .finderEntry:hover {
   background-color: var(--bg2);
@@ -156,6 +160,21 @@ input[type="text"] {
   font-style: italic;
   font-size: 13px;
   margin-right: 5px;
+}
+.pfCharImgBox {
+  position: absolute;
+  height: 35px;
+  width: 225px;
+  transform: scaleX(-1);
+  clip: rect(0px, 225px, 35px, 0px);
+}
+.pfCharImg {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  object-fit: contain;
+  height: 40px;
+  opacity: .8;
 }
 
 

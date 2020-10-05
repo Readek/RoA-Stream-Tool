@@ -19,12 +19,6 @@
         "Champion",
         "HD"
     ],
-    "playerCustoms": [
-        "Cyberstorm",
-        "Hermoise",
-        "Readek",
-        "Slimepuffen"
-    ],
     "scoreboard": {
         "neutral": {
             "x": -4,
@@ -47,6 +41,18 @@
             "x": -280,
             "y": 35,
             "scale": 1.08
+        }
+    },
+    "gui": {
+        "neutral": {
+            "x": -3,
+            "y": 12,
+            "scale": 3
+        },
+        "HD": {
+            "x": -25,
+            "y": 15,
+            "scale": 3.4
         }
     }
 }
