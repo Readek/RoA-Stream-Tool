@@ -15,7 +15,10 @@ let currentP2WL = "Nada";
 let currentBestOf = "Bo5";
 
 let movedSettings = false;
+
 let inPF = false;
+let currentFocus = -1;
+
 
 const viewport = document.getElementById('viewport');
 
@@ -48,6 +51,7 @@ const roundInp = document.getElementById('roundName');
 
 const workshopCheck = document.getElementById('workshopToggle');
 const forceWL = document.getElementById('forceWLToggle');
+
 
 window.onload = init;
 function init() {
@@ -147,16 +151,26 @@ function init() {
 
     /* KEYBOARD SHORTCUTS */
 
-    //enter to update scoreboard info (updates botBar color for visual feedback)
-    Mousetrap.bind('enter', () => { 
-        writeScoreboard();
-        document.getElementById('botBar').style.backgroundColor = "var(--bg3)";
+    //enter
+    Mousetrap.bind('enter', () => {
+        if (p1PF.style.display == "block" || p2PF.style.display == "block") {
+            //if the player presets menu is open, load preset
+            if (p1PF.style.display == "block" && currentFocus > -1) {
+                p1PF.getElementsByClassName("finderEntry")[currentFocus].click();
+            } else if (p2PF.style.display == "block" && currentFocus > -1) {
+                p2PF.getElementsByClassName("finderEntry")[currentFocus].click();
+            }
+        } else {
+            //update scoreboard info (updates botBar color for visual feedback)
+            writeScoreboard();
+            document.getElementById('botBar').style.backgroundColor = "var(--bg3)";
+        }
     }, 'keydown');
     Mousetrap.bind('enter', () => {
         document.getElementById('botBar').style.backgroundColor = "var(--bg5)";
      }, 'keyup');
 
-     //esc to clear player info
+    //esc to clear player info
     Mousetrap.bind('esc', () => {
         if (movedSettings) { //if settings are open, close them
             goBack();
@@ -172,6 +186,28 @@ function init() {
     //F1 or F2 to give players a score tick
     Mousetrap.bind('f1', () => { giveWinP1() });
     Mousetrap.bind('f2', () => { giveWinP2() });
+
+    //up/down, to navigate the player presets menu (only when a menu is shown)
+    Mousetrap.bind('down', () => {
+        if (p1PF.style.display == "block" || p2PF.style.display == "block") {
+            currentFocus++;
+            if (p1PF.style.display == "block") {
+                addActive(p1PF.getElementsByClassName("finderEntry"));
+            } else {
+                addActive(p2PF.getElementsByClassName("finderEntry"));
+            }
+        }
+    });
+    Mousetrap.bind('up', () => {
+        if (p1PF.style.display == "block" || p2PF.style.display == "block") {
+            currentFocus--;
+            if (p1PF.style.display == "block") {
+                addActive(p1PF.getElementsByClassName("finderEntry"));
+            } else {
+                addActive(p2PF.getElementsByClassName("finderEntry"));
+            }
+        }
+    });
 }
 
 
@@ -584,6 +620,9 @@ function preparePF(pNum) {
 //called whenever the user types something in the player name box
 function checkPlayerPreset() {
 
+    //remove the "focus" for the player presets list
+    currentFocus = -1;
+
     //player check once again
     const pNum = this == p1NameInp ? 1 : 2;
     const pFinderEL = document.getElementById("pFinder"+pNum);
@@ -671,6 +710,21 @@ function checkPlayerPreset() {
 
     //take the chance to resize the box
     changeInputWidth(this);
+}
+
+//visual feedback to navigate the player presets menu
+function addActive(x) {
+    //clears active from all entries
+    for (var i = 0; i < x.length; i++) {
+        x[i].classList.remove("finderEntry-active");
+    }
+
+    //if end of list, cicle
+    if (currentFocus >= x.length) currentFocus = 0;
+    if (currentFocus < 0) currentFocus = (x.length - 1);
+
+    //add to the selected entry the active class
+    x[currentFocus].classList.add("finderEntry-active");
 }
 
 //now the complicated "change character image" function!

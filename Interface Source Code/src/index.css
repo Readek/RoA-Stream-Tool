@@ -122,11 +122,12 @@ input[type="text"] {
 
 .pFinderPosition {
   float: left;
+  position: relative;
 }
 .playerFinder {
-  margin-top: 30px;
   display: none;
   position: absolute;
+  top: 100%;
   background-color: var(--bg5);
   filter: drop-shadow(0px 0px 5px var(--bg3));
   z-index: 3;
@@ -137,7 +138,9 @@ input[type="text"] {
   display: flex;
   align-items: center;
   height: 35px;
-  width: 225px;
+  width: 235px;
+  z-index: 30;
+  cursor: pointer;
 }
 .finderEntry:not(:first-child) {
   border-top: 1px solid var(--bg2);
@@ -145,28 +148,34 @@ input[type="text"] {
 .finderEntry:hover {
   background-color: var(--bg2);
 }
+.finderEntry-active {
+  background-color: var(--bg2);
+}
 
 .pfTag {
   color: var(--text2);
   font-size: 13px;
   margin-left: 5px;
+  z-index: 32;
 }
 .pfName {
   font-family: "Roboto-Medium";
   margin-right: 5px;
   margin-left: 5px;
+  z-index: 32;
 }
 .pfChar {
   font-style: italic;
   font-size: 13px;
   margin-right: 5px;
+  z-index: 32;
 }
 .pfCharImgBox {
   position: absolute;
   height: 35px;
-  width: 225px;
+  width: 235px;
   transform: scaleX(-1);
-  clip: rect(0px, 225px, 35px, 0px);
+  overflow: hidden;
 }
 .pfCharImg {
   position: absolute;
@@ -175,6 +184,7 @@ input[type="text"] {
   object-fit: contain;
   height: 40px;
   opacity: .8;
+  z-index: 31;
 }
 
 
