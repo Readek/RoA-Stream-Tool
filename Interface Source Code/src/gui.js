@@ -712,21 +712,6 @@ function checkPlayerPreset() {
     changeInputWidth(this);
 }
 
-//visual feedback to navigate the player presets menu
-function addActive(x) {
-    //clears active from all entries
-    for (var i = 0; i < x.length; i++) {
-        x[i].classList.remove("finderEntry-active");
-    }
-
-    //if end of list, cicle
-    if (currentFocus >= x.length) currentFocus = 0;
-    if (currentFocus < 0) currentFocus = (x.length - 1);
-
-    //add to the selected entry the active class
-    x[currentFocus].classList.add("finderEntry-active");
-}
-
 //now the complicated "change character image" function!
 async function positionChar(character, skin, charEL) {
 
@@ -797,6 +782,23 @@ function playerPreset() {
 
     document.getElementById("pFinder"+pNum).style.display = "none";
 }
+
+
+//visual feedback to navigate the player presets menu
+function addActive(x) {
+    //clears active from all entries
+    for (var i = 0; i < x.length; i++) {
+        x[i].classList.remove("finderEntry-active");
+    }
+
+    //if end of list, cicle
+    if (currentFocus >= x.length) currentFocus = 0;
+    if (currentFocus < 0) currentFocus = (x.length - 1);
+
+    //add to the selected entry the active class
+    x[currentFocus].classList.add("finderEntry-active");
+}
+
 
 function checkCustomSkin(pNum) {
 

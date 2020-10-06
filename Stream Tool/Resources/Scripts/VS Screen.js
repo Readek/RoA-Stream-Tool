@@ -340,8 +340,10 @@ function updateBG(vidID, pCharacter, pSkin, charInfo) {
 	//change the BG path depending on the character
 	if (pSkin.includes("LoA")) {
 		vidEL.setAttribute('src', 'Resources/Backgrounds/LoA.webm');
-	} else if (pSkin == "Ragnir") { //yes, ragnir is the only skin that changes bg
+	} else if (pSkin == "Ragnir") { //ragnir shows the default stages in the actual game
 		vidEL.setAttribute('src', 'Resources/Backgrounds/Default.webm');
+	} else if (pCharacter == "Shovel Knight" && pSkin == "Golden") { //why not
+		vidEL.setAttribute('src', 'Resources/Backgrounds/SK Golen.webm');
 	} else {
 		let vidName;
 		if (charInfo != "notFound") { //safety check
