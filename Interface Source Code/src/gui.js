@@ -1,11 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 
-const mainPath = path.resolve(__dirname, '..', '..', 'Stream Tool', 'Resources', 'Texts');
-const charPath = path.resolve(__dirname, '..', '..', 'Stream Tool', 'Resources', 'Characters');
+/* const mainPath = path.resolve(__dirname, '..', '..', 'Stream Tool', 'Resources', 'Texts');
+const charPath = path.resolve(__dirname, '..', '..', 'Stream Tool', 'Resources', 'Characters'); */
 //change to these paths when building the executable
-/* const mainPath = path.resolve('.', 'Stream Tool', 'Resources', 'Texts');
-const charPath = path.resolve('.', 'Stream Tool', 'Resources', 'Characters'); */
+const mainPath = path.resolve('.', 'Resources', 'Texts');
+const charPath = path.resolve('.', 'Resources', 'Characters');
 
 
 //yes we all like global variables
