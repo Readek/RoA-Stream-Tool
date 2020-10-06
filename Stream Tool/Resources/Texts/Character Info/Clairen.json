@@ -25,10 +25,6 @@
         "HD",
         "LoA HD"
     ],
-    "playerCustoms": [
-        "Japal",
-        "Slimepuffen"
-    ],
     "scoreboard": {
         "neutral": {
             "x": -23,
@@ -61,6 +57,23 @@
             "x": -550,
             "y": 125,
             "scale": 1.07
+        }
+    },
+    "gui": {
+        "neutral": {
+            "x": -45,
+            "y": 45,
+            "scale": 4
+        },
+        "LoA HD": {
+            "x": 20,
+            "y": 65,
+            "scale": 5.5
+        },
+        "HD": {
+            "x": -50,
+            "y": 45,
+            "scale": 4
         }
     }
 }

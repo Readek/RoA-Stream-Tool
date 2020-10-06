@@ -23,9 +23,6 @@
         "HD",
         "LoA HD"
     ],
-    "playerCustoms": [
-        "Kaeru"
-    ],
     "scoreboard": {
         "neutral": {
             "x": 13,
@@ -64,6 +61,23 @@
             "x": 120,
             "y": 155,
             "scale": 1.27
+        }
+    },
+    "gui": {
+        "neutral": {
+            "x": 10,
+            "y": 58,
+            "scale": 6
+        },
+        "LoA HD": {
+            "x": 12,
+            "y": 93,
+            "scale": 5.5
+        },
+        "HD": {
+            "x": 10,
+            "y": 64,
+            "scale": 5.5
         }
     }
 }

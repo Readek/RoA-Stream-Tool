@@ -22,10 +22,6 @@
         "HD",
         "LoA HD"
     ],
-    "playerCustoms": [
-        "Hukon",
-        "Satosha"
-    ],
     "scoreboard": {
         "neutral": {
             "x": -22,
@@ -58,6 +54,23 @@
             "x": 0,
             "y": 50,
             "scale": 1.1
+        }
+    },
+    "gui": {
+        "neutral": {
+            "x": -28,
+            "y": 20,
+            "scale": 3.5
+        },
+        "LoA HD": {
+            "x": -25,
+            "y": 30,
+            "scale": 3.5
+        },
+        "HD": {
+            "x": -12,
+            "y": 17,
+            "scale": 3.5
         }
     }
 }

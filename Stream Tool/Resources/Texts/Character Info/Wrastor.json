@@ -22,11 +22,6 @@
         "HD",
         "LoA HD"
     ],
-    "playerCustoms": [
-        "OliveOily",
-        "Yiffbait",
-        "Xiphos"
-    ],
     "scoreboard": {
         "neutral": {
             "x": -12,
@@ -69,6 +64,28 @@
             "x": -60,
             "y": 140,
             "scale": 1.19
+        }
+    },
+    "gui": {
+        "neutral": {
+            "x": -20,
+            "y": 58,
+            "scale": 5
+        },
+        "Bradshaw": {
+            "x": -10,
+            "y": 60,
+            "scale": 5.5
+        },
+        "LoA HD": {
+            "x": 15,
+            "y": 80,
+            "scale": 6.5
+        },
+        "HD": {
+            "x": -22,
+            "y": 62,
+            "scale": 5.5
         }
     }
 }

@@ -601,7 +601,7 @@ function deactivateWL() {
 }
 
 
-//player finder setup
+//player presets setup
 function preparePF(pNum) {
     const pFinderEL = document.getElementById("pFinder"+pNum);
 

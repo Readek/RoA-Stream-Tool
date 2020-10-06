@@ -20,9 +20,6 @@
         "Champion",
         "HD"
     ],
-    "playerCustoms": [
-        "Slimepuffen"
-    ],
     "scoreboard": {
         "neutral": {
             "x": 0,
@@ -41,6 +38,14 @@
             "x": -15,
             "y":100,
             "scale": 1.15
+        }
+    },
+    "gui": {
+        "neutral": {
+            "x": -10,
+            "y": 30,
+            "scale": 4,
+            "comment": "Also works for HD"
         }
     }
 }

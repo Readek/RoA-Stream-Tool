@@ -22,13 +22,6 @@
         "HD",
         "LoA HD"
     ],
-    "playerCustoms": [
-        "Junkyards",
-        "Peteru",
-        "Sorio",
-        "Transco",
-        "Yiffbait"
-    ],
     "scoreboard": {
         "neutral": {
             "x": -7,
@@ -61,6 +54,23 @@
             "x": 20,
             "y": -130,
             "scale": 1.4
+        }
+    },
+    "gui": {
+        "neutral": {
+            "x": -7,
+            "y": 7,
+            "scale": 3.5
+        },
+        "LoA HD": {
+            "x": -15,
+            "y": 8,
+            "scale": 4
+        },
+        "HD": {
+            "x": -28,
+            "y": -15,
+            "scale": 5
         }
     }
 }

@@ -23,9 +23,6 @@
         "HD",
         "LoA HD"
     ],
-    "playerCustoms": [
-        "Blark"
-    ],
     "scoreboard": {
         "neutral": {
             "x": -24,
@@ -68,6 +65,28 @@
             "x": -293,
             "y": 25,
             "scale": 1.27
+        }
+    },
+    "gui": {
+        "neutral": {
+            "x": -58,
+            "y": 35,
+            "scale": 6
+        },
+        "LoA": {
+            "x": -50,
+            "y": 40,
+            "scale": 5.5
+        },
+        "LoA HD": {
+            "x": -17,
+            "y": 55,
+            "scale": 6
+        },
+        "HD": {
+            "x": -88,
+            "y": 18,
+            "scale": 6.5
         }
     }
 }

@@ -22,9 +22,6 @@
         "HD",
         "LoA HD"
     ],
-    "playerCustoms": [
-        "Sanimbok"
-    ],
     "scoreboard": {
         "neutral": {
             "x": -27,
@@ -57,6 +54,23 @@
             "x": -440,
             "y": 30,
             "scale": 1.04
+        }
+    },
+    "gui": {
+        "neutral": {
+            "x": -54,
+            "y": 0,
+            "scale": 4
+        },
+        "LoA HD": {
+            "x": 5,
+            "y": 78,
+            "scale": 7
+        },
+        "HD": {
+            "x": -55,
+            "y": 15,
+            "scale": 4.5
         }
     }
 }

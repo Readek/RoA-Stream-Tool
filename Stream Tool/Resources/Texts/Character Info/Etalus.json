@@ -22,9 +22,6 @@
         "HD",
         "LoA HD"
     ],
-    "playerCustoms": [
-        "Swordsplay"
-    ],
     "scoreboard": {
         "neutral": {
             "x": -22,
@@ -63,6 +60,23 @@
             "x": -470,
             "y": 155,
             "scale": 1
+        }
+    },
+    "gui": {
+        "neutral": {
+            "x": -30,
+            "y": 30,
+            "scale": 3.5
+        },
+        "LoA HD": {
+            "x": 15,
+            "y": 85,
+            "scale": 6
+        },
+        "HD": {
+            "x": -32,
+            "y": 38,
+            "scale": 3
         }
     }
 }
