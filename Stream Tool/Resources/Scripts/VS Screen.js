@@ -218,7 +218,7 @@ async function getData(scInfo) {
 			});
 
 			//background change here!
-			if (p1CharacterPrev != p1Character || p1Skin == "Ragnir" || p1SkinPrev == "Ragnir") { //only when different character or ragnir
+			if (bgChangeLogic(p1Skin, p1SkinPrev, p1Character, p1CharacterPrev)) {
 				//fade it out
 				fadeOut("#vidBGP1", () => {
 					//update the bg vid
@@ -244,7 +244,7 @@ async function getData(scInfo) {
 				charaFadeIn("#charaP2", "#trailP2", charScale);
 			});
 			
-			if (p2CharacterPrev != p2Character || p2Skin == "Ragnir" || p2SkinPrev == "Ragnir") {
+			if (bgChangeLogic(p2Skin, p2SkinPrev, p2Character, p2CharacterPrev)) {
 				fadeOut("#vidBGP2", () => {
 					updateBG('vidBGP2', p2Character, p2Skin, p2CharInfo);
 					fadeIn("#vidBGP2", .3, fadeInTime+.2);
@@ -343,7 +343,7 @@ function updateBG(vidID, pCharacter, pSkin, charInfo) {
 	} else if (pSkin == "Ragnir") { //ragnir shows the default stages in the actual game
 		vidEL.setAttribute('src', 'Resources/Backgrounds/Default.webm');
 	} else if (pCharacter == "Shovel Knight" && pSkin == "Golden") { //why not
-		vidEL.setAttribute('src', 'Resources/Backgrounds/SK Golen.webm');
+		vidEL.setAttribute('src', 'Resources/Backgrounds/SK Golden.webm');
 	} else {
 		let vidName;
 		if (charInfo != "notFound") { //safety check
@@ -355,6 +355,19 @@ function updateBG(vidID, pCharacter, pSkin, charInfo) {
 		}
 		//actual video path change
 		vidEL.setAttribute('src', 'Resources/Backgrounds/' + vidName + '.webm');
+	}
+}
+//it was too long to be in just one 'if'
+function bgChangeLogic(pSkin, pSkinPrev, pChar, pCharPrev) {
+	//change the background when
+	if (pChar != pCharPrev) { //always when changing character
+		return true;
+	} else if (pSkin == "Ragnir" || pSkinPrev == "Ragnir") { //yes ragnir has a dif bg
+		return true;
+	} else if (pSkin.includes("LoA") || pSkinPrev.includes("LoA")) { //aether high!
+		return true;
+	} else if (pChar == "Shovel Knight" && (pSkin == "Golden" || pSkinPrev == "Golden")) { //now we just flexing
+		return true;
 	}
 }
 
