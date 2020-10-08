@@ -9,6 +9,7 @@ So you want to do a Rivals of Aether stream, huh? Well, today is your lucky day,
 ## Features
 - [Easy and fast setup](https://gfycat.com/entireinconsequentialafricangroundhornbill) using a browser source. Drag and drop!
 - [Handy interface](https://gfycat.com/thirstyripeeyra) to quickly change everything you need, like player names, characters, scores, round, casters...
+- Customizable [Player Presets](https://gfycat.com/melodicwearybuzzard) to setup your match in no time!
 - Every single skin the game has to offer is [supported](https://gfycat.com/sandyinsignificantdodobird) (more than 300 different skins!), including high quality renders.
 - Some **Workshop** characters are also [supported](https://gfycat.com/leadingancienthumpbackwhale)!
 - [Dynamic, optional intro](https://gfycat.com/revolvingsmarteuropeanpolecat) to be played when changing to the game scene.
@@ -62,7 +63,9 @@ Let's do something a bit more advanced. We now have 2 tiny problems. On online r
 ## Other stuff...
 Do you want to customize something? Do you need some OBS tips and tricks for a RoA stream? **Please, go to the [wiki](https://github.com/Readek/RoA-Stream-Control/wiki)**!
 
-Do you want to adapt this project to another game but can't figure out how to? Lucky for you, I'm open for commisions! Contact me on Twitter [@Readeku](https://twitter.com/Readeku) or on Discord `Readek#5869`!.
+Do you want to adapt this project to another game but can't figure out how to? Lucky for you, I'm open for commisions! Contact me on Twitter [@Readeku](https://twitter.com/Readeku) or on Discord `Readek#5869`!
+
+Do you want to support this project? [Buy me a ko-fi](https://ko-fi.com/readek) or tip me [directly](https://streamlabs.com/readek/tip)!
 
 ---
 
