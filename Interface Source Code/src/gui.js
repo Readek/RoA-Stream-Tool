@@ -5,10 +5,10 @@ const mainPath = path.resolve(__dirname, '..', '..', 'Stream Tool', 'Resources',
 const charPath = path.resolve(__dirname, '..', '..', 'Stream Tool', 'Resources', 'Characters');
 
 //change to these paths when building the executable
-//Linux
+//Linux (appimage)
 /* const mainPath = path.resolve('.', 'Resources', 'Texts');
 const charPath = path.resolve('.', 'Resources', 'Characters'); */
-//Windows
+//Windows (if building a portable exe)
 /* const mainPath = path.resolve(process.env.PORTABLE_EXECUTABLE_DIR, 'Resources', 'Texts');
 const charPath = path.resolve(process.env.PORTABLE_EXECUTABLE_DIR, 'Resources', 'Characters'); */
 
@@ -901,6 +901,7 @@ function checkRound() {
 
 
 function swap() {
+    //names and tags
     const tempP1Name = p1NameInp.value;
     const tempP1Team = p1TagInp.value;
     const tempP2Name = p2NameInp.value;
@@ -917,6 +918,7 @@ function swap() {
     changeInputWidth(p2TagInp);
 
 
+    //characters and skins
     const tempP1Char = p1CharList.selectedOptions[0].text;
     const tempP2Char = p2CharList.selectedOptions[0].text;
     
@@ -950,11 +952,29 @@ function swap() {
     checkCustomSkin(1);
     checkCustomSkin(2);
 
-
+    //scores
     const tempP1Score = checkScore(p1Win1, p1Win2, p1Win3);
     const tempP2Score = checkScore(p2Win1, p2Win2, p2Win3);
     setScore(tempP2Score, p1Win1, p1Win2, p1Win3);
     setScore(tempP1Score, p2Win1, p2Win2, p2Win3);
+
+    //W/K, only if they are visible
+    if (p1W.style.display = "inline") {
+        const previousP1WL = currentP1WL;
+        const previousP2WL = currentP2WL;
+
+        if (previousP2WL == "W") {
+            p1W.click();
+        } else if (previousP2WL == "L") {
+            p1L.click();
+        }
+
+        if (previousP1WL == "W") {
+            p2W.click();
+        } else if (previousP1WL == "L") {
+            p2L.click();
+        }
+    }
 }
 
 function clearPlayers() {
