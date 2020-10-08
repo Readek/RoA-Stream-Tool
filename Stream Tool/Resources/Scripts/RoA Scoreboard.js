@@ -440,7 +440,10 @@ function updateWL(pWL, playerNum) {
 		pWLEL.setAttribute('src', 'Resources/Overlay/Winners P' + playerNum + '.png')
 	} else if (pWL == "L") {
 		pWLEL.setAttribute('src', 'Resources/Overlay/Losers P' + playerNum + '.png')
+	} else if (pWL == "Nada") {
+		pWLEL.setAttribute('src', 'Resources/Literally nothing.png')
 	}
+
 	if (startup) {pWLEL.addEventListener("error", () => {showNothing(pWLEL)})}
 }
 

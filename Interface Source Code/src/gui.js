@@ -596,7 +596,6 @@ function setWLP2() {
 function deactivateWL() {
     currentP1WL = "Nada";
     currentP2WL = "Nada";
-    document.getElementById;
 
     pWLs = document.getElementsByClassName("wlBox");
     for (let i = 0; i < pWLs.length; i++) {
