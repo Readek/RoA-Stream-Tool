@@ -1,6 +1,6 @@
 ![preview](https://cdn.discordapp.com/attachments/574303886869790730/749570123701944390/unknown.png)
 # RoA Stream Tool
-*Also available for [Melee](https://github.com/Readek/Melee-Stream-Tool) and [Rushdown Revolr](https://github.com/Readek/Rushdown-Revolt-Stream-Tool)!*
+*Also available for [Melee](https://github.com/Readek/Melee-Stream-Tool) and [Rushdown Revolt](https://github.com/Readek/Rushdown-Revolt-Stream-Tool)!*
 
 So you want to do a Rivals of Aether stream, huh? Well, today is your lucky day, because I have done tons of work so you don’t have to! With this, you will be able to set up a RoA tournament oriented stream in no time.
 
