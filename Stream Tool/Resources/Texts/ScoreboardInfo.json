@@ -1,29 +1,71 @@
 {
-  "p1Name": "Player 1",
-  "p1Team": "",
-  "p1Character": "Elliana",
-  "p1Skin": "Normal",
-  "p1Color": "Red",
-  "p1Score": 1,
-  "p1WL": "Nada",
-  "p2Name": "Player 2",
-  "p2Team": "Team",
-  "p2Character": "Kragg",
-  "p2Skin": "Normal",
-  "p2Color": "Blue",
-  "p2Score": 2,
-  "p2WL": "Nada",
+  "player": [
+    null,
+    {
+      "name": "Player 1",
+      "tag": "",
+      "character": "Elliana",
+      "skin": "Normal"
+    },
+    {
+      "name": "Player 2",
+      "tag": "Tag",
+      "character": "Kragg",
+      "skin": "Normal"
+    },
+    {
+      "name": "Player 3",
+      "tag": "Tag",
+      "character": "Orcane",
+      "skin": "Pool Party"
+    },
+    {
+      "name": "Player 4",
+      "tag": "",
+      "character": "Clairen",
+      "skin": "Arcade Green"
+    }
+  ],
+  "teamName": [
+    null,
+    "Team 1 Name",
+    "Team 2 Name"
+  ],
+  "color": [
+    null,
+    "Red",
+    "Blue"
+  ],
+  "score": [
+    null,
+    1,
+    2
+  ],
+  "wl": [
+    null,
+    "Nada",
+    "Nada"
+  ],
   "bestOf": "Bo5",
+  "gamemode": 1,
   "round": "Winners Finals",
   "tournamentName": "A Tournament #123",
-  "caster1Name": "Caster 1",
-  "caster1Twitter": "Twitter 1",
-  "caster1Twitch": "Twitch 1",
-  "caster2Name": "Caster 2",
-  "caster2Twitter": "Twitter 2",
-  "caster2Twitch": "Twitch 2",
+  "caster": [
+    null,
+    {
+      "name": "Caster 1",
+      "twitter": "Twitter 1",
+      "twitch": "Twitch 1"
+    },
+    {
+      "name": "Caster 2",
+      "twitter": "Twitter 2",
+      "twitch": "Twitch 2"
+    }
+  ],
   "allowIntro": false,
   "workshop": false,
   "forceHD": false,
-  "noLoAHD": false
+  "noLoAHD": false,
+  "forceMM": false
 }

@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>RoA Stream Tool</title>
     <link rel="stylesheet" href="index.css">
-    <script src="gui.js" defer></script>
     <script src="mousetrap.min.js" defer></script>
+    <script src="gui.js" defer></script>
   </head>
   
   <body>
@@ -20,63 +20,78 @@
 
         <div id="playerRegion">
 
-          <div id="player1" class="player">
+          <div id="lSide" class="side">
 
             <div class="charImgBox">
               <img id="p1CharImg" class="charImg"/>
             </div>
 
-            <div class="pEditor" id="p1Editor">
+            <div class="sideEditor">
 
-              <div id="p1Info" class="pInfo">
-                <input type="text" id="p1Tag" class="textInput mousetrap" tabindex="1" placeholder="Tag" title="Insert the tag/team/sponsor here" spellcheck="false" contenteditable="true">
-                
-                <div class="pFinderPosition" id="pFinderBox1">
+              <div class="row" id="row1-1">
 
-                  <input type="text" id="p1Name" class="textInput mousetrap" tabindex="2" placeholder="Player 1" title="Insert P1's name here" spellcheck="false">
-                
-                  <div class="playerFinder" id="pFinder1">
-                    
+                <input type="text" id="teamName1" class="teamName textInput mousetrap" tabindex="1" placeholder="Team 1 name" spellcheck="false" contenteditable="true">
+
+                <div class="playerInfo" id="pInfo1">
+
+                  <input type="text" id="p1Tag" class="textInput mousetrap tagInput" tabindex="2" placeholder="Tag" title="Insert the tag/team/sponsor here" spellcheck="false" contenteditable="true">
+                  <div class="pFinderPosition" id="pFinderBox1">
+                    <input type="text" id="p1Name" class="textInput mousetrap nameInput" tabindex="2" placeholder="Player 1" title="Insert P1's name here" spellcheck="false">
+                    <div class="playerFinder" id="pFinder1"></div>
                   </div>
-                  
+
                 </div>
                 
-                <div id="p1Color" class="pColor" tabindex="5" title="Change the color slot for this player">
+                <div id="lColor" class="pColor" tabindex="-1" title="Change the color slot for this player">
                   <div class="colorContainer">
-                    <div id="p1ColorRect" class="pColorRect"></div>
+                    <div id="lColorRect" class="pColorRect"></div>
                   </div>
-                  <div class="dropdownColor" id="dropdownColorP1">
-
-                  </div>
+                  <div class="dropdownColor" id="dropdownColorL"></div>
                 </div>
-              </div>
-  
-              <div id="charInfo">
-                <select id="p1Char" class="charCombo mousetrap" title="Everyone is here!"></select>
-                <select id="p1Skin" class="charCombo mousetrap"></select>
-              </div>
-  
-              <div class="scoreInfo">
 
-                <div class="scoreBox" title="Press F1 to increase the score">
-                  <span>Wins</span>
-                  <input type="checkbox" id="winP1-1" class="scoreCheck mousetrap">
-                  <input type="checkbox" id="winP1-2" class="scoreCheck mousetrap">
-                  <input type="checkbox" id="winP1-3" class="scoreCheck mousetrap">
+              </div>
+
+              <div class="row" id="row2-1">
+
+                <select id="p1Char" class="charCombo mousetrap charList" title="Everyone is here!" tabindex="-1"></select>
+                <select id="p1Skin" class="charCombo mousetrap skinList" tabindex="-1"></select>
+
+              </div>
+
+              <div class="row" id="row3-1">
+
+                <select id="p3Char" class="charCombo mousetrap charList" title="Everyone is here!" tabindex="-1"></select>
+                <select id="p3Skin" class="charCombo mousetrap skinList" tabindex="-1"></select>
+
+                <div class="playerInfo" id="pInfo3">
+
+                  <input type="text" id="p3Tag" class="textInput mousetrap tagInput" tabindex="3" placeholder="Tag" title="Insert the tag/team/sponsor here" spellcheck="false" contenteditable="true">
+                  <div class="pFinderPosition" id="pFinderBox3">
+                    <input type="text" id="p3Name" class="textInput mousetrap nameInput" tabindex="3" placeholder="Player 3" title="Insert P3's name here" spellcheck="false">
+                    <div class="playerFinder" id="pFinder3"></div>
+                  </div>
+
+                </div>
+
+                <div class="scoreBox" id="scoreBox1" title="Press F1 to increase the score">
+                  <span id="scoreText1">Wins</span>
+                  <input type="checkbox" id="winP1-1" class="scoreCheck mousetrap" tabindex="-1">
+                  <input type="checkbox" id="winP1-2" class="scoreCheck mousetrap" tabindex="-1">
+                  <input type="checkbox" id="winP1-3" class="scoreCheck mousetrap" tabindex="-1">
                 </div>
                 
-                <div class="wlButtons">
+                <div class="wlButtons" id="wlButtons1">
                   <div id="p1W" class="wlBox">[W]</div>
                   <div id="p1L" class="wlBox">[L]</div>
                 </div>
-                
+
               </div>
 
             </div>
 
           </div>
           
-          <div id="playerSep">
+          <div id="sideSep">
             <div id="swapButton" title="Swap P1's and P2's values">
               <svg class="midIcon" id="swapIcon" viewBox="0 0 1000 1000">
                 <g><g transform="translate(0.000000,119.000000) scale(0.100000,-0.100000)">
@@ -91,54 +106,71 @@
           </div>
           
   
-          <div id="player2" class="player">
+          <div id="rSide" class="side">
 
             <div class="charImgBox">
               <img id="p2CharImg" class="charImg"/>
             </div>
             
-            <div class="pEditor">
+            <div class="sideEditor">
 
-              <div id="p2Info" class="pInfo">
-                <input type="text" id="p2Tag" class="textInput mousetrap" tabindex="3" placeholder="Tag" title="Insert the tag/team/sponsor here." spellcheck="false">
+              <div class="row" id="row1-2">
+
+                <input type="text" id="teamName2" class="teamName textInput mousetrap" tabindex="1" placeholder="Team 2 name" spellcheck="false" contenteditable="true">
+
+                <div class="playerInfo" id="pInfo2">
+                  <input type="text" id="p2Tag" class="textInput mousetrap tagInput" tabindex="2" placeholder="Tag" title="Insert the tag/team/sponsor here." spellcheck="false">
+                  <div class="pFinderPosition" id="pFinderBox2">
+                    <input type="text" id="p2Name" class="textInput mousetrap nameInput" tabindex="2" placeholder="Player 2" title="Insert P2's name here." spellcheck="false">
+                    <div class="playerFinder" id="pFinder2">
+                    </div>
+                  </div>
+                </div>
                 
-                <div class="pFinderPosition" id="pFinderBox2">
-                  
-                  <input type="text" id="p2Name" class="textInput mousetrap" tabindex="4" placeholder="Player 2" title="Insert P2's name here." spellcheck="false">
-                  
-                  <div class="playerFinder" id="pFinder2">
-                    
-                  </div>
 
-                </div>
-
-
-                <div id="p2Color" class="pColor" tabindex="6">
+                <div id="rColor" class="pColor" tabindex="-1">
                   <div class="colorContainer" title="Change the color slot for this player">
-                    <div id="p2ColorRect" class="pColorRect"></div>
+                    <div id="rColorRect" class="pColorRect"></div>
                   </div>
-                  <div class="dropdownColor" id="dropdownColorP2"></div>
-                </div>
-              </div>
-  
-              <div id="charInfo">
-                <select id="p2Char" class="charCombo mousetrap" title="Everyone is here!"></select>
-                <select id="p2Skin" class="charCombo mousetrap"></select>
-              </div>
-  
-              <div class="scoreInfo">
-
-                <div class="scoreBox" title="Press F2 to increase the score">
-                  <span>Wins</span>
-                  <input type="checkbox" id="winP2-1" class="scoreCheck mousetrap">
-                  <input type="checkbox" id="winP2-2" class="scoreCheck mousetrap">
-                  <input type="checkbox" id="winP2-3" class="scoreCheck mousetrap">
+                  <div class="dropdownColor" id="dropdownColorR"></div>
                 </div>
 
-                <div class="wlButtons">
+              </div>
+
+              <div class="row" id="row2-2">
+
+                <select id="p2Char" class="charCombo mousetrap charList" title="Everyone is here!" tabindex="-1"></select>
+                <select id="p2Skin" class="charCombo mousetrap skinList" tabindex="-1"></select>
+
+              </div>
+
+              <div class="row" id="row3-2">
+
+                <select id="p4Char" class="charCombo mousetrap charList" title="Everyone is here!" tabindex="-1"></select>
+                <select id="p4Skin" class="charCombo mousetrap skinList" tabindex="-1"></select>
+
+                <div class="playerInfo" id="pInfo4">
+
+                  <input type="text" id="p4Tag" class="textInput mousetrap tagInput" tabindex="3" placeholder="Tag" title="Insert the tag/team/sponsor here" spellcheck="false" contenteditable="true">
+                  <div class="pFinderPosition" id="pFinderBox4">
+                    <input type="text" id="p4Name" class="textInput mousetrap nameInput" tabindex="3" placeholder="Player 4" title="Insert P4's name here" spellcheck="false">
+                    <div class="playerFinder" id="pFinder4"></div>
+                  </div>
+
+                </div>
+                
+                <div class="scoreBox" id="scoreBox2" title="Press F2 to increase the score">
+                  <span id="scoreText2">Wins</span>
+                  <input type="checkbox" id="winP2-1" class="scoreCheck mousetrap" tabindex="-1">
+                  <input type="checkbox" id="winP2-2" class="scoreCheck mousetrap" tabindex="-1">
+                  <input type="checkbox" id="winP2-3" class="scoreCheck mousetrap" tabindex="-1">
+                </div>
+
+                <div class="wlButtons" id="wlButtons2">
                   <div id="p2W" class="wlBox">[W]</div>
                   <div id="p2L" class="wlBox">[L]</div>
                 </div>
+
               </div>
               
             </div>
@@ -147,12 +179,26 @@
         </div>
         
         <div id="roundInfo">
+
           <div id="bestOf">
             <div id="bo3Div" class="bestOfBox">Best of 3</div>
             <div id="bo5Div" class="bestOfBox">Best of 5</div>
           </div>
-          <input type="text" id="roundName" class="textInput mousetrap" placeholder="Current Round" spellcheck="false">
-          <input type="text" id="tournamentName" class="textInput mousetrap" placeholder="Tournament Name" spellcheck="false">
+
+          <input type="text" id="roundName" class="textInput mousetrap" placeholder="Current Round" spellcheck="false" tabindex="4">
+          <input type="text" id="tournamentName" class="textInput mousetrap" placeholder="Tournament Name" spellcheck="false" tabindex="4">
+        
+          <div id="gamemode" title="Change the gamemode to Doubles">
+            <div id="gmIconBox">
+              <svg class="gmIcon" id="gmIcon1" viewBox="0 0 25 25">
+                <path d="M12 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4z"/><path d="M18 21a1 1 0 0 0 1-1 7 7 0 0 0-14 0 1 1 0 0 0 1 1z"/>
+              </svg>
+              <svg class="gmIcon" id="gmIcon2" viewBox="0 0 25 25">
+                <path d="M12 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4z"/><path d="M18 21a1 1 0 0 0 1-1 7 7 0 0 0-14 0 1 1 0 0 0 1 1z"/>
+              </svg>
+            </div>
+          </div>
+
         </div>
 
         <div id=casterInfo>
@@ -223,14 +269,20 @@
 
         <div id="actualSettings">
 
-          <div class="settingBox" title="Plays an intro on 'Scoreboard.html' whenever the file loads">
+          <div class="settingBox" title="Plays an intro on 'RoA Scoreboard.html' whenever the file loads.">
             <input type="checkbox" id="allowIntro" class="settingsCheck" tabindex="-1">
             <label for="allowIntro" class="settingsText">Allow Intro</span>
           </div>
 
-          <div class="settingBox" title="Changes the character list to the workshop one">
+          <div class="settingBox" title="Changes the character list to the workshop one.">
             <input type="checkbox" id="workshopToggle" class="settingsCheck" tabindex="-1">
             <label for="workshopToggle" class="settingsText">Use Workshop characters</span>
+          </div>
+
+          <div class="settingBox" title="Forces showing the 'Main Menu' character
+renders on 'RoA Scoreboard.html'.">
+            <input type="checkbox" id="forceMM" class="settingsCheck" tabindex="-1">
+            <label for="forceMM" class="settingsText">Main Menu renders in Scoreboard</span>
           </div>
 
           <div class="settingBox" title="Forces HD skins to appear on the VS screen,
@@ -250,6 +302,11 @@ They will always appear when typing 'Grand' in the round box.">
             <input type="checkbox" id="forceWLToggle" class="settingsCheck" tabindex="-1">
             <label for="forceWLToggle" class="settingsText">Force [W] / [L]</span>
           </div>
+
+          <button id="copyMatch" tabindex="-1" title='"Tournament Name - Round - Player1 (Character1) VS Player2 (Character2)"'>
+            Copy match info to clipboard
+          </button>
+
         </div>        
       </div>
 

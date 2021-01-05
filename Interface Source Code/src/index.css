@@ -21,6 +21,10 @@
   --focused: #686868;
 }
 
+*::-webkit-scrollbar {
+  display: none;
+}
+
 body {
   overflow: hidden;
   padding: 0px;
@@ -84,12 +88,12 @@ input[type="text"] {
   height: 150px;
 }
 
-.player {
+.side {
   width: 49%;
   position: relative;
 }
 
-.pEditor {
+.sideEditor {
   position: absolute;
   left: 0px;
   top: 0px;
@@ -99,11 +103,22 @@ input[type="text"] {
   align-items: center;
 }
 
-.pInfo {
+.row {
   padding-left: 10px;
+  padding-right: 10px;
+  display: flex;
+  align-items: center;
 }
 
-#p1Tag, #p2Tag {
+
+.teamName {
+  float: left;
+  width: 100%;
+  display: none;
+  margin-right: 5px;
+}
+
+.tagInput {
   float: left;
   min-width: 34px;
   max-width: 70px;
@@ -112,10 +127,10 @@ input[type="text"] {
   border-bottom-right-radius: 0px;
 }
 
-#p1Name, #p2Name {
+.nameInput {
   float: left;
   min-width: 60px;
-  max-width: 174px;
+  max-width: 173px;
   width: 60px;
   border-radius: 0px;
 }
@@ -132,7 +147,7 @@ input[type="text"] {
   filter: drop-shadow(0px 0px 5px var(--bg3));
   z-index: 3;
   font-size: 15px;
-  max-height: 215px;
+  max-height: 165px;
   overflow: auto;
 }
 
@@ -140,7 +155,7 @@ input[type="text"] {
   display: flex;
   align-items: center;
   height: 35px;
-  width: 235px;
+  width: 220px;
   z-index: 30;
   cursor: pointer;
 }
@@ -175,9 +190,10 @@ input[type="text"] {
 .pfCharImgBox {
   position: absolute;
   height: 35px;
-  width: 235px;
+  width: 220px;
   transform: scaleX(-1);
   overflow: hidden;
+  opacity: .8;
 }
 .pfCharImg {
   position: absolute;
@@ -246,15 +262,11 @@ input[type="text"] {
   background-color: var(--bg2);
 }
 
-#p1Color:focus #dropdownColorP1,
-#p2Color:focus #dropdownColorP2 {
+#lColor:focus #dropdownColorL,
+#rColor:focus #dropdownColorR {
   display: block;
 }
 
-
-#charInfo {
-  padding-left: 10px;
-}
 
 .charCombo {
   width: auto;
@@ -278,20 +290,20 @@ input[type="text"] {
   background-color: var(--bg2);
 }
 
-#p1Char, #p2Char {
+.charList {
   float: left;
   border-top-left-radius: 3px;
   border-bottom-left-radius: 3px;
 }
 
-#p1Skin, #p2Skin {
+.skinList {
   display: none;
   border-top-right-radius: 3px;
   border-bottom-right-radius: 3px;
   margin-left: -1px;
 }
 
-#p1Char:hover, #p2Char:hover {
+.charList:hover {
   transform: scale(1); /* cheap trick to show a correct border */
 }
 
@@ -302,13 +314,6 @@ input[type="text"] {
   background-color: var(--bg5);
 }
 
-
-.scoreInfo {
-  margin-left: 10px;
-  font-family: 'Roboto-Medium';
-  display: flex;
-  align-items: center;
-}
 
 .scoreBox {
   background-color: var(--bg4);
@@ -321,6 +326,8 @@ input[type="text"] {
   display: flex;
   align-items: center;
   color: var(--text2);
+  float: left;
+  font-family: 'Roboto-Medium';
 }
 .scoreBox:hover {
   border-color: var(--selected);
@@ -336,6 +343,7 @@ input[type="text"] {
 .wlButtons {
   display: none;
   font-size: 13px;
+  font-family: 'Roboto-Medium';
   padding-left: 5px;
 }
 
@@ -372,7 +380,13 @@ input[type="text"] {
 }
 
 
-#playerSep {
+/* elements that will show up when changing gamemode */
+#p3Char, #p4Char, #p3Skin, #p4Skin, #pInfo3, #pInfo4 {
+  display: none;
+}
+
+
+#sideSep {
   width: 2%;
   height: 100%;
 }
@@ -443,8 +457,7 @@ input[type="text"] {
   border-color: var(--bg4);
   display: flex;
   align-items: center;
-  padding-left: 5px;
-  padding-right: 5px;
+  padding-right: 10px;
 }
 
 #bestOf {
@@ -484,6 +497,44 @@ input[type="text"] {
   text-align: center;
   margin-right: 4px;
 }
+
+
+#gamemode {
+  background-color: var(--bg4);
+  height: 30px;
+  width: 140px;
+  margin-left: 6px;
+  box-sizing: border-box;
+  border-radius: 3px;
+  border: 1px solid var(--focused);
+  transition: border-color 100ms;
+  float: left;
+}
+#gamemode:hover {
+  border-color: var(--selected);
+  cursor: pointer;
+}
+#gamemode:active {
+  background-color: #2b2b2b;
+}
+
+.gmIcon {
+  height: 23px;
+  width: 20px;
+  fill: #b6b6b6;
+  position: absolute;
+  top: 3px;
+}
+#gmIconBox {
+  position: absolute;
+}
+#gmIcon1 {
+  left: 4px;
+}
+#gmIcon2 {
+  left: 17px;
+}
+
 
 /* caster region */
 #casterInfo {
@@ -637,6 +688,15 @@ input[type="text"] {
 
 .settingsText {
   width: 100%;
+}
+
+#copyMatch {
+  width: 92%;
+  margin: 10px;
+  box-sizing: border-box;
+  font-size: 14px;
+  font-family: "Roboto-Medium";
+
 }
 
 

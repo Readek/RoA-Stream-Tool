@@ -1,0 +1,38 @@
+[
+    {
+        "name": "Red",
+        "hex": "#ed1c23"
+    },
+    {
+        "name": "Blue",
+        "hex": "#00b7ef"
+    },
+    {
+        "name": "Pink",
+        "hex": "#ffa3b1"
+    },
+    {
+        "name": "Green",
+        "hex": "#a8e61d"
+    },
+    {
+        "name": "NetGreen",
+        "hex": "#42e564"
+    },
+    {
+        "name": "Purple",
+        "hex": "#846ae9"
+    },
+    {
+        "name": "Magenta",
+        "hex": "#ee1c8f"
+    },
+    {
+        "name": "Yellow",
+        "hex": "#dc8c00"
+    },
+    {
+        "name": "CPU",
+        "hex": "#808080"
+    }
+]
