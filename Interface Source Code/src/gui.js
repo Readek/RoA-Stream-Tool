@@ -7,10 +7,10 @@ const charPath = path.resolve(__dirname, '..', '..', 'Stream Tool', 'Resources',
 
 //change to these paths when building the executable
 //Linux (appimage)
-/* const mainPath = path.resolve('.', 'Resources', 'Texts');
+/* const textPath = path.resolve('.', 'Resources', 'Texts');
 const charPath = path.resolve('.', 'Resources', 'Characters'); */
 //Windows (if building a portable exe)
-/* const mainPath = path.resolve(process.env.PORTABLE_EXECUTABLE_DIR, 'Resources', 'Texts');
+/* const textPath = path.resolve(process.env.PORTABLE_EXECUTABLE_DIR, 'Resources', 'Texts');
 const charPath = path.resolve(process.env.PORTABLE_EXECUTABLE_DIR, 'Resources', 'Characters'); */
 
 
@@ -345,11 +345,16 @@ function charChange(list) {
     }
     
     //hide the skin dropdown if the list has 1 or less entries
-    if (skinList.options.length <= 1) {
-        skinList.style.display = "none";
+    if (gamemode == 1 && (pNum == 3 || pNum == 4)) {
+        //dont do this for players 3 and 4 if the gamemode is singles
     } else {
-        skinList.style.display = "inline";
+        if (skinList.options.length <= 1) {
+            skinList.style.display = "none";
+        } else {
+            skinList.style.display = "inline";
+        }
     }
+    
 
     //check if the current player name has a custom skin for the character
     checkCustomSkin(pNum);

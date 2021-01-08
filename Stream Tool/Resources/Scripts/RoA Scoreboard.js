@@ -6,48 +6,49 @@ const fadeInTime = .3; //(seconds)
 const fadeOutTime = .2;
 let introDelay = .8; //all animations will get this delay when the html loads (use this so it times with your transition)
 
+//the characters image file path will change depending if they're workshop or not
+let charPath;
+const charPathBase = "Resources/Characters/";
+const charPathWork = "Resources/Characters/_Workshop/";
+
+//color list will be stored here on startup
+let colorList;
+
 //to avoid the code constantly running the same method over and over
 let p1CharacterPrev, p1SkinPrev, p1ScorePrev, p1ColorPrev, p1wlPrev;
 let p2CharacterPrev, p2SkinPrev, p2ScorePrev, p2ColorPrev, p2wlPrev;
-let bestOfPrev;
+let bestOfPrev, prevWorkshop;
 
 let startup = true;
 
-window.onload = init;
 
-function init() {
-	async function mainLoop() {
-		const scInfo = await getInfo();
-		getData(scInfo);
-	}
-
-	mainLoop();
-	setInterval( () => { mainLoop(); }, 500); //update interval
+/* script begin */
+async function mainLoop() {
+	const scInfo = await getInfo();
+	getData(scInfo);
 }
+mainLoop();
+setInterval( () => { mainLoop(); }, 500); //update interval
 
 async function getData(scInfo) {
-	const p1Name = scInfo['p1Name'];
-	const p1Team = scInfo['p1Team'];
-	const p1Score = scInfo['p1Score'];
-	const p1Color = scInfo['p1Color'];
-	const p1Character = scInfo['p1Character'];
-	const p1Skin = scInfo['p1Skin'];
-	const p1WL = scInfo['p1WL'];
-	
-	const p2Name = scInfo['p2Name'];
-	const p2Team = scInfo['p2Team'];
-	const p2Score = scInfo['p2Score'];
-	const p2Color = scInfo['p2Color'];
-	const p2Character = scInfo['p2Character'];
-	const p2Skin = scInfo['p2Skin'];
-	const p2WL = scInfo['p2WL'];
+	const player = scInfo['player'];
+	const teamName = scInfo['teamName'];
+
+	const color = scInfo['color'];
+	const score = scInfo['score'];
+	const wl = scInfo['wl'];
+
+	const bestOf = scInfo['bestOf'];
+	const gamemode = scInfo['gamemode'];
 
 	const round = scInfo['round'];
-	const bestOf = scInfo['bestOf'];
+
+	const workshop = scInfo['workshop'];
 
 
 	//first, things that will happen only the first time the html loads
 	if (startup) {
+
 		//of course, we have to start with the cool intro stuff
 		if (scInfo['allowIntro']) {
 
@@ -56,25 +57,35 @@ async function getData(scInfo) {
 
 			//this vid is just the bars moving (todo: maybe do it through javascript?)
 			setTimeout(() => { 
-				document.getElementById('introVid').setAttribute('src', 'Resources/Webms/Intro.webm');
-				document.getElementById('introVid').play();
+				const introVid = document.getElementById('introVid');
+				introVid.setAttribute('src', 'Resources/Webms/Intro.webm');
+				introVid.play();
 			}, 0); //if you need it to start later, change that 0 (and also update the introDelay)
 
-			if (p1Score + p2Score == 0) { //if this is the first game, introduce players
+			if (score[1] + score[2] == 0) { //if this is the first game, introduce players
 
 				const p1IntroEL = document.getElementById('p1Intro');
 				const p2IntroEL = document.getElementById('p2Intro');
 
-				p1IntroEL.textContent = p1Name; //update player 1 intro text
+				//update players intro text
+				if (gamemode == 1) {
+					p1IntroEL.textContent = player[1].name;
+					p2IntroEL.textContent = player[2].name;
+				} else {
+					p1IntroEL.textContent = teamName[1];
+					p2IntroEL.textContent = teamName[2];
+				}
 				p1IntroEL.style.fontSize = '85px'; //resize the font to its max size
 				resizeText(p1IntroEL); //resize the text if its too large
 				p2IntroEL.style.fontSize = '85px';
-				p2IntroEL.textContent = p2Name; //p2
 				resizeText(p2IntroEL);
 
+				//initialize the colors list
+				//(text shadows is the only place where actual hex codes are used, this may change in future releases)
+				colorList = await getColorInfo();
 				//change the color of the player text shadows
-				p1IntroEL.style.textShadow = '0px 0px 20px ' + getHexColor(p1Color);
-				p2IntroEL.style.textShadow = '0px 0px 20px ' + getHexColor(p2Color);
+				p1IntroEL.style.textShadow = '0px 0px 20px ' + getHexColor(color[1]);
+				p2IntroEL.style.textShadow = '0px 0px 20px ' + getHexColor(color[2]);
 
 				//player 1 name fade in
 				gsap.fromTo("#p1Intro",
@@ -88,10 +99,10 @@ async function getData(scInfo) {
 
 			} else { //if its not the first game, show game count
 				const midTextEL = document.getElementById('midTextIntro');
-				if ((p1Score + p2Score) != 4) { //if its not the last game of a bo5
+				if ((score[1] + score[2]) != 4) { //if its not the last game of a bo5
 
 					//just show the game count in the intro
-					midTextEL.textContent = "Game " + (p1Score + p2Score + 1);
+					midTextEL.textContent = "Game " + (score[1] + score[2] + 1);
 
 				} else { //if game 5
 
@@ -125,61 +136,65 @@ async function getData(scInfo) {
 			introDelay = 2.6;
 		}
 
-		//finally out of the intro, now lets start with player 1 first
-		//update player name and team name texts
-		updatePlayerName('p1Wrapper', 'p1Name', 'p1Team', p1Name, p1Team);
+		//finally out of the intro, first things first, set the current char path
+		workshop ? charPath = charPathWork : charPath = charPathBase;
+		//save the current workshop status so we know when it changes next time
+		prevWorkshop = workshop;
+		
+		//now lets start with player 1 first, update player name and team name texts
+		updatePlayerName('p1Wrapper', 'p1Name', 'p1Team', player[1].name, player[1].tag);
 		//sets the starting position for the player text, then fades in and moves the p1 text to the next keyframe
 		gsap.fromTo("#p1Wrapper", 
 			{x: -pMove}, //from
 			{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}); //to
 
 		//set the character image for the player
-		await updateChar(p1Character, p1Skin, 'p1Character');
+		await updateChar(player[1].character, player[1].skin, 'p1Character');
 		//when the image finishes loading, fade-in-move the character icon to the overlay
 		initCharaFade("#p1Character");
 		//save the character/skin so we run the character change code only when this doesnt equal to the next
-		p1CharacterPrev = p1Character;
-		p1SkinPrev = p1Skin;
+		p1CharacterPrev = player[1].character;
+		p1SkinPrev = player[1].skin;
 
 		//if its grands, we need to show the [W] and/or the [L] on the players
-		updateWL(p1WL, "1");
+		updateWL(wl[1], "1");
 		gsap.fromTo("#wlP1",
 			{y: -pMove}, //set starting position some pixels up (it will be covered by the overlay)
 			{delay: introDelay+.5, y: 0, ease: "power2.out", duration: .5}); //move down to its default position
 		//save for later so the animation doesn't repeat over and over
-		p1wlPrev = p1WL;
+		p1wlPrev = wl[1];
 
 		//set the current score
-		updateScore('p1Score', p1Score, bestOf, "p1ScoreUp", p1Color, false);
-		p1ScorePrev = p1Score;
+		updateScore('p1Score', score[1], bestOf, "p1ScoreUp", color[1], false);
+		p1ScorePrev = score[1];
 
 		//set the color
-		updateColor('p1Color', p1Color);
-		p1ColorPrev = p1Color;
+		updateColor('p1Color', color[1]);
+		p1ColorPrev = color[1];
 
 
 		//took notes from player 1? well, this is exactly the same!
-		updatePlayerName('p2Wrapper', 'p2Name', 'p2Team', p2Name, p2Team);
+		updatePlayerName('p2Wrapper', 'p2Name', 'p2Team', player[2].name, player[2].tag);
 		gsap.fromTo("#p2Wrapper", 
 			{x: pMove},
 			{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 
-		await updateChar(p2Character, p2Skin, 'p2Character');
+		await updateChar(player[2].character, player[2].skin, 'p2Character');
 		initCharaFade("#p2Character");
-		p2CharacterPrev = p2Character;
-		p2SkinPrev = p2Skin;
+		p2CharacterPrev = player[2].character;
+		p2SkinPrev = player[2].skin;
 
-		updateWL(p2WL, "2");
+		updateWL(wl[2], "2");
 		gsap.fromTo("#wlP2",
 			{y: -pMove},
 			{delay: introDelay+.5, y: 0, ease: "power2.out", duration: .5});
-		p2wlPrev = p2WL;
+		p2wlPrev = wl[2];
 
-		updateScore('p2Score', p2Score, bestOf, "p2ScoreUp", p2Color, false);
-		p2ScorePrev = p2Score;
+		updateScore('p2Score', score[2], bestOf, "p2ScoreUp", color[2], false);
+		p2ScorePrev = score[2];
 
-		updateColor('p2Color', p2Color);
-		p2ColorPrev = p2Color;
+		updateColor('p2Color', color[2]);
+		p2ColorPrev = color[2];
 
 
 		//update the round text
@@ -189,8 +204,8 @@ async function getData(scInfo) {
 
 
 		//check if the team has a logo we can place on the overlay
-		updateTeamLogo("teamLogoP1", p1Team, "1");
-		updateTeamLogo("teamLogoP2", p2Team, "2");
+		updateTeamLogo("teamLogoP1", player[1].tag, "1");
+		updateTeamLogo("teamLogoP2", player[2].tag, "2");
 
 		//dont forget to update the border if its Bo3 or Bo5!
 		updateBorder(bestOf);
@@ -201,113 +216,120 @@ async function getData(scInfo) {
 	//now things that will happen constantly
 	else {
 
+		//start by setting the correct char path
+		if (prevWorkshop != workshop) {
+			workshop ? charPath = charPathWork : charPath = charPathBase;
+			prevWorkshop = workshop;
+		}
+
+
 		//player 1 time!
-		if (document.getElementById('p1Name').textContent != p1Name ||
-			document.getElementById('p1Team').textContent != p1Team) {
+		if (document.getElementById('p1Name').textContent != player[1].name ||
+			document.getElementById('p1Team').textContent != player[1].tag) {
 			//move and fade out the player 1's text
 			fadeOutMove("#p1Wrapper", -pMove, () => {
 				//now that nobody is seeing it, quick, change the text's content!
-				updatePlayerName('p1Wrapper', 'p1Name', 'p1Team', p1Name, p1Team);
+				updatePlayerName('p1Wrapper', 'p1Name', 'p1Team', player[1].name, player[1].tag);
 				//fade the name back in with a sick movement
 				fadeInMove("#p1Wrapper");
 			});
 		}
 
 		//player 1's character icon change
-		if (p1CharacterPrev != p1Character || p1SkinPrev != p1Skin) {
+		if (p1CharacterPrev != player[1].character || p1SkinPrev != player[1].skin) {
 			//fade out the image while also moving it because that always looks cool
 			fadeOutMove("#p1Character", -pCharMove, async () => {
 				//now that nobody can see it, lets change the image!
-				const charScale = await updateChar(p1Character, p1Skin, 'p1Character'); //will return scale
+				const charScale = await updateChar(player[1].character, player[1].skin, 'p1Character'); //will return scale
 				//and now, fade it in
 				fadeInChara("#p1Character", charScale);
 			});
-			p1CharacterPrev = p1Character;
-			p1SkinPrev = p1Skin;
+			p1CharacterPrev = player[1].character;
+			p1SkinPrev = player[1].skin;
 		}
 
 		//the [W] and [L] status for grand finals
-		if (p1wlPrev != p1WL) {
+		if (p1wlPrev != wl[1]) {
 			//move it away!
 			gsap.to("#wlP1", {y: -pMove, ease: "power1.in", duration: .5, onComplete: pwlMoved});
 			function pwlMoved() {
 				//change the thing!
-				updateWL(p1WL, "1");
+				updateWL(wl[1], "1");
 				//move it back!
 				gsap.to("#wlP1", {delay: .1, y: 0, ease: "power2.out", duration: .5});
 			}
-			p1wlPrev = p1WL;
+			p1wlPrev = wl[1];
 		}
 
 		//score check
-		if (p1ScorePrev != p1Score) {
-			updateScore('p1Score', p1Score, bestOf, "p1ScoreUp", p1Color, true);
-			p1ScorePrev = p1Score;
+		if (p1ScorePrev != score[1]) {
+			updateScore('p1Score', score[1], bestOf, "p1ScoreUp", color[1], true);
+			p1ScorePrev = score[1];
 		}
 
 		//change the player background colors
-		if (p1ColorPrev != p1Color) {
+		if (p1ColorPrev != color[1]) {
 			fadeOut('#p1Color', () => {
-				updateColor('p1Color', p1Color);
+				updateColor('p1Color', color[1]);
 				fadeIn('#p1Color');
 			})
-			p1ColorPrev = p1Color;
+			p1ColorPrev = color[1];
 		}
 
 		document.getElementById('borderP2').setAttribute('src', 'Resources/Overlay/Border ' + bestOf + '.png');
 
 		//check if the team has a logo we can place on the overlay
-		if (document.getElementById('p1Team').textContent != p1Team) {
+		if (document.getElementById('p1Team').textContent != player[1].tag) {
 			fadeOut("#teamLogoP1", () => {
-				updateTeamLogo("teamLogoP1", p1Team, "1");
+				updateTeamLogo("teamLogoP1", player[1].tag, "1");
 				fadeIn("#teamLogoP1");
 			});
 		}
 
 
 		//did you pay attention earlier? Well, this is the same as player 1!
-		if (document.getElementById('p2Name').textContent != p2Name ||
-			document.getElementById('p2Team').textContent != p2Team){
+		if (document.getElementById('p2Name').textContent != player[2].name ||
+			document.getElementById('p2Team').textContent != player[2].tag){
 			fadeOutMove("#p2Wrapper", pMove, () => {
-				updatePlayerName('p2Wrapper', 'p2Name', 'p2Team', p2Name, p2Team);
+				updatePlayerName('p2Wrapper', 'p2Name', 'p2Team', player[2].name, player[2].tag);
 				fadeInMove("#p2Wrapper");
 			});
 		}
 
-		if (p2CharacterPrev != p2Character || p2SkinPrev != p2Skin) {
+		if (p2CharacterPrev != player[2].character || p2SkinPrev != player[2].skin) {
 			fadeOutMove("#p2Character", -pCharMove, async () => {
-				const charScale = await updateChar(p2Character, p2Skin, 'p2Character'); //will return scale
+				const charScale = await updateChar(player[2].character, player[2].skin, 'p2Character'); //will return scale
 				fadeInChara("#p2Character", charScale);
 			});
-			p2CharacterPrev = p2Character;
-			p2SkinPrev = p2Skin;
+			p2CharacterPrev = player[2].character;
+			p2SkinPrev = player[2].skin;
 		}
 
-		if (p2wlPrev != p2WL) {
+		if (p2wlPrev != wl[2]) {
 			gsap.to("#wlP2", {y: -pMove, ease: "power1.in", duration: .5, onComplete: pwlMoved});
 			function pwlMoved() {
-				updateWL(p2WL, "2");
+				updateWL(wl[2], "2");
 				gsap.to("#wlP2", {delay: .1, y: 0, ease: "power2.out", duration: .5});
 			}
-			p2wlPrev = p2WL;
+			p2wlPrev = wl[2];
 		}
 
-		if (p2ScorePrev != p2Score) {
-			updateScore('p2Score', p2Score, bestOf, "p2ScoreUp", p2Color, true);
-			p2ScorePrev = p2Score;
+		if (p2ScorePrev != score[2]) {
+			updateScore('p2Score', score[2], bestOf, "p2ScoreUp", color[2], true);
+			p2ScorePrev = score[2];
 		}
 
-		if (p2ColorPrev != p2Color) {
+		if (p2ColorPrev != color[2]) {
 			fadeOut('#p2Color', () => {
-				updateColor('p2Color', p2Color);
+				updateColor('p2Color', color[2]);
 				fadeIn('#p2Color');
 			})
-			p2ColorPrev = p2Color;
+			p2ColorPrev = color[2];
 		}
 
-		if (document.getElementById('p2Team').textContent != p2Team) {
+		if (document.getElementById('p2Team').textContent != player[2].tag) {
 			fadeOut("#teamLogoP2", () => {
-				updateTeamLogo("teamLogoP2", p2Team, "2");
+				updateTeamLogo("teamLogoP2", player[2].tag, "2");
 				fadeIn("#teamLogoP2");
 			});
 		}
@@ -317,8 +339,8 @@ async function getData(scInfo) {
 		if (bestOfPrev != bestOf) {
 			updateBorder(bestOf); //update the border
 			//update the score ticks so they fit the bestOf border
-			updateScore('p1Score', p1Score, bestOf, "p1ScoreUp", p1Color, false);
-			updateScore('p2Score', p2Score, bestOf, "p2ScoreUp", p2Color, false);
+			updateScore('p1Score', score[1], bestOf, "p1ScoreUp", color[1], false);
+			updateScore('p2Score', score[2], bestOf, "p2ScoreUp", color[2], false);
 		}
 
 		
@@ -468,27 +490,10 @@ function getFontSize(textElement) {
 
 //so we can get the exact color used by the game!
 function getHexColor(color) {
-	switch (color) {
-		case "Red":
-			return "#ed1c24";
-		case "Blue":
-			return "#00b7ef";
-		case "Pink":
-			return "#ffa3b1";
-		case "Green":
-			return "#a8e61d";
-		case "NetGreen":
-			return "#42e564";
-		case "Purple":
-			return "#846ae9";
-		case "Magenta":
-			return "#ee1c8f";
-		case "Yellow":
-			return "#dc8c00";
-		case "CPU":
-			return "#808080";
-		default:
-			break;
+	for (let i = 0; i < colorList.length; i++) {
+		if (colorList[i].name == color) {
+			return colorList[i].hex;
+		}
 	}
 }
 
@@ -508,13 +513,27 @@ function getInfo() {
 	//i would gladly have used fetch, but OBS local files wont support that :(
 }
 
+//searches for the colors list json file
+function getColorInfo() {
+	return new Promise(function (resolve) {
+		const oReq = new XMLHttpRequest();
+		oReq.addEventListener("load", reqListener);
+		oReq.open("GET", 'Resources/Texts/Color Slots.json');
+		oReq.send();
+
+		function reqListener () {
+			resolve(JSON.parse(oReq.responseText))
+		}
+	})
+}
+
 //searches for a json file with character data
 function getCharInfo(pCharacter) {
 	return new Promise(function (resolve) {
 		const oReq = new XMLHttpRequest();
 		oReq.addEventListener("load", reqListener);
 		oReq.onerror = () => {resolve("notFound")}; //for obs local file browser sources
-		oReq.open("GET", 'Resources/Texts/Character Info/' + pCharacter + '.json');
+		oReq.open("GET", charPath + pCharacter + '/_Info.json');
 		oReq.send();
 
 		function reqListener () {
@@ -539,7 +558,7 @@ async function updateChar(pCharacter, pSkin, charID) {
 	})}
 
 	//change the image path depending on the character and skin
-	charEL.setAttribute('src', 'Resources/Characters/' + pCharacter + '/' + pSkin + '.png');
+	charEL.setAttribute('src', charPath + pCharacter + '/' + pSkin + '.png');
 
 	//get the character positions
 	const charInfo = await getCharInfo(pCharacter);

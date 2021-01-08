@@ -16,9 +16,16 @@ const twitterSize = '20px';
 //to store the current character info
 let p1CharInfo, p2CharInfo;
 
+//the characters image file path will change depending if they're workshop or not
+let charPath;
+const charPathBase = "Resources/Characters/";
+const charPathWork = "Resources/Characters/_Workshop/";
+
 //to avoid the code constantly running the same method over and over
 let p1CharacterPrev, p1SkinPrev, p1ColorPrev;
 let p2CharacterPrev, p2SkinPrev, p2ColorPrev;
+let prevWorkshop;
+
 
 //variables for the twitter/twitch constant change
 let socialInt1, socialInt2;
@@ -29,98 +36,101 @@ const socialInterval = 7000;
 let startup = true;
 
 
-window.onload = init;
-function init() {
-	async function mainLoop() {
-		const scInfo = await getInfo();
-		getData(scInfo);
-	}
-
-	mainLoop();
-	setInterval( () => { mainLoop() }, 500); //update interval
+/* script begin */
+async function mainLoop() {
+	const scInfo = await getInfo();
+	getData(scInfo);
 }
+
+mainLoop();
+setInterval( () => { mainLoop() }, 500); //update interval
 
 	
 async function getData(scInfo) {
-	const forceHD = scInfo['forceHD'];
 
-	const p1Name = scInfo['p1Name'];
-	const p1Team = scInfo['p1Team'];
-	const p1Color = scInfo['p1Color'];
-	const p1Character = scInfo['p1Character'];
-	let p1Skin = scInfo['p1Skin']; 
-	
-	const p2Name = scInfo['p2Name'];
-	const p2Team = scInfo['p2Team'];
-	const p2Color = scInfo['p2Color'];
-	const p2Character = scInfo['p2Character'];
-	let p2Skin = scInfo['p2Skin'];
+	const player = scInfo['player'];
+	const teamName = scInfo['teamName'];
+
+	const color = scInfo['color'];
+	const score = scInfo['score'];
+
+	const bestOf = scInfo['bestOf'];
+	const gamemode = scInfo['gamemode'];
 
 	const round = scInfo['round'];
 	const tournamentName = scInfo['tournamentName'];
 
-	const caster1 = scInfo['caster1Name'];
-	twitter1 = scInfo['caster1Twitter'];
-	twitch1 = scInfo['caster1Twitch'];
-	const caster2 = scInfo['caster2Name'];
-	twitter2 = scInfo['caster2Twitter'];
-	twitch2 = scInfo['caster2Twitch'];
+	const caster = scInfo['caster'];
+	
+	twitter1 = caster[1].twitter;
+	twitch1 = caster[1].twitch;
+	twitter2 = caster[2].twitter;
+	twitch2 = caster[2].twitch;
+
+	const workshop = scInfo['workshop'];
 
 	//check if we are forcing HD skins
-	if (forceHD) {
-		if (p1Skin.includes("LoA") && !scInfo['noLoAHD']) {
-			p1Skin = "LoA HD"
+	if (scInfo['forceHD']) {
+		if (player[1].skin.includes("LoA") && !scInfo['noLoAHD']) {
+			player[1].skin = "LoA HD"
 		} else {
-			p1Skin = "HD";
+			player[1].skin = "HD";
 		}
 
-		if (p2Skin.includes("LoA") && !scInfo['noLoAHD']) {
-			p2Skin = "LoA HD"
+		if (player[2].skin.includes("LoA") && !scInfo['noLoAHD']) {
+			player[2].skin = "LoA HD"
 		} else {
-			p2Skin = "HD";
+			player[2].skin = "HD";
 		}
 	}
 
 	//first, things that will happen only the first time the html loads
 	if (startup) {
-		//starting with the player 1 name
-		updatePlayerName('p1Wrapper', 'p1Name', 'p1Team', p1Name, p1Team);
+
+		//first things first, set the current char path
+		workshop ? charPath = charPathWork : charPath = charPathBase;
+		//save the current workshop status so we know when it changes next time
+		prevWorkshop = workshop;
+		
+
+		//let's set player 1's name
+		updatePlayerName('p1Wrapper', 'p1Name', 'p1Team', player[1].name, player[1].tag);
 		//fade in the player text
 		fadeIn("#p1Wrapper", introDelay+.15);
 
 		//same for player 2
-		updatePlayerName('p2Wrapper', 'p2Name', 'p2Team', p2Name, p2Team);
+		updatePlayerName('p2Wrapper', 'p2Name', 'p2Team', player[2].name, player[2].tag);
 		fadeIn("#p2Wrapper", introDelay+.15);
 
 
 		//set the character info for p1
-		p1CharInfo = await getCharInfo(p1Character);
+		p1CharInfo = await getCharInfo(player[1].character);
 		//set p1 character
-		updateChar(p1Character, p1Skin, p1Color, 'charP1', 'trailP1', p1CharInfo);
+		updateChar(player[1].character, player[1].skin, color[1], 'charP1', 'trailP1', p1CharInfo);
 		//move the character
 		initCharaFade("#charaP1", "#trailP1");
 		//save character info so we change them later if different
-		p1CharacterPrev = p1Character;
-		p1SkinPrev = p1Skin;
+		p1CharacterPrev = player[1].character;
+		p1SkinPrev = player[1].skin;
 
 		//same for p2
-		p2CharInfo = await getCharInfo(p2Character);
-		updateChar(p2Character, p2Skin, p2Color, 'charP2', 'trailP2', p2CharInfo);
+		p2CharInfo = await getCharInfo(player[2].character);
+		updateChar(player[2].character, player[2].skin, color[2], 'charP2', 'trailP2', p2CharInfo);
 		initCharaFade("#charaP2", "#trailP2");
-		p2CharacterPrev = p2Character;
-		p2SkinPrev = p2Skin;
+		p2CharacterPrev = player[2].character;
+		p2SkinPrev = player[2].skin;
 
 		
 		//set the character backgrounds
-		updateBG('vidBGP1', p1Character, p1Skin, p1CharInfo);
-		updateBG('vidBGP2', p2Character, p2Skin, p2CharInfo);
+		updateBG('vidBGP1', player[1].character, player[1].skin, p1CharInfo);
+		updateBG('vidBGP2', player[2].character, player[2].skin, p2CharInfo);
 
 
 		//set the colors
-		updateColor('colorBGP1', 'textBGP1', p1Color);
-		updateColor('colorBGP2', 'textBGP2', p2Color);
-		p1ColorPrev = p1Color;
-		p2ColorPrev = p2Color;
+		updateColor('colorBGP1', 'textBGP1', color[1]);
+		updateColor('colorBGP2', 'textBGP2', color[2]);
+		p1ColorPrev = color[1];
+		p2ColorPrev = color[2];
 
 
 		//set the round text
@@ -130,12 +140,12 @@ async function getData(scInfo) {
 		updateText("tournament", tournamentName, tournamentSize);
 
 		//set the caster info
-		updateText("caster1", caster1, casterSize);
-		updateSocialText("twitter1", twitter1, twitterSize, "twitter1Wrapper");
-		updateSocialText("twitch1", twitch1, twitterSize, "twitch1Wrapper");
-		updateText("caster2", caster2, casterSize);
-		updateSocialText("twitter2", twitter2, twitterSize, "twitter2Wrapper");
-		updateSocialText("twitch2", twitch2, twitterSize, "twitch2Wrapper");
+		updateText("caster1", caster[1].name, casterSize);
+		updateSocialText("twitter1", caster[1].twitter, twitterSize, "twitter1Wrapper");
+		updateSocialText("twitch1", caster[1].twitch, twitterSize, "twitch1Wrapper");
+		updateText("caster2", caster[2].name, casterSize);
+		updateSocialText("twitter2", caster[2].twitter, twitterSize, "twitter2Wrapper");
+		updateSocialText("twitch2", caster[2].twitch, twitterSize, "twitch2Wrapper");
 
 		//setup twitter/twitch change
 		socialChange1("twitter1Wrapper", "twitch1Wrapper");
@@ -164,95 +174,101 @@ async function getData(scInfo) {
 	//now things that will happen constantly
 	else {
 
-		//color change, this is up here before everything else so it doesnt change the
-		//trail to the next one if the character has changed, but it will change its color
-		if (p1ColorPrev != p1Color) {
-			updateColor('colorBGP1', 'textBGP1', p1Color);
-			colorTrail('trailP1', p1CharacterPrev, p1SkinPrev, p1Color, p1CharInfo);
-			p1ColorPrev = p1Color;
+		//start by setting the correct char path
+		if (prevWorkshop != workshop) {
+			workshop ? charPath = charPathWork : charPath = charPathBase;
+			prevWorkshop = workshop;
 		}
 
-		if (p2ColorPrev != p2Color) {
-			updateColor('colorBGP2', 'textBGP2', p2Color);
-			colorTrail('trailP2', p2CharacterPrev, p2SkinPrev, p2Color, p2CharInfo);
-			p2ColorPrev = p2Color;
+		//color change, this is up here before char/skin change so it doesnt change the
+		//trail to the next one if the character has changed, but it will change its color
+		if (p1ColorPrev != color[1]) {
+			updateColor('colorBGP1', 'textBGP1', color[1]);
+			colorTrail('trailP1', p1CharacterPrev, p1SkinPrev, color[1], p1CharInfo);
+			p1ColorPrev = color[1];
+		}
+
+		if (p2ColorPrev != color[2]) {
+			updateColor('colorBGP2', 'textBGP2', color[2]);
+			colorTrail('trailP2', p2CharacterPrev, p2SkinPrev, color[2], p2CharInfo);
+			p2ColorPrev = color[2];
 		}
 
 
 		//player 1 name change
-		if (document.getElementById('p1Name').textContent != p1Name ||
-			document.getElementById('p1Team').textContent != p1Team) {
+		if (document.getElementById('p1Name').textContent != player[1].name ||
+			document.getElementById('p1Team').textContent != player[1].tag) {
 			//fade out player 1 text
 			fadeOut("#p1Wrapper", () => {
 				//now that nobody is seeing it, change the text content!
-				updatePlayerName('p1Wrapper', 'p1Name', 'p1Team', p1Name, p1Team);
+				updatePlayerName('p1Wrapper', 'p1Name', 'p1Team', player[1].name, player[1].tag);
 				//and fade the name back in
 				fadeIn("#p1Wrapper", .2);
 			});
 		}
 
 		//same for player 2
-		if (document.getElementById('p2Name').textContent != p2Name ||
-			document.getElementById('p2Team').textContent != p2Team){
+		if (document.getElementById('p2Name').textContent != player[2].name ||
+			document.getElementById('p2Team').textContent != player[2].tag){
 			fadeOut("#p2Wrapper", () => {
-				updatePlayerName('p2Wrapper', 'p2Name', 'p2Team', p2Name, p2Team);
+				updatePlayerName('p2Wrapper', 'p2Name', 'p2Team', player[2].name, player[2].tag);
 				fadeIn("#p2Wrapper", .2);
 			});
 		}
 
 
 		//player 1 character, skin and background change
-		if (p1CharacterPrev != p1Character || p1SkinPrev != p1Skin) {
+		if (p1CharacterPrev != player[1].character || p1SkinPrev != player[1].skin) {
 
 			//if the character has changed, update the info
-			if (p1CharacterPrev != p1Character) {
-				p1CharInfo = await getCharInfo(p1Character);
+			if (p1CharacterPrev != player[1].character) {
+				p1CharInfo = await getCharInfo(player[1].character);
 			}
 
 			//move and fade out the character
 			charaFadeOut("#charaP1", () => {
 				//update the character image and trail, and also storing its scale for later
-				const charScale = updateChar(p1Character, p1Skin, p1Color, 'charP1', 'trailP1', p1CharInfo);
+				const charScale = updateChar(player[1].character, player[1].skin, color[1], 'charP1', 'trailP1', p1CharInfo);
 				//move and fade them back
 				charaFadeIn("#charaP1", "#trailP1", charScale);
 			});
 
 			//background change here!
-			if (bgChangeLogic(p1Skin, p1SkinPrev, p1Character, p1CharacterPrev)) {
+			if (bgChangeLogic(player[1].skin, p1SkinPrev, player[1].character, p1CharacterPrev)) {
 				//fade it out
 				fadeOut("#vidBGP1", () => {
 					//update the bg vid
-					updateBG('vidBGP1', p1Character, p1Skin, p1CharInfo);
+					updateBG('vidBGP1', player[1].character, player[1].skin, p1CharInfo);
 					//fade it back
 					fadeIn("#vidBGP1", .3, fadeInTime+.2);
 				}, fadeOutTime+.2);
 			};
 			
-			p1CharacterPrev = p1Character;
-			p1SkinPrev = p1Skin;
+			p1CharacterPrev = player[1].character;
+			p1SkinPrev = player[1].skin;
 		}
 
 		//same for player 2
-		if (p2CharacterPrev != p2Character || p2SkinPrev != p2Skin) {
+		if (p2CharacterPrev != player[2].character || p2SkinPrev != player[2].skin) {
 
-			if (p2CharacterPrev != p2Character) {
-				p2CharInfo = await getCharInfo(p2Character);
+			if (p2CharacterPrev != player[2].character) {
+				p2CharInfo = await getCharInfo(player[2].character);
 			}
 
 			charaFadeOut("#charaP2", () => {
-				const charScale = updateChar(p2Character, p2Skin, p2Color, 'charP2', 'trailP2', p2CharInfo);
+				const charScale = updateChar(player[2].character, player[2].skin, color[2], 'charP2', 'trailP2', p2CharInfo);
 				charaFadeIn("#charaP2", "#trailP2", charScale);
 			});
 			
-			if (bgChangeLogic(p2Skin, p2SkinPrev, p2Character, p2CharacterPrev)) {
+			if (bgChangeLogic(player[2].skin, p2SkinPrev, player[2].character, p2CharacterPrev)) {
 				fadeOut("#vidBGP2", () => {
-					updateBG('vidBGP2', p2Character, p2Skin, p2CharInfo);
+					updateBG('vidBGP2', player[2].character, player[2].skin, p2CharInfo);
 					fadeIn("#vidBGP2", .3, fadeInTime+.2);
 				}, fadeOutTime+.2);
 			};
 		
-			p2CharacterPrev = p2Character;
-			p2SkinPrev = p2Skin;
+			p2CharacterPrev = player[2].character;
+			p2SkinPrev = player[2].skin;
 		}
 
 
@@ -274,34 +290,34 @@ async function getData(scInfo) {
 
 
 		//update caster 1 info
-		if (document.getElementById('caster1').textContent != caster1){
+		if (document.getElementById('caster1').textContent != caster[1].name){
 			fadeOut("#caster1", () => {
-				updateText("caster1", caster1, casterSize);
+				updateText("caster1", caster[1].name, casterSize);
 				fadeIn("#caster1", .2);
 			});
 		}
 		//caster 1's twitter
-		if (document.getElementById('twitter1').textContent != twitter1){
-			updateSocial(twitter1, "twitter1", "twitter1Wrapper", twitch1, "twitch1Wrapper");
+		if (document.getElementById('twitter1').textContent != caster[1].twitter){
+			updateSocial(caster[1].twitter, "twitter1", "twitter1Wrapper", caster[1].twitch, "twitch1Wrapper");
 		}
 		//caster 2's twitch (same as above)
-		if (document.getElementById('twitch1').textContent != twitch1){
-			updateSocial(twitch1, "twitch1", "twitch1Wrapper", twitter1, "twitter1Wrapper");
+		if (document.getElementById('twitch1').textContent != caster[1].twitch){
+			updateSocial(caster[1].twitch, "twitch1", "twitch1Wrapper", caster[1].twitter, "twitter1Wrapper");
 		}
 
 		//caster 2, same as above
-		if (document.getElementById('caster2').textContent != caster2){
+		if (document.getElementById('caster2').textContent != caster[2].name){
 			fadeOut("#caster2", () => {
-				updateText("caster2", caster2, casterSize);
+				updateText("caster2", caster[2].name, casterSize);
 				fadeIn("#caster2", .2);
 			});
 		}
-		if (document.getElementById('twitter2').textContent != twitter2){
-			updateSocial(twitter2, "twitter2", "twitter2Wrapper", twitch2, "twitch2Wrapper");
+		if (document.getElementById('twitter2').textContent != caster[2].twitter){
+			updateSocial(caster[2].twitter, "twitter2", "twitter2Wrapper", caster[2].twitch, "twitch2Wrapper");
 		}
 
-		if (document.getElementById('twitch2').textContent != twitch2){
-			updateSocial(twitch2, "twitch2", "twitch2Wrapper", twitter2, "twitter2Wrapper");
+		if (document.getElementById('twitch2').textContent != caster[2].twitch){
+			updateSocial(caster[2].twitch, "twitch2", "twitch2Wrapper", caster[2].twitter, "twitter2Wrapper");
 		}
 	}
 }
@@ -569,7 +585,7 @@ function getCharInfo(pCharacter) {
 		const oReq = new XMLHttpRequest();
 		oReq.addEventListener("load", reqListener);
 		oReq.onerror = () => {resolve("notFound")}; //for obs local file browser sources
-		oReq.open("GET", 'Resources/Texts/Character Info/' + pCharacter + '.json');
+		oReq.open("GET", 'Resources/Characters/' + pCharacter + '/_Info.json');
 		oReq.send();
 
 		function reqListener () {
