@@ -328,6 +328,7 @@ function showNothing(itemEL) {
 	itemEL.setAttribute('src', 'Resources/Literally Nothing.png');
 }
 
+
 //color change
 function updateColor(gradID, textBGID, color) {
 	const gradEL = document.getElementById(gradID);
@@ -341,6 +342,7 @@ function updateColor(gradID, textBGID, color) {
 	textBGEL.setAttribute('src', 'Resources/Overlay/VS Screen/Text BG ' + color + '.png');
 	if (startup) {textBGEL.addEventListener("error", () => {showNothing(textBGEL)})}
 }
+
 
 //background change
 function updateBG(vidID, pCharacter, pSkin, charInfo) {
@@ -386,6 +388,7 @@ function bgChangeLogic(pSkin, pSkinPrev, pChar, pCharPrev) {
 		return true;
 	}
 }
+
 
 //the logic behind the twitter/twitch constant change
 function socialChange1(twitterWrapperID, twitchWrapperID) {
@@ -481,6 +484,7 @@ function updateSocial(mainSocial, mainText, mainWrapper, otherSocial, otherWrapp
 	});
 }
 
+
 //player text change
 function updatePlayerName(wrapperID, nameID, teamID, pName, pTeam) {
 	const nameEL = document.getElementById(nameID);
@@ -528,6 +532,7 @@ function getFontSize(textElement) {
 	return (parseFloat(textElement.style.fontSize.slice(0, -2)) * .90) + 'px';
 }
 
+
 //fade out
 function fadeOut(itemID, funct = console.log("Hola!"), dur = fadeOutTime) {
 	gsap.to(itemID, {opacity: 0, duration: dur, onComplete: funct});
@@ -563,6 +568,7 @@ function initCharaFade(charaID, trailID) {
 	gsap.to(trailID, {delay: introDelay+.15, x: -pCharMove, opacity: 1, ease: "power2.out", duration: fadeInTime+.1});
 }
 
+
 //searches for the main json file
 function getInfo() {
 	return new Promise(function (resolve) {
@@ -585,7 +591,7 @@ function getCharInfo(pCharacter) {
 		const oReq = new XMLHttpRequest();
 		oReq.addEventListener("load", reqListener);
 		oReq.onerror = () => {resolve("notFound")}; //for obs local file browser sources
-		oReq.open("GET", 'Resources/Characters/' + pCharacter + '/_Info.json');
+		oReq.open("GET", charPath + pCharacter + '/_Info.json');
 		oReq.send();
 
 		function reqListener () {
@@ -594,6 +600,7 @@ function getCharInfo(pCharacter) {
 		}
 	})
 }
+
 
 //character update!
 function updateChar(pCharacter, pSkin, color, charID, trailID, charInfo) {
@@ -610,7 +617,7 @@ function updateChar(pCharacter, pSkin, color, charID, trailID, charInfo) {
 			//simple check to see if we are updating P1 or P2
 			const pNum = charEL == document.getElementById("charP1") ? 1 : 2;
 
-			charEL.setAttribute('src', 'Resources/Characters/Random/P'+pNum+'.png');
+			charEL.setAttribute('src', charPathBase + 'Random/P'+pNum+'.png');
 		})
 		//trail will just show nothing
 		trailEL.addEventListener("error", () => {showNothing(trailEL)})
@@ -622,7 +629,7 @@ function updateChar(pCharacter, pSkin, color, charID, trailID, charInfo) {
 	}
 
 	//change the image path depending on the character and skin
-	charEL.setAttribute('src', 'Resources/Characters/' + pCharacter + '/' + pSkin + '.png');
+	charEL.setAttribute('src', charPath + pCharacter + '/' + pSkin + '.png');
 
 	//             x, y, scale
 	let charPos = [0, 0, 1];
@@ -632,12 +639,12 @@ function updateChar(pCharacter, pSkin, color, charID, trailID, charInfo) {
 			charPos[0] = charInfo.vsScreen[pSkin].x;
 			charPos[1] = charInfo.vsScreen[pSkin].y;
 			charPos[2] = charInfo.vsScreen[pSkin].scale;
-			trailEL.setAttribute('src', 'Resources/Trails/' + pCharacter + '/' + color + ' ' + pSkin + '.png');
+			trailEL.setAttribute('src', charPath + pCharacter + '/Trails/' + color + ' ' + pSkin + '.png');
 		} else { //if not, use a default position
 			charPos[0] = charInfo.vsScreen.neutral.x;
 			charPos[1] = charInfo.vsScreen.neutral.y;
 			charPos[2] = charInfo.vsScreen.neutral.scale;
-			trailEL.setAttribute('src', 'Resources/Trails/' + pCharacter + '/' + color + '.png');
+			trailEL.setAttribute('src', charPath + pCharacter + '/Trails/' + color + '.png');
 		}
 	} else { //if the character isnt on the database, set positions for the "?" image
 		//this condition is used just to position images well on both sides
@@ -647,7 +654,7 @@ function updateChar(pCharacter, pSkin, color, charID, trailID, charInfo) {
 			charPos[0] = -175;
 		}
 		charPos[1] = 150; charPos[2] = .8;
-		trailEL.setAttribute('src', 'Resources/Trails/' + pCharacter + '/' + color + '.png');
+		trailEL.setAttribute('src', charPath + pCharacter + '/Trails/' + color + '.png');
 	}
 
 	//to position the character
@@ -673,9 +680,9 @@ function colorTrail(trailID, pCharacter, pSkin, color, charInfo) {
 	const trailEL = document.getElementById(trailID);
 	if (charInfo != "notFound") {
 		if (charInfo.vsScreen[pSkin]) { //if the skin positions are not the default ones
-			trailEL.setAttribute('src', 'Resources/Trails/' + pCharacter + '/' + color + ' ' + pSkin + '.png');
+			trailEL.setAttribute('src', charPath + pCharacter + '/Trails/' + color + ' ' + pSkin + '.png');
 		} else {
-			trailEL.setAttribute('src', 'Resources/Trails/' + pCharacter + '/' + color + '.png');
+			trailEL.setAttribute('src', charPath + pCharacter + '/Trails/' + color + '.png');
 		}
 	}
 }
