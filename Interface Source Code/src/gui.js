@@ -381,7 +381,12 @@ function skinChange(list) {
     const currentChar = charLists[pNum-1].selectedOptions[0].text;
 
     //which skin is it?
-    const currentSkin = list.selectedOptions[0].text;
+    let currentSkin;
+    try { //this is necessary when reading from random, wich has no skins
+        currentSkin = list.selectedOptions[0].text;
+    } catch (error) {
+        currentSkin = undefined;
+    }
 
     //change the image with the current skin (if player 1 or 2)
     if (pNum < 3) {
@@ -723,7 +728,11 @@ function checkPlayerPreset() {
                     //actual image
                     const charImg = document.createElement('img');
                     charImg.className = "pfCharImg";
-                    charImg.setAttribute('src', charPath+'/'+char.character+'/'+char.skin+'.png');
+                    if (workshopCheck.checked) {
+                        charImg.setAttribute('src', charPath+'/_Workshop/'+char.character+'/'+char.skin+'.png');
+                    } else {
+                        charImg.setAttribute('src', charPath+'/'+char.character+'/'+char.skin+'.png');
+                    }
                     //we have to position it
                     positionChar(char.character, char.skin, charImg);
                     //and add it to the mask
@@ -744,7 +753,12 @@ function checkPlayerPreset() {
 async function positionChar(character, skin, charEL) {
 
     //get the character positions
-    const charInfo = getJson(charPath + "/" + character + "/_Info");
+    let charInfo;
+    if (workshopCheck.checked) {
+        charInfo = getJson(charPath + "/_Workshop/" + character + "/_Info");
+    } else {
+        charInfo = getJson(charPath + "/" + character + "/_Info");
+    }
 	
 	//             x, y, scale
 	let charPos = [0, 0, 1];
