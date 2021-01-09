@@ -58,7 +58,7 @@ async function getData(scInfo) {
 			//this vid is just the bars moving (todo: maybe do it through javascript?)
 			setTimeout(() => { 
 				const introVid = document.getElementById('introVid');
-				introVid.setAttribute('src', 'Resources/Webms/Intro.webm');
+				introVid.setAttribute('src', 'Resources/Overlay/Scoreboard/Intro.webm');
 				introVid.play();
 			}, 0); //if you need it to start later, change that 0 (and also update the introDelay)
 
@@ -276,8 +276,6 @@ async function getData(scInfo) {
 			p1ColorPrev = color[1];
 		}
 
-		document.getElementById('borderP2').setAttribute('src', 'Resources/Overlay/Border ' + bestOf + '.png');
-
 		//check if the team has a logo we can place on the overlay
 		if (document.getElementById('p1Team').textContent != player[1].tag) {
 			fadeOut("#teamLogoP1", () => {
@@ -366,7 +364,7 @@ function updateScore(scoreID, pScore, bestOf, scoreUpID, pColor, playAnim) {
 	if (playAnim) { //do we want to play the score up animation?
 		//depending on the "bestOf" and the color, change the clip
 		const scoreUpEL = document.getElementById(scoreUpID);
-		scoreUpEL.setAttribute('src', 'Resources/Overlay/Score/ScoreUp ' + bestOf + '/' + pColor + '.webm');
+		scoreUpEL.setAttribute('src', 'Resources/Overlay/Scoreboard/Score/ScoreUp ' + bestOf + '/' + pColor + '.webm');
 		scoreUpEL.play();
 		delay = 200; //add a bit of delay so the score change fits with the vid
 	}
@@ -374,7 +372,7 @@ function updateScore(scoreID, pScore, bestOf, scoreUpID, pColor, playAnim) {
 	//set timeout to the actual image change so it fits with the animation (if it played)
 	setTimeout(() => {
 		//change the image depending on the bestOf status and, of course, the current score
-		scoreEL.setAttribute('src', 'Resources/Overlay/Score/Win Tick ' + bestOf + ' ' + pScore + '.png')
+		scoreEL.setAttribute('src', 'Resources/Overlay/Scoreboard/Score/Win Tick ' + bestOf + ' ' + pScore + '.png')
 	}, delay);
 	//nothing will show if the score is set to 3 which is intended
 	if (startup) {scoreEL.addEventListener("error", () => {showNothing(scoreEL)})}
@@ -382,13 +380,13 @@ function updateScore(scoreID, pScore, bestOf, scoreUpID, pColor, playAnim) {
 
 function updateColor(colorID, pColor) {
 	const colorEL = document.getElementById(colorID);
-	colorEL.setAttribute('src', 'Resources/Overlay/Colors/' + pColor + '.png');
+	colorEL.setAttribute('src', 'Resources/Overlay/Scoreboard/Colors/' + pColor + '.png');
 	if (startup) {colorEL.addEventListener("error", () => {showNothing(colorEL)})}
 }
 
 function updateBorder(bestOf) {
-	document.getElementById('borderP1').setAttribute('src', 'Resources/Overlay/Border ' + bestOf + '.png');
-	document.getElementById('borderP2').setAttribute('src', 'Resources/Overlay/Border ' + bestOf + '.png');
+	document.getElementById('borderP1').setAttribute('src', 'Resources/Overlay/Scoreboard/Border ' + bestOf + '.png');
+	document.getElementById('borderP2').setAttribute('src', 'Resources/Overlay/Scoreboard/Border ' + bestOf + '.png');
 	bestOfPrev = bestOf
 }
 
@@ -459,9 +457,9 @@ function initCharaFade(charaID) {
 function updateWL(pWL, playerNum) {
 	const pWLEL = document.getElementById('wlP' + playerNum);
 	if (pWL == "W") {
-		pWLEL.setAttribute('src', 'Resources/Overlay/Winners P' + playerNum + '.png')
+		pWLEL.setAttribute('src', 'Resources/Overlay/Scoreboard/Winners P' + playerNum + '.png')
 	} else if (pWL == "L") {
-		pWLEL.setAttribute('src', 'Resources/Overlay/Losers P' + playerNum + '.png')
+		pWLEL.setAttribute('src', 'Resources/Overlay/Scoreboard/Losers P' + playerNum + '.png')
 	} else if (pWL == "Nada") {
 		pWLEL.setAttribute('src', 'Resources/Literally nothing.png')
 	}

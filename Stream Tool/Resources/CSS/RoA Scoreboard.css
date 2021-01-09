@@ -1,0 +1,223 @@
+@font-face {
+    font-family: "Deansgate";
+    src: url('../Fonts/DeansgateCondensed-Bold.ttf');
+}
+
+@font-face {
+    font-family: "Roboto";
+    src: url('../Fonts/Roboto-Bold.ttf');
+}
+
+@font-face {
+    font-family: "LemonMilk";
+    src: url('../Fonts/LEMONMILK-Medium.otf');
+}
+
+
+body {
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    background: transparent;
+    padding: 0px;
+    margin: 0px;
+    text-transform: uppercase;
+    color: white;
+    font-family: "Deansgate";
+}
+
+
+.scoreboardP1 {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}
+
+#p1CharaMask {
+    -webkit-mask-image: url("../Overlay/Scoreboard/Icon Mask.png");
+    width: 1920px;
+    height: 1080px;
+}
+
+.scoreboardP2 {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    transform: scaleX(-1);
+}
+
+.scoreboardP2Fixed {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+}
+
+#iHateMasks {
+    width: 1920px;
+    height: 1080px;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}
+
+#p2CharaMask {
+    -webkit-mask-image: url("../Overlay/Scoreboard/Icon Mask.png");
+    transform: scaleX(-1);
+    width: 1920px;
+    height: 1080px;
+}
+
+.pCharacter {
+    opacity: 0;
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+}
+
+
+.wrappers {
+    position: absolute;
+    width: 430px;
+    height: 54px;
+    line-height: 54px;
+    text-align: center;
+    top: 0px;
+    opacity: 0;
+}
+
+#p1Wrapper {
+    left: 158px;
+}
+
+#p2Wrapper {
+    right: 158px;
+}
+
+.teams {
+    color: lightgray;
+}
+
+
+#overlayRound {
+    opacity: 0;
+}
+
+#roundBG {
+    position: absolute;
+    top: 0px;
+}
+
+#round {
+    position: absolute;
+    width: 215px;
+    height: 34px;
+    left: 853px;
+    top: 914px;
+    line-height: 32px;
+    text-align: center;
+    font-family: "Roboto";
+}
+
+
+#introVid {
+    position: absolute;
+    top: 0px;
+}
+
+
+.pIntro {
+    position: absolute;
+    width: 500px;
+    height: 94px;
+    line-height: 74px;
+    bottom: 485px;
+    opacity: 0;
+    font-family: "LemonMilk";
+}
+
+#p1Intro {
+    text-align: right;
+    left: 355px;
+    text-shadow: 0px 0px 20px;
+}
+
+#p2Intro {
+    text-align: left;
+    right: 355px;
+    text-shadow: 0px 0px 20px;
+}
+
+
+.textIntro {
+    position: absolute;
+    text-align: center;
+    opacity: 0;
+}
+
+#midTextIntro {
+    width: 1100px;
+    height: 74px;
+    left: 410px;
+    bottom: 505px;
+    font-family: "LemonMilk";
+    line-height: 74px;
+    font-size: 110px;
+}
+
+#rtIntro {
+    line-height: 40px;
+    font-size: 48px;
+}
+
+#roundIntro {
+    left: 510px;
+    width: 900px;
+    height: 40px;
+    top: 406px;
+}
+
+#tNameIntro {
+    left: 510px;
+    width: 900px;
+    height: 40px;
+    bottom: 400px;
+}
+
+#introBG {
+    position: absolute;
+    width: 1920px;
+    height: 1080px;
+    top: 0px;
+    background-color: rgba(0, 0, 0, 0.50);
+}
+
+.blackBar {
+    position: absolute;
+    width: 1920px;
+    background-color: black;
+}
+
+#introTopBar {
+    height: 100px;
+    top: 0px;
+}
+
+#introBotBar {
+    height: 100px;
+    bottom: 0px;
+}
+
+#superCoolInterrogation {
+    position: absolute;
+    height: 74px;
+    right: 550px;
+    font-family: "LemonMilk";
+    line-height: 74px;
+    bottom: 505px;
+    font-size: 110px;
+    opacity: 0;
+}
+
+#overlayIntro {
+    opacity: 0;
+}
