@@ -658,9 +658,11 @@ function updateChar(pCharacter, pSkin, color, charID, trailID, charInfo) {
 	}
 
 	//to position the character
-	charEL.style.objectPosition =  charPos[0] + "px " + charPos[1] + "px";
+	charEL.style.left = charPos[0] + "px";
+	charEL.style.top = charPos[1] + "px";
 	charEL.style.transform = "scale(" + charPos[2] + ")";
-	trailEL.style.objectPosition =  charPos[0] + "px " + charPos[1] + "px";
+	trailEL.style.left = charPos[0] + "px";
+	trailEL.style.top = charPos[1] + "px";
 	trailEL.style.transform = "scale(" + charPos[2] + ")";
 
 	//to decide scalling

@@ -36,7 +36,7 @@ body {
 
 .mirrorP2 {
     position: absolute;
-    transform: rotateY(182deg);
+    transform: scaleX(-1);
     top: 0px;
     right: 0px;
 }
