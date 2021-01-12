@@ -623,11 +623,6 @@ function updateChar(pCharacter, pSkin, color, charID, trailID, charInfo) {
 		trailEL.addEventListener("error", () => {showNothing(trailEL)})
 	}
 
-	//if using an Alt skin, just use the normal version
-	if (pSkin.startsWith("Alt ")) {
-		pSkin = pSkin.substring(4); //removes "Alt " from string
-	}
-
 	//change the image path depending on the character and skin
 	charEL.setAttribute('src', charPath + pCharacter + '/' + pSkin + '.png');
 
@@ -649,11 +644,11 @@ function updateChar(pCharacter, pSkin, color, charID, trailID, charInfo) {
 	} else { //if the character isnt on the database, set positions for the "?" image
 		//this condition is used just to position images well on both sides
 		if (charEL == document.getElementById("charP1")) {
-			charPos[0] = -150;
+			charPos[0] = -475;
 		} else {
-			charPos[0] = -175;
+			charPos[0] = -500;
 		}
-		charPos[1] = 150; charPos[2] = .8;
+		charPos[1] = 0; charPos[2] = .8;
 		trailEL.setAttribute('src', charPath + pCharacter + '/Trails/' + color + '.png');
 	}
 

@@ -580,15 +580,16 @@ async function updateChar(pCharacter, pSkin, charID) {
 	} else { //if the character isnt on the database, set positions for the "?" image
 		//this condition is used just to position images well on both sides
 		if (charEL == document.getElementById("p1Character")) {
-			charPos[0] = 18;
+			charPos[0] = 2;
 		} else {
-			charPos[0] = 12;
+			charPos[0] = -7;
 		}
-		charPos[1] = 3; charPos[2] = 1.5;
+		charPos[1] = -9; charPos[2] = 1.25;
 	}
 	
 	//to position the character
-	charEL.style.objectPosition =  charPos[0] + "px " + charPos[1] + "px";
+	charEL.style.left = charPos[0] + "px";
+	charEL.style.top = charPos[1] + "px";
 	charEL.style.transform = "scale(" + charPos[2] + ")";
 
 	return charPos[2]; //we need this one to set scale keyframe when fading back
