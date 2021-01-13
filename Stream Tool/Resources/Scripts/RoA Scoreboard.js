@@ -14,6 +14,9 @@ const charPathWork = "Resources/Characters/_Workshop/";
 //color list will be stored here on startup
 let colorList;
 
+//simple bool to know if main menu renders will be used
+let mainMenu = false;
+
 //to avoid the code constantly running the same method over and over
 let p1CharacterPrev, p1SkinPrev, p1ScorePrev, p1ColorPrev, p1wlPrev;
 let p2CharacterPrev, p2SkinPrev, p2ScorePrev, p2ColorPrev, p2wlPrev;
@@ -44,6 +47,8 @@ async function getData(scInfo) {
 	const round = scInfo['round'];
 
 	const workshop = scInfo['workshop'];
+
+	mainMenu = scInfo['forceMM'];
 
 
 	//first, things that will happen only the first time the html loads
@@ -556,7 +561,12 @@ async function updateChar(pCharacter, pSkin, charID) {
 	})}
 
 	//change the image path depending on the character and skin
-	charEL.setAttribute('src', charPath + pCharacter + '/' + pSkin + '.png');
+	if (mainMenu) {
+		//((main menu renders set to default till all skin pngs are done))
+		charEL.setAttribute('src', charPath + pCharacter + '/MainMenu/Default.png');
+	} else {
+		charEL.setAttribute('src', charPath + pCharacter + '/' + pSkin + '.png');
+	}
 
 	//get the character positions
 	const charInfo = await getCharInfo(pCharacter);
@@ -568,10 +578,10 @@ async function updateChar(pCharacter, pSkin, charID) {
 			charPos[0] = charInfo.scoreboard[pSkin].x;
 			charPos[1] = charInfo.scoreboard[pSkin].y;
 			charPos[2] = charInfo.scoreboard[pSkin].scale;
-		} else if (pSkin.startsWith("Alt ")) { //for a group of imgs that have a specific position
-			charPos[0] = charInfo.scoreboard.alt.x;
-			charPos[1] = charInfo.scoreboard.alt.y;
-			charPos[2] = charInfo.scoreboard.alt.scale;
+		} else if (mainMenu) { //for the main menu renders, or some extras for workshop characters
+			charPos[0] = charInfo.scoreboard.mainMenu.x;
+			charPos[1] = charInfo.scoreboard.mainMenu.y;
+			charPos[2] = charInfo.scoreboard.mainMenu.scale;
 		} else { //if none of the above, use a default position
 			charPos[0] = charInfo.scoreboard.neutral.x;
 			charPos[1] = charInfo.scoreboard.neutral.y;
