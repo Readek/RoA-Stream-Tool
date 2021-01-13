@@ -590,11 +590,12 @@ async function updateChar(pCharacter, pSkin, charID) {
 	} else { //if the character isnt on the database, set positions for the "?" image
 		//this condition is used just to position images well on both sides
 		if (charEL == document.getElementById("p1Character")) {
-			charPos[0] = 2;
+			charPos[0] = 29;
 		} else {
-			charPos[0] = -7;
+			charPos[0] = 15;
 		}
-		charPos[1] = -9; charPos[2] = 1.25;
+		charPos[1] = -14;
+		charPos[2] = 1.5;
 	}
 	
 	//to position the character

@@ -5,13 +5,13 @@
       "name": "Player 1",
       "tag": "",
       "character": "Elliana",
-      "skin": "Normal"
+      "skin": "Default"
     },
     {
       "name": "Player 2",
       "tag": "Tag",
       "character": "Kragg",
-      "skin": "Normal"
+      "skin": "Default"
     },
     {
       "name": "Player 3",
