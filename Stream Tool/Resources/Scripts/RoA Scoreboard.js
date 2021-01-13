@@ -14,13 +14,10 @@ const charPathWork = "Resources/Characters/_Workshop/";
 //color list will be stored here on startup
 let colorList;
 
-//simple bool to know if main menu renders will be used
-let mainMenu = false;
-
 //to avoid the code constantly running the same method over and over
 let p1CharacterPrev, p1SkinPrev, p1ScorePrev, p1ColorPrev, p1wlPrev;
 let p2CharacterPrev, p2SkinPrev, p2ScorePrev, p2ColorPrev, p2wlPrev;
-let bestOfPrev, prevWorkshop;
+let bestOfPrev, workshopPrev, mainMenuPrev;
 
 let startup = true;
 
@@ -48,7 +45,7 @@ async function getData(scInfo) {
 
 	const workshop = scInfo['workshop'];
 
-	mainMenu = scInfo['forceMM'];
+	const mainMenu = scInfo['forceMM'];
 
 
 	//first, things that will happen only the first time the html loads
@@ -144,7 +141,7 @@ async function getData(scInfo) {
 		//finally out of the intro, first things first, set the current char path
 		workshop ? charPath = charPathWork : charPath = charPathBase;
 		//save the current workshop status so we know when it changes next time
-		prevWorkshop = workshop;
+		workshopPrev = workshop;
 		
 		//now lets start with player 1 first, update player name and team name texts
 		updatePlayerName('p1Wrapper', 'p1Name', 'p1Team', player[1].name, player[1].tag);
@@ -154,7 +151,7 @@ async function getData(scInfo) {
 			{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}); //to
 
 		//set the character image for the player
-		await updateChar(player[1].character, player[1].skin, 'p1Character');
+		await updateChar(player[1].character, player[1].skin, 'p1Character', mainMenu);
 		//when the image finishes loading, fade-in-move the character icon to the overlay
 		initCharaFade("#p1Character");
 		//save the character/skin so we run the character change code only when this doesnt equal to the next
@@ -184,7 +181,7 @@ async function getData(scInfo) {
 			{x: pMove},
 			{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 
-		await updateChar(player[2].character, player[2].skin, 'p2Character');
+		await updateChar(player[2].character, player[2].skin, 'p2Character', mainMenu);
 		initCharaFade("#p2Character");
 		p2CharacterPrev = player[2].character;
 		p2SkinPrev = player[2].skin;
@@ -212,8 +209,14 @@ async function getData(scInfo) {
 		updateTeamLogo("teamLogoP1", player[1].tag, "1");
 		updateTeamLogo("teamLogoP2", player[2].tag, "2");
 
+
 		//dont forget to update the border if its Bo3 or Bo5!
 		updateBorder(bestOf);
+
+
+		//set this for later
+		mainMenuPrev = mainMenu;
+
 
 		startup = false; //next time we run this function, it will skip all we just did
 	}
@@ -222,9 +225,9 @@ async function getData(scInfo) {
 	else {
 
 		//start by setting the correct char path
-		if (prevWorkshop != workshop) {
+		if (workshopPrev != workshop) {
 			workshop ? charPath = charPathWork : charPath = charPathBase;
-			prevWorkshop = workshop;
+			workshopPrev = workshop;
 		}
 
 
@@ -241,16 +244,17 @@ async function getData(scInfo) {
 		}
 
 		//player 1's character icon change
-		if (p1CharacterPrev != player[1].character || p1SkinPrev != player[1].skin) {
+		if (p1CharacterPrev != player[1].character || p1SkinPrev != player[1].skin || mainMenuPrev != mainMenu) {
 			//fade out the image while also moving it because that always looks cool
 			fadeOutMove("#p1Character", -pCharMove, async () => {
 				//now that nobody can see it, lets change the image!
-				const charScale = await updateChar(player[1].character, player[1].skin, 'p1Character'); //will return scale
+				const charScale = await updateChar(player[1].character, player[1].skin, 'p1Character', mainMenu); //will return scale
 				//and now, fade it in
 				fadeInChara("#p1Character", charScale);
 			});
 			p1CharacterPrev = player[1].character;
 			p1SkinPrev = player[1].skin;
+			mainMenuPrev = mainMenu;
 		}
 
 		//the [W] and [L] status for grand finals
@@ -299,13 +303,14 @@ async function getData(scInfo) {
 			});
 		}
 
-		if (p2CharacterPrev != player[2].character || p2SkinPrev != player[2].skin) {
+		if (p2CharacterPrev != player[2].character || p2SkinPrev != player[2].skin || mainMenuPrev != mainMenu) {
 			fadeOutMove("#p2Character", -pCharMove, async () => {
-				const charScale = await updateChar(player[2].character, player[2].skin, 'p2Character'); //will return scale
+				const charScale = await updateChar(player[2].character, player[2].skin, 'p2Character', mainMenu); //will return scale
 				fadeInChara("#p2Character", charScale);
 			});
 			p2CharacterPrev = player[2].character;
 			p2SkinPrev = player[2].skin;
+			mainMenuPrev = mainMenu;
 		}
 
 		if (p2wlPrev != wl[2]) {
@@ -547,7 +552,7 @@ function getCharInfo(pCharacter) {
 }
 
 //now the complicated "change character image" function!
-async function updateChar(pCharacter, pSkin, charID) {
+async function updateChar(pCharacter, pSkin, charID, mainMenu) {
 
 	//store so code looks cleaner later
 	const charEL = document.getElementById(charID);
@@ -561,12 +566,7 @@ async function updateChar(pCharacter, pSkin, charID) {
 	})}
 
 	//change the image path depending on the character and skin
-	if (mainMenu) {
-		//((main menu renders set to default till all skin pngs are done))
-		charEL.setAttribute('src', charPath + pCharacter + '/MainMenu/Default.png');
-	} else {
-		charEL.setAttribute('src', charPath + pCharacter + '/' + pSkin + '.png');
-	}
+	charEL.setAttribute('src', charPath + pCharacter + '/' + pSkin + '.png');
 
 	//get the character positions
 	const charInfo = await getCharInfo(pCharacter);
@@ -578,10 +578,12 @@ async function updateChar(pCharacter, pSkin, charID) {
 			charPos[0] = charInfo.scoreboard[pSkin].x;
 			charPos[1] = charInfo.scoreboard[pSkin].y;
 			charPos[2] = charInfo.scoreboard[pSkin].scale;
-		} else if (mainMenu) { //for the main menu renders, or some extras for workshop characters
+		} else if (mainMenu && charInfo.scoreboard.mainMenu) { //for the main menu renders, or some extras for workshop characters
 			charPos[0] = charInfo.scoreboard.mainMenu.x;
 			charPos[1] = charInfo.scoreboard.mainMenu.y;
 			charPos[2] = charInfo.scoreboard.mainMenu.scale;
+			//((main menu renders set to default till all skin pngs are done))
+			charEL.setAttribute('src', charPath + pCharacter + '/MainMenu/Default.png');
 		} else { //if none of the above, use a default position
 			charPos[0] = charInfo.scoreboard.neutral.x;
 			charPos[1] = charInfo.scoreboard.neutral.y;
