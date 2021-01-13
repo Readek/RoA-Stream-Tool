@@ -69,9 +69,9 @@ body {
 
 .pCharacter {
     opacity: 0;
-    width: 150px;
-    height: 90px;
-    object-fit: contain;
+    width: 100px;
+    height: 100px;
+    object-fit: scale-down;
     position: absolute;
 }
 
