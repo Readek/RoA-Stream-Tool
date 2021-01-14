@@ -254,7 +254,6 @@ async function getData(scInfo) {
 			});
 			p1CharacterPrev = player[1].character;
 			p1SkinPrev = player[1].skin;
-			mainMenuPrev = mainMenu;
 		}
 
 		//the [W] and [L] status for grand finals
@@ -310,7 +309,6 @@ async function getData(scInfo) {
 			});
 			p2CharacterPrev = player[2].character;
 			p2SkinPrev = player[2].skin;
-			mainMenuPrev = mainMenu;
 		}
 
 		if (p2wlPrev != wl[2]) {
@@ -341,6 +339,10 @@ async function getData(scInfo) {
 				fadeIn("#teamLogoP2");
 			});
 		}
+
+
+		//we place this one here so both characters can be updated in one go
+		mainMenuPrev = mainMenu;
 
 
 		//change border depending of the Best Of status

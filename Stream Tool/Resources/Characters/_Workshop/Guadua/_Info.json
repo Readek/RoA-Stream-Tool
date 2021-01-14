@@ -1,6 +1,6 @@
 {
     "skinList": [
-        "Normal",
+        "Default",
         "Blue",
         "Red",
         "Yellow",
@@ -10,15 +10,15 @@
     ],
     "scoreboard": {
         "neutral": {
-            "x": -20,
-            "y": 19,
+            "x": -70,
+            "y": 60,
             "scale": 3.5
         }
     },
     "vsScreen": {
         "neutral": {
-            "x": -240,
-            "y": 60,
+            "x": -705,
+            "y": 65,
             "scale": 1.1
         }
     }
