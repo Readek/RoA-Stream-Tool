@@ -22,21 +22,26 @@
     ],
     "scoreboard": {
         "neutral": {
-            "x": 0,
-            "y": 18,
+            "x": -20,
+            "y": 58,
             "scale": 3.2,
             "comment": "Also works for HD"
+        },
+        "mainMenu": {
+            "x": 16,
+            "y": 0,
+            "scale": 1.5
         }
     },
     "vsScreen": {
         "neutral": {
-            "x": -5,
-            "y": 100,
+            "x": -590,
+            "y": 120,
             "scale": 1.15
         },
         "HD": {
-            "x": -15,
-            "y":100,
+            "x": -570,
+            "y": 120,
             "scale": 1.15
         }
     },

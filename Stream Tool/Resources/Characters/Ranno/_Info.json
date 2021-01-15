@@ -25,41 +25,46 @@
     ],
     "scoreboard": {
         "neutral": {
-            "x": 13,
-            "y": 22,
+            "x": 0,
+            "y": 110,
             "scale": 5
         },
+        "mainMenu": {
+            "x": 50,
+            "y": 40,
+            "scale": 2.2
+        },
         "LoA HD": {
-            "x": 25,
-            "y": 39,
+            "x": -3,
+            "y": 185,
             "scale": 4.7
         },
         "HD": {
             "x": 9,
-            "y": 26,
+            "y": 118,
             "scale": 4.5
         }
     },
     "vsScreen": {
         "neutral": {
-            "x": 140,
-            "y": 145,
+            "x": -545,
+            "y": 190,
             "scale": 1.3
         },
         "LoA HD": {
-            "x": 270,
-            "y": 180,
+            "x": -510,
+            "y": 220,
             "scale": 1.2
         },
         "Tuxedo": {
-            "x": 140,
-            "y": 145,
+            "x": -545,
+            "y": 190,
             "scale": 1.3,
             "comment": "same as neutral, just here so trail shows up"
         },
         "HD": {
-            "x": 120,
-            "y": 155,
+            "x": -490,
+            "y": 200,
             "scale": 1.27
         }
     },
