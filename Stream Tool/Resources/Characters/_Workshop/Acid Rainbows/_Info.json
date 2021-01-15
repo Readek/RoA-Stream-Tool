@@ -1,0 +1,41 @@
+{
+    "skinList": [
+        "Default",
+        "прекрасно",
+        "Passion",
+        "Verdant",
+        "Usher",
+        "False Mado",
+        "SHIfT JIS",
+        "テンゴクノトウ",
+        "Lime",
+        "Cannonball",
+        "Faux-Flowlight",
+        "Autumn",
+        "Night Walker",
+        "Feribows",
+        "Repentance",
+        "TWILIGHT"
+    ],
+    "scoreboard": {
+        "neutral": {
+            "x": -15,
+            "y": 135,
+            "scale": 4.75
+        }
+    },
+    "vsScreen": {
+        "neutral": {
+            "x": -530,
+            "y": 220,
+            "scale": 1.2
+        }
+    },
+    "gui": {
+        "neutral": {
+            "x": -7,
+            "y": 73,
+            "scale": 6
+        }
+    }
+}
