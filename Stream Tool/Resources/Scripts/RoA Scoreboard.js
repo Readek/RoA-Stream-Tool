@@ -117,7 +117,7 @@ async function getData(scInfo) {
 						midTextEL.textContent = "Final Game";
 						
 						//if GF, we dont know if its the last game or not, right?
-						if (round.toLocaleUpperCase() == "Grand Finals".toLocaleUpperCase() && !(p1WL == "L" && p2WL == "L")) {
+						if (round.toLocaleUpperCase() == "Grand Finals".toLocaleUpperCase() && !(wl[1] == "L" && wl[2] == "L")) {
 							gsap.to("#superCoolInterrogation", {delay: introDelay+.5, opacity: 1, ease: "power2.out", duration: 1.5});
 						}
 
