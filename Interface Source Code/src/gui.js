@@ -1220,6 +1220,15 @@ function workshopChange() {
         skinLists[i].style.display = "none";
     }
 
+    //change the Main Menu button for a CSS button
+    if (this.checked) {
+        document.getElementById('mmText').innerText = "CSS renders in Scoreboard"
+        document.getElementById('mmText').title = "Forces showing the Character Select Screen\nrenders (if any) on 'RoA Scoreboard.html'."
+    } else {
+        document.getElementById('mmText').innerText = "Main Menu renders in Scoreboard"
+        document.getElementById('mmText').title = "Forces showing the 'Main Menu' character\nrenders on 'RoA Scoreboard.html'."
+    }
+
 }
 
 //forces the W/L buttons to appear, or unforces them
@@ -1276,27 +1285,20 @@ function writeScoreboard() {
 
     //this is what's going to be in the json file
     const scoreboardJson = {
-        player: [
-            null, //dont kill me for this
-            //more lines will be added below
-        ],
+        player: [], //more lines will be added below
         teamName: [
-            null,
             tNameInps[0].value,
             tNameInps[1].value
         ],
         color: [
-            null,
             colorL,
             colorR
         ],
         score: [
-            null,
             checkScore(p1Win1, p1Win2, p1Win3),
             checkScore(p2Win1, p2Win2, p2Win3)
         ],
         wl: [
-            null,
             currentP1WL,
             currentP2WL,
         ],
@@ -1304,9 +1306,7 @@ function writeScoreboard() {
         gamemode: gamemode,
         round: roundInp.value,
         tournamentName: tournamentInp.value,
-        caster: [
-            null,
-        ],
+        caster: [],
         allowIntro: document.getElementById('allowIntro').checked,
         workshop: workshopCheck.checked,
         forceHD: document.getElementById('forceHD').checked,

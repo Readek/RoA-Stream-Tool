@@ -1,6 +1,5 @@
 {
   "player": [
-    null,
     {
       "name": "Player 1",
       "tag": "",
@@ -27,22 +26,18 @@
     }
   ],
   "teamName": [
-    null,
     "Team 1 Name",
     "Team 2 Name"
   ],
   "color": [
-    null,
     "Red",
     "Blue"
   ],
   "score": [
-    null,
     1,
     2
   ],
   "wl": [
-    null,
     "Nada",
     "Nada"
   ],
@@ -51,7 +46,6 @@
   "round": "Winners Finals",
   "tournamentName": "A Tournament #123",
   "caster": [
-    null,
     {
       "name": "Caster 1",
       "twitter": "Twitter 1",

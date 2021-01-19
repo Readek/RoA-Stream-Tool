@@ -7,14 +7,14 @@ const introDelay = .5; //all animations will get this delay when the html loads 
 
 //max text sizes (used when resizing back)
 const playerSize = '90px';
-const teamSize = '50px';
+const tagSize = '50px';
 const roundSize = '38px';
 const tournamentSize = '28px';
 const casterSize = '25px';
 const twitterSize = '20px';
 
 //to store the current character info
-let p1CharInfo, p2CharInfo;
+const pCharInfo = [];
 
 //the characters image file path will change depending if they're workshop or not
 let charPath;
@@ -22,10 +22,8 @@ const charPathBase = "Resources/Characters/";
 const charPathWork = "Resources/Characters/_Workshop/";
 
 //to avoid the code constantly running the same method over and over
-let p1CharacterPrev, p1SkinPrev, p1ColorPrev;
-let p2CharacterPrev, p2SkinPrev, p2ColorPrev;
+const pCharPrev = [], pSkinPrev = [], colorPrev = [];
 let prevWorkshop;
-
 
 //variables for the twitter/twitch constant change
 let socialInt1, socialInt2;
@@ -33,7 +31,30 @@ let twitter1, twitch1, twitter2, twitch2;
 let socialSwitch = true; //true = twitter, false = twitch
 const socialInterval = 7000;
 
+//to consider how many loops will we do
+const maxPlayers = 2; //will change when doubles comes
+const maxSides = 2;
+
 let startup = true;
+
+
+//next, global variables for the html elements
+const pWrapper = document.getElementsByClassName("wrappers");
+const pTag = document.getElementsByClassName("tag");
+const pName = document.getElementsByClassName("name");
+const pChara = document.getElementsByClassName("chara");
+const pChar = document.getElementsByClassName("char");
+const pTrail = document.getElementsByClassName("trail");
+const pBG = document.getElementsByClassName("bgVid");
+const colorBG = document.getElementsByClassName("colorBG");
+const textBG = document.getElementsByClassName("textBG");
+const roundEL = document.getElementById("round");
+const tournamentEL = document.getElementById("tournament");
+const casterEL = document.getElementsByClassName("caster");
+const twitterEL = document.getElementsByClassName("twitter");
+const twitterWrEL = document.getElementsByClassName("twitterWrapper");
+const twitchEL = document.getElementsByClassName("twitch");
+const twitchWrEL = document.getElementsByClassName("twitchWrapper");
 
 
 /* script begin */
@@ -49,38 +70,37 @@ setInterval( () => { mainLoop() }, 500); //update interval
 async function getData(scInfo) {
 
 	const player = scInfo['player'];
-	const teamName = scInfo['teamName'];
+	//const teamName = scInfo['teamName'];
 
 	const color = scInfo['color'];
-	const score = scInfo['score'];
+	//const score = scInfo['score'];
 
-	const bestOf = scInfo['bestOf'];
-	const gamemode = scInfo['gamemode'];
+	//const bestOf = scInfo['bestOf'];
+	//const gamemode = scInfo['gamemode'];
 
 	const round = scInfo['round'];
 	const tournamentName = scInfo['tournamentName'];
 
 	const caster = scInfo['caster'];
 	
-	twitter1 = caster[1].twitter;
-	twitch1 = caster[1].twitch;
-	twitter2 = caster[2].twitter;
-	twitch2 = caster[2].twitch;
+	twitter1 = caster[0].twitter;
+	twitch1 = caster[0].twitch;
+	twitter2 = caster[1].twitter;
+	twitch2 = caster[1].twitch;
 
 	const workshop = scInfo['workshop'];
 
 	//check if we are forcing HD skins
 	if (scInfo['forceHD']) {
-		if (player[1].skin.includes("LoA") && !scInfo['noLoAHD']) {
-			player[1].skin = "LoA HD"
-		} else {
-			player[1].skin = "HD";
-		}
-
-		if (player[2].skin.includes("LoA") && !scInfo['noLoAHD']) {
-			player[2].skin = "LoA HD"
-		} else {
-			player[2].skin = "HD";
+		for (let i = 0; i < maxPlayers; i++) {
+			
+			//check if we dont want to show the LoA renders
+			if (player[i].skin.includes("LoA") && !scInfo['noLoAHD']) {
+				player[i].skin = "LoA HD";
+			} else {
+				player[i].skin = "HD";
+			}
+			
 		}
 	}
 
@@ -93,72 +113,76 @@ async function getData(scInfo) {
 		prevWorkshop = workshop;
 		
 
-		//let's set player 1's name
-		updatePlayerName('p1Wrapper', 'p1Name', 'p1Team', player[1].name, player[1].tag);
-		//fade in the player text
-		fadeIn("#p1Wrapper", introDelay+.15);
+		// these fors will run for each available player
+		// for now, lets start simple with the player texts
+		for (let i = 0; i < maxPlayers; i++) {
 
-		//same for player 2
-		updatePlayerName('p2Wrapper', 'p2Name', 'p2Team', player[2].name, player[2].tag);
-		fadeIn("#p2Wrapper", introDelay+.15);
+			//set the player's name & tag 
+			updatePlayerName(i, player[i].name, player[i].tag);
+
+			//fade in the player text
+			fadeIn(pWrapper[i], introDelay+.15);
+
+		}
 
 
-		//set the character info for p1
-		p1CharInfo = await getCharInfo(player[1].character);
-		//set p1 character
-		updateChar(player[1].character, player[1].skin, color[1], 'charP1', 'trailP1', p1CharInfo);
-		//move the character
-		initCharaFade("#charaP1", "#trailP1");
-		//save character info so we change them later if different
-		p1CharacterPrev = player[1].character;
-		p1SkinPrev = player[1].skin;
+		// time for the characters
+		for (let i = 0; i < maxPlayers; i++) {
 
-		//same for p2
-		p2CharInfo = await getCharInfo(player[2].character);
-		updateChar(player[2].character, player[2].skin, color[2], 'charP2', 'trailP2', p2CharInfo);
-		initCharaFade("#charaP2", "#trailP2");
-		p2CharacterPrev = player[2].character;
-		p2SkinPrev = player[2].skin;
+			//get the character positions for the player
+			pCharInfo[i] = await getCharInfo(player[i].character);
+
+			//change the player's character image, and position it
+			updateChar(player[i].character, player[i].skin, color[i], i, pCharInfo[i])
+
+			//fade in that character
+			initCharaFade(pChara[i], pTrail[i]);
+
+			//save character info so we change them later if different
+			pCharPrev[i] = player[i].character;
+			pSkinPrev[i] = player[i].skin;
+
+		}
 
 		
 		//set the character backgrounds
-		updateBG('vidBGP1', player[1].character, player[1].skin, p1CharInfo);
-		updateBG('vidBGP2', player[2].character, player[2].skin, p2CharInfo);
+		for (let i = 0; i < maxPlayers; i++) {
+			updateBG(pBG[i], player[i].character, player[i].skin, pCharInfo[i]);	
+		}
 
 
 		//set the colors
-		updateColor('colorBGP1', 'textBGP1', color[1]);
-		updateColor('colorBGP2', 'textBGP2', color[2]);
-		p1ColorPrev = color[1];
-		p2ColorPrev = color[2];
+		for (let i = 0; i < maxSides; i++) {
+			updateColor(colorBG[i], textBG[i], color[i]);
+			colorPrev[i] = color[i];	
+		}
 
 
 		//set the round text
-		updateText("round", round, roundSize);
-
+		updateText(roundEL, round, roundSize);
 		//set the tournament text
-		updateText("tournament", tournamentName, tournamentSize);
+		updateText(tournamentEL, tournamentName, tournamentSize);
+
 
 		//set the caster info
-		updateText("caster1", caster[1].name, casterSize);
-		updateSocialText("twitter1", caster[1].twitter, twitterSize, "twitter1Wrapper");
-		updateSocialText("twitch1", caster[1].twitch, twitterSize, "twitch1Wrapper");
-		updateText("caster2", caster[2].name, casterSize);
-		updateSocialText("twitter2", caster[2].twitter, twitterSize, "twitter2Wrapper");
-		updateSocialText("twitch2", caster[2].twitch, twitterSize, "twitch2Wrapper");
+		for (let i = 0; i < casterEL.length; i++) {
+			updateText(casterEL[i], caster[i].name, casterSize);
+			updateSocialText(twitterEL[i], caster[i].twitter, twitterSize, twitterWrEL[i]);
+			updateSocialText(twitchEL[i], caster[i].twitch, twitterSize, twitchWrEL[i]);
+		
+			//setup twitter/twitch change
+			socialChange1(twitterWrEL[i], twitchWrEL[i]);
+		}
 
-		//setup twitter/twitch change
-		socialChange1("twitter1Wrapper", "twitch1Wrapper");
-		socialChange2("twitter2Wrapper", "twitch2Wrapper");
 		//set an interval to keep changing the names
 		socialInt1 = setInterval( () => {
-			socialChange1("twitter1Wrapper", "twitch1Wrapper");
+			socialChange1(twitterWrEL[0], twitchWrEL[0]);
 		}, socialInterval);
 		socialInt2 = setInterval( () => {
-			socialChange2("twitter2Wrapper", "twitch2Wrapper");
+			socialChange2(twitterWrEL[1], twitchWrEL[1]);
 		}, socialInterval);
 
-		//keep changing this boolean for the previous intervals ()
+		//keep changing this boolean for the previous intervals
 		setInterval(() => {
 			if (socialSwitch) { //true = twitter, false = twitch
 				socialSwitch = false;
@@ -180,173 +204,130 @@ async function getData(scInfo) {
 			prevWorkshop = workshop;
 		}
 
+
 		//color change, this is up here before char/skin change so it doesnt change the
 		//trail to the next one if the character has changed, but it will change its color
-		if (p1ColorPrev != color[1]) {
-			updateColor('colorBGP1', 'textBGP1', color[1]);
-			colorTrail('trailP1', p1CharacterPrev, p1SkinPrev, color[1], p1CharInfo);
-			p1ColorPrev = color[1];
-		}
-
-		if (p2ColorPrev != color[2]) {
-			updateColor('colorBGP2', 'textBGP2', color[2]);
-			colorTrail('trailP2', p2CharacterPrev, p2SkinPrev, color[2], p2CharInfo);
-			p2ColorPrev = color[2];
+		for (let i = 0; i < maxSides; i++) {
+			if (colorPrev[i] != color[i]) {
+				updateColor(colorBG[i], textBG[i], color[i]);
+				colorTrail(pTrail[i], pCharPrev[i], pSkinPrev[i], color[i], pCharInfo[i]);
+				colorPrev[i] = color[i];
+			}
 		}
 
 
-		//player 1 name change
-		if (document.getElementById('p1Name').textContent != player[1].name ||
-			document.getElementById('p1Team').textContent != player[1].tag) {
-			//fade out player 1 text
-			fadeOut("#p1Wrapper", () => {
-				//now that nobody is seeing it, change the text content!
-				updatePlayerName('p1Wrapper', 'p1Name', 'p1Team', player[1].name, player[1].tag);
-				//and fade the name back in
-				fadeIn("#p1Wrapper", .2);
-			});
-		}
+		//players name change
+		for (let i = 0; i < maxPlayers; i++) {
 
-		//same for player 2
-		if (document.getElementById('p2Name').textContent != player[2].name ||
-			document.getElementById('p2Team').textContent != player[2].tag){
-			fadeOut("#p2Wrapper", () => {
-				updatePlayerName('p2Wrapper', 'p2Name', 'p2Team', player[2].name, player[2].tag);
-				fadeIn("#p2Wrapper", .2);
-			});
-		}
-
-
-		//player 1 character, skin and background change
-		if (p1CharacterPrev != player[1].character || p1SkinPrev != player[1].skin) {
-
-			//if the character has changed, update the info
-			if (p1CharacterPrev != player[1].character) {
-				p1CharInfo = await getCharInfo(player[1].character);
+			//if either name or tag have changed
+			if (pName[i].textContent != player[i].name || pTag[i].textContent != player[i].tag) {
+				//fade out the player's text
+				fadeOut(pWrappers[i], () => {
+					//now that nobody is seeing it, change the content of the texts!
+					updatePlayerName(i, player[i].name, player[i].tag);
+					//and fade the texts back in
+					fadeIn(pWrappers[i], .2);
+				});
 			}
 
-			//move and fade out the character
-			charaFadeOut("#charaP1", () => {
-				//update the character image and trail, and also storing its scale for later
-				const charScale = updateChar(player[1].character, player[1].skin, color[1], 'charP1', 'trailP1', p1CharInfo);
-				//move and fade them back
-				charaFadeIn("#charaP1", "#trailP1", charScale);
-			});
-
-			//background change here!
-			if (bgChangeLogic(player[1].skin, p1SkinPrev, player[1].character, p1CharacterPrev)) {
-				//fade it out
-				fadeOut("#vidBGP1", () => {
-					//update the bg vid
-					updateBG('vidBGP1', player[1].character, player[1].skin, p1CharInfo);
-					//fade it back
-					fadeIn("#vidBGP1", .3, fadeInTime+.2);
-				}, fadeOutTime+.2);
-			};
-			
-			p1CharacterPrev = player[1].character;
-			p1SkinPrev = player[1].skin;
 		}
-
-		//same for player 2
-		if (p2CharacterPrev != player[2].character || p2SkinPrev != player[2].skin) {
-
-			if (p2CharacterPrev != player[2].character) {
-				p2CharInfo = await getCharInfo(player[2].character);
-			}
-
-			charaFadeOut("#charaP2", () => {
-				const charScale = updateChar(player[2].character, player[2].skin, color[2], 'charP2', 'trailP2', p2CharInfo);
-				charaFadeIn("#charaP2", "#trailP2", charScale);
-			});
-			
-			if (bgChangeLogic(player[2].skin, p2SkinPrev, player[2].character, p2CharacterPrev)) {
-				fadeOut("#vidBGP2", () => {
-					updateBG('vidBGP2', player[2].character, player[2].skin, p2CharInfo);
-					fadeIn("#vidBGP2", .3, fadeInTime+.2);
-				}, fadeOutTime+.2);
-			};
 		
-			p2CharacterPrev = player[2].character;
-			p2SkinPrev = player[2].skin;
+
+		//player character, skin and background change
+		for (let i = 0; i < maxPlayers; i++) {
+			
+			if (pCharPrev[i] != player[i].character || pSkinPrev[i] != player[i].skin) {
+				
+				//if the character has changed, update the info
+				if (pCharPrev[i] != player[i].character) {
+					pCharInfo[i] = await getCharInfo(player[i].character);
+				}
+
+				//move and fade out the character
+				charaFadeOut(pChara[i], () => {
+					//update the character image and trail, and also storing its scale for later
+					const charScale = updateChar(player[i].character, player[i].skin, color[i], i, pCharInfo[i]);
+					//move and fade them back
+					charaFadeIn(pChara[i], pTrail[i], charScale);
+				});
+
+				//background change here!
+				if (bgChangeLogic(player[i].skin, pSkinPrev[i], player[i].character, pCharPrev[i])) {
+					//fade it out
+					fadeOut(pBG[i], () => {
+						//update the bg vid
+						updateBG(pBG[i], player[i].character, player[i].skin, pCharInfo[i]);
+						//fade it back
+						fadeIn(pBG[i], .3, fadeInTime+.2);
+					}, fadeOutTime+.2);
+				};
+				
+				pCharPrev[i] = player[i].character;
+				pSkinPrev[i] = player[i].skin;
+
+			}
+
 		}
 
 
 		//update round text
-		if (document.getElementById('round').textContent != round){
-			fadeOut("#round", () => {
-				updateText("round", round, roundSize);
-				fadeIn("#round", .2);
+		if (roundEL.textContent != round){
+			fadeOut(roundEL, () => {
+				updateText(roundEL, round, roundSize);
+				fadeIn(roundEL, .2);
 			});
 		}
 
 		//update tournament text
-		if (document.getElementById('tournament').textContent != tournamentName){
-			fadeOut("#tournament", () => {
-				updateText("tournament", tournamentName, tournamentSize);
-				fadeIn("#tournament", .2);
+		if (tournamentEL.textContent != tournamentName){
+			fadeOut(tournamentEL, () => {
+				updateText(tournamentEL, tournamentName, tournamentSize);
+				fadeIn(tournamentEL, .2);
 			});
 		}
 
 
-		//update caster 1 info
-		if (document.getElementById('caster1').textContent != caster[1].name){
-			fadeOut("#caster1", () => {
-				updateText("caster1", caster[1].name, casterSize);
-				fadeIn("#caster1", .2);
-			});
-		}
-		//caster 1's twitter
-		if (document.getElementById('twitter1').textContent != caster[1].twitter){
-			updateSocial(caster[1].twitter, "twitter1", "twitter1Wrapper", caster[1].twitch, "twitch1Wrapper");
-		}
-		//caster 2's twitch (same as above)
-		if (document.getElementById('twitch1').textContent != caster[1].twitch){
-			updateSocial(caster[1].twitch, "twitch1", "twitch1Wrapper", caster[1].twitter, "twitter1Wrapper");
-		}
+		//update caster info
+		for (let i = 0; i < casterEL.length; i++) {
+			
+			//caster names
+			if (casterEL[i].textContent != caster[i].name){
+				fadeOut(casterEL[i], () => {
+					updateText(casterEL[i], caster[i].name, casterSize);
+					fadeIn(casterEL[i], .2);
+				});
+			}
 
-		//caster 2, same as above
-		if (document.getElementById('caster2').textContent != caster[2].name){
-			fadeOut("#caster2", () => {
-				updateText("caster2", caster[2].name, casterSize);
-				fadeIn("#caster2", .2);
-			});
-		}
-		if (document.getElementById('twitter2').textContent != caster[2].twitter){
-			updateSocial(caster[2].twitter, "twitter2", "twitter2Wrapper", caster[2].twitch, "twitch2Wrapper");
-		}
+			//caster twitters
+			if (twitterEL[i].textContent != caster[i].twitter){
+				updateSocial(caster[i].twitter, twitterEL[i], twitterWrEL[i], caster[i].twitch, twitchWrEL[i]);
+			}
 
-		if (document.getElementById('twitch2').textContent != caster[2].twitch){
-			updateSocial(caster[2].twitch, "twitch2", "twitch2Wrapper", caster[2].twitter, "twitter2Wrapper");
+			//caster twitchers
+			if (twitchEL[i].textContent != caster[i].twitch){
+				updateSocial(caster[i].twitch, twitchEL[i], twitchWrEL[i], caster[i].twitter, twitterWrEL[i]);
+			}
+
 		}
 	}
 }
 
 
-//did an image fail to load? this will be used to show nothing
-function showNothing(itemEL) {
-	itemEL.setAttribute('src', 'Resources/Literally Nothing.png');
-}
-
 
 //color change
-function updateColor(gradID, textBGID, color) {
-	const gradEL = document.getElementById(gradID);
+function updateColor(gradEL, textBGEL, color) {
+
 	//change the color gradient image path depending on the color
 	gradEL.setAttribute('src', 'Resources/Overlay/VS Screen/Grad ' + color + '.png');
-	//did that path not work? show absolutely nothing
-	if (startup) {gradEL.addEventListener("error", () => {showNothing(gradEL)})}
 
 	//same but with the text background
-	const textBGEL = document.getElementById(textBGID);
 	textBGEL.setAttribute('src', 'Resources/Overlay/VS Screen/Text BG ' + color + '.png');
-	if (startup) {textBGEL.addEventListener("error", () => {showNothing(textBGEL)})}
+	
 }
 
 
 //background change
-function updateBG(vidID, pCharacter, pSkin, charInfo) {
-	const vidEL = document.getElementById(vidID);
+function updateBG(vidEL, pCharacter, pSkin, charInfo) {
 
 	if (startup) {
 		//if the video cant be found, show aethereal gates
@@ -391,10 +372,7 @@ function bgChangeLogic(pSkin, pSkinPrev, pChar, pCharPrev) {
 
 
 //the logic behind the twitter/twitch constant change
-function socialChange1(twitterWrapperID, twitchWrapperID) {
-
-	const twitterWrapperEL = document.getElementById(twitterWrapperID);
-	const twitchWrapperEL = document.getElementById(twitchWrapperID);
+function socialChange1(twitterWrapperEL, twitchWrapperEL) {
 
 	if (startup) {
 
@@ -426,10 +404,7 @@ function socialChange1(twitterWrapperID, twitchWrapperID) {
 	}
 }
 //i didnt know how to make it a single function im sorry ;_;
-function socialChange2(twitterWrapperID, twitchWrapperID) {
-
-	const twitterWrapperEL = document.getElementById(twitterWrapperID);
-	const twitchWrapperEL = document.getElementById(twitchWrapperID);
+function socialChange2(twitterWrapperEL, twitchWrapperEL) {
 
 	if (startup) {
 
@@ -462,54 +437,49 @@ function socialChange2(twitterWrapperID, twitchWrapperID) {
 function updateSocial(mainSocial, mainText, mainWrapper, otherSocial, otherWrapper) {
 	//check if this is for twitch or twitter
 	let localSwitch = socialSwitch;
-	if (mainText == "twitch1" || mainText == "twitch2") {
+	if (mainText == twitchEL[0] || mainText == twitchEL[1]) {
 		localSwitch = !localSwitch;
 	}
 	//check if this is their turn so we fade out the other one
 	if (localSwitch) {
-		fadeOut("#"+otherWrapper, () => {})
+		fadeOut(otherWrapper, () => {})
 	}
 
 	//now do the classics
-	fadeOut("#"+mainWrapper, () => {
+	fadeOut(mainWrapper, () => {
 		updateSocialText(mainText, mainSocial, twitterSize, mainWrapper);
 		//check if its twitter's turn to show up
 		if (otherSocial == "" && mainSocial != "") {
-			fadeIn("#"+mainWrapper, .2);
+			fadeIn(mainWrapper, .2);
 		} else if (localSwitch && mainSocial != "") {
-			fadeIn("#"+mainWrapper, .2);
+			fadeIn(mainWrapper, .2);
 		} else if (otherSocial != "") {
-			fadeIn("#"+otherWrapper, .2);
+			fadeIn(otherWrapper, .2);
 		}
 	});
 }
 
 
 //player text change
-function updatePlayerName(wrapperID, nameID, teamID, pName, pTeam) {
-	const nameEL = document.getElementById(nameID);
-	nameEL.style.fontSize = playerSize; //set original text size
-	nameEL.textContent = pName; //change the actual text
-	const teamEL = document.getElementById(teamID);
-	teamEL.style.fontSize = teamSize;
-	teamEL.textContent = pTeam;
+function updatePlayerName(pNum, name, tag) {
+	pName[pNum].style.fontSize = playerSize; //set original text size
+	pName[pNum].textContent = name; //change the actual text
+	pTag[pNum].style.fontSize = tagSize;
+	pTag[pNum].textContent = tag;
 
-	resizeText(document.getElementById(wrapperID)); //resize if it overflows
+	resizeText(pWrapper[pNum]); //resize if it overflows
 }
 
 //generic text changer
-function updateText(textID, textToType, maxSize) {
-	const textEL = document.getElementById(textID);
+function updateText(textEL, textToType, maxSize) {
 	textEL.style.fontSize = maxSize; //set original text size
 	textEL.textContent = textToType; //change the actual text
 	resizeText(textEL); //resize it if it overflows
 }
 //social text changer
-function updateSocialText(textID, textToType, maxSize, wrapper) {
-	const textEL = document.getElementById(textID);
+function updateSocialText(textEL, textToType, maxSize, wrapperEL) {
 	textEL.style.fontSize = maxSize; //set original text size
 	textEL.textContent = textToType; //change the actual text
-	const wrapperEL = document.getElementById(wrapper)
 	resizeText(wrapperEL); //resize it if it overflows
 }
 
@@ -517,7 +487,7 @@ function updateSocialText(textID, textToType, maxSize, wrapper) {
 function resizeText(textEL) {
 	const childrens = textEL.children;
 	while (textEL.scrollWidth > textEL.offsetWidth || textEL.scrollHeight > textEL.offsetHeight) {
-		if (childrens.length > 0) { //for team+player texts
+		if (childrens.length > 0) { //for tag+player texts
 			Array.from(childrens).forEach(function (child) {
 				child.style.fontSize = getFontSize(child);
 			});
@@ -603,24 +573,21 @@ function getCharInfo(pCharacter) {
 
 
 //character update!
-function updateChar(pCharacter, pSkin, color, charID, trailID, charInfo) {
+function updateChar(pCharacter, pSkin, color, pNum, charInfo) {
 
 	//store so code looks cleaner later
-	const charEL = document.getElementById(charID);
-	const trailEL = document.getElementById(trailID);
+	const charEL = pChar[pNum];
+	const trailEL = pTrail[pNum];
 
 	//this will trigger whenever the image loaded cant be found
 	if (startup) {
 		//if the image fails to load, we will put a placeholder
 		charEL.addEventListener("error", () => {
 
-			//simple check to see if we are updating P1 or P2
-			const pNum = charEL == document.getElementById("charP1") ? 1 : 2;
+			//depending on the side, use one Random image or the other
+			charEL.setAttribute('src', charPathBase + 'Random/P'+((pNum%2)+1)+'.png');
 
-			charEL.setAttribute('src', charPathBase + 'Random/P'+pNum+'.png');
 		})
-		//trail will just show nothing
-		trailEL.addEventListener("error", () => {showNothing(trailEL)})
 	}
 
 	//change the image path depending on the character and skin
@@ -670,11 +637,11 @@ function updateChar(pCharacter, pSkin, color, charID, trailID, charInfo) {
 	}
 
 	return charPos[2]; //we need this one to set scale keyframe when fading back
+
 }
 
 //this gets called just to change the color of a trail
-function colorTrail(trailID, pCharacter, pSkin, color, charInfo) {
-	const trailEL = document.getElementById(trailID);
+function colorTrail(trailEL, pCharacter, pSkin, color, charInfo) {
 	if (charInfo != "notFound") {
 		if (charInfo.vsScreen[pSkin]) { //if the skin positions are not the default ones
 			trailEL.setAttribute('src', charPath + pCharacter + '/Trails/' + color + ' ' + pSkin + '.png');

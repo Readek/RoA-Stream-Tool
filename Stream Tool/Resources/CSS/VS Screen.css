@@ -100,7 +100,7 @@ body {
     color: white;
 }
 
-.team {
+.tag {
     color: lightgray;
 }
 
@@ -130,7 +130,7 @@ body {
 }
 
 
-.casterInfo {
+.caster {
     position: absolute;
     width: 170px;
     height: 34px;
