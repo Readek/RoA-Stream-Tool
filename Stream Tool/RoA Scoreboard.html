@@ -12,46 +12,73 @@
 </head>
 
 <body>
-    <div id="overlayP1">
-        <img src="Resources/Overlay/Scoreboard/BG.png" class="scoreboardP1"/>
-        <img id="wlP1" class="scoreboardP1"/>
-        <img id="p1Color" class="scoreboardP1"/>
+
+    <div id="scBGs">
+        <img src="Resources/Overlay/Scoreboard/BG.png" class="scoreboardP1" alt=""/>
+        <img src="Resources/Overlay/Scoreboard/BG.png" class="scoreboardP2" alt=""/>
+    </div>
+
+    <div id="wlImgs">
+        <img id="wlP1" class="scoreboardP1 wlImg" alt=""/>
+        <img id="wlP2" class="scoreboardP2Fixed wlImg" alt=""/>
+    </div>
+
+    <div id="pColors">
+        <img id="p1Color" class="scoreboardP1 colors" alt=""/>
+        <img id="p2Color" class="scoreboardP2 colors" alt=""/>
+    </div>
+
+    <div id="pChars">
+
         <div id=p1CharaMask>
             <img id="p1Character" class="pCharacter"/>
         </div>
-        <img id="p1Score" class="scoreboardP1"/>
-        <img id="borderP1" class="scoreboardP1"/>
-        <img id="teamLogoP1" class="scoreboardP1"/>
-        <video id="p1ScoreUp" class="scoreboardP1"></video>
 
-        <span id="p1Wrapper" class="wrappers">
-            <span id="p1Team" class="teams"></span>
-            <span id="p1Name" class="names"></span>
-        </span>
-    </div>
-
-    <div id="overlayP2">
-        <img src="Resources/Overlay/Scoreboard/BG.png" class="scoreboardP2"/>
-        <img id="wlP2" class="scoreboardP2Fixed"/>
-        <img id="p2Color" class="scoreboardP2"/>
         <div id="iHateMasks">
             <div id="p2CharaMask">
                 <img id="p2Character" class="pCharacter"/>
             </div>
         </div>
-        <img id="p2Score" class="scoreboardP2"/>
-        <img id="borderP2" class="scoreboardP2"/>
-        <img id="teamLogoP2" class="scoreboardP2Fixed"/>
-        <video id="p2ScoreUp" class="scoreboardP2"></video>
-
-        <span id="p2Wrapper" class="wrappers">
-            <span id="p2Team" class="teams"></span>
-            <span id="p2Name" class="names"></span>
-        </span>
+        
     </div>
 
+    <div id="scores">
+        <img id="p1Score" class="scoreboardP1 scoreImgs" alt=""/>
+        <img id="p2Score" class="scoreboardP2 scoreImgs" alt=""/>
+    </div>
+
+    <div id="borders">
+        <img id="borderP1" class="scoreboardP1" alt=""/>
+        <img id="borderP2" class="scoreboardP2" alt=""/>
+    </div>
+
+    <div id="tagLogos">
+        <img id="tagLogoP1" class="scoreboardP1 tLogos" alt=""/>
+        <img id="tagLogoP2" class="scoreboardP2Fixed tLogos" alt=""/>
+    </div>
+
+    <div id="scoreAnims">
+        <video id="p1ScoreUp" class="scoreboardP1 scoreVid"></video>
+        <video id="p2ScoreUp" class="scoreboardP2 scoreVid"></video>
+    </div>
+
+    <div id="pNames">
+
+        <span id="p1Wrapper" class="wrappers">
+            <span id="p1tag" class="tags"></span>
+            <span id="p1Name" class="names"></span>
+        </span>
+
+        <span id="p2Wrapper" class="wrappers">
+            <span id="p2tag" class="tags"></span>
+            <span id="p2Name" class="names"></span>
+        </span>
+
+    </div>
+      
+
     <div id="overlayRound">
-        <img src="Resources/Overlay/Scoreboard/Round BG.png" id="roundBG"/>
+        <img src="Resources/Overlay/Scoreboard/Round BG.png" id="roundBG" alt=""/>
         <span id="round"></span>
     </div>
 

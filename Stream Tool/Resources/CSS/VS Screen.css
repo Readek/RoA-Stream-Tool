@@ -73,6 +73,10 @@ body {
     object-fit: scale-down;
 }
 
+.chara {
+    opacity: 0;
+}
+
 
 .wrappers {
     position: absolute;

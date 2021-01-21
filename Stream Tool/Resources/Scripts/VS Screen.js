@@ -113,48 +113,45 @@ async function getData(scInfo) {
 		prevWorkshop = workshop;
 		
 
-		// these fors will run for each available player
-		// for now, lets start simple with the player texts
+		//this is on top of everything else because the await would desync the rest
+		for (let i = 0; i < maxPlayers; i++) { //for each available player
+			//gets us the character positions for the player
+			pCharInfo[i] = await getCharInfo(player[i].character);
+		}
+
+
+		// now the real part begins
 		for (let i = 0; i < maxPlayers; i++) {
 
-			//set the player's name & tag 
+			//lets start simple with the player names & tags 
 			updatePlayerName(i, player[i].name, player[i].tag);
 
 			//fade in the player text
 			fadeIn(pWrapper[i], introDelay+.15);
 
-		}
-
-
-		// time for the characters
-		for (let i = 0; i < maxPlayers; i++) {
-
-			//get the character positions for the player
-			pCharInfo[i] = await getCharInfo(player[i].character);
 
 			//change the player's character image, and position it
-			updateChar(player[i].character, player[i].skin, color[i], i, pCharInfo[i])
-
-			//fade in that character
-			initCharaFade(pChara[i], pTrail[i]);
+			updateChar(player[i].character, player[i].skin, color[i], i, pCharInfo[i], startup)
+			//character will fade in when the image finishes loading
 
 			//save character info so we change them later if different
 			pCharPrev[i] = player[i].character;
 			pSkinPrev[i] = player[i].skin;
 
-		}
 
-		
-		//set the character backgrounds
-		for (let i = 0; i < maxPlayers; i++) {
+			//set the character backgrounds
 			updateBG(pBG[i], player[i].character, player[i].skin, pCharInfo[i]);	
+
 		}
 
 
-		//set the colors
+		// this will run for each side (so twice)
 		for (let i = 0; i < maxSides; i++) {
+
+			//set the colors
 			updateColor(colorBG[i], textBG[i], color[i]);
-			colorPrev[i] = color[i];	
+			colorPrev[i] = color[i];
+
 		}
 
 
@@ -216,10 +213,18 @@ async function getData(scInfo) {
 		}
 
 
-		//players name change
+		//get the character lists now before we do anything else
+		for (let i = 0; i < maxPlayers; i++) {
+			//if the character has changed, update the info
+			if (pCharPrev[i] != player[i].character) {
+				pCharInfo[i] = await getCharInfo(player[i].character);
+			}
+		}
+
+
 		for (let i = 0; i < maxPlayers; i++) {
 
-			//if either name or tag have changed
+			// players name change, if either name or tag have changed
 			if (pName[i].textContent != player[i].name || pTag[i].textContent != player[i].tag) {
 				//fade out the player's text
 				fadeOut(pWrappers[i], () => {
@@ -230,25 +235,15 @@ async function getData(scInfo) {
 				});
 			}
 
-		}
-		
 
-		//player character, skin and background change
-		for (let i = 0; i < maxPlayers; i++) {
-			
+			//player character, skin and background change
 			if (pCharPrev[i] != player[i].character || pSkinPrev[i] != player[i].skin) {
 				
-				//if the character has changed, update the info
-				if (pCharPrev[i] != player[i].character) {
-					pCharInfo[i] = await getCharInfo(player[i].character);
-				}
-
 				//move and fade out the character
 				charaFadeOut(pChara[i], () => {
 					//update the character image and trail, and also storing its scale for later
-					const charScale = updateChar(player[i].character, player[i].skin, color[i], i, pCharInfo[i]);
-					//move and fade them back
-					charaFadeIn(pChara[i], pTrail[i], charScale);
+					updateChar(player[i].character, player[i].skin, color[i], i, pCharInfo[i]);
+					//will fade back in when the images load
 				});
 
 				//background change here!
@@ -268,7 +263,7 @@ async function getData(scInfo) {
 			}
 
 		}
-
+		
 
 		//update round text
 		if (roundEL.textContent != round){
@@ -318,10 +313,10 @@ async function getData(scInfo) {
 function updateColor(gradEL, textBGEL, color) {
 
 	//change the color gradient image path depending on the color
-	gradEL.setAttribute('src', 'Resources/Overlay/VS Screen/Grad ' + color + '.png');
+	gradEL.src = 'Resources/Overlay/VS Screen/Grad ' + color + '.png';
 
 	//same but with the text background
-	textBGEL.setAttribute('src', 'Resources/Overlay/VS Screen/Text BG ' + color + '.png');
+	textBGEL.src = 'Resources/Overlay/VS Screen/Text BG ' + color + '.png';
 	
 }
 
@@ -332,17 +327,17 @@ function updateBG(vidEL, pCharacter, pSkin, charInfo) {
 	if (startup) {
 		//if the video cant be found, show aethereal gates
 		vidEL.addEventListener("error", () => {
-			vidEL.setAttribute('src', 'Resources/Backgrounds/Default.webm')
+			vidEL.src = 'Resources/Backgrounds/Default.webm'
 		});
 	}
 
 	//change the BG path depending on the character
 	if (pSkin.includes("LoA")) {
-		vidEL.setAttribute('src', 'Resources/Backgrounds/LoA.webm');
+		vidEL.src = 'Resources/Backgrounds/LoA.webm';
 	} else if (pSkin == "Ragnir") { //ragnir shows the default stages in the actual game
-		vidEL.setAttribute('src', 'Resources/Backgrounds/Default.webm');
+		vidEL.src = 'Resources/Backgrounds/Default.webm';
 	} else if (pCharacter == "Shovel Knight" && pSkin == "Golden") { //why not
-		vidEL.setAttribute('src', 'Resources/Backgrounds/SK Golden.webm');
+		vidEL.src = 'Resources/Backgrounds/SK Golden.webm';
 	} else {
 		let vidName;
 		if (charInfo != "notFound") { //safety check
@@ -353,7 +348,7 @@ function updateBG(vidEL, pCharacter, pSkin, charInfo) {
 			}
 		}
 		//actual video path change
-		vidEL.setAttribute('src', 'Resources/Backgrounds/' + vidName + '.webm');
+		vidEL.src = 'Resources/Backgrounds/' + vidName + '.webm';
 	}
 }
 //it was too long to be in just one 'if'
@@ -521,11 +516,11 @@ function charaFadeOut(itemID, funct) {
 //fade in characters edition
 function charaFadeIn(charaID, trailID, charScale) {
 	//move the character
-	gsap.to(charaID, {delay: .3, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime+.1});
+	gsap.to(charaID, {delay: .2, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime+.1});
 	//move the trail
 	gsap.fromTo(trailID,
 		{scale: charScale, x: 0, opacity: 0},
-		{delay: .5, x: -pCharMove, opacity: 1, ease: "power2.out", duration: fadeInTime+.1});
+		{delay: .4, x: -pCharMove, opacity: 1, ease: "power2.out", duration: fadeInTime+.1});
 }
 
 //initial characters fade in
@@ -573,25 +568,14 @@ function getCharInfo(pCharacter) {
 
 
 //character update!
-function updateChar(pCharacter, pSkin, color, pNum, charInfo) {
+function updateChar(pCharacter, pSkin, color, pNum, charInfo, startup = false) {
 
 	//store so code looks cleaner later
 	const charEL = pChar[pNum];
 	const trailEL = pTrail[pNum];
 
-	//this will trigger whenever the image loaded cant be found
-	if (startup) {
-		//if the image fails to load, we will put a placeholder
-		charEL.addEventListener("error", () => {
-
-			//depending on the side, use one Random image or the other
-			charEL.setAttribute('src', charPathBase + 'Random/P'+((pNum%2)+1)+'.png');
-
-		})
-	}
-
 	//change the image path depending on the character and skin
-	charEL.setAttribute('src', charPath + pCharacter + '/' + pSkin + '.png');
+	charEL.src = charPath + pCharacter + '/' + pSkin + '.png';
 
 	//             x, y, scale
 	let charPos = [0, 0, 1];
@@ -601,12 +585,12 @@ function updateChar(pCharacter, pSkin, color, pNum, charInfo) {
 			charPos[0] = charInfo.vsScreen[pSkin].x;
 			charPos[1] = charInfo.vsScreen[pSkin].y;
 			charPos[2] = charInfo.vsScreen[pSkin].scale;
-			trailEL.setAttribute('src', charPath + pCharacter + '/Trails/' + color + ' ' + pSkin + '.png');
+			trailEL.src = charPath + pCharacter + '/Trails/' + color + ' ' + pSkin + '.png';
 		} else { //if not, use a default position
 			charPos[0] = charInfo.vsScreen.neutral.x;
 			charPos[1] = charInfo.vsScreen.neutral.y;
 			charPos[2] = charInfo.vsScreen.neutral.scale;
-			trailEL.setAttribute('src', charPath + pCharacter + '/Trails/' + color + '.png');
+			trailEL.src = charPath + pCharacter + '/Trails/' + color + '.png';
 		}
 	} else { //if the character isnt on the database, set positions for the "?" image
 		//this condition is used just to position images well on both sides
@@ -616,7 +600,7 @@ function updateChar(pCharacter, pSkin, color, pNum, charInfo) {
 			charPos[0] = -500;
 		}
 		charPos[1] = 0; charPos[2] = .8;
-		trailEL.setAttribute('src', charPath + pCharacter + '/Trails/' + color + '.png');
+		trailEL.src = charPath + pCharacter + '/Trails/' + color + '.png';
 	}
 
 	//to position the character
@@ -636,7 +620,25 @@ function updateChar(pCharacter, pSkin, color, pNum, charInfo) {
 		trailEL.style.imageRendering = "pixelated";
 	}
 
-	return charPos[2]; //we need this one to set scale keyframe when fading back
+	//this will make the thing wait till the images are fully loaded
+	charEL.decode().then( () => {
+		trailEL.decode().then( () => {
+			//when both char and trail load, fade them in
+			if (startup) {
+				initCharaFade(pChara[pNum], trailEL);
+			} else {
+				charaFadeIn(pChara[pNum], trailEL, charPos[2]);
+			}
+		})
+	}).catch( () => {
+		//if the image fails to load, we will use a placeholder
+		charEL.src = charPathBase + 'Random/P'+((pNum%2)+1)+'.png';
+		if (startup) {
+			initCharaFade(pChara[pNum], trailEL);
+		} else {
+			charaFadeIn(pChara[pNum], trailEL, charPos[2]);
+		}
+	})
 
 }
 
@@ -644,9 +646,9 @@ function updateChar(pCharacter, pSkin, color, pNum, charInfo) {
 function colorTrail(trailEL, pCharacter, pSkin, color, charInfo) {
 	if (charInfo != "notFound") {
 		if (charInfo.vsScreen[pSkin]) { //if the skin positions are not the default ones
-			trailEL.setAttribute('src', charPath + pCharacter + '/Trails/' + color + ' ' + pSkin + '.png');
+			trailEL.src = charPath + pCharacter + '/Trails/' + color + ' ' + pSkin + '.png';
 		} else {
-			trailEL.setAttribute('src', charPath + pCharacter + '/Trails/' + color + '.png');
+			trailEL.src = charPath + pCharacter + '/Trails/' + color + '.png';
 		}
 	}
 }
