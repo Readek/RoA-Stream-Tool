@@ -73,6 +73,7 @@ body {
     height: 100px;
     object-fit: scale-down;
     position: absolute;
+    will-change: transform, opacity, top, left;
 }
 
 

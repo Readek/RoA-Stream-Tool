@@ -277,11 +277,11 @@ async function getData(scInfo) {
 			// players name change, if either name or tag have changed
 			if (pName[i].textContent != player[i].name || pTag[i].textContent != player[i].tag) {
 				//fade out the player's text
-				fadeOut(pWrappers[i], () => {
+				fadeOut(pWrapper[i], () => {
 					//now that nobody is seeing it, change the content of the texts!
 					updatePlayerName(i, player[i].name, player[i].tag);
 					//and fade the texts back in
-					fadeIn(pWrappers[i], .2);
+					fadeIn(pWrapper[i], .2);
 				});
 			}
 
