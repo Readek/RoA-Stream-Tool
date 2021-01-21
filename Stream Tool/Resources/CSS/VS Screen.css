@@ -190,3 +190,38 @@ body {
 #twitter2Wrapper, #twitch2Wrapper {
     right: 765px;
 }
+
+
+.scoreTick {
+    position: absolute;
+    top: 212px;
+    fill: #414141;
+}
+
+#scoreL-1 {
+    left: 924px;
+}
+#scoreL-2 {
+    left: 896px;
+}
+#scoreL-3 {
+    left: 866px;
+}
+
+#scoreR-1 {
+    right: 924px;
+    transform: scaleX(-1);
+}
+#scoreR-2 {
+    right: 896px;
+    transform: scaleX(-1);
+}
+#scoreR-3 {
+    right: 866px;
+    transform: scaleX(-1);
+}
+
+#scoreBorder {
+    top: 209px;
+    left: 862px;
+}

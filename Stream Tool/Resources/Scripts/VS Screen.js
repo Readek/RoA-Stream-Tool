@@ -21,9 +21,12 @@ let charPath;
 const charPathBase = "Resources/Characters/";
 const charPathWork = "Resources/Characters/_Workshop/";
 
+//color list will be stored here on startup
+let colorList;
+
 //to avoid the code constantly running the same method over and over
-const pCharPrev = [], pSkinPrev = [], colorPrev = [];
-let prevWorkshop;
+const pCharPrev = [], pSkinPrev = [], scorePrev = [], colorPrev = [];
+let bestOfPrev, prevWorkshop;
 
 //variables for the twitter/twitch constant change
 let socialInt1, socialInt2;
@@ -46,8 +49,11 @@ const pChara = document.getElementsByClassName("chara");
 const pChar = document.getElementsByClassName("char");
 const pTrail = document.getElementsByClassName("trail");
 const pBG = document.getElementsByClassName("bgVid");
+const scoreImg = document.getElementsByClassName("scoreTick");
 const colorBG = document.getElementsByClassName("colorBG");
 const textBG = document.getElementsByClassName("textBG");
+const scoreOverlay = document.getElementById("scores");
+const scoreBorder = document.getElementById("scoreBorder");
 const roundEL = document.getElementById("round");
 const tournamentEL = document.getElementById("tournament");
 const casterEL = document.getElementsByClassName("caster");
@@ -73,9 +79,9 @@ async function getData(scInfo) {
 	//const teamName = scInfo['teamName'];
 
 	const color = scInfo['color'];
-	//const score = scInfo['score'];
+	const score = scInfo['score'];
 
-	//const bestOf = scInfo['bestOf'];
+	const bestOf = scInfo['bestOf'];
 	//const gamemode = scInfo['gamemode'];
 
 	const round = scInfo['round'];
@@ -111,6 +117,9 @@ async function getData(scInfo) {
 		workshop ? charPath = charPathWork : charPath = charPathBase;
 		//save the current workshop status so we know when it changes next time
 		prevWorkshop = workshop;
+
+		//initialize the colors list
+		colorList = await getColorInfo();
 		
 
 		//this is on top of everything else because the await would desync the rest
@@ -152,7 +161,28 @@ async function getData(scInfo) {
 			updateColor(colorBG[i], textBG[i], color[i]);
 			colorPrev[i] = color[i];
 
+			//initialize the score ticks
+			updateScore(i, score[i], color[i]);
+			scorePrev[i] = score[i];
+
 		}
+
+
+		//if the scores for both sides are 0, hide the thing
+		if (score[0] == 0 && score[1] == 0) {
+			scoreOverlay.style.opacity = 0;
+		}
+
+
+		//lets set the initial state of the score border
+		if (bestOf == "Bo5") {
+			scoreBorder.src = "Resources/Overlay/VS Screen/Score Border Bo5.png";
+		} else {
+			scoreBorder.src = "Resources/Overlay/VS Screen/Score Border Bo3.png";
+			scoreImg[2].style.opacity = 0;
+			scoreImg[5].style.opacity = 0;
+		}
+		bestOfPrev = bestOf;
 
 
 		//set the round text
@@ -202,14 +232,34 @@ async function getData(scInfo) {
 		}
 
 
-		//color change, this is up here before char/skin change so it doesnt change the
-		//trail to the next one if the character has changed, but it will change its color
 		for (let i = 0; i < maxSides; i++) {
+
+			//color change, this is up here before char/skin change so it doesnt change the
+			//trail to the next one if the character has changed, but it will change its color
 			if (colorPrev[i] != color[i]) {
 				updateColor(colorBG[i], textBG[i], color[i]);
 				colorTrail(pTrail[i], pCharPrev[i], pSkinPrev[i], color[i], pCharInfo[i]);
+				updateScore(i, score[i], color[i]);
 				colorPrev[i] = color[i];
 			}
+
+			//check if the scores changed
+			if (scorePrev[i] != score[i]) {
+
+				//update the thing
+				updateScore(i, score[i], color[i]);
+
+				//if the scores for both sides are 0, hide the thing
+				if (score[0] == 0 && score[1] == 0) {
+					fadeOut(scoreOverlay);
+				} else {
+					fadeIn(scoreOverlay, 0);
+				}
+
+				scorePrev[i] = score[i];
+
+			}
+
 		}
 
 
@@ -263,6 +313,21 @@ async function getData(scInfo) {
 			}
 
 		}
+
+
+		//best of check
+		if (bestOfPrev != bestOf) {
+			if (bestOf == "Bo5") {
+				scoreImg[2].style.opacity = 1;
+				scoreImg[5].style.opacity = 1;
+				scoreBorder.src = "Resources/Overlay/VS Screen/Score Border Bo5.png";
+			} else {
+				scoreImg[2].style.opacity = 0;
+				scoreImg[5].style.opacity = 0;
+				scoreBorder.src = "Resources/Overlay/VS Screen/Score Border Bo3.png";
+			}
+			bestOfPrev = bestOf;
+		}
 		
 
 		//update round text
@@ -308,6 +373,33 @@ async function getData(scInfo) {
 }
 
 
+//score change, pretty simple
+function updateScore(side, pScore, pColor) {
+
+	//if this is the right side, change the number
+	if (side == 1) {
+		side = 3;
+	}
+
+	if (pScore == 0) {
+		scoreImg[side].style.fill = "#414141";
+		scoreImg[side+1].style.fill = "#414141";
+		scoreImg[side+2].style.fill = "#414141";
+	} else if (pScore == 1) {
+		scoreImg[side].style.fill = getHexColor(pColor);
+		scoreImg[side+1].style.fill = "#414141";
+		scoreImg[side+2].style.fill = "#414141";
+	} else if (pScore == 2) {
+		scoreImg[side].style.fill = getHexColor(pColor);
+		scoreImg[side+1].style.fill = getHexColor(pColor);
+		scoreImg[side+2].style.fill = "#414141";
+	} else if (pScore == 3) {
+		scoreImg[side].style.fill = getHexColor(pColor);
+		scoreImg[side+1].style.fill = getHexColor(pColor);
+		scoreImg[side+2].style.fill = getHexColor(pColor);
+	}
+}
+
 
 //color change
 function updateColor(gradEL, textBGEL, color) {
@@ -318,6 +410,15 @@ function updateColor(gradEL, textBGEL, color) {
 	//same but with the text background
 	textBGEL.src = 'Resources/Overlay/VS Screen/Text BG ' + color + '.png';
 	
+}
+
+//so we can get the exact color used by the game!
+function getHexColor(color) {
+	for (let i = 0; i < colorList.length; i++) {
+		if (colorList[i].name == color) {
+			return colorList[i].hex;
+		}
+	}
 }
 
 
@@ -548,6 +649,20 @@ function getInfo() {
 		}
 	})
 	//i would gladly have used fetch, but OBS local files wont support that :(
+}
+
+//searches for the colors list json file
+function getColorInfo() {
+	return new Promise(function (resolve) {
+		const oReq = new XMLHttpRequest();
+		oReq.addEventListener("load", reqListener);
+		oReq.open("GET", 'Resources/Texts/Color Slots.json');
+		oReq.send();
+
+		function reqListener () {
+			resolve(JSON.parse(oReq.responseText))
+		}
+	})
 }
 
 //searches for a json file with character data
