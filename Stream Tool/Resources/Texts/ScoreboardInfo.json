@@ -3,13 +3,13 @@
     {
       "name": "Player 1",
       "tag": "",
-      "character": "Elliana",
+      "character": "Wrastor",
       "skin": "Default"
     },
     {
       "name": "Player 2",
       "tag": "Tag",
-      "character": "Kragg",
+      "character": "Zetterburn",
       "skin": "Default"
     },
     {
@@ -61,5 +61,5 @@
   "workshop": false,
   "forceHD": false,
   "noLoAHD": false,
-  "forceMM": false
+  "forceMM": true
 }

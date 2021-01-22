@@ -558,8 +558,7 @@ async function updateChar(pCharacter, pSkin, pNum, charInfo, mainMenu, startup =
 			charPos[0] = charInfo.scoreboard.mainMenu.x;
 			charPos[1] = charInfo.scoreboard.mainMenu.y;
 			charPos[2] = charInfo.scoreboard.mainMenu.scale;
-			//((main menu renders set to default till all skin pngs are done))
-			charEL.src = charPath + pCharacter + '/MainMenu/Default.png';
+			charEL.src = charPath + pCharacter + '/MainMenu/'+pSkin+'.png';
 		} else { //if none of the above, use a default position
 			charPos[0] = charInfo.scoreboard.neutral.x;
 			charPos[1] = charInfo.scoreboard.neutral.y;
