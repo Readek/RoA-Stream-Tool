@@ -2,11 +2,15 @@
     "name": "OliveOily",
     "tag": "",
     "characters": [
-        {
-            "character": "Absa",  "skin": "OliveOily"
+		{
+            "character": "Wrastor",  "skin": "OliveOily"
+        },
+		{
+            "character": "Elliana",  "skin": "OliveOily"
         },
         {
-            "character": "Wrastor",  "skin": "OliveOily"
+            "character": "Absa",  "skin": "OliveOily"
         }
+        
     ]
 }
