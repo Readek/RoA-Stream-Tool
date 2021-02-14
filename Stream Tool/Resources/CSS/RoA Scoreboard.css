@@ -30,41 +30,56 @@ body {
 .scoreboardP1 {
     position: absolute;
     left: 0px;
-    top: 0px;
 }
-
-#p1CharaMask {
-    -webkit-mask-image: url("../Overlay/Scoreboard/Icon Mask.png");
-    width: 1920px;
-    height: 1080px;
-}
-
 .scoreboardP2 {
     position: absolute;
     right: 0px;
-    top: 0px;
     transform: scaleX(-1);
 }
-
 .scoreboardP2Fixed {
     position: absolute;
     right: 0px;
-    top: 0px;
 }
 
-#iHateMasks {
+
+.colors {
+    width: 636px;
+    height: 90px;
+}
+
+
+.mask {
+    -webkit-mask-repeat: no-repeat;
     width: 1920px;
     height: 1080px;
     position: absolute;
-    left: 0px;
-    top: 0px;
 }
 
-#p2CharaMask {
+.maskSingles {
     -webkit-mask-image: url("../Overlay/Scoreboard/Icon Mask.png");
+}
+
+.maskDubs {
+    -webkit-mask-image: url("../Overlay/Scoreboard/Icon Mask 2.png");
+}
+
+.charTop {
+    position: absolute;
+}
+.charBot {
+    position: absolute;
+    top: 45px;
+}
+
+#p2CharaMask, #p4CharaMask {
     transform: scaleX(-1);
-    width: 1920px;
-    height: 1080px;
+}
+
+#p3CharaMask {
+    left: -18px;
+}
+#p4CharaMask {
+    right: -18px;
 }
 
 .pCharacter {
@@ -78,24 +93,55 @@ body {
 
 .wrappers {
     position: absolute;
+    text-align: center;
+    opacity: 0;
+}
+.wrappersSingles {
     width: 430px;
+    height: 54px;
+    line-height: 54px;
+}
+
+.wrappersDubs {
+    width: 126px;
+    height: 54px;
+    line-height: 54px;
+}
+
+#p1Wrapper {
+    left: 158px;
+}
+#p2Wrapper {
+    right: 158px;
+}
+#p3Wrapper {
+    top: 40px;
+    left: 138px;
+}
+#p4Wrapper {
+    top: 40px;
+    right: 138px;
+}
+
+.tags {
+    color: lightgray;
+}
+
+.teamName {
+    position: absolute;
+    width: 290px;
     height: 54px;
     line-height: 54px;
     text-align: center;
     top: 0px;
     opacity: 0;
 }
-
-#p1Wrapper {
-    left: 158px;
+#teamNameL {
+    left: 298px;
 }
 
-#p2Wrapper {
-    right: 158px;
-}
-
-.tags {
-    color: lightgray;
+#teamNameR {
+    right: 298px;
 }
 
 
@@ -105,7 +151,6 @@ body {
 
 #roundBG {
     position: absolute;
-    top: 0px;
 }
 
 #round {
@@ -122,7 +167,6 @@ body {
 
 #introVid {
     position: absolute;
-    top: 0px;
 }
 
 
@@ -188,7 +232,6 @@ body {
     position: absolute;
     width: 1920px;
     height: 1080px;
-    top: 0px;
     background-color: rgba(0, 0, 0, 0.50);
 }
 
@@ -200,7 +243,6 @@ body {
 
 #introTopBar {
     height: 100px;
-    top: 0px;
 }
 
 #introBotBar {

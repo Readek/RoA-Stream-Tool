@@ -15,8 +15,8 @@
     {
       "name": "Player 3",
       "tag": "Tag",
-      "character": "Orcane",
-      "skin": "Pool Party"
+      "character": "Maypul",
+      "skin": "Arcade Pink"
     },
     {
       "name": "Player 4",
@@ -42,7 +42,7 @@
     "Nada"
   ],
   "bestOf": "Bo5",
-  "gamemode": 1,
+  "gamemode": 2,
   "round": "Winners Finals",
   "tournamentName": "A Tournament #123",
   "caster": [
