@@ -202,15 +202,15 @@ async function getData(scInfo) {
 			//lets start with the player names and tags
 			updatePlayerName(i, player[i].name, player[i].tag, gamemode);
 			//set the starting position for the player text, then fade in and move the text to the next keyframe
-			if (i % 2 == 0) { //check side so we know the direction
+			if (gamemode == 1) { //if this is singles, fade the names in with a sick motion
+				const movement = (i % 2 == 0) ? -pMove : pMove; //to know direction
 				gsap.fromTo(pWrapper[i], 
-					{x: -pMove}, //from
+					{x: movement}, //from
 					{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}); //to
-			} else {
-				gsap.fromTo(pWrapper[i], 
-					{x: pMove},
-					{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
+			} else { //if doubles, just fade them in
+				fadeIn(pWrapper[i], introDelay+.15)
 			}
+			
 
 			//set the character image for the player
 			updateChar(player[i].character, player[i].skin, i, pCharInfo[i], mainMenu, startup);
@@ -228,36 +228,41 @@ async function getData(scInfo) {
 			//set the team names if not singles
 			if (gamemode != 1) {
 				updateText(teamNames[i], teamName[i], nameSize);
-				if (i % 2 == 0) {
-					gsap.fromTo(teamNames[i], 
-						{x: -pMove},
-						{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
-				} else {
-					gsap.fromTo(teamNames[i], 
-						{x: pMove},
-						{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
-				}					
+				const movement = (i % 2 == 0) ? -pMove : pMove;
+				gsap.fromTo(teamNames[i], 
+					{x: movement},
+					{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 			}
 			
 			//if its grands, we need to show the [W] and/or the [L] on the players
-			updateWL(wl[i], i);
-			gsap.fromTo(wlImg[i],
-				{y: -pMove}, //set starting position some pixels up (it will be covered by the overlay)
-				{delay: introDelay+.5, y: 0, ease: "power2.out", duration: .5}); //move down to its default position
+			updateWL(wl[i], i, gamemode);
+			if (gamemode == 1) {
+				gsap.fromTo(wlImg[i], //if singles, move it vertically
+					{y: -pMove}, //set starting position some pixels up (it will be covered by the overlay)
+					{delay: introDelay+.5, y: 0, ease: "power2.out", duration: .5}); //move down to its default position
+			} else {
+				const movement = (i % 2 == 0) ? -pMove : pMove;
+				gsap.fromTo(wlImg[i], //if doubles, move it horizontally
+					{x: movement*3}, //set starting position some pixels up (it will be covered by the overlay)
+					{delay: introDelay+.5, x: 0, ease: "power2.out", duration: .5}); //move down to its default position
+			}
 			//save for later so the animation doesn't repeat over and over
 			wlPrev[i] = wl[i];
 
 			//set the current score
-			updateScore(score[i], bestOf, color[i], i, false);
+			updateScore(score[i], bestOf, color[i], i, gamemode, false);
 			scorePrev[i] = score[i];
 
 			//set the color
 			updateColor(colorImg[i], color[i]);
 			colorPrev[i] = color[i];
 
-			//check if the tag has a logo we can place on the overlay
-			//this will only check the first 2 players
-			updateTagLogo(tLogoImg[i], player[i].tag, (i+1));
+			//check if we have a logo we can place on the overlay
+			if (gamemode == 1) { //if this is singles, check the player tag
+				updateLogo(tLogoImg[i], player[i].tag, i, gamemode);
+			} else { //if doubles, check the team name
+				updateLogo(tLogoImg[i], teamName[i], i, gamemode);
+			}
 			
 		}
 
@@ -291,6 +296,14 @@ async function getData(scInfo) {
 		if (gamemodePrev != gamemode) {
 			changeGM(gamemode);
 			updateBorder(bestOf, gamemode);
+			for (let i = 0; i < maxSides; i++) {
+				updateWL(wl[i], i, gamemode);
+				if (gamemode == 1) {
+					updateLogo(tLogoImg[i], player[i].tag, i, gamemode);
+				} else {
+					updateLogo(tLogoImg[i], teamName[i], i, gamemode);
+				}
+			}			
 			gamemodePrev = gamemode;
 		}
 		
@@ -311,7 +324,7 @@ async function getData(scInfo) {
 			if (pName[i].textContent != player[i].name || pTag[i].textContent != player[i].tag) {
 
 				//check the player's side so we know the direction of the movement
-				const movement = i % 2 == 0 ? -pMove : pMove;
+				const movement = (i % 2 == 0) ? -pMove : pMove;
 
 				//move and fade out the player 1's text
 				fadeOutMove(pWrapper[i], movement, () => {
@@ -355,19 +368,20 @@ async function getData(scInfo) {
 			
 			//the [W] and [L] status for grand finals
 			if (wlPrev[i] != wl[i]) {
+				const movement = (i % 2 == 0) ? -pMove : pMove;
 				//move it away!
-				gsap.to(wlImg[i], {y: -pMove, ease: "power1.in", duration: .5, onComplete: () => {
+				fadeOutWL(wlImg[i], movement, gamemode, () => {
 					//change the thing!
-					updateWL(wl[i], i);
+					updateWL(wl[i], i, gamemode);
 					//move it back!
-					gsap.to(wlImg[i], {delay: .1, y: 0, ease: "power2.out", duration: .5});
-				}});
+					fadeInWL(wlImg[i], gamemode)
+				});
 				wlPrev[i] = wl[i];
 			}
 
 			//score check
 			if (scorePrev[i] != score[i]) {
-				updateScore(score[i], bestOf, color[i], i, true); //if true, animation will play
+				updateScore(score[i], bestOf, color[i], i, gamemode, true); //if true, animation will play
 				scorePrev[i] = score[i];
 			}
 
@@ -377,13 +391,23 @@ async function getData(scInfo) {
 				colorPrev[i] = color[i];
 			}
 
-			//check if the tag has a logo we can place on the overlay
-			if (pTag[i].textContent != player[i].tag) {
-				fadeOut(tLogoImg[i], () => {
-					updateTagLogo(tLogoImg[i], player[i].tag, (i+1));
-					fadeIn(tLogoImg[i]);
-				});
+			//check if we have a logo we can place on the overlay
+			if (gamemode == 1) { //if this is singles, check the player tag
+				if (pTag[i].textContent != player[i].tag) {
+					fadeOut(tLogoImg[i], () => {
+						updateLogo(tLogoImg[i], player[i].tag, i, gamemode);
+						fadeIn(tLogoImg[i]);
+					});
+				}
+			} else { //if doubles, check the team name
+				if (teamNames[i].textContent != teamName[i]) {
+					fadeOut(tLogoImg[i], () => {
+						updateLogo(tLogoImg[i], teamName[i], i, gamemode);
+						fadeIn(tLogoImg[i]);
+					});
+				}
 			}
+
 
 		}
 
@@ -396,8 +420,8 @@ async function getData(scInfo) {
 		if (bestOfPrev != bestOf) {
 			updateBorder(bestOf, gamemode); //update the border
 			//update the score ticks so they fit the bestOf border
-			updateScore(score[0], bestOf, color[0], 0, false);
-			updateScore(score[1], bestOf, color[1], 1, false);
+			updateScore(score[0], bestOf, color[0], 0, gamemode, false);
+			updateScore(score[1], bestOf, color[1], 1, gamemode, false);
 		}
 
 		
@@ -452,10 +476,6 @@ function changeGM(gm) {
 			dubELs[i].style.display = "block";
 		}
 
-		document.getElementById("bgR").src = "Resources/Overlay/Scoreboard/BG 2.png";
-		document.getElementById("bgL").src = "Resources/Overlay/Scoreboard/BG 2.png";
-
-
 	} else {
 
 		maxPlayers = 2
@@ -486,9 +506,6 @@ function changeGM(gm) {
 		for (let i = 0; i < dubELs.length; i++) {
 			dubELs[i].style.display = "none";
 		}
-
-		document.getElementById("bgR").src = "Resources/Overlay/Scoreboard/BG 1.png";
-		document.getElementById("bgL").src = "Resources/Overlay/Scoreboard/BG 1.png";
 		
 	}
 
@@ -496,12 +513,12 @@ function changeGM(gm) {
 
 
 // update functions
-function updateScore(pScore, bestOf, pColor, pNum, playAnim) {
+function updateScore(pScore, bestOf, pColor, pNum, gamemode, playAnim) {
 
 	let delay = 0;
 	if (playAnim) { //do we want to play the score up animation?
 		//depending on the "bestOf" and the color, change the clip
-		scoreAnim[pNum].src = 'Resources/Overlay/Scoreboard/Score/ScoreUp ' + bestOf + '/' + pColor + '.webm';
+		scoreAnim[pNum].src = 'Resources/Overlay/Scoreboard/Score/' + gamemode + "/" + bestOf + '/' + pColor + '.webm';
 		scoreAnim[pNum].play();
 		delay = 200; //add a bit of delay so the score change fits with the vid
 	}
@@ -520,14 +537,15 @@ function updateColor(colorEL, pColor) {
 
 function updateBorder(bestOf, gamemode) {
 	for (let i = 0; i < borderImg.length; i++) {
-		borderImg[i].src = 'Resources/Overlay/Scoreboard/Border ' + gamemode + " " + bestOf + '.png';
+		borderImg[i].src = 'Resources/Overlay/Scoreboard/Borders/Border ' + gamemode + " " + bestOf + '.png';
 	}
 	bestOfPrev = bestOf
 }
 
-function updateTagLogo(logoEL, pTag, pNum) {
-	//search for an image with the tag name
-	logoEL.src = 'Resources/TagLogos/' + pTag + ' P' + pNum + '.png';
+function updateLogo(logoEL, nameLogo, side, gamemode) {
+	const mode = gamemode==1 ? "Singles" : "Doubles";
+	const actualSide = side ? "Right" : "Left";
+	logoEL.src = 'Resources/Logos/' + mode + '/' + actualSide + '/' + nameLogo + '.png';
 }
 
 function updatePlayerName(pNum, name, tag, gamemode) {
@@ -550,12 +568,12 @@ function updateText(textEL, textToType, maxSize) {
 	resizeText(textEL); //resize it if it overflows
 }
 
-function updateWL(pWL, pNum) {
+function updateWL(pWL, pNum, gamemode) {
 	//check if winning or losing in a GF, then change image
 	if (pWL == "W") {
-		wlImg[pNum].src = 'Resources/Overlay/Scoreboard/Winners P' + (pNum+1) + '.png';
+		wlImg[pNum].src = 'Resources/Overlay/Scoreboard/WLs/Winners P' + (pNum+1) + ' ' + gamemode + '.png';
 	} else if (pWL == "L") {
-		wlImg[pNum].src = 'Resources/Overlay/Scoreboard/Losers P' + (pNum+1) + '.png';
+		wlImg[pNum].src = 'Resources/Overlay/Scoreboard/WLs/Losers P' + (pNum+1) + ' ' + gamemode + '.png';
 	} else if (pWL == "Nada") {
 		wlImg[pNum].src = 'Literally nothing.png';
 	}
@@ -593,6 +611,22 @@ function fadeInChara(charaEL, charScale, startup) {
 			{scale: charScale}, //set scale keyframe so it doesnt scale while transitioning
 			{delay: .2, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}
 		);
+	}
+}
+
+//movement for the [W]/[L] images
+function fadeOutWL(wlEL, move, gamemode, funct) {
+	if (gamemode == 1) {
+		gsap.to(wlEL, {y: move, ease: "power1.in", duration: .5, onComplete: funct});
+	} else {
+		gsap.to(wlEL, {x: move*3, ease: "power1.in", duration: .5, onComplete: funct});
+	}
+}
+function fadeInWL(wlEL, gamemode) {
+	if (gamemode == 1) {
+		gsap.to(wlEL, {delay: .1, y: 0, ease: "power2.out", duration: .5});
+	} else {
+		gsap.to(wlEL, {delay: .1, x: 0, ease: "power2.out", duration: .5});
 	}
 }
 
@@ -672,7 +706,7 @@ function getCharInfo(pCharacter) {
 }
 
 //now the complicated "change character image" function!
-async function updateChar(pCharacter, pSkin, pNum, charInfo, mainMenu, startup = false) {
+function updateChar(pCharacter, pSkin, pNum, charInfo, mainMenu, startup = false) {
 
 	//store so code looks cleaner
 	const charEL = charImg[pNum];

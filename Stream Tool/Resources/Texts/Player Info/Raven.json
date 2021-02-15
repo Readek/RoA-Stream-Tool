@@ -1,0 +1,12 @@
+{
+    "name": "Raven",
+    "tag": "DMT",
+    "characters": [
+        {
+            "character": "Ori and Sein",  "skin": "Raven"
+        },
+		{
+            "character": "Kragg",  "skin": "Summit"
+        }
+    ]
+}
