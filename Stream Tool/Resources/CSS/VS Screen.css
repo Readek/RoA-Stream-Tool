@@ -113,6 +113,7 @@ body {
     position: absolute;
     text-align: center;
     font-family: "Deansgate";
+    white-space: nowrap;
 }
 
 #round {
@@ -143,6 +144,7 @@ body {
     font-family: "Deansgate";
     color: black;
     line-height: 26px;
+    white-space: nowrap;
 }
 
 #caster1 {
@@ -163,6 +165,7 @@ body {
     font-family: "Deansgate";
     color: rgb(65, 65, 65);
     line-height: 26px;
+    white-space: nowrap;
 }
 .twitterIcon {
     height: 19px;

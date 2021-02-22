@@ -1,3 +1,5 @@
+'use strict';
+
 const fs = require('fs');
 const path = require('path');
 
@@ -297,7 +299,7 @@ function loadCharacters() {
     });
 
     //for each player
-    for (i=0; i < maxPlayers; i++) {
+    for (let i=0; i < maxPlayers; i++) {
 
         //use the character list to add entries
         addEntries(charLists[i], characterList);
@@ -1151,6 +1153,12 @@ function swap() {
 }
 
 function clearPlayers() {
+
+    //crear the team names
+    for (let i = 0; i < tNameInps.length; i++) {
+        tNameInps[i].value = "";        
+    }
+
     for (let i = 0; i < maxPlayers; i++) {
 
         //clear player texts and tags

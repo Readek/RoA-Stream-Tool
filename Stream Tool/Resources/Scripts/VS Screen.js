@@ -1,3 +1,5 @@
+'use strict';
+
 //animation stuff
 const pCharMove = 30; //distance to move for the character images
 

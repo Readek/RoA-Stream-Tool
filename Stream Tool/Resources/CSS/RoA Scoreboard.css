@@ -95,6 +95,7 @@ body {
     position: absolute;
     text-align: center;
     opacity: 0;
+    white-space: nowrap;
 }
 .wrappersSingles {
     width: 430px;
@@ -135,6 +136,7 @@ body {
     text-align: center;
     top: 0px;
     opacity: 0;
+    white-space: nowrap;
 }
 #teamNameL {
     left: 298px;
@@ -162,6 +164,7 @@ body {
     line-height: 32px;
     text-align: center;
     font-family: "Roboto";
+    white-space: nowrap;
 }
 
 
@@ -178,6 +181,7 @@ body {
     bottom: 485px;
     opacity: 0;
     font-family: "LemonMilk";
+    white-space: nowrap;
 }
 
 #p1Intro {
@@ -197,6 +201,7 @@ body {
     position: absolute;
     text-align: center;
     opacity: 0;
+    white-space: nowrap;
 }
 
 #midTextIntro {

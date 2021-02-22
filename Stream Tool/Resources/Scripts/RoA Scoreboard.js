@@ -1,3 +1,5 @@
+'use strict';
+
 //animation stuff
 const pMove = 50; //distance to move for the player names (pixels)
 const pCharMove = 20; //distance to move for the character icons
@@ -82,6 +84,11 @@ async function getData(scInfo) {
 
 	const mainMenu = scInfo['forceMM'];
 
+	// if there is no team name, just display "[Color] Team"
+	for (let i = 0; i < maxSides; i++) {
+		if (!teamName[i]) teamName[i] = color[i] + " Team";
+	}
+
 
 	//first, things that will happen only once, when the html loads
 	if (startup) {
@@ -111,10 +118,10 @@ async function getData(scInfo) {
 					if (gamemode == 1) { //if singles, show player 1 and 2 names
 						pIntroEL.textContent = player[i].name;
 					} else { //if doubles
-						if (teamName[i]) { //if theres a team name, show it
-							pIntroEL.textContent = teamName[i];
-						} else { //else, show "p1 & p3" / "p2 & p4"
+						if (teamName[i] == color[i] + " Team") { //if theres no team name, show player names
 							pIntroEL.textContent = player[i].name + " & " + player[i+2].name;
+						} else { //else, show the team name
+							pIntroEL.textContent = teamName[i];
 						}
 					}
 
@@ -326,13 +333,22 @@ async function getData(scInfo) {
 				//check the player's side so we know the direction of the movement
 				const movement = (i % 2 == 0) ? -pMove : pMove;
 
-				//move and fade out the player 1's text
-				fadeOutMove(pWrapper[i], movement, () => {
-					//now that nobody is seeing it, quick, change the text's content!
-					updatePlayerName(i, player[i].name, player[i].tag, gamemode);
-					//fade the name back in with a sick movement
-					fadeInMove(pWrapper[i]);
-				});
+				//if this is singles, move the texts while updating
+				if (gamemode == 1) {
+					//move and fade out the player 1's text
+					fadeOutMove(pWrapper[i], movement, () => {
+						//now that nobody is seeing it, quick, change the text's content!
+						updatePlayerName(i, player[i].name, player[i].tag, gamemode);
+						//fade the name back in with a sick movement
+						fadeInMove(pWrapper[i]);
+					});
+				} else { //if not singles, dont move the texts
+					fadeOut(pWrapper[i], () => {
+						updatePlayerName(i, player[i].name, player[i].tag, gamemode);
+						fadeIn(pWrapper[i]);
+					});
+				}
+				
 			}
 
 			//player characters and skins
