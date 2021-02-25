@@ -59,7 +59,7 @@
   ],
   "allowIntro": false,
   "workshop": false,
-  "forceHD": false,
+  "forceHD": true,
   "noLoAHD": false,
   "forceMM": false
 }

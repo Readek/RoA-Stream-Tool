@@ -15,6 +15,8 @@
     <div id="bgVids">
         <video autoplay loop class="absol bgVid" id="vidBGP1"></video>
         <video autoplay loop class="absol bgVid" id="vidBGP2"></video>
+        <video autoplay loop class="absol bgVid dubEL" id="vidBGP3"></video>
+        <video autoplay loop class="absol bgVid dubEL" id="vidBGP4"></video>
     </div>
 
     <div id="colorGrads">
@@ -23,19 +25,39 @@
     </div>
 
     <div id="charas">
-        <div class="absol" id="oneEighty">
-            <div id="charaP1" class="chara">
-                <img class="character trail" id="trailP1" alt=""/>
-                <img class="character char" id="charP1"/>
+        
+        <div id="topRow">
+            <div class="absol singlesClip" id="clipP1">
+                <div id="charaP1" class="chara">
+                    <img class="character trail" id="trailP1" alt=""/>
+                    <img class="character char" id="charP1"/>
+                </div>
+            </div>
+    
+            <div class="mirrorP2 singlesClip" id="clipP2">
+                <div id="charaP2" class="chara">
+                    <img class="character trail" id="trailP2" alt=""/>
+                    <img class="character char" id="charP2"/>
+                </div>
             </div>
         </div>
 
-        <div class="mirrorP2" id="oneEighty">
-            <div id="charaP2" class="chara">
-                <img class="character trail" id="trailP2" alt=""/>
-                <img class="character char" id="charP2"/>
+        <div id="botRow" class="dubEL">
+            <div class="absol dubsClip">
+                <div id="charaP3" class="chara">
+                    <img class="character trail" id="trailP3" alt=""/>
+                    <img class="character char" id="charP3"/>
+                </div>
+            </div>
+    
+            <div class="mirrorP2 dubsClip">
+                <div id="charaP4" class="chara">
+                    <img class="character trail" id="trailP4" alt=""/>
+                    <img class="character char" id="charP4"/>
+                </div>
             </div>
         </div>
+
     </div>
 
     <div id="textBGs">
@@ -44,21 +66,34 @@
     </div>
     
     <div id="playerTexts">
-        <span id="p1Wrapper" class="wrappers">
+        <span id="p1Wrapper" class="wrappers p1WSingles wrappersSingles">
             <span id="p1Tag" class="tag"></span>
             <span id="p1Name" class="name"></span>
         </span>
 
-        <span id="p2Wrapper" class="wrappers">
+        <span id="p2Wrapper" class="wrappers p2WSingles wrappersSingles">
             <span id="p2Tag" class="tag"></span>
             <span id="p2Name" class="name"></span>
         </span>
 
+        <span id="p3Wrapper" class="wrappers wrappersDoubles dubEL">
+            <span id="p3Tag" class="tag"></span>
+            <span id="p3Name" class="name"></span>
+        </span>
+
+        <span id="p4Wrapper" class="wrappers wrappersDoubles dubEL">
+            <span id="p4Tag" class="tag"></span>
+            <span id="p4Name" class="name"></span>
+        </span>
+
+        <span id="teamNameL" class="teamName dubEL"></span>
+        <span id="teamNameR" class="teamName dubEL"></span>
+
     </div>
 
-    <img src="Resources/Overlay/VS Screen/VS Screen Overlay.png" class="absol" alt=""/>
+    <img src="Resources/Overlay/VS Screen/VS Overlay.png" id="vsOverlay" class="absol" alt=""/>
 
-    <div id="roundInfo">
+    <div id="roundInfo" class="absol">
         <span id="round" class="roundInfo"></span>
         <span id="tournament" class="roundInfo"></span>
     </div>
@@ -100,7 +135,7 @@
 
     </div>
 
-    <div id="scores">
+    <div id="scores" class="absol">
 
         <div id="scoresL">
 

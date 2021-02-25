@@ -10,6 +10,7 @@ const introDelay = .5; //all animations will get this delay when the html loads 
 //max text sizes (used when resizing back)
 const playerSize = '90px';
 const tagSize = '50px';
+const teamSize = '80px';
 const roundSize = '38px';
 const tournamentSize = '28px';
 const casterSize = '25px';
@@ -28,7 +29,7 @@ let colorList;
 
 //to avoid the code constantly running the same method over and over
 const pCharPrev = [], pSkinPrev = [], scorePrev = [], colorPrev = [];
-let bestOfPrev, prevWorkshop;
+let bestOfPrev, prevWorkshop, gamemodePrev;
 
 //variables for the twitter/twitch constant change
 let socialInt1, socialInt2;
@@ -37,7 +38,7 @@ let socialSwitch = true; //true = twitter, false = twitch
 const socialInterval = 7000;
 
 //to consider how many loops will we do
-const maxPlayers = 2; //will change when doubles comes
+let maxPlayers = 2; //will change when doubles comes
 const maxSides = 2;
 
 let startup = true;
@@ -47,6 +48,7 @@ let startup = true;
 const pWrapper = document.getElementsByClassName("wrappers");
 const pTag = document.getElementsByClassName("tag");
 const pName = document.getElementsByClassName("name");
+const teamNames = document.getElementsByClassName("teamName");
 const pChara = document.getElementsByClassName("chara");
 const pChar = document.getElementsByClassName("char");
 const pTrail = document.getElementsByClassName("trail");
@@ -78,13 +80,13 @@ setInterval( () => { mainLoop() }, 500); //update interval
 async function getData(scInfo) {
 
 	const player = scInfo['player'];
-	//const teamName = scInfo['teamName'];
+	const teamName = scInfo['teamName'];
 
 	const color = scInfo['color'];
 	const score = scInfo['score'];
 
 	const bestOf = scInfo['bestOf'];
-	//const gamemode = scInfo['gamemode'];
+	const gamemode = scInfo['gamemode'];
 
 	const round = scInfo['round'];
 	const tournamentName = scInfo['tournamentName'];
@@ -100,8 +102,7 @@ async function getData(scInfo) {
 
 	//check if we are forcing HD skins
 	if (scInfo['forceHD']) {
-		for (let i = 0; i < maxPlayers; i++) {
-			
+		for (let i = 0; i < 4; i++) {
 			//check if we dont want to show the LoA renders
 			if (player[i].skin.includes("LoA") && !scInfo['noLoAHD']) {
 				player[i].skin = "LoA HD";
@@ -122,6 +123,14 @@ async function getData(scInfo) {
 
 		//initialize the colors list
 		colorList = await getColorInfo();
+
+
+		//if this isnt a singles match, rearrange stuff
+		if (gamemode != 1) {
+			changeGM(gamemode);
+		}
+		//save this variable so we know the next time it gets changed
+		gamemodePrev = gamemode;
 		
 
 		//this is on top of everything else because the await would desync the rest
@@ -142,7 +151,7 @@ async function getData(scInfo) {
 
 
 			//change the player's character image, and position it
-			updateChar(player[i].character, player[i].skin, color[i], i, pCharInfo[i], startup)
+			updateChar(player[i].character, player[i].skin, color[i%2], i, pCharInfo[i], startup)
 			//character will fade in when the image finishes loading
 
 			//save character info so we change them later if different
@@ -159,8 +168,14 @@ async function getData(scInfo) {
 		// this will run for each side (so twice)
 		for (let i = 0; i < maxSides; i++) {
 
+			//update team names (if gamemode is not set to singles)
+			if (gamemode != 1) {
+				updateText(teamNames[i], teamName[i], teamSize);
+				fadeIn(teamNames[i], introDelay+.15);
+			}
+
 			//set the colors
-			updateColor(colorBG[i], textBG[i], color[i]);
+			updateColor(colorBG[i], textBG[i], color[i], i, gamemode);
 			colorPrev[i] = color[i];
 
 			//initialize the score ticks
@@ -233,13 +248,23 @@ async function getData(scInfo) {
 			prevWorkshop = workshop;
 		}
 
+		//of course, check if the gamemode has changed
+		if (gamemodePrev != gamemode) {
+			changeGM(gamemode);	
+			//some things need to be changed
+			for (let i = 0; i < maxSides; i++) {
+				updateColor(colorBG[i], textBG[i], color[i], i, gamemode);
+			}	
+			gamemodePrev = gamemode;
+		}
+
 
 		for (let i = 0; i < maxSides; i++) {
 
 			//color change, this is up here before char/skin change so it doesnt change the
 			//trail to the next one if the character has changed, but it will change its color
 			if (colorPrev[i] != color[i]) {
-				updateColor(colorBG[i], textBG[i], color[i]);
+				updateColor(colorBG[i], textBG[i], color[i], i, gamemode);
 				colorTrail(pTrail[i], pCharPrev[i], pSkinPrev[i], color[i], pCharInfo[i]);
 				updateScore(i, score[i], color[i]);
 				colorPrev[i] = color[i];
@@ -260,6 +285,21 @@ async function getData(scInfo) {
 
 				scorePrev[i] = score[i];
 
+			}
+
+			//did any of the team names change?
+			if (gamemode != 1) {
+				if (teamNames[i].textContent != teamName[i]) {
+
+					//hide the text before doing anything
+					fadeOut(teamNames[i], () => {
+						//update the text while nobody can see it
+						updateText(teamNames[i], teamName[i], teamSize);
+						//and fade it back to normal
+						fadeIn(teamNames[i]);
+
+					});
+				}
 			}
 
 		}
@@ -294,7 +334,7 @@ async function getData(scInfo) {
 				//move and fade out the character
 				charaFadeOut(pChara[i], () => {
 					//update the character image and trail, and also storing its scale for later
-					updateChar(player[i].character, player[i].skin, color[i], i, pCharInfo[i]);
+					updateChar(player[i].character, player[i].skin, color[i%2], i, pCharInfo[i]);
 					//will fade back in when the images load
 				});
 
@@ -375,6 +415,87 @@ async function getData(scInfo) {
 }
 
 
+// the gamemode manager
+function changeGM(gm) {
+	if (gm == 2) {
+
+		maxPlayers = 4;
+
+		//change the white overlay
+		document.getElementById("vsOverlay").src = "Resources/Overlay/VS Screen/VS Overlay Dubs.png";
+
+		//make all the extra doubles elements visible
+		const dubELs = document.getElementsByClassName("dubEL");
+		for (let i = 0; i < dubELs.length; i++) {
+			dubELs[i].style.display = "flex";
+		}
+
+		//change the positions for the text backgrounds (will now be used for the team names)
+		for (let i = 0; i < maxSides; i++) {
+			textBG[i].style.bottom = "477px";
+		}
+		textBG[1].style.right = "-10px";
+
+		//move the match info to the center of the screen
+		document.getElementById("roundInfo").style.top = "434px";
+		document.getElementById("casterInfo").style.top = "417px";
+		document.getElementById("scores").style.top = "415px";
+
+		//reposition the top characters (bot ones are already positioned)
+		document.getElementById("topRow").style.top = "-145px";
+		//change the clip mask
+		document.getElementById("clipP1").classList.remove("singlesClip");
+		document.getElementById("clipP1").classList.add("dubsClip");
+		document.getElementById("clipP2").classList.remove("singlesClip");
+		document.getElementById("clipP2").classList.add("dubsClip");
+		
+		//lastly, change the positions for the player texts
+		for (let i = 0; i < 2; i++) {
+			pWrapper[i].classList.remove("wrappersSingles");
+			pWrapper[i].classList.add("wrappersDoubles");
+			pWrapper[i].classList.remove("p"+(i+1)+"WSingles");
+			pWrapper[i].classList.add("p"+(i+1)+"WDub");
+			resizeText(pWrapper[i]);
+		}
+
+	} else {
+
+		maxPlayers = 2
+
+		document.getElementById("vsOverlay").src = "Resources/Overlay/VS Screen/VS Overlay.png";
+
+		//hide the extra elements
+		const dubELs = document.getElementsByClassName("dubEL");
+		for (let i = 0; i < dubELs.length; i++) {
+			dubELs[i].style.display = "none";
+		}
+
+		//move everything back to where it was
+		for (let i = 0; i < maxSides; i++) {
+			textBG[i].style.bottom = "0px";
+		}
+		textBG[1].style.right = "-2px";
+		document.getElementById("roundInfo").style.top = "0px";
+		document.getElementById("casterInfo").style.top = "0px";
+		document.getElementById("scores").style.top = "0px";
+		document.getElementById("topRow").style.top = "0px";
+		document.getElementById("clipP1").classList.remove("dubsClip");
+		document.getElementById("clipP1").classList.add("singlesClip");
+		document.getElementById("clipP2").classList.remove("dubsClip");
+		document.getElementById("clipP2").classList.add("singlesClip");
+		for (let i = 0; i < 2; i++) {
+			pWrapper[i].classList.remove("wrappersDoubles");
+			pWrapper[i].classList.add("wrappersSingles");
+			pWrapper[i].classList.remove("p"+(i+1)+"WDub");
+			pWrapper[i].classList.add("p"+(i+1)+"WSingles");
+			updatePlayerName(i, "", "", gm); //resize didnt do anything here for some reason
+		}
+		
+	}
+
+}
+
+
 //score change, pretty simple
 function updateScore(side, pScore, pColor) {
 
@@ -404,14 +525,22 @@ function updateScore(side, pScore, pColor) {
 
 
 //color change
-function updateColor(gradEL, textBGEL, color) {
+function updateColor(gradEL, textBGEL, color, i, gamemode) {
 
 	//change the color gradient image path depending on the color
-	gradEL.src = 'Resources/Overlay/VS Screen/Grad ' + color + '.png';
+	gradEL.src = 'Resources/Overlay/VS Screen/Grads/' + color + '.png';
 
 	//same but with the text background
-	textBGEL.src = 'Resources/Overlay/VS Screen/Text BG ' + color + '.png';
+	textBGEL.src = 'Resources/Overlay/VS Screen/Text BGs/' + gamemode + '/' + color + '.png';
 	
+	if (gamemode == 2) {
+		pWrapper[i].style.backgroundColor = getHexColor(color)+"ff";
+		pWrapper[i+2].style.backgroundColor = getHexColor(color)+"ff";		
+	} else {
+		pWrapper[i].style.backgroundColor = "";
+		pWrapper[i+2].style.backgroundColor = "";	
+	}
+
 }
 
 //so we can get the exact color used by the game!
@@ -694,6 +823,7 @@ function updateChar(pCharacter, pSkin, color, pNum, charInfo, startup = false) {
 	//change the image path depending on the character and skin
 	charEL.src = charPath + pCharacter + '/' + pSkin + '.png';
 
+	console.log(color);
 	//             x, y, scale
 	let charPos = [0, 0, 1];
 	//now, check if the character or skin exists in the json file we checked earler

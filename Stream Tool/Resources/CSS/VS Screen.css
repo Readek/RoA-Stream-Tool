@@ -28,10 +28,15 @@ body {
     transform: scaleX(-1);
 }
 
-#oneEighty {
+.singlesClip {
     width: 1920px;
     height: 1080px;
     clip: rect(0px, 960px, 1080px, 0px);
+}
+.dubsClip {
+    width: 1920px;
+    height: 1080px;
+    clip: rect(100px, 960px, 700px, 0px);
 }
 
 .mirrorP2 {
@@ -49,9 +54,14 @@ body {
 #vidBGP1 {
     clip: rect(0px, 960px, 1080px, 0px);
 }
-
 #vidBGP2 {
     clip: rect(0px, 1920px, 1080px, 960px);
+}
+#vidBGP3 {
+    clip: rect(540px, 960px, 1080px, 0px);
+}
+#vidBGP4 {
+    clip: rect(540px, 1920px, 1080px, 960px);
 }
 
 
@@ -77,14 +87,19 @@ body {
     opacity: 0;
 }
 
+#topRow {
+    position: absolute;
+    width: 1920px;
+}
+#botRow {
+    position: absolute;
+    width: 1920px;
+    top: 450px;
+}
+
 
 .wrappers {
     position: absolute;
-    transform: rotate(-3deg);
-    width: 940px;
-    height: 120px;
-    bottom: 90px;
-    line-height: 90px;
     font-family: "LemonMilk";
     text-align: center;
     white-space: nowrap;
@@ -92,12 +107,47 @@ body {
     opacity: 0;
 }
 
-#p1Wrapper {
-    left: 10px;
+.wrappersSingles {
+    transform: rotate(-3deg);
+    width: 940px;
+    height: 120px;
+    bottom: 90px;
+    line-height: 90px;
+}
+.wrappersDoubles {
+    width: 300px;
+    height: 64px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-#p2Wrapper {
+.p1WSingles {
+    left: 10px;
+}
+.p2WSingles {
     right: 10px;
+}
+
+.p1WDub {
+    top: 50px;
+    left: 40px;
+    transform: rotate(-5deg);
+}
+.p2WDub {
+    top: 50px;
+    right: 40px;
+    transform: rotate(5deg);
+}
+#p3Wrapper {
+    bottom: 50px;
+    left: 40px;
+    transform: rotate(5deg);
+}
+#p4Wrapper {
+    bottom: 50px;
+    right: 40px;
+    transform: rotate(-5deg);
 }
 
 .name {
@@ -106,6 +156,29 @@ body {
 
 .tag {
     color: lightgray;
+}
+
+
+.teamName {
+    position: absolute;
+    width: 690px;
+    height: 90px;
+    top: 495px;
+    font-family: "LemonMilk";
+    white-space: nowrap;
+    text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.7);
+    opacity: 0;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#teamNameL {
+    left: 25px;
+}
+#teamNameR {
+    right: 25px;
 }
 
 
@@ -134,6 +207,11 @@ body {
     line-height: 28px;
 }
 
+
+#casterInfo {
+    position: absolute;
+    width: 1920px;
+}
 
 .caster {
     position: absolute;
@@ -194,6 +272,11 @@ body {
     right: 765px;
 }
 
+
+#scores {
+    position: absolute;
+    width: 1920px;
+}
 
 .scoreTick {
     position: absolute;
