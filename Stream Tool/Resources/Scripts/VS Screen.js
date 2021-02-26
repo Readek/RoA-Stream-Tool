@@ -112,6 +112,12 @@ async function getData(scInfo) {
 			
 		}
 	}
+	
+	// if there is no team name, just display "[Color] Team"
+	for (let i = 0; i < maxSides; i++) {
+		if (!teamName[i]) teamName[i] = color[i] + " Team";
+	}
+	
 
 	//first, things that will happen only the first time the html loads
 	if (startup) {
@@ -151,7 +157,7 @@ async function getData(scInfo) {
 
 
 			//change the player's character image, and position it
-			updateChar(player[i].character, player[i].skin, color[i%2], i, pCharInfo[i], startup)
+			updateChar(player[i].character, player[i].skin, color[i%2], i, pCharInfo[i], gamemode, startup)
 			//character will fade in when the image finishes loading
 
 			//save character info so we change them later if different
@@ -251,10 +257,10 @@ async function getData(scInfo) {
 		//of course, check if the gamemode has changed
 		if (gamemodePrev != gamemode) {
 			changeGM(gamemode);	
-			//some things need to be changed
+			//calling updateColor here so the text background gets added
 			for (let i = 0; i < maxSides; i++) {
 				updateColor(colorBG[i], textBG[i], color[i], i, gamemode);
-			}	
+			}
 			gamemodePrev = gamemode;
 		}
 
@@ -266,6 +272,10 @@ async function getData(scInfo) {
 			if (colorPrev[i] != color[i]) {
 				updateColor(colorBG[i], textBG[i], color[i], i, gamemode);
 				colorTrail(pTrail[i], pCharPrev[i], pSkinPrev[i], color[i], pCharInfo[i]);
+				//if this is doubles, we also need to change the colors for players 3 and 4
+				if (gamemode == 2) {
+					colorTrail(pTrail[i+2], pCharPrev[i+2], pSkinPrev[i+2], color[i], pCharInfo[i+2]);
+				}
 				updateScore(i, score[i], color[i]);
 				colorPrev[i] = color[i];
 			}
@@ -334,7 +344,7 @@ async function getData(scInfo) {
 				//move and fade out the character
 				charaFadeOut(pChara[i], () => {
 					//update the character image and trail, and also storing its scale for later
-					updateChar(player[i].character, player[i].skin, color[i%2], i, pCharInfo[i]);
+					updateChar(player[i].character, player[i].skin, color[i%2], i, pCharInfo[i], gamemode);
 					//will fade back in when the images load
 				});
 
@@ -442,7 +452,7 @@ function changeGM(gm) {
 		document.getElementById("scores").style.top = "415px";
 
 		//reposition the top characters (bot ones are already positioned)
-		document.getElementById("topRow").style.top = "-145px";
+		document.getElementById("topRow").style.top = "-180px";
 		//change the clip mask
 		document.getElementById("clipP1").classList.remove("singlesClip");
 		document.getElementById("clipP1").classList.add("dubsClip");
@@ -814,7 +824,7 @@ function getCharInfo(pCharacter) {
 
 
 //character update!
-function updateChar(pCharacter, pSkin, color, pNum, charInfo, startup = false) {
+function updateChar(pCharacter, pSkin, color, pNum, charInfo, gamemode, startup = false) {
 
 	//store so code looks cleaner later
 	const charEL = pChar[pNum];
@@ -823,7 +833,6 @@ function updateChar(pCharacter, pSkin, color, pNum, charInfo, startup = false) {
 	//change the image path depending on the character and skin
 	charEL.src = charPath + pCharacter + '/' + pSkin + '.png';
 
-	console.log(color);
 	//             x, y, scale
 	let charPos = [0, 0, 1];
 	//now, check if the character or skin exists in the json file we checked earler
@@ -841,12 +850,18 @@ function updateChar(pCharacter, pSkin, color, pNum, charInfo, startup = false) {
 		}
 	} else { //if the character isnt on the database, set positions for the "?" image
 		//this condition is used just to position images well on both sides
-		if (charEL == document.getElementById("charP1")) {
+		if (pNum % 2 == 0) {
 			charPos[0] = -475;
 		} else {
 			charPos[0] = -500;
 		}
-		charPos[1] = 0; charPos[2] = .8;
+		//if doubles, we need to move it up a bit
+		if (gamemode == 2) {
+			charPos[1] = -125;
+		} else {
+			charPos[1] = 0;
+		}
+		charPos[2] = .8;
 		trailEL.src = charPath + pCharacter + '/Trails/' + color + '.png';
 	}
 
