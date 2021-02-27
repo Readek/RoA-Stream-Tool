@@ -834,7 +834,7 @@ function updateChar(pCharacter, pSkin, color, pNum, charInfo, gamemode, startup 
 	charEL.src = charPath + pCharacter + '/' + pSkin + '.png';
 
 	//             x, y, scale
-	let charPos = [0, 0, 1];
+	const charPos = [0, 0, 1];
 	//now, check if the character or skin exists in the json file we checked earler
 	if (charInfo != "notFound") {
 		if (charInfo.vsScreen[pSkin]) { //if the skin has a specific position
