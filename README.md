@@ -53,11 +53,9 @@ Yes, the instructions above are enough, but we can do better. **All of this is o
 - On the scene's right click menu, set it to Transition Override to the transition you just created.
 - Also, you may want to set a hotkey to transition to the game scene so you can press enter ingame to start the replay and press the transition key at the same time. The transition is timed to do so.
 
-Let's do something a bit more advanced. We now have 2 tiny problems. On online replays, [the overlay won't cover the player's icon on the top HUD](https://cdn.discordapp.com/attachments/574303886869790730/705102043102052363/game_hud_oh_no.png), but don't worry, we can fix that! Also, woudn't it be cool to remove the "3, 2, 1" numbers that the game plays when starting a game, so we can properly show our own intro? We can also do that [(heres a gfy of the process to help)](https://gfycat.com/determinedthunderousgavial):
-- Download [these super cool rips](https://drive.google.com/open?id=1NEDii3B50eHT_goADzn6t3_O8Uvok0Gs), RIPs 36, 37 and 38 will remove the "*3, 2, 1*" as well as the ranked player borders, and RIP_42 will remove the icon border of the top HUD. I'll try to keep them updated.
-- Get the [Rivals Modding Tool](https://github.com/jam1garner/rivals-modding-tool/), and extract it in the game's folder.
-- Create a folder named `sprites` on the game's folder, and drop the rips there.
-- Open the exe, select `Replace sprites`.
+It is very much recommended that you turn off the in-game top HUD. The overlay wont cover the [player's icons on the top corners](https://cdn.discordapp.com/attachments/574303886869790730/705102043102052363/game_hud_oh_no.png), and that will fix it.
+
+Also, you may find the "3 2 1" of the game's intro a bit distracting when combined with the scoreboard intro. [These](https://drive.google.com/open?id=1NEDii3B50eHT_goADzn6t3_O8Uvok0Gs) are the sprites to remove them (using the [Modding Tool](https://github.com/jam1garner/gm_data_win/releases/latest)).
 
 ---
 
