@@ -60,17 +60,15 @@ Also, you may find the "3 2 1" of the game's intro a bit distracting when combin
 ---
 
 ## Other stuff...
-Do you want to customize something? Do you need some OBS tips and tricks for a RoA stream? **Please, go to the [wiki](https://github.com/Readek/RoA-Stream-Control/wiki)**!
+Hey, Ateozc speakin for the remainder of this...
 
-Do you want to adapt this project to another game but can't figure out how to? Lucky for you, I'm open for commisions! Contact me on Twitter [@Readeku](https://twitter.com/Readeku) or on Discord `Readek#5869`!
+Still gotta update this read me here for the stuff I added. I know. I probably should have done that ahead of time. But I am lazy and did this last minute. 
 
-Do you want to support this project? [Buy me a ko-fi](https://ko-fi.com/readek) or tip me [directly](https://streamlabs.com/readek/tip)!
+If you are looking for the OBS stuff I did using Python, I'll update this on how to use that stuff sooner or later. Dont worry. If you are python savvy, just make sure you install latest python and you should be good to go. Dont recall if i installed anything special. None of that is packaged, so feel free to edit as you need.
 
----
+Other than that, yea. I messed with Readek's stuff and made my own version. If you want to message me on Twitter you can find me at https://twitter.com/ateozc.
 
-Also, you may wonder, what happened to the old, [lua scripted version](https://drive.google.com/open?id=15o52oz89siOJ5f_toD7zZDjp22dn2t73) of this controller? Well, turns out obs is just not ready for this kind of stuff. Current version of OBS doesn't have any kind of animator, and has to stutter to load every image you want to change, so it was really hard to get around that. Also, was much harder to update. With the javascript version, I wanted to make things better so I could update it with more ease. Anyways, the link of the old version will stay up if you ever want to know about lua obs scripting!
-
----
 
 ### Closing notes
-This project is basically my learning grounds as a web developer. This is actually where I started learning javascript! As such, the code you're about to see may be unoptimized or badly written, so if you know how the web dev world works, please leave suggestions about how to improve the project as pull requests, or take a look at the [issues page](https://github.com/Readek/RoA-Stream-Tool/issues) to see if you can help with those! Any help will be greatly appreciated.
+I do programming for a living. This is a side hobby, along with running events here in Chicago.
+If you have any questions let me know. Lots of the stuff you see here was done because I wanted it for myself lol.
