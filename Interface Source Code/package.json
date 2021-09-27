@@ -1,6 +1,6 @@
 {
   "name": "roa-st-gui",
-  "productName": "RoA ST",
+  "productName": "RoA Stream Tool - Ateozc Build",
   "version": "1.0.0",
   "description": "An electron interface for RoA tournament streams.",
   "main": "src/index.js",
@@ -11,7 +11,7 @@
     "publish": "electron-forge publish",
     "lint": "echo \"No linting configured\"",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "electron-builder --win=portable"
   },
   "keywords": [],
   "author": {
@@ -26,7 +26,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "RoA_ST_GUI"
+            "name": "roa_st_gui"
           }
         },
         {
@@ -50,18 +50,24 @@
     "electron-squirrel-startup": "^1.0.0"
   },
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.51",
-    "@electron-forge/maker-deb": "^6.0.0-beta.51",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.51",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.51",
-    "@electron-forge/maker-zip": "^6.0.0-beta.51",
-    "electron": "9.0.5",
-    "electron-builder": "^22.8.0"
+    "@electron-forge/cli": "^6.0.0-beta.59",
+    "@electron-forge/maker-deb": "^6.0.0-beta.59",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.59",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.59",
+    "@electron-forge/maker-zip": "^6.0.0-beta.59",
+    "electron": "^9.0.5",
+    "npm2yarn": "^1.0.0"
   },
   "build": {
     "appId": "test.testo.testu",
     "linux": {
       "target": "AppImage"
     }
+  },
+  "win": { 
+    "target": ["portable"] 
+  },
+  "portable": { 
+    "artifactName": "RoA Stream Tool.exe" 
   }
 }

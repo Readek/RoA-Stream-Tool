@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>RoA Stream Tool</title>
+    <title>RoA Stream Tool (Ateozc Custom)</title>
     <link rel="stylesheet" href="index.css">
     <script src="mousetrap.min.js" defer></script>
     <script src="gui.js" defer></script>
@@ -38,6 +38,8 @@
                   <div class="pFinderPosition" id="pFinderBox1">
                     <input type="text" id="p1Name" class="textInput mousetrap nameInput" tabindex="2" placeholder="Player 1" title="Insert P1's name here" spellcheck="false">
                     <div class="playerFinder" id="pFinder1"></div>
+                    <input type="text" id="p1Twitter" class="textInput mousetrap twitterInput" tabindex="2" placeholder="Twitter" title="Insert P1's Twitter here" spellcheck="false">
+                    <input type="text" id="p1Pronouns" class="textInput mousetrap pronounInput" tabindex="2" placeholder="Pronouns" title="Insert P1's Pronouns here" spellcheck="false">
                   </div>
 
                 </div>
@@ -69,6 +71,8 @@
                   <div class="pFinderPosition" id="pFinderBox3">
                     <input type="text" id="p3Name" class="textInput mousetrap nameInput" tabindex="3" placeholder="Player 3" title="Insert P3's name here" spellcheck="false">
                     <div class="playerFinder" id="pFinder3"></div>
+                    <input type="text" id="p3Twitter" class="textInput mousetrap nameInput" tabindex="2" placeholder="Twitter" title="Insert P3's Twitter here" spellcheck="false">
+                    <input type="text" id="p3Pronouns" class="textInput mousetrap pronounInput" tabindex="2" placeholder="Pronouns" title="Insert P3's Pronouns here" spellcheck="false">
                   </div>
 
                 </div>
@@ -122,8 +126,9 @@
                   <input type="text" id="p2Tag" class="textInput mousetrap tagInput" tabindex="2" placeholder="Tag" title="Insert the tag/team/sponsor here." spellcheck="false">
                   <div class="pFinderPosition" id="pFinderBox2">
                     <input type="text" id="p2Name" class="textInput mousetrap nameInput" tabindex="2" placeholder="Player 2" title="Insert P2's name here." spellcheck="false">
-                    <div class="playerFinder" id="pFinder2">
-                    </div>
+                    <div class="playerFinder" id="pFinder2"></div>
+                    <input type="text" id="p2Twitter" class="textInput mousetrap twitterInput" tabindex="2" placeholder="Twitter" title="Insert P2's Twitter here" spellcheck="false">
+                    <input type="text" id="p2Pronouns" class="textInput mousetrap pronounInput" tabindex="2" placeholder="Pronouns" title="Insert P2's Pronouns here" spellcheck="false">
                   </div>
                 </div>
                 
@@ -155,6 +160,8 @@
                   <div class="pFinderPosition" id="pFinderBox4">
                     <input type="text" id="p4Name" class="textInput mousetrap nameInput" tabindex="3" placeholder="Player 4" title="Insert P4's name here" spellcheck="false">
                     <div class="playerFinder" id="pFinder4"></div>
+                    <input type="text" id="p4Twitter" class="textInput mousetrap nameInput" tabindex="2" placeholder="Twitter" title="Insert P4's Twitter here" spellcheck="false">
+                    <input type="text" id="p4Pronouns" class="textInput mousetrap pronounInput" tabindex="2" placeholder="Pronouns" title="Insert P4's Pronouns here" spellcheck="false">
                   </div>
 
                 </div>
@@ -185,7 +192,8 @@
             <div id="bo5Div" class="bestOfBox">Best of 5</div>
           </div>
 
-          <input type="text" id="roundName" class="textInput mousetrap" placeholder="Current Round" spellcheck="false" tabindex="4">
+          <select id="roundName" class="textInput mousetrap" title="Current Round" tabindex="4"></select>
+          <input type="text" id="roundNumber" class="textInput mousetrap" placeholder="0" spellcheck="false" tabindex="4">
           <input type="text" id="tournamentName" class="textInput mousetrap" placeholder="Tournament Name" spellcheck="false" tabindex="4">
         
           <div id="gamemode" title="Change the gamemode to Doubles">
@@ -270,7 +278,7 @@
         <div id="actualSettings">
 
           <div class="settingBox" title="Plays an intro on 'RoA Scoreboard.html' whenever the file loads.">
-            <input type="checkbox" id="allowIntro" class="settingsCheck" tabindex="-1">
+            <input type="checkbox" id="allowIntro" class="settingsCheck" tabindex="-1" checked>
             <label for="allowIntro" class="settingsText">Allow Intro</span>
           </div>
 
@@ -281,19 +289,19 @@
 
           <div class="settingBox" id="mmTool" title="Forces showing the 'Main Menu' character
 renders on 'RoA Scoreboard.html'.">
-            <input type="checkbox" id="forceMM" class="settingsCheck" tabindex="-1">
+            <input type="checkbox" id="forceMM" class="settingsCheck" tabindex="-1" checked>
             <label for="forceMM" id="mmText" class="settingsText">Main Menu renders in Scoreboard</span>
           </div>
 
           <div class="settingBox" title="Forces HD renders to appear on the VS screen,
 while keeping the regular renders for the scoreboard.">
-            <input type="checkbox" id="forceHD" class="settingsCheck" tabindex="-1">
+            <input type="checkbox" id="forceHD" class="settingsCheck" tabindex="-1" checked>
             <label for="forceHD" class="settingsText">HD renders in VS Screen</span>
           </div>
 
           <div class="settingBox" title="Will just show regular HD renders in the
 VS Screen even when LoA skins are selected.">
-            <input type="checkbox" id="noLoAHD" class="settingsCheck" disabled tabindex="-1">
+            <input type="checkbox" id="noLoAHD" class="settingsCheck" tabindex="-1">
             <label for="noLoAHD" class="settingsText">No LoA HD renders</span>
           </div>
           

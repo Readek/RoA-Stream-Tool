@@ -1,0 +1,27 @@
+{
+    "name": "Seggo",
+    "twitter": "@SeggoAhmet",
+    "tag": "PINK",
+    "characters": [
+        {
+            "character": "Random",
+            "skin": ""
+        },
+        {
+            "character": "Elliana",
+            "skin": "Grey"
+        },
+        {
+            "character": "Wrastor",
+            "skin": "Red"
+        },
+        {
+            "character": "Shovel Knight",
+            "skin": "Infamous"
+        },
+        {
+            "character": "Kragg",
+            "skin": "Halloween"
+        }
+    ]
+}

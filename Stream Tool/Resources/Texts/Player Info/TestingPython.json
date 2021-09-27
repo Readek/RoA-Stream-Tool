@@ -1,0 +1,15 @@
+{
+  "name": "TestingPython",
+  "twitter": "@test",
+  "tag": "test",
+  "characters": [
+    {
+      "character": "Orcane",
+      "skin": "Red"
+    },
+    {
+      "character": "Clairen",
+      "skin": "Orange"
+    }
+  ]
+}

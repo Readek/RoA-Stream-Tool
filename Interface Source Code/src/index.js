@@ -13,16 +13,16 @@ const createWindow = () => {
     width: 600,
     height: 300,
     
-    minWidth: 600,
-    maxWidth: 600,
+    minWidth: 750,
+    maxWidth: 1080,
 
     //linux
     minHeight: 300,
     maxHeight: 300,
 
     //windows
-    /* minHeight: 358,
-    maxHeight: 358, */
+    minHeight: 358, // 358
+    maxHeight: 358, //358
 
     webPreferences: {
       nodeIntegration: true,
@@ -33,7 +33,7 @@ const createWindow = () => {
   mainWindow.removeMenu();
 
   //web console
-  /* mainWindow.webContents.openDevTools(); */
+  // mainWindow.webContents.openDevTools();
 
   // load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, 'index.html'));

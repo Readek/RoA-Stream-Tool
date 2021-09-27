@@ -1,0 +1,15 @@
+{
+    "name": "spade",
+    "twitter": "@LoKSpade",
+    "tag": "KT",
+    "characters": [
+        {
+            "character": "Sylvanos",
+            "skin": "Genesis"
+        },
+        {
+            "character": "Wrastor",
+            "skin": "Champion"
+        }
+    ]
+}

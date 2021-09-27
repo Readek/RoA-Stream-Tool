@@ -1,0 +1,15 @@
+{
+  "name": "anotherPlayer",
+  "twitter": "test2",
+  "tag": "test",
+  "characters": [
+    {
+      "character": "Clairen",
+      "skin": "Christmas"
+    },
+    {
+      "character": "Elliana",
+      "skin": "Blue"
+    }
+  ]
+}

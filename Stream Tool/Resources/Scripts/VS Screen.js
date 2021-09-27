@@ -48,6 +48,7 @@ let startup = true;
 const pWrapper = document.getElementsByClassName("wrappers");
 const pTag = document.getElementsByClassName("tag");
 const pName = document.getElementsByClassName("name");
+const pPronouns = document.getElementsByClassName("pronouns");
 const teamNames = document.getElementsByClassName("teamName");
 const pChara = document.getElementsByClassName("chara");
 const pChar = document.getElementsByClassName("char");
@@ -88,7 +89,9 @@ async function getData(scInfo) {
 	const bestOf = scInfo['bestOf'];
 	const gamemode = scInfo['gamemode'];
 
-	const round = scInfo['round'];
+	const wl = scInfo['wl'];
+	const round = (scInfo['round'] == "Grand Finals" && (wl[0] == "L" && wl[1] == "L")) ? scInfo['round'] += " - Reset" : scInfo['round'];
+
 	const tournamentName = scInfo['tournamentName'];
 
 	const caster = scInfo['caster'];
@@ -150,7 +153,7 @@ async function getData(scInfo) {
 		for (let i = 0; i < maxPlayers; i++) {
 
 			//lets start simple with the player names & tags 
-			updatePlayerName(i, player[i].name, player[i].tag);
+			updatePlayerName(i, player[i].name, player[i].tag, player[i].pronouns);
 
 			//fade in the player text
 			fadeIn(pWrapper[i], introDelay+.15);
@@ -327,11 +330,11 @@ async function getData(scInfo) {
 		for (let i = 0; i < maxPlayers; i++) {
 
 			// players name change, if either name or tag have changed
-			if (pName[i].textContent != player[i].name || pTag[i].textContent != player[i].tag) {
+			if (pName[i].textContent != player[i].name || pTag[i].textContent != player[i].tag || pPronouns[i].textContent != player[i].pronouns) {
 				//fade out the player's text
 				fadeOut(pWrapper[i], () => {
 					//now that nobody is seeing it, change the content of the texts!
-					updatePlayerName(i, player[i].name, player[i].tag);
+					updatePlayerName(i, player[i].name, player[i].tag, player[i].pronouns);
 					//and fade the texts back in
 					fadeIn(pWrapper[i], .2);
 				});
@@ -498,7 +501,7 @@ function changeGM(gm) {
 			pWrapper[i].classList.add("wrappersSingles");
 			pWrapper[i].classList.remove("p"+(i+1)+"WDub");
 			pWrapper[i].classList.add("p"+(i+1)+"WSingles");
-			updatePlayerName(i, "", "", gm); //resize didnt do anything here for some reason
+			updatePlayerName(i, "", "", "", gm); //resize didnt do anything here for some reason
 		}
 		
 	}
@@ -698,11 +701,13 @@ function updateSocial(mainSocial, mainText, mainWrapper, otherSocial, otherWrapp
 
 
 //player text change
-function updatePlayerName(pNum, name, tag) {
+function updatePlayerName(pNum, name, tag, pronouns) {
 	pName[pNum].style.fontSize = playerSize; //set original text size
 	pName[pNum].textContent = name; //change the actual text
 	pTag[pNum].style.fontSize = tagSize;
 	pTag[pNum].textContent = tag;
+	pPronouns[pNum].style.fontSize = tagSize;
+	pPronouns[pNum].textContent = pronouns;
 
 	resizeText(pWrapper[pNum]); //resize if it overflows
 }

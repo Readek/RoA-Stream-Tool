@@ -1,41 +1,49 @@
 {
   "player": [
     {
-      "name": "Player 1",
+      "name": "",
+      "twitter": "",
+      "pronouns": "",
       "tag": "",
-      "character": "Elliana",
-      "skin": "Default"
+      "character": "Random",
+      "skin": ""
     },
     {
-      "name": "Player 2",
-      "tag": "Tag",
-      "character": "Kragg",
-      "skin": "Default"
-    },
-    {
-      "name": "Player 3",
-      "tag": "Tag",
-      "character": "Maypul",
-      "skin": "Arcade Pink"
-    },
-    {
-      "name": "Player 4",
+      "name": "",
+      "twitter": "",
+      "pronouns": "",
       "tag": "",
-      "character": "Clairen",
-      "skin": "Arcade Green"
+      "character": "Random",
+      "skin": ""
+    },
+    {
+      "name": "",
+      "twitter": "",
+      "pronouns": "",
+      "tag": "",
+      "character": "Random",
+      "skin": ""
+    },
+    {
+      "name": "",
+      "twitter": "",
+      "pronouns": "",
+      "tag": "",
+      "character": "Random",
+      "skin": ""
     }
   ],
   "teamName": [
-    "Team 1 Name",
-    "Team 2 Name"
+    "",
+    ""
   ],
   "color": [
     "Red",
     "Blue"
   ],
   "score": [
-    1,
-    2
+    0,
+    0
   ],
   "wl": [
     "Nada",
@@ -43,23 +51,24 @@
   ],
   "bestOf": "Bo5",
   "gamemode": 1,
-  "round": "Winners Finals",
-  "tournamentName": "A Tournament #123",
+  "round": "Friendlies",
+  "tournamentName": "",
   "caster": [
     {
-      "name": "Caster 1",
-      "twitter": "Twitter 1",
-      "twitch": "Twitch 1"
+      "name": "",
+      "twitter": "",
+      "twitch": ""
     },
     {
-      "name": "Caster 2",
-      "twitter": "Twitter 2",
-      "twitch": "Twitch 2"
+      "name": "",
+      "twitter": "",
+      "twitch": ""
     }
   ],
-  "allowIntro": false,
+  "allowIntro": true,
   "workshop": false,
+  "forceMM": true,
   "forceHD": true,
   "noLoAHD": false,
-  "forceMM": true
+  "forceWL": false
 }

@@ -1,0 +1,19 @@
+{
+  "name": "NewPlayer",
+  "twitter": "@test",
+  "tag": "Test",
+  "characters": [
+    {
+      "character": "Clairen",
+      "skin": "Default"
+    },
+    {
+      "character": "Elliana",
+      "skin": "Custom 2"
+    },
+    {
+      "character": "Random",
+      "skin": ""
+    }
+  ]
+}

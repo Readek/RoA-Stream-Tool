@@ -46,6 +46,8 @@ let startup = true;
 const pWrapper = document.getElementsByClassName("wrappers");
 const pTag = document.getElementsByClassName("tags");
 const pName = document.getElementsByClassName("names");
+const pTwitter = document.getElementsByClassName("twitters");
+const pPronouns = document.getElementsByClassName("pronouns");
 const teamNames = document.getElementsByClassName("teamName");
 const charImg = document.getElementsByClassName("pCharacter");
 const colorImg = document.getElementsByClassName("colors");
@@ -57,9 +59,29 @@ const overlayRound = document.getElementById("overlayRound");
 const textRound = document.getElementById('round');
 const borderImg = document.getElementsByClassName('border');
 
+//This is for the player's name to change to their twitter at for a period of time
+const twitterLoopMax = 15; // time in seconds = x / 2
+const nameLoopMax = 30;
+let showNameOrTwitter = "name";
+let loops = 0;
+
+
 
 /* script begin */
 async function mainLoop() {
+	loops++;
+	if (showNameOrTwitter == "name") {
+		if (loops >= nameLoopMax) {
+			loops = 0;
+			showNameOrTwitter = "twitter";
+		}
+	} else if (showNameOrTwitter == "twitter") {
+		if (loops >= twitterLoopMax) {
+			loops = 0;
+			showNameOrTwitter = "name";
+		}
+	}
+
 	const scInfo = await getInfo();
 	getData(scInfo);
 }
@@ -78,7 +100,7 @@ async function getData(scInfo) {
 	const bestOf = scInfo['bestOf'];
 	const gamemode = scInfo['gamemode'];
 
-	const round = scInfo['round'];
+	const round = (scInfo['round'] == "Grand Finals" && (wl[0] == "L" && wl[1] == "L")) ? scInfo['round'] += " - Reset" : scInfo['round'];
 
 	const workshop = scInfo['workshop'];
 
@@ -161,7 +183,7 @@ async function getData(scInfo) {
 						midTextEL.textContent = "Final Game";
 						
 						//if GF, we dont know if its the last game or not, right?
-						if (round.toLocaleUpperCase() == "Grand Finals".toLocaleUpperCase() && !(wl[0] == "L" && wl[1] == "L")) {
+						if (round.toLocaleUpperCase().indexOf("Grand Finals".toLocaleUpperCase()) != -1  && !(wl[0] == "L" && wl[1] == "L")) {
 							gsap.to("#superCoolInterrogation", {delay: introDelay+.5, opacity: 1, ease: "power2.out", duration: 1.5});
 						}
 
@@ -205,9 +227,9 @@ async function getData(scInfo) {
 
 		// now for the actual initialization of players
 		for (let i = 0; i < maxPlayers; i++) {
-			
+
 			//lets start with the player names and tags
-			updatePlayerName(i, player[i].name, player[i].tag, gamemode);
+			updatePlayerName(i, player[i].name, player[i].tag, player[i].pronouns, player[i].twitter, gamemode);
 			//set the starting position for the player text, then fade in and move the text to the next keyframe
 			if (gamemode == 1) { //if this is singles, fade the names in with a sick motion
 				const movement = (i % 2 == 0) ? -pMove : pMove; //to know direction
@@ -326,9 +348,18 @@ async function getData(scInfo) {
 
 		//lets check each player
 		for (let i = 0; i < maxPlayers; i++) {
-			
+			let playerName = player[i].name;
+			let playerTag = player[i].tag;
+			let playerPronouns = player[i].pronouns;
+			if (showNameOrTwitter == "twitter" && player[i].twitter) {
+				playerName = player[i].twitter; //change the actual text
+				playerTag = "";
+				playerPronouns = "";
+			}
+
+
 			//player names and tags
-			if (pName[i].textContent != player[i].name || pTag[i].textContent != player[i].tag) {
+			if (pName[i].textContent != playerName || pTag[i].textContent != playerTag || pPronouns[i].textContent != playerPronouns) {
 
 				//check the player's side so we know the direction of the movement
 				const movement = (i % 2 == 0) ? -pMove : pMove;
@@ -338,13 +369,13 @@ async function getData(scInfo) {
 					//move and fade out the player 1's text
 					fadeOutMove(pWrapper[i], movement, () => {
 						//now that nobody is seeing it, quick, change the text's content!
-						updatePlayerName(i, player[i].name, player[i].tag, gamemode);
+						updatePlayerName(i, playerName, playerTag, playerPronouns, player[i].twitter, gamemode);
 						//fade the name back in with a sick movement
 						fadeInMove(pWrapper[i]);
 					});
 				} else { //if not singles, dont move the texts
 					fadeOut(pWrapper[i], () => {
-						updatePlayerName(i, player[i].name, player[i].tag, gamemode);
+						updatePlayerName(i, playerName, playerTag, playerPronouns, player[i].twitter, gamemode);
 						fadeIn(pWrapper[i]);
 					});
 				}
@@ -363,6 +394,7 @@ async function getData(scInfo) {
 				pCharPrev[i] = player[i].character;
 				pSkinPrev[i] = player[i].skin;
 			}
+			//displayName = "";
 		}
 
 
@@ -564,16 +596,24 @@ function updateLogo(logoEL, nameLogo, side, gamemode) {
 	logoEL.src = 'Resources/Logos/' + mode + '/' + actualSide + '/' + nameLogo + '.png';
 }
 
-function updatePlayerName(pNum, name, tag, gamemode) {
+function updatePlayerName(pNum, name, tag, pronouns, twitter, gamemode) {
 	if (gamemode == 2) {
 		pName[pNum].style.fontSize = nameSizeDubs; //set original text size
 		pTag[pNum].style.fontSize = tagSizeDubs;
 	} else {
 		pName[pNum].style.fontSize = nameSize;
 		pTag[pNum].style.fontSize = tagSize;
+		// pTwitter[pNum].style.fontSize = tagSize;
 	}
-	pName[pNum].textContent = name; //change the actual text
+	// if (showNameOrTwitter == "name") {
+		pName[pNum].textContent = name; //change the actual text
+	// } else if (showNameOrTwitter == "twitter") {
+	// 	pName[pNum].textContent = twitter; //change the actual text
+	// }
 	pTag[pNum].textContent = tag;
+	// pTwitter[pNum].textContent = twitter;
+
+	pPronouns[pNum].textContent = pronouns;
 	resizeText(pWrapper[pNum]); //resize if it overflows
 }
 

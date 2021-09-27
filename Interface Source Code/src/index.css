@@ -63,7 +63,6 @@ input[type="text"] {
   border-color: var(--focused);
 }
 
-
 /* main viewport */
 #viewport {
   position: relative;
@@ -131,6 +130,20 @@ input[type="text"] {
   float: left;
   min-width: 60px;
   max-width: 173px;
+  width: 60px;
+  border-radius: 0px;
+}
+.twitterInput {
+  float: left;
+  min-width: 60px;
+  max-width: 120px;
+  width: 60px;
+  border-radius: 0px;
+}
+.pronounInput {
+  float: left;
+  min-width: 60px;
+  max-width: 75px;
   width: 60px;
   border-radius: 0px;
 }
@@ -496,6 +509,12 @@ input[type="text"] {
   width: 100%;
   text-align: center;
   margin-right: 4px;
+}
+
+#roundNumber {
+  text-align: center;
+  margin-right: 4px;
+  width: 15%;
 }
 
 
