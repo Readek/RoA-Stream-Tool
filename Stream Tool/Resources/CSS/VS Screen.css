@@ -311,3 +311,7 @@ body {
     top: 209px;
     left: 862px;
 }
+
+.twitterIcon, .twitchIcon {
+    display: none;
+}

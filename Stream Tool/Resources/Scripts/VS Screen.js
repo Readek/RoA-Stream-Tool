@@ -582,7 +582,7 @@ function updateBG(vidEL, pCharacter, pSkin, charInfo) {
 		vidEL.src = 'Resources/Backgrounds/SK Golden.webm';
 	} else {
 		let vidName;
-		if (charInfo != "notFound") { //safety check
+		if (charInfo) { //safety check
 			if (charInfo.vsScreen["background"]) { //if the character has a specific BG
 				vidName = charInfo.vsScreen["background"];
 			} else { //if not, just use the character name
@@ -811,13 +811,13 @@ function getCharInfo(pCharacter) {
 	return new Promise(function (resolve) {
 		const oReq = new XMLHttpRequest();
 		oReq.addEventListener("load", reqListener);
-		oReq.onerror = () => {resolve("notFound")}; //for obs local file browser sources
+		oReq.onerror = () => {resolve(null)}; //for obs local file browser sources
 		oReq.open("GET", charPath + pCharacter + '/_Info.json');
 		oReq.send();
 
 		function reqListener () {
 			try {resolve(JSON.parse(oReq.responseText))}
-			catch {resolve("notFound")} //for live servers
+			catch {resolve(null)} //for live servers
 		}
 	})
 }
@@ -833,10 +833,10 @@ function updateChar(pCharacter, pSkin, color, pNum, charInfo, gamemode, startup 
 	//change the image path depending on the character and skin
 	charEL.src = charPath + pCharacter + '/' + pSkin + '.png';
 
-	//             x, y, scale
+	//               x, y, scale
 	const charPos = [0, 0, 1];
 	//now, check if the character or skin exists in the json file we checked earler
-	if (charInfo != "notFound") {
+	if (charInfo) {
 		if (charInfo.vsScreen[pSkin]) { //if the skin has a specific position
 			charPos[0] = charInfo.vsScreen[pSkin].x;
 			charPos[1] = charInfo.vsScreen[pSkin].y;
@@ -878,8 +878,8 @@ function updateChar(pCharacter, pSkin, color, pNum, charInfo, gamemode, startup 
 		charEL.style.imageRendering = "auto"; //default scalling
 		trailEL.style.imageRendering = "auto";
 	} else {
-		charEL.style.imageRendering = "pixelated"; //sharp scalling
-		trailEL.style.imageRendering = "pixelated";
+		charEL.style.imageRendering = "auto"; //default scalling
+		trailEL.style.imageRendering = "auto";
 	}
 
 	//this will make the thing wait till the images are fully loaded
@@ -906,7 +906,7 @@ function updateChar(pCharacter, pSkin, color, pNum, charInfo, gamemode, startup 
 
 //this gets called just to change the color of a trail
 function colorTrail(trailEL, pCharacter, pSkin, color, charInfo) {
-	if (charInfo != "notFound") {
+	if (charInfo) {
 		if (charInfo.vsScreen[pSkin]) { //if the skin positions are not the default ones
 			trailEL.src = charPath + pCharacter + '/Trails/' + color + ' ' + pSkin + '.png';
 		} else {

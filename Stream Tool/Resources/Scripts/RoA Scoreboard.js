@@ -591,7 +591,7 @@ function updateWL(pWL, pNum, gamemode) {
 	} else if (pWL == "L") {
 		wlImg[pNum].src = 'Resources/Overlay/Scoreboard/WLs/Losers P' + (pNum+1) + ' ' + gamemode + '.png';
 	} else if (pWL == "Nada") {
-		wlImg[pNum].src = 'Literally nothing.png';
+		wlImg[pNum].src = '//:0'; //prevents error event
 	}
 }
 
@@ -710,13 +710,13 @@ function getCharInfo(pCharacter) {
 	return new Promise(function (resolve) {
 		const oReq = new XMLHttpRequest();
 		oReq.addEventListener("load", reqListener);
-		oReq.onerror = () => {resolve("notFound")}; //for obs local file browser sources
+		oReq.onerror = () => {resolve(null)}; //for obs local file browser sources
 		oReq.open("GET", charPath + pCharacter + '/_Info.json');
 		oReq.send();
 
 		function reqListener () {
 			try {resolve(JSON.parse(oReq.responseText))}
-			catch {resolve("notFound")} //for live servers
+			catch {resolve(null)} //for live servers
 		}
 	})
 }
@@ -730,10 +730,10 @@ function updateChar(pCharacter, pSkin, pNum, charInfo, mainMenu, startup = false
 	//change the image path depending on the character and skin
 	charEL.src = charPath + pCharacter + '/' + pSkin + '.png';
 
-	//             x, y, scale
-	let charPos = [0, 0, 1];
+	//               x, y, scale
+	const charPos = [0, 0, 1];
 	//now, check if the character and skin exist in the database down there
-	if (charInfo != "notFound") {
+	if (charInfo) {
 		if (charInfo.scoreboard[pSkin]) { //if the skin has a specific position
 			charPos[0] = charInfo.scoreboard[pSkin].x;
 			charPos[1] = charInfo.scoreboard[pSkin].y;
