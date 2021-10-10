@@ -18,6 +18,9 @@
     "appId": "roa.st.gui",
     "linux": {
       "target": "AppImage"
+    },
+    "win": {
+      "target": "portable"
     }
   }
 }

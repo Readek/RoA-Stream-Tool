@@ -1,6 +1,7 @@
 const { app, BrowserWindow } = require('electron')
 const fs = require('fs')
 const path = require('path')
+const { ipcMain } = require('electron')
 
 let failed = false;
 
@@ -69,7 +70,18 @@ function createWindow() {
             event.preventDefault()
         }
     })
+
+    ipcMain.on('alwaysOnTop', (event, arg) => {
+        if (arg) {
+            win.setAlwaysOnTop(true)
+        } else {
+            win.setAlwaysOnTop(false)
+        }
+    })
+    
 }
+
+
 
 // create window on startup
 app.whenReady().then(() => {

@@ -2,13 +2,16 @@
 
 const fs = require('fs');
 const path = require('path');
+const electron = require('electron');
+const ipc = electron.ipcRenderer;
 
-//path variables used when developing
+// yes we all like global variables
 const textPath = __dirname + '/Texts';
-const charPath = __dirname + '/Characters/'
-const charPathN = __dirname + '/Characters'; // for node calls
+const charPathBase = __dirname + '/Characters';
+const charPathWork = __dirname + '/Characters/_Workshop';
+const charPathRandom = __dirname + '/Characters/Random';
+let charPath;
 
-//yes we all like global variables
 const colorList = getJson(textPath + "/Color Slots");
 let colorL, colorR;
 
@@ -96,6 +99,9 @@ function init() {
     loadColors();
 
 
+    // we need to set the current char path
+    workshopCheck.checked ? charPath = charPathWork : charPath = charPathBase;
+
     //load the character list for all players on startup
     loadCharacters();
 
@@ -107,7 +113,7 @@ function init() {
     //check whenever an image isnt found so we replace it with a "?"
     for (let i = 0; i < charImgs.length; i++) {
         charImgs[i].addEventListener("error", () => {
-            charImgs[i].setAttribute('src', charPath + '/' + 'Random/P2.png');
+            charImgs[i].setAttribute('src', charPathRandom + '/P2.png');
         });
     }
     
@@ -172,6 +178,7 @@ function init() {
     workshopCheck.addEventListener("click", workshopChange);
     forceWL.addEventListener("click", forceWLtoggles);
     document.getElementById('forceHD').addEventListener("click", HDtoggle);
+    document.getElementById("alwaysOnTop").addEventListener("click", alwaysOnTop);
     document.getElementById("copyMatch").addEventListener("click", copyMatch);
 
 
@@ -275,16 +282,8 @@ function getJson(jPath) {
 //calls the main settings file and fills a combo list
 function loadCharacters() {
 
-    //check if this is workshop edition or not
-    let path;
-    if (workshopCheck.checked) {
-        path = charPathN+"/_Workshop";
-    } else {
-        path = charPathN;
-    }
-    
     //if the folder name contains '_Workshop' or 'Random', exclude it
-    const characterList = fs.readdirSync(path).filter((name) => {
+    const characterList = fs.readdirSync(charPath).filter((name) => {
         if (name != "_Workshop" && name != "Random") {
             return true;
         }
@@ -398,21 +397,12 @@ function skinChangeL() {
 
 //change the image path depending on the character and skin
 function charImgChange(charImg, charName, skinName) {
-    if (workshopCheck.checked) {
-        charImg.setAttribute('src', charPath + '/_Workshop/' + charName + '/' + skinName + '.png');
-    } else {
-        charImg.setAttribute('src', charPath + '/' + charName + '/' + skinName + '.png');
-    }
+    charImg.setAttribute('src', charPath + '/' + charName + '/' + skinName + '.png');
 }
 
 //will load the skin list of a given character
 function loadSkins(comboList, character) {
-    let charInfo;
-    if (workshopCheck.checked) {
-        charInfo = getJson(charPathN + "/_Workshop/" + character + "/_Info");
-    } else {
-        charInfo = getJson(charPathN + "/" + character + "/_Info");
-    }
+    const charInfo = getJson(charPath + "/" + character + "/_Info");
 
     clearList(comboList); //clear the past character's skin list
     if (charInfo) { //if character doesnt have a list (for example: Random), skip this
@@ -722,11 +712,7 @@ function checkPlayerPreset() {
                     //actual image
                     const charImg = document.createElement('img');
                     charImg.className = "pfCharImg";
-                    if (workshopCheck.checked) {
-                        charImg.setAttribute('src', charPath+'/_Workshop/'+char.character+'/'+char.skin+'.png');
-                    } else {
-                        charImg.setAttribute('src', charPath+'/'+char.character+'/'+char.skin+'.png');
-                    }
+                    charImg.setAttribute('src', charPath+'/'+char.character+'/'+char.skin+'.png');
                     //we have to position it
                     positionChar(char.character, char.skin, charImg);
                     //and add it to the mask
@@ -747,12 +733,7 @@ function checkPlayerPreset() {
 async function positionChar(character, skin, charEL) {
 
     //get the character positions
-    let charInfo;
-    if (workshopCheck.checked) {
-        charInfo = getJson(charPathN + "/_Workshop/" + character + "/_Info");
-    } else {
-        charInfo = getJson(charPathN + "/" + character + "/_Info");
-    }
+    const charInfo = getJson(charPath + "/" + character + "/_Info");
 	
 	//               x, y, scale
 	const charPos = [0, 0, 1];
@@ -780,7 +761,7 @@ async function positionChar(character, skin, charEL) {
     
     //if the image fails to load, we will put a placeholder
 	charEL.addEventListener("error", () => {
-        charEL.setAttribute('src', charPath + '/Random/P2.png');
+        charEL.setAttribute('src', charPathRandom + '/P2.png');
         charEL.style.left = "0px";
         charEL.style.top = "-2px";
         charEL.style.transform = "scale(1.2)";
@@ -1207,6 +1188,9 @@ function setScore(score, tick1, tick2, tick3) {
 
 //called whenever the user clicks on the workshop toggle
 function workshopChange() {
+
+    // set a new character path
+    charPath = this.checked ? charPathWork : charPathBase;
     
     //clear current character lists
     for (let i = 0; i < maxPlayers; i++) {
@@ -1252,6 +1236,11 @@ function HDtoggle() {
     } else {
         noLoAHDCheck.disabled = true;
     }
+}
+
+// sends the signal to electron to activate always on top
+function alwaysOnTop() {
+    ipc.send('alwaysOnTop', this.checked);
 }
 
 //will copy the current match info to the clipboard
