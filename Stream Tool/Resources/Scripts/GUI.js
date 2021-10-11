@@ -93,7 +93,16 @@ function init() {
     viewport.style.right = "100%";
 
     
-    /* OVERLAY */
+    // load GUI settings
+    let guiSettings = JSON.parse(fs.readFileSync(textPath + "/GUI Settings.json", "utf-8"));
+    if (guiSettings.allowIntro) {document.getElementById("allowIntro").checked};
+    if (guiSettings.workshop) {workshopCheck.checked = true};
+    if (guiSettings.forceMM) {document.getElementById("forceMM").checked = true};
+    if (guiSettings.forceHD) {document.getElementById("forceHD").checked = true};
+    if (guiSettings.noLoAHD) {noLoAHDCheck.checked = true};
+    if (guiSettings.forceWL) {forceWL.click()};
+    if (guiSettings.alwaysOnTop) {document.getElementById("alwaysOnTop").click()};
+
 
     //load color slot list and add the color background on each side
     loadColors();
@@ -175,9 +184,12 @@ function init() {
     /* SETTINGS */
 
     //set listeners for the settings checkboxes
-    workshopCheck.addEventListener("click", workshopChange);
-    forceWL.addEventListener("click", forceWLtoggles);
+    document.getElementById("allowIntro").addEventListener("click", saveGUISettings);
+    workshopCheck.addEventListener("click", workshopToggle);
+    document.getElementById("forceMM").addEventListener("click", saveGUISettings);
     document.getElementById('forceHD').addEventListener("click", HDtoggle);
+    document.getElementById("noLoAHD").addEventListener("click", saveGUISettings);
+    forceWL.addEventListener("click", forceWLtoggle);
     document.getElementById("alwaysOnTop").addEventListener("click", alwaysOnTop);
     document.getElementById("copyMatch").addEventListener("click", copyMatch);
 
@@ -1187,7 +1199,7 @@ function setScore(score, tick1, tick2, tick3) {
 
 
 //called whenever the user clicks on the workshop toggle
-function workshopChange() {
+function workshopToggle() {
 
     // set a new character path
     charPath = this.checked ? charPathWork : charPathBase;
@@ -1213,10 +1225,15 @@ function workshopChange() {
         document.getElementById('mmText').title = "Forces showing the 'Main Menu' character\nrenders on 'RoA Scoreboard.html'."
     }
 
+    // save current checkbox value to the settings file
+    saveGUISettings();
+
 }
 
-//forces the W/L buttons to appear, or unforces them
-function forceWLtoggles() {
+// whenever the user clicks on the force W/L checkbox
+function forceWLtoggle() {
+
+    // forces the W/L buttons to appear, or unforces them
     if (forceWL.checked) {
         for (let i = 0; i < wlButtons.length; i++) {
             wlButtons[i].style.display = "flex";
@@ -1227,20 +1244,31 @@ function forceWLtoggles() {
             deactivateWL();
         }
     }
+
+    // save current checkbox value to the settings file
+    saveGUISettings();
+
 }
 
-//just enables or disables the second forceHD option
+// whenever the user clicks on the HD renders checkbox
 function HDtoggle() {
+
+    // enables or disables the second forceHD option
     if (this.checked) {
         noLoAHDCheck.disabled = false;
     } else {
         noLoAHDCheck.disabled = true;
     }
+
+    // save current checkbox value to the settings file
+    saveGUISettings();
+
 }
 
 // sends the signal to electron to activate always on top
 function alwaysOnTop() {
     ipc.send('alwaysOnTop', this.checked);
+    saveGUISettings();
 }
 
 //will copy the current match info to the clipboard
@@ -1266,6 +1294,26 @@ function copyMatch() {
 
     //send the string to the user's clipboard
     navigator.clipboard.writeText(copiedText);
+}
+
+// called whenever the used clicks on a settings checkbox
+function saveGUISettings() {
+    
+    // read the file
+    const guiSettings = JSON.parse(fs.readFileSync(textPath + "/GUI Settings.json", "utf-8"));
+
+    // update the settings to current values
+    guiSettings.allowIntro = document.getElementById("allowIntro").checked;
+    guiSettings.workshop = workshopCheck.checked;
+    guiSettings.forceMM = document.getElementById("forceMM").checked;
+    guiSettings.forceHD = document.getElementById("forceHD").checked;
+    guiSettings.noLoAHD = noLoAHDCheck.checked;
+    guiSettings.forceWL = forceWL.checked;
+    guiSettings.alwaysOnTop = document.getElementById("alwaysOnTop").checked;
+
+    // save the file
+    fs.writeFileSync(textPath + "/GUI Settings.json", JSON.stringify(guiSettings, null, 2));
+
 }
 
 
