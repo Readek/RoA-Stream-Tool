@@ -1,11 +1,12 @@
 {
-    "name": "Eclipz",
-    "twitter": "@EclipzSSBU",
-    "tag": "",
-    "characters": [
-        {
-            "character": "Clairen",
-            "skin": "Default"
-        }
-    ]
+  "name": "Eclipz",
+  "twitter": "@EclipzSSBU",
+  "tag": "",
+  "characters": [
+    {
+      "character": "Clairen",
+      "skin": "Default"
+    }
+  ],
+  "pronouns": "He/Him"
 }

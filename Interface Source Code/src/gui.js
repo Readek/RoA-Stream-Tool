@@ -30,13 +30,14 @@ const usePythonForClearingSetData = false;
 
 const encoding = 'utf8';
 const colorList = getJson(textPath + "/Color Slots");
-//const roundNameDropdown = document.getElementById('roundName');
 const roundNumber = document.getElementById('roundNumber');
+const onDeckRoundNumber = document.getElementById('onDeckRoundNumber');
 let colorL, colorR;
 
 let currentP1WL = "Nada";
 let currentP2WL = "Nada";
-let currentBestOf = "Bo5";
+let currentBestOf = "Bo3";
+let onDeckBestOf = "Bo3";
 
 let gamemode = 1;
 
@@ -45,7 +46,7 @@ let movedSettings = false;
 let inPF = false;
 let currentFocus = -1;
 
-const maxPlayers = 4; //change this if you ever want to remake this into singles only or 3v3 idk
+const maxPlayers = 8; //change this if you ever want to remake this into singles only or 3v3 idk
 
 
 //preload  e v e r y t h i n g
@@ -93,7 +94,11 @@ const p2L = document.getElementById('p2L');
 const bo3Div = document.getElementById("bo3Div");
 const bo5Div = document.getElementById("bo5Div");
 
+const onDeckBo3Div = document.getElementById("onDeckBo3Div");
+const onDeckBo5Div = document.getElementById("onDeckBo5Div");
+
 const roundInp = document.getElementById('roundName');
+const onDeckRoundInp = document.getElementById('onDeckRoundName');
 const tournamentInp = document.getElementById('tournamentName');
 
 const casters = document.getElementsByClassName("caster");
@@ -108,6 +113,87 @@ const forceWL = document.getElementById('forceWLToggle');
 
 
 init();
+async function mainLoop() {
+	const scInfo = await getInfo();
+	externalUpdateCheck(scInfo);
+}
+mainLoop();
+setInterval( () => { mainLoop(); }, 1000); //update interval
+
+function externalUpdateCheck(scInfo) {
+    if (scInfo['externalUpdate'] == true){
+        //Update player data
+        const player = scInfo['player'];
+        if (player[0].name == "" && player[1].name == "") {
+            clearPlayers();
+            writeScoreboard();
+            return;
+        }
+
+        //Update score data
+        const score = scInfo['score'];
+        //clear player scores
+        for (let i = 0; i < checks.length; i++) {
+            checks[i].checked = false;
+        }
+        let event = new Event('click', changeScoreTicks);
+        for (let i = 0; i < score.length; i++) {
+            if (score[i] == 0) {
+                continue;
+            }
+            if (i == 0) {
+                let checkIndex = score[i] -1;
+                checks[checkIndex].checked = true;
+            } else if (i == 1) {
+                let checkIndex = score[i] + 2;
+                checks[checkIndex].checked = true;
+            }
+            
+            if (score[i] == 1) {
+                if (i == 0) {
+                    p1Win1.dispatchEvent(event);
+                } else if (i == 1) {
+                    p2Win1.dispatchEvent(event);
+                }
+            } else if (score[i] == 2) {
+                
+                if (i == 0) {
+                    console.log("Score should be 2 for player 1")
+                    p1Win2.dispatchEvent(event);
+                } else if (i == 1) {
+                    console.log("Score should be 2 for player 2")
+                    p2Win2.dispatchEvent(event);
+                }
+            } else if (score[i] == 3) {
+                if (i == 0) {
+                    p1Win3.dispatchEvent(event);
+                } else if (i == 1) {
+                    p2Win3.dispatchEvent(event);
+                }
+            }
+        }
+
+        //Other stuff?
+        writeScoreboard();
+    }
+}
+//searches for the main json file
+function getInfo() {
+	return new Promise(function (resolve) {
+		const oReq = new XMLHttpRequest();
+		oReq.addEventListener("load", reqListener);
+		oReq.open("GET", textPath + '/ScoreboardInfo.json');
+		oReq.send();
+
+		//will trigger when file loads
+		function reqListener () {
+			resolve(JSON.parse(oReq.responseText))
+		}
+	})
+	//i would gladly have used fetch, but OBS local files wont support that :(
+}
+
+
 function init() {
     //first, add listeners for the bottom bar buttons
     document.getElementById('updateRegion').addEventListener("click", writeScoreboard);
@@ -126,7 +212,8 @@ function init() {
 
     //load rounds
     loadRoundNames();
-    checkRound();
+    // checkRound(roundInp, roundNumber);
+    // checkRound(onDeckRoundInp, onDeckRoundNumber)
 
     //load color slot list and add the color background on each side
     loadColors();
@@ -148,12 +235,20 @@ function init() {
 
 
     //score tick listeners, to automatically check/uncheck the other ticks
-    p1Win1.addEventListener("click", changeScoreTicks1);
-    p2Win1.addEventListener("click", changeScoreTicks1);
-    p1Win2.addEventListener("click", changeScoreTicks2);
-    p2Win2.addEventListener("click", changeScoreTicks2);
-    p1Win3.addEventListener("click", changeScoreTicks3);
-    p2Win3.addEventListener("click", changeScoreTicks3);
+    p1Win1.addEventListener("click", changeScoreTicks);
+    p2Win1.addEventListener("click", changeScoreTicks);
+    p1Win2.addEventListener("click", changeScoreTicks);
+    p2Win2.addEventListener("click", changeScoreTicks);
+    p1Win3.addEventListener("click", changeScoreTicks);
+    p2Win3.addEventListener("click", changeScoreTicks);
+
+    // p1Win1.addEventListener("click", changeScoreTicks1);
+    // p2Win1.addEventListener("click", changeScoreTicks1);
+    // p1Win2.addEventListener("click", changeScoreTicks2);
+    // p2Win2.addEventListener("click", changeScoreTicks2);
+    // p1Win3.addEventListener("click", changeScoreTicks3);
+    // p2Win3.addEventListener("click", changeScoreTicks3);
+
 
     //set click listeners for the [W] and [L] buttons
     p1W.addEventListener("click", setWLP1);
@@ -187,13 +282,20 @@ function init() {
     bo3Div.addEventListener("click", changeBestOf);
     bo5Div.addEventListener("click", changeBestOf);
     //set initial value
-    bo3Div.style.color = "var(--text2)";
-    bo5Div.style.backgroundImage = "linear-gradient(to top, #575757, #00000000)";
+    bo5Div.style.color = "var(--text2)";
+    bo3Div.style.backgroundImage = "linear-gradient(to top, #575757, #00000000)";
+
+    //set click listeners to change the "best of" status
+    onDeckBo3Div.addEventListener("click", changeBestOf);
+    onDeckBo5Div.addEventListener("click", changeBestOf);
+    //set initial value
+    onDeckBo5Div.style.color = "var(--text2)";
+    onDeckBo3Div.style.backgroundImage = "linear-gradient(to top, #575757, #00000000)";
 
 
-    //check if the round is grand finals
+    //check if the round is Winners Round, Losers Round, or Grand finals
     roundInp.addEventListener("input", checkRound);
-
+    onDeckRoundInp.addEventListener("input", checkRound);
 
     //gamemode button
     document.getElementById("gamemode").addEventListener("click", changeGamemode);
@@ -325,7 +427,7 @@ function loadSettings() {
 }
 
 //calls the main settings file and fills a combo list
-function loadCharacters() {
+function loadCharacters(firstRun=true) {
 
     //check if this is workshop edition or not
     let path;
@@ -343,7 +445,11 @@ function loadCharacters() {
     });
 
     //for each player
-    for (let i = 0; i < maxPlayers; i++) {
+    let numberOfPlayers = maxPlayers;
+    if (firstRun == false) {
+        numberOfPlayers = 4;
+    }
+    for (let i = 0; i < numberOfPlayers; i++) {
 
         //use the character list to add entries
         addEntries(charLists[i], characterList);
@@ -392,7 +498,7 @@ function charChange(list) {
     }
 
     //hide the skin dropdown if the list has 1 or less entries
-    if (gamemode == 1 && (pNum == 3 || pNum == 4)) {
+    if (gamemode == 1 && (pNum == 3 || pNum == 4 || pNum == 7 || pNum == 8)) {
         //dont do this for players 3 and 4 if the gamemode is singles
     } else {
         if (skinList.options.length <= 1) {
@@ -516,13 +622,20 @@ function loadRoundNames() {
     let roundNames = getJson(textPath + "/RoundNames");
     roundInp.length = 0;
     roundInp.selectedIndex = 0;
+    onDeckRoundInp.length = 0;
+    onDeckRoundInp.selectedIndex = 0;
 
-    let option;
+    let option, onDeckOption;
     for (let i = 0; i < roundNames.length; i++) {
         option = document.createElement('option');
         option.text = roundNames[i];
         option.value = roundNames[i];
         roundInp.add(option);
+
+        onDeckOption = document.createElement('option');
+        onDeckOption.text = roundNames[i];
+        onDeckOption.value = roundNames[i];
+        onDeckRoundInp.add(onDeckOption);
     }
 }
 
@@ -599,6 +712,27 @@ function updateColor() {
     this.parentElement.parentElement.blur();
 }
 
+
+function changeScoreTicks() {
+    let pNum = 1;
+
+    if (this == p1Win1 || this == p1Win2 || this == p1Win3) {
+        pNum = 1;
+    } else {
+        pNum = 2;
+    }
+
+    if (this == p1Win1 || this == p2Win1) {
+        document.getElementById('winP' + pNum + '-2').checked = false;
+        document.getElementById('winP' + pNum + '-3').checked = false;
+    } else if (this == p1Win2 || this == p2Win2) {
+        document.getElementById('winP' + pNum + '-1').checked = true;
+        document.getElementById('winP' + pNum + '-3').checked = false;
+    } else if (this == p1Win3 || this == p2Win3) {
+        document.getElementById('winP' + pNum + '-1').checked = true;
+        document.getElementById('winP' + pNum + '-2').checked = true;
+    }
+}
 
 //whenever clicking on the first score tick
 function changeScoreTicks1() {
@@ -1006,11 +1140,21 @@ function changeBestOf() {
         theOtherBestOf = bo3Div;
         p1Win3.style.display = "block";
         p2Win3.style.display = "block";
-    } else {
+    } else if (this == bo3Div) {
         currentBestOf = "Bo3";
         theOtherBestOf = bo5Div;
         p1Win3.style.display = "none";
         p2Win3.style.display = "none";
+    } else if (this == onDeckBo5Div) {
+        onDeckBestOf = "Bo5";
+        theOtherBestOf = onDeckBo3Div;
+        // p1Win3.style.display = "block";
+        // p2Win3.style.display = "block";
+    } else if (this == onDeckBo3Div) {
+        onDeckBestOf = "Bo3";
+        theOtherBestOf = onDeckBo5Div;
+        // p1Win3.style.display = "none";
+        // p2Win3.style.display = "none";
     }
 
     //change the color and background of the buttons
@@ -1021,15 +1165,22 @@ function changeBestOf() {
 }
 
 
+
 //for checking if its "Grands" so we make the WL buttons visible
 function checkRound() {
-    if (roundInp.value.indexOf("Round") != -1) { //If winners round or losers round, add the field in.
-        roundNumber.style.display = "inline";
-    } else {
-        roundNumber.style.display = "none";
+    let roundNumberElement = roundNumber
+    if (this.id == "onDeckRoundName") {
+        roundNumberElement = onDeckRoundNumber;
     }
-    if (!forceWL.checked) {
-        if (roundInp.value.toLocaleUpperCase().includes("Grand".toLocaleUpperCase())) {
+
+    if (this.value.indexOf("Round") != -1) { //If winners round or losers round, add the field in.
+        roundNumberElement.style.display = "inline";
+    } else {
+        roundNumberElement.style.display = "none";
+    }
+
+    if (!forceWL.checked && this.id != "onDeckRoundName") {
+        if (this.value.toLocaleUpperCase().includes("Grand".toLocaleUpperCase())) {
             for (let i = 0; i < wlButtons.length; i++) {
                 wlButtons[i].style.display = "flex";
             }
@@ -1089,6 +1240,7 @@ function changeGamemode() {
             }
 
             document.getElementById('pInfo' + (i + 2)).style.display = "block";
+            document.getElementById('pInfo' + (i + 6)).style.display = "block";
         }
 
         //add some left margin to the name/tag inputs, add border radius, change max width
@@ -1135,6 +1287,7 @@ function changeGamemode() {
         rColor.style.marginLeft = "0px";
         rColor.style.borderTopLeftRadius = "0px";
         rColor.style.borderBottomLeftRadius = "0px";
+        
 
         //move everything back to normal
         for (let i = 1; i < 3; i++) {
@@ -1145,6 +1298,7 @@ function changeGamemode() {
             skinLists[i + 1].style.display = "none";
 
             document.getElementById('pInfo' + (i + 2)).style.display = "none";
+            document.getElementById('pInfo' + (i + 6)).style.display = "none";
 
             document.getElementById("row3-" + i).insertAdjacentElement("afterbegin", wlButtons[i - 1]);
             document.getElementById("row3-" + i).insertAdjacentElement("afterbegin", document.getElementById('scoreBox' + i));
@@ -1177,6 +1331,131 @@ function changeGamemode() {
     }
 }
 
+function onDeckToStream() {
+
+    for (let i = 0; i < 4; i++) {
+
+        //names
+        const nameStore = pNameInps[i].value;
+        pNameInps[i].value = pNameInps[i + 4].value;
+        pNameInps[i + 4].value = nameStore;
+        changeInputWidth(pNameInps[i]);
+        changeInputWidth(pNameInps[i + 4]);
+
+        //twitter
+        const twitterStore = pTwitterInps[i].value;
+        pTwitterInps[i].value = pTwitterInps[i + 4].value;
+        pTwitterInps[i + 4].value = twitterStore;
+        changeInputWidth(pTwitterInps[i]);
+        changeInputWidth(pTwitterInps[i + 4]);
+
+        //pronouns
+        const pronounsStore = pPronounsInps[i].value;
+        pPronounsInps[i].value = pPronounsInps[i + 4].value;
+        pPronounsInps[i + 4].value = pronounsStore;
+        changeInputWidth(pPronounsInps[i]);
+        changeInputWidth(pPronounsInps[i + 4]);
+
+        //tags
+        const tagStore = pTagInps[i].value;
+        pTagInps[i].value = pTagInps[i + 4].value;
+        pTagInps[i + 4].value = tagStore;
+        changeInputWidth(pTagInps[i]);
+        changeInputWidth(pTagInps[i + 4]);
+
+
+        //characters and skins
+        const tempP1Char = charLists[i].selectedOptions[0].text;
+        const tempP2Char = charLists[i + 4].selectedOptions[0].text;
+
+        //we need to perform this check since the program would halt when reading from undefined
+        let p1RealSkin, p2RealSkin;
+        try {
+            p1RealSkin = skinLists[i].selectedOptions[0].text
+        } catch (error) {
+            p1RealSkin = "";
+        }
+        try {
+            p2RealSkin = skinLists[i + 4].selectedOptions[0].text
+        } catch (error) {
+            p2RealSkin = "";
+        }
+
+        const tempP1Skin = p1RealSkin;
+        const tempP2Skin = p2RealSkin;
+
+        changeListValue(charLists[i], tempP2Char);
+        changeListValue(charLists[i + 4], tempP1Char);
+        //the change event doesnt fire up on its own so we have to change the image ourselves
+        charChange(charLists[i]);
+        charChange(charLists[i + 4]);
+
+        //same but for skins
+        changeListValue(skinLists[i], tempP2Skin);
+        changeListValue(skinLists[i + 4], tempP1Skin);
+        skinChange(skinLists[i]);
+        skinChange(skinLists[i + 4]);
+
+        //find out if the swapped skin is a custom one
+        checkCustomSkin(i + 1);
+        checkCustomSkin(i + 4);
+    }
+
+    let tempBestOf = currentBestOf;
+    currentBestOf = onDeckBestOf;
+    onDeckBestOf = tempBestOf;
+
+    let currentBestOfDiv, onDeckBestOfDiv, otherBestOfDiv, otherOnDeckBestOfDiv;
+    if (currentBestOf == "Bo3") {
+        p1Win3.style.display = "none";
+        p2Win3.style.display = "none";
+        otherBestOfDiv = bo5Div;
+        currentBestOfDiv = bo3Div;
+    } else if (currentBestOf == "Bo5") {
+        p1Win3.style.display = "block";
+        p2Win3.style.display = "block";
+        otherBestOfDiv = bo3Div;
+        currentBestOfDiv = bo5Div;
+    }
+
+    if (onDeckBestOf == "Bo3") {
+        otherOnDeckBestOfDiv = onDeckBo5Div;
+        onDeckBestOfDiv = onDeckBo3Div;
+    } else if (onDeckBestOf == "Bo5") {
+        otherOnDeckBestOfDiv = onDeckBo3Div;
+        onDeckBestOfDiv = onDeckBo5Div;
+    }
+
+    currentBestOfDiv.style.color = "var(--text1)";
+    currentBestOfDiv.style.backgroundImage = "linear-gradient(to top, #575757, #00000000)";
+    otherBestOfDiv.style.color = "var(--text2)";
+    otherBestOfDiv.style.backgroundImage = "var(--bg4)";
+
+    onDeckBestOfDiv.style.color = "var(--text1)";
+    onDeckBestOfDiv.style.backgroundImage = "linear-gradient(to top, #575757, #00000000)";
+    otherOnDeckBestOfDiv.style.color = "var(--text2)";
+    otherOnDeckBestOfDiv.style.backgroundImage = "var(--bg4)";
+
+
+    let tempRoundName = roundInp.value;
+    roundInp.value = onDeckRoundInp.value;
+    onDeckRoundInp.value = tempRoundName;
+
+    let tempRoundNumber = roundNumber.value;
+    roundNumber.value = onDeckRoundNumber.value;
+    onDeckRoundNumber.value = tempRoundNumber;
+
+    let event = new Event('input', checkRound);
+    onDeckRoundInp.dispatchEvent(event);
+    roundInp.dispatchEvent(event);
+
+    //clear player scores
+    for (let i = 0; i < checks.length; i++) {
+        checks[i].checked = false;
+    }
+
+    writeScoreboard();
+}
 
 function swap() {
 
@@ -1285,7 +1564,7 @@ function clearPlayers() {
         tNameInps[i].value = "";
     }
 
-    for (let i = 0; i < maxPlayers; i++) {
+    for (let i = 0; i < 4; i++) {
 
         //clear player texts, twitters, and tags
         pNameInps[i].value = "";
@@ -1302,10 +1581,10 @@ function clearPlayers() {
     }
 
     //reset the character lists
-    loadCharacters();
+    loadCharacters(false);
 
     //dont forget to clear the skin list!
-    for (let i = 0; i < maxPlayers; i++) {
+    for (let i = 0; i < 4; i++) {
         clearList(skinLists[i]);
         skinLists[i].style.display = "none";
     }
@@ -1549,10 +1828,11 @@ function writeScoreboard() {
         forceMM: forceMM.checked,
         forceHD: forceHD.checked,
         noLoAHD: noLoAHDCheck.checked,
-        forceWL: forceWL.checked
+        forceWL: forceWL.checked,
+        externalUpdate: false
     };
     //add the player's info to the player section of the json
-    for (let i = 0; i < maxPlayers; i++) {
+    for (let i = 0; i < 4; i++) {
 
         //we need to perform this check since the program would halt when reading from undefined
         let realSkin;
@@ -1588,7 +1868,7 @@ function writeScoreboard() {
 
 
     //simple .txt files
-    for (let i = 0; i < maxPlayers; i++) {
+    for (let i = 0; i < 4; i++) {
         fs.writeFileSync(textPath + "/Simple Texts/Player " + (i + 1) + ".txt", pNameInps[i].value, encoding);
     }
 

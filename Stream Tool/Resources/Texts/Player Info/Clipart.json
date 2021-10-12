@@ -1,11 +1,16 @@
 {
-    "name": "Clipart",
-    "twitter": "@ClipartCriminal",
-    "tag": "",
-    "characters": [
-        {
-            "character": "Elliana",
-            "skin": "Default"
-        }
-    ]
+  "name": "Clipart",
+  "twitter": "@ClipartCriminal",
+  "tag": "",
+  "characters": [
+    {
+      "character": "Elliana",
+      "skin": "Default"
+    },
+    {
+      "character": "Etalus",
+      "skin": "Yellow"
+    }
+  ],
+  "pronouns": "He/Him"
 }

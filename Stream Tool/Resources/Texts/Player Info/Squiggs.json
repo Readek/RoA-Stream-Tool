@@ -1,11 +1,12 @@
 {
-    "name": "Squiggs",
-    "twitter": "@SquiggsZT",
-    "tag": "GA",
-    "characters": [
-        {
-            "character": "Kragg",
-            "skin": "Blue"
-        }
-    ]
+  "name": "Squiggs",
+  "twitter": "@SquiggsZT",
+  "tag": "GA",
+  "characters": [
+    {
+      "character": "Kragg",
+      "skin": "Blue"
+    }
+  ],
+  "pronouns": "Anything"
 }

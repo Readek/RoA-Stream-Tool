@@ -1,15 +1,24 @@
 {
-    "name": "spade",
-    "twitter": "@LoKSpade",
-    "tag": "KT",
-    "characters": [
-        {
-            "character": "Sylvanos",
-            "skin": "Genesis"
-        },
-        {
-            "character": "Wrastor",
-            "skin": "Champion"
-        }
-    ]
+  "name": "spade",
+  "twitter": "@SpadeLoK",
+  "tag": "KT",
+  "characters": [
+    {
+      "character": "Sylvanos",
+      "skin": "White"
+    },
+    {
+      "character": "Wrastor",
+      "skin": "Custom 1"
+    },
+    {
+      "character": "Clairen",
+      "skin": "Orange"
+    },
+    {
+      "character": "Zetterburn",
+      "skin": "Purple"
+    }
+  ],
+  "pronouns": "He/Him"
 }

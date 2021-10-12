@@ -10,19 +10,19 @@ const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
 
-    width: 600,
-    height: 300,
+    width: 1080,
+    height: 440,
     
-    minWidth: 750,
+    minWidth: 800,
     maxWidth: 1080,
 
     //linux
-    minHeight: 300,
-    maxHeight: 300,
+    minHeight: 440,
+    maxHeight: 440,
 
     //windows
-    minHeight: 358, // 358
-    maxHeight: 358, //358
+    minHeight: 440, // 358
+    maxHeight: 440, //358
 
     webPreferences: {
       nodeIntegration: true,

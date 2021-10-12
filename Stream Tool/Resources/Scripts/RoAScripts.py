@@ -122,20 +122,22 @@ def update_set_info(players, tournamentName, round):
 def update_score(player):
     scoreboard_file = open(scoreboard_loc, "r+")
     scoreboard_json = json.load(scoreboard_file)
-    update_player_json(scoreboard_json['player'][0])
-    update_player_json(scoreboard_json['player'][1])
-    update_set_info(scoreboard_json['player'], scoreboard_json['tournamentName'], scoreboard_json['round'])
+    # update_player_json(scoreboard_json['player'][0])
+    # update_player_json(scoreboard_json['player'][1])
+    # update_set_info(scoreboard_json['player'], scoreboard_json['tournamentName'], scoreboard_json['round'])
         
     if player == 'null':
-        scoreboard_json['score'] = [0,0] 
+        scoreboard_json['player'][0]['name'] = ""
+        scoreboard_json['player'][1]['name'] = ""
     else:
         player = int(player)
         if player == 0 or player == 1:
             scoreboard_json['score'][player] = scoreboard_json['score'][player] + 1
         else:
             scoreboard_json['score'] = [0,0]      
-    
-    open(scoreboard_loc, "w").write(json.dumps(scoreboard_json, indent=4))
+    scoreboard_json['externalUpdate'] = True
+    # open(scoreboard_loc, "w").write(json.dumps(scoreboard_json, indent=4))
+    open(scoreboard_loc, "w").write(json.dumps(scoreboard_json, ensure_ascii=False, indent=2))
 
 def update_scores(player1Score, player2Score):
     scoreboard_file = open(scoreboard_loc, "r+")

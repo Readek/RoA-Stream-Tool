@@ -1,11 +1,12 @@
 {
-    "name": "Coyote",
-    "twitter": "@FluffyCoyotl",
-    "tag": "",
-    "characters": [
-        {
-            "character": "Sylvanos",
-            "skin": "Default"
-        }
-    ]
+  "name": "Coyote",
+  "twitter": "@FluffyCoyotl",
+  "tag": "",
+  "characters": [
+    {
+      "character": "Sylvanos",
+      "skin": "Default"
+    }
+  ],
+  "pronouns": "Anything"
 }

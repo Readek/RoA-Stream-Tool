@@ -1,11 +1,12 @@
 {
-    "name": "Serris",
-    "twitter": "@serrisfroon",
-    "tag": "UGS",
-    "characters": [
-        {
-            "character": "Ranno",
-            "skin": "Blue"
-        }
-    ]
+  "name": "Serris",
+  "twitter": "@serrisfroon",
+  "tag": "UGS",
+  "characters": [
+    {
+      "character": "Ranno",
+      "skin": "Blue"
+    }
+  ],
+  "pronouns": "He/HIm"
 }

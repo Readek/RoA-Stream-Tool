@@ -1,7 +1,7 @@
 {
   "name": "roa-st-gui",
   "productName": "RoA Stream Tool - Ateozc Build",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "An electron interface for RoA tournament streams.",
   "main": "src/index.js",
   "scripts": {
@@ -47,6 +47,7 @@
     }
   },
   "dependencies": {
+    "@angular/cli": "^12.2.9",
     "electron-squirrel-startup": "^1.0.0"
   },
   "devDependencies": {
@@ -64,10 +65,12 @@
       "target": "AppImage"
     }
   },
-  "win": { 
-    "target": ["portable"] 
+  "win": {
+    "target": [
+      "portable"
+    ]
   },
-  "portable": { 
-    "artifactName": "RoA Stream Tool.exe" 
+  "portable": {
+    "artifactName": "RoA Stream Tool.exe"
   }
 }

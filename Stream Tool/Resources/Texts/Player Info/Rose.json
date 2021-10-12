@@ -1,11 +1,11 @@
 {
-    "name": "Rose",
-    "twitter": "@BloodRose350",
-    "tag": "EVA",
-    "characters": [
-        {
-            "character": "Orcane",
-            "skin": "Valentines"
-        }
-    ]
+  "name": "Rose",
+  "twitter": "@BloodRose350",
+  "tag": "EVA",
+  "characters": [
+    {
+      "character": "Orcane",
+      "skin": "Valentines"
+    }
+  ]
 }

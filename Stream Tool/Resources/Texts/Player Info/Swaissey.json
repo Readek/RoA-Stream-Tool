@@ -1,11 +1,12 @@
 {
-    "name": "Swaissey",
-    "twitter": "@swaissey",
-    "tag": "KT",
-    "characters": [
-        {
-            "character": "Ranno",
-            "skin": "Pink"
-        }
-    ]
+  "name": "Swaissey",
+  "twitter": "@swaissey",
+  "tag": "KT",
+  "characters": [
+    {
+      "character": "Ranno",
+      "skin": "Pink"
+    }
+  ],
+  "pronouns": "He/Him"
 }

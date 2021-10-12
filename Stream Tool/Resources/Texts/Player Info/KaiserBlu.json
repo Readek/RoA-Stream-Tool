@@ -1,11 +1,12 @@
 {
-    "name": "KaiserBlu",
-    "twitter": "@KaiserBluSSB",
-    "tag": "",
-    "characters": [
-        {
-            "character": "Zetterburn",
-            "skin": "Purple"
-        }
-    ]
+  "name": "KaiserBlu",
+  "twitter": "@KaiserBluSSB",
+  "tag": "",
+  "characters": [
+    {
+      "character": "Zetterburn",
+      "skin": "Purple"
+    }
+  ],
+  "pronouns": "He/Him"
 }

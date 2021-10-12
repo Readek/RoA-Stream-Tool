@@ -1,0 +1,42 @@
+{
+  "player": [
+    {
+      "name": "spade",
+      "twitter": "@SpadeLoK",
+      "pronouns": "He/Him",
+      "tag": "KT",
+      "characters": [
+        "Sylvanos"
+      ]
+    },
+    {
+      "name": "Swaissey",
+      "twitter": "@swaissey",
+      "pronouns": "He/Him",
+      "tag": "KT",
+      "characters": [
+        "Ranno"
+      ]
+    },
+    {
+      "name": "",
+      "twitter": "",
+      "pronouns": "",
+      "tag": "",
+      "characters": [
+        "Random"
+      ]
+    },
+    {
+      "name": "",
+      "twitter": "",
+      "pronouns": "",
+      "tag": "",
+      "characters": [
+        "Random"
+      ]
+    }
+  ],
+  "tournamentName": "",
+  "round": "Grand Finals"
+}

@@ -1,11 +1,12 @@
 {
-    "name": "Dandy",
-    "twitter": "@john_is_online",
-    "tag": "",
-    "characters": [
-        {
-            "character": "Kragg",
-            "skin": "Grey"
-        }
-    ]
+  "name": "Dandy",
+  "twitter": "@john_is_online",
+  "tag": "",
+  "characters": [
+    {
+      "character": "Kragg",
+      "skin": "Grey"
+    }
+  ],
+  "pronouns": "He/Him"
 }

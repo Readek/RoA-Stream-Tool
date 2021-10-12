@@ -1,20 +1,20 @@
 {
   "player": [
     {
-      "name": "",
-      "twitter": "",
-      "pronouns": "",
-      "tag": "",
-      "character": "Random",
-      "skin": ""
+      "name": "spade",
+      "twitter": "@SpadeLoK",
+      "pronouns": "He/Him",
+      "tag": "KT",
+      "character": "Sylvanos",
+      "skin": "White"
     },
     {
-      "name": "",
-      "twitter": "",
-      "pronouns": "",
-      "tag": "",
-      "character": "Random",
-      "skin": ""
+      "name": "Swaissey",
+      "twitter": "@swaissey",
+      "pronouns": "He/Him",
+      "tag": "KT",
+      "character": "Ranno",
+      "skin": "Pink"
     },
     {
       "name": "",
@@ -51,7 +51,7 @@
   ],
   "bestOf": "Bo5",
   "gamemode": 1,
-  "round": "Friendlies",
+  "round": "Grand Finals",
   "tournamentName": "",
   "caster": [
     {
@@ -70,5 +70,6 @@
   "forceMM": true,
   "forceHD": true,
   "noLoAHD": false,
-  "forceWL": false
+  "forceWL": false,
+  "externalUpdate": false
 }
