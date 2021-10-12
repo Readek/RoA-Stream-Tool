@@ -68,6 +68,7 @@ If you are looking for the OBS stuff I did using Python, I'll update this on how
 
 Other than that, yea. I messed with Readek's stuff and made my own version. If you want to message me on Twitter you can find me at https://twitter.com/ateozc.
 
+If you want to send me a donation, feel free to use https://ko-fi.com/ateozc 
 
 ### Closing notes
 I do programming for a living. This is a side hobby, along with running events here in Chicago.
