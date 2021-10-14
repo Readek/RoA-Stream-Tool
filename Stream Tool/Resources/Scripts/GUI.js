@@ -92,17 +92,31 @@ function init() {
     //move the viewport to the center (this is to avoid animation bugs)
     viewport.style.right = "100%";
 
+
+    /* SETTINGS */
+
+    //set listeners for the settings checkboxes
+    document.getElementById("allowIntro").addEventListener("click", saveGUISettings);
+    workshopCheck.addEventListener("click", workshopToggle);
+    document.getElementById("forceMM").addEventListener("click", saveGUISettings);
+    document.getElementById('forceHD').addEventListener("click", HDtoggle);
+    document.getElementById("noLoAHD").addEventListener("click", saveGUISettings);
+    forceWL.addEventListener("click", forceWLtoggle);
+    document.getElementById("alwaysOnTop").addEventListener("click", alwaysOnTop);
+    document.getElementById("copyMatch").addEventListener("click", copyMatch);
     
     // load GUI settings
-    let guiSettings = JSON.parse(fs.readFileSync(textPath + "/GUI Settings.json", "utf-8"));
-    if (guiSettings.allowIntro) {document.getElementById("allowIntro").checked};
+    const guiSettings = JSON.parse(fs.readFileSync(textPath + "/GUI Settings.json", "utf-8"));
+    if (guiSettings.allowIntro) {document.getElementById("allowIntro").checked = true};
     if (guiSettings.workshop) {workshopCheck.checked = true};
     if (guiSettings.forceMM) {document.getElementById("forceMM").checked = true};
     if (guiSettings.forceHD) {document.getElementById("forceHD").checked = true};
-    if (guiSettings.noLoAHD) {noLoAHDCheck.checked = true};
+    if (guiSettings.noLoAHD) {noLoAHDCheck.checked = true; noLoAHDCheck.disabled = false};
     if (guiSettings.forceWL) {forceWL.click()};
     if (guiSettings.alwaysOnTop) {document.getElementById("alwaysOnTop").click()};
 
+
+    /* Overlay */
 
     //load color slot list and add the color background on each side
     loadColors();
@@ -179,19 +193,6 @@ function init() {
     document.getElementById('swapButton').addEventListener("click", swap);
     //add a listener to the clear button
     document.getElementById('clearButton').addEventListener("click", clearPlayers);
-
-
-    /* SETTINGS */
-
-    //set listeners for the settings checkboxes
-    document.getElementById("allowIntro").addEventListener("click", saveGUISettings);
-    workshopCheck.addEventListener("click", workshopToggle);
-    document.getElementById("forceMM").addEventListener("click", saveGUISettings);
-    document.getElementById('forceHD').addEventListener("click", HDtoggle);
-    document.getElementById("noLoAHD").addEventListener("click", saveGUISettings);
-    forceWL.addEventListener("click", forceWLtoggle);
-    document.getElementById("alwaysOnTop").addEventListener("click", alwaysOnTop);
-    document.getElementById("copyMatch").addEventListener("click", copyMatch);
 
 
     /* KEYBOARD SHORTCUTS */
@@ -1390,8 +1391,8 @@ function writeScoreboard() {
     fs.writeFileSync(textPath + "/Simple Texts/Team 1.txt", tNameInps[0].value);
     fs.writeFileSync(textPath + "/Simple Texts/Team 2.txt", tNameInps[1].value);
 
-    fs.writeFileSync(textPath + "/Simple Texts/Score L.txt", checkScore(p1Win1, p1Win2, p1Win3));
-    fs.writeFileSync(textPath + "/Simple Texts/Score R.txt", checkScore(p2Win1, p2Win2, p2Win3));
+    fs.writeFileSync(textPath + "/Simple Texts/Score L.txt", checkScore(p1Win1, p1Win2, p1Win3).toString());
+    fs.writeFileSync(textPath + "/Simple Texts/Score R.txt", checkScore(p2Win1, p2Win2, p2Win3).toString());
 
     fs.writeFileSync(textPath + "/Simple Texts/Round.txt", roundInp.value);
     fs.writeFileSync(textPath + "/Simple Texts/Tournament Name.txt", tournamentInp.value);

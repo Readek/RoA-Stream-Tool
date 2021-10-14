@@ -25,6 +25,12 @@
   display: none;
 }
 
+html, body {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+}
+
 body {
   overflow: hidden;
   padding: 0px;
@@ -80,12 +86,14 @@ input[type="text"] {
   width: calc(100% / 3);
   height: 100%;
   transition: opacity 300ms;
+  display: flex;
+  flex-direction: column;
 }
 
 /* player stuff */
 #playerRegion {
   display: flex;
-  height: 150px;
+  height: 100%;
 }
 
 .side {
@@ -438,8 +446,8 @@ input[type="text"] {
 }
 
 .charImg {
-  left: 0px;
-  top: 0px;
+  position: absolute;
+  max-width: 100%;
   height: 100%;
   object-fit: contain;
   z-index: -1;
@@ -562,21 +570,29 @@ input[type="text"] {
 
 #caster1 {
   padding-bottom: 4px;
-  display: flex;
-  justify-items: center;
 }
-#caster2 {
+
+.caster {
   display: flex;
-  justify-items: center;
+}
+
+.casterGroup {
+  display: flex;
+}
+.casterNameG {
+  width: 38%;
+}
+.casterSocialG {
+  width: 31%;
 }
 
 #cName1, #cName2 {
-  width: 190px;
+  width: 100%;
   margin-left: 4px;
 }
 
 #cTwitter1, #cTwitter2, #cTwitch1, #cTwitch2 {
-  width: 156px;
+  width: 100%;
   margin-left: 1px;
 }
 
