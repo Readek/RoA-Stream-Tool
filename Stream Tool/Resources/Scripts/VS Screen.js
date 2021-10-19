@@ -741,38 +741,51 @@ function getFontSize(textElement) {
 
 
 //fade out
-function fadeOut(itemID, funct = console.log("Hola!"), dur = fadeOutTime) {
-	gsap.to(itemID, {opacity: 0, duration: dur, onComplete: funct});
+function fadeOut(itemID, funct, dur = fadeOutTime) {
+	itemID.style.animation = `fadeOut ${dur}s both`;
+
+	setTimeout(() => { // when the animation finishes
+		if (funct) funct();
+	}, dur * 1000); // we need miliseconds instead of seconds here
 }
 
 //fade in
 function fadeIn(itemID, timeDelay, dur = fadeInTime) {
-	gsap.to(itemID, {delay: timeDelay, opacity: 1, duration: dur});
+	itemID.style.animation = `fadeIn ${dur}s ${timeDelay}s both`;
 }
 
 //fade out for the characters
 function charaFadeOut(itemID, funct) {
-	gsap.to(itemID, {delay: .2, x: -pCharMove, opacity: 0, ease: "power1.in", duration: fadeOutTime, onComplete: funct});
+
+	itemID.style.animation = `charaMoveOut ${fadeOutTime}s both
+		,fadeOut ${fadeOutTime}s both`
+	;
+
+	setTimeout(() => {
+		funct();
+	}, fadeOutTime * 1000);
+
 }
 
 //fade in characters edition
-function charaFadeIn(charaID, trailID, charScale) {
-	//move the character
-	gsap.to(charaID, {delay: .2, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime+.1});
-	//move the trail
-	gsap.fromTo(trailID,
-		{scale: charScale, x: 0, opacity: 0},
-		{delay: .4, x: -pCharMove, opacity: 1, ease: "power2.out", duration: fadeInTime+.1});
-}
+function charaFadeIn(charaID, trailID, delay = 0) {
+	charaID.style.animation = `charaMoveIn ${fadeInTime + .1}s ${delay + .2}s both
+		, fadeIn ${fadeInTime + .1}s ${delay + .2}s both`
+	;
 
-//initial characters fade in
-function initCharaFade(charaID, trailID) {
-	//character movement
-	gsap.fromTo(charaID,
-		{x: -pCharMove, opacity: 0},
-		{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
-	//trail movement
-	gsap.to(trailID, {delay: introDelay+.15, x: -pCharMove, opacity: 1, ease: "power2.out", duration: fadeInTime+.1});
+	// ok so this right here is a bit of a mess, will hopefully be cleaner in the future
+	// first, im pointing at a parent div because chromium still does not have
+	// independent transforms so since the trail transform is being modified
+	// earlier in the code, something else has to be animated
+	// then, since the trail itself wasnt animated on the fade out, it needs to
+	// wait for a cycle to be able to register another animation, so we clear and wait
+	trailID.parentElement.style = "";
+	setTimeout(() => {
+		trailID.parentElement.style.animation = `trailMoveIn ${fadeInTime + .1}s both
+		, fadeIn ${fadeInTime + .1}s both`
+	;
+	}, (delay+.4)*1000); // just moving the animation delay here
+
 }
 
 
@@ -878,8 +891,8 @@ function updateChar(pCharacter, pSkin, color, pNum, charInfo, gamemode, startup 
 		charEL.style.imageRendering = "auto"; //default scalling
 		trailEL.style.imageRendering = "auto";
 	} else {
-		charEL.style.imageRendering = "auto"; //default scalling
-		trailEL.style.imageRendering = "auto";
+		charEL.style.imageRendering = "pixelated"; //default scalling
+		trailEL.style.imageRendering = "pixelated";
 	}
 
 	//this will make the thing wait till the images are fully loaded
@@ -887,18 +900,18 @@ function updateChar(pCharacter, pSkin, color, pNum, charInfo, gamemode, startup 
 		trailEL.decode().then( () => {
 			//when both char and trail load, fade them in
 			if (startup) {
-				initCharaFade(pChara[pNum], trailEL);
+				charaFadeIn(pChara[pNum], trailEL, introDelay);
 			} else {
-				charaFadeIn(pChara[pNum], trailEL, charPos[2]);
+				charaFadeIn(pChara[pNum], trailEL);
 			}
 		})
 	}).catch( () => {
 		//if the image fails to load, we will use a placeholder
 		charEL.src = charPathBase + 'Random/P'+((pNum%2)+1)+'.png';
 		if (startup) {
-			initCharaFade(pChara[pNum], trailEL);
+			charaFadeIn(pChara[pNum], trailEL), introDelay;
 		} else {
-			charaFadeIn(pChara[pNum], trailEL, charPos[2]);
+			charaFadeIn(pChara[pNum], trailEL);
 		}
 	})
 
