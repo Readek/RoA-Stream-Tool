@@ -35,7 +35,7 @@ let bestOfPrev, prevWorkshop, gamemodePrev;
 let socialInt1, socialInt2;
 let twitter1, twitch1, twitter2, twitch2;
 let socialSwitch = true; //true = twitter, false = twitch
-const socialInterval = 7000;
+const socialInterval = 70000;
 
 //to consider how many loops will we do
 let maxPlayers = 2; //will change when doubles comes
@@ -290,7 +290,7 @@ async function getData(scInfo) {
 				if (score[0] == 0 && score[1] == 0) {
 					fadeOut(scoreOverlay);
 				} else {
-					fadeIn(scoreOverlay, 0);
+					fadeIn(scoreOverlay);
 				}
 
 				scorePrev[i] = score[i];
@@ -630,11 +630,11 @@ function socialChange1(twitterWrapperEL, twitchWrapperEL) {
 
 		if (socialSwitch) {
 			fadeOut(twitterWrapperEL, () => {
-				fadeIn(twitchWrapperEL, 0);
+				fadeIn(twitchWrapperEL);
 			});
 		} else {
 			fadeOut(twitchWrapperEL, () => {
-				fadeIn(twitterWrapperEL, 0);
+				fadeIn(twitterWrapperEL);
 			});
 		}
 
@@ -660,11 +660,11 @@ function socialChange2(twitterWrapperEL, twitchWrapperEL) {
 
 		if (socialSwitch) {
 			fadeOut(twitterWrapperEL, () => {
-				fadeIn(twitchWrapperEL, 0);
+				fadeIn(twitchWrapperEL);
 			});
 		} else {
 			fadeOut(twitchWrapperEL, () => {
-				fadeIn(twitterWrapperEL, 0);
+				fadeIn(twitterWrapperEL);
 			});
 		}
 
@@ -750,7 +750,7 @@ function fadeOut(itemID, funct, dur = fadeOutTime) {
 }
 
 //fade in
-function fadeIn(itemID, timeDelay, dur = fadeInTime) {
+function fadeIn(itemID, timeDelay = 0, dur = fadeInTime) {
 	itemID.style.animation = `fadeIn ${dur}s ${timeDelay}s both`;
 }
 
