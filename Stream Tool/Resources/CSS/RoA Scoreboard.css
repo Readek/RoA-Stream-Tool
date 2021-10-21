@@ -83,7 +83,6 @@ body {
 }
 
 .pCharacter {
-    opacity: 0;
     width: 100px;
     height: 100px;
     object-fit: scale-down;
@@ -268,4 +267,73 @@ body {
 
 #overlayIntro {
     opacity: 0;
+}
+
+
+/* Animations! */
+
+@keyframes fadeOut {
+    from {opacity: 1}
+    to {opacity: 0}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0}
+    to {opacity: 1}
+}
+
+@keyframes moveOutLeft {
+    from {transform: translateX(0)}
+    to {transform: translateX(-40px)}
+}
+@keyframes moveOutRight {
+    from {transform: translateX(0)}
+    to {transform: translateX(40px)}
+}
+
+@keyframes moveInLeft {
+    from {transform: translateX(-40px)}
+    to {transform: translateX(0)}
+}
+@keyframes moveInRight {
+    from {transform: translateX(40px)}
+    to {transform: translateX(0)}
+}
+
+@keyframes charaMoveOut {
+    from {transform: translateX(0)}
+    to {transform: translateX(-20px)}
+}
+
+@keyframes charaMoveIn {
+    from {transform: translateX(-20px)}
+    to {transform: translateX(0)}
+}
+
+@keyframes wl1MoveOut {
+    from {transform: translateY(0)}
+    to {transform: translateY(-50px)}
+}
+
+@keyframes wl1MoveIn {
+    from {transform: translateY(-50px)}
+    to {transform: translateY(0)}
+}
+
+@keyframes wl2MoveOutLeft {
+    from {transform: translateX(0)}
+    to {transform: translateX(-150px)}
+}
+@keyframes wl2MoveOutRight {
+    from {transform: translateX(0)}
+    to {transform: translateX(150px)}
+}
+
+@keyframes wl2MoveInLeft {
+    from {transform: translateX(-150px)}
+    to {transform: translateX(0)}
+}
+@keyframes wl2MoveInRight {
+    from {transform: translateX(150px)}
+    to {transform: translateX(0)}
 }

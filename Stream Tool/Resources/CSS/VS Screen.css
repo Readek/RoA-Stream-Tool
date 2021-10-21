@@ -335,6 +335,11 @@ body {
     to {transform: translateX(0)}
 }
 
+@keyframes trailMoveOut { /* cheap trick */
+    from {transform: translateX(-30px)}
+    to {transform: translateX(-30px)}
+}
+
 @keyframes trailMoveIn {
     from {transform: translateX(0px)}
     to {transform: translateX(-30px)}

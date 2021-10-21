@@ -342,7 +342,7 @@ async function getData(scInfo) {
 			if (pCharPrev[i] != player[i].character || pSkinPrev[i] != player[i].skin) {
 				
 				//move and fade out the character
-				charaFadeOut(pChara[i], () => {
+				charaFadeOut(pChara[i], pTrail[i], () => {
 					//update the character image and trail, and also storing its scale for later
 					updateChar(player[i].character, player[i].skin, color[i%2], i, pCharInfo[i], gamemode);
 					//will fade back in when the images load
@@ -750,42 +750,33 @@ function fadeOut(itemID, funct, dur = fadeOutTime) {
 }
 
 //fade in
-function fadeIn(itemID, timeDelay = 0, dur = fadeInTime) {
-	itemID.style.animation = `fadeIn ${dur}s ${timeDelay}s both`;
+function fadeIn(itemID, delay = 0, dur = fadeInTime) {
+	itemID.style.animation = `fadeIn ${dur}s ${delay}s both`;
 }
 
 //fade out for the characters
-function charaFadeOut(itemID, funct) {
+function charaFadeOut(charaEL, trailEL, funct) {
 
-	itemID.style.animation = `charaMoveOut ${fadeOutTime}s both
+	charaEL.style.animation = `charaMoveOut ${fadeOutTime}s both
 		,fadeOut ${fadeOutTime}s both`
 	;
+	// this is only so the animation change gets activated on fade in
+	trailEL.parentElement.style.animation = `trailMoveOut 0s both`;
 
 	setTimeout(() => {
-		funct();
+		if (funct) funct();
 	}, fadeOutTime * 1000);
 
 }
 
 //fade in characters edition
-function charaFadeIn(charaID, trailID, delay = 0) {
-	charaID.style.animation = `charaMoveIn ${fadeInTime + .1}s ${delay + .2}s both
+function charaFadeIn(charaEL, trailEL, delay = 0) {
+	charaEL.style.animation = `charaMoveIn ${fadeInTime + .1}s ${delay + .2}s both
 		, fadeIn ${fadeInTime + .1}s ${delay + .2}s both`
 	;
-
-	// ok so this right here is a bit of a mess, will hopefully be cleaner in the future
-	// first, im pointing at a parent div because chromium still does not have
-	// independent transforms so since the trail transform is being modified
-	// earlier in the code, something else has to be animated
-	// then, since the trail itself wasnt animated on the fade out, it needs to
-	// wait for a cycle to be able to register another animation, so we clear and wait
-	trailID.parentElement.style = "";
-	setTimeout(() => {
-		trailID.parentElement.style.animation = `trailMoveIn ${fadeInTime + .1}s both
-		, fadeIn ${fadeInTime + .1}s both`
+	trailEL.parentElement.style.animation = `trailMoveIn ${fadeInTime + .1}s ${delay + .4}s both
+		, fadeIn ${fadeInTime + .1}s ${delay + .4}s both`
 	;
-	}, (delay+.4)*1000); // just moving the animation delay here
-
 }
 
 
