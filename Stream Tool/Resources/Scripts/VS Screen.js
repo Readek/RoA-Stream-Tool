@@ -35,7 +35,7 @@ let bestOfPrev, prevWorkshop, gamemodePrev;
 let socialInt1, socialInt2;
 let twitter1, twitch1, twitter2, twitch2;
 let socialSwitch = true; //true = twitter, false = twitch
-const socialInterval = 70000;
+const socialInterval = 7000;
 
 //to consider how many loops will we do
 let maxPlayers = 2; //will change when doubles comes
@@ -145,7 +145,8 @@ async function getData(scInfo) {
 			pCharInfo[i] = await getCharInfo(player[i].character);
 		}
 
-
+		// this will be used later to sync the animations for all character images
+		const charsLoaded = [];
 		// now the real part begins
 		for (let i = 0; i < maxPlayers; i++) {
 
@@ -157,7 +158,7 @@ async function getData(scInfo) {
 
 
 			//change the player's character image, and position it
-			updateChar(player[i].character, player[i].skin, color[i%2], i, pCharInfo[i], gamemode, startup)
+			charsLoaded.push(updateChar(player[i].character, player[i].skin, color[i%2], i, pCharInfo[i], gamemode, startup));
 			//character will fade in when the image finishes loading
 
 			//save character info so we change them later if different
@@ -169,6 +170,12 @@ async function getData(scInfo) {
 			updateBG(pBG[i], player[i].character, player[i].skin, pCharInfo[i]);	
 
 		}
+		// now we use that array from earlier to animate all characters at the same time
+		Promise.all(charsLoaded).then( (value) => { // when all images are loaded
+			for (let i = 0; i < value.length; i++) { // for every character loaded
+				charaFadeIn(value[i][0], value[i][1], introDelay); // fade it in
+			}
+		})
 
 
 		// this will run for each side (so twice)
@@ -300,14 +307,12 @@ async function getData(scInfo) {
 			//did any of the team names change?
 			if (gamemode != 1) {
 				if (teamNames[i].textContent != teamName[i]) {
-
 					//hide the text before doing anything
-					fadeOut(teamNames[i], () => {
+					fadeOut(teamNames[i]).then( () => {
 						//update the text while nobody can see it
 						updateText(teamNames[i], teamName[i], teamSize);
 						//and fade it back to normal
 						fadeIn(teamNames[i]);
-
 					});
 				}
 			}
@@ -324,12 +329,14 @@ async function getData(scInfo) {
 		}
 
 
+		// this will be used later to sync the animations for all character images
+		const charsLoaded = [], animsEnded = [];
 		for (let i = 0; i < maxPlayers; i++) {
 
 			// players name change, if either name or tag have changed
 			if (pName[i].textContent != player[i].name || pTag[i].textContent != player[i].tag) {
 				//fade out the player's text
-				fadeOut(pWrapper[i], () => {
+				fadeOut(pWrapper[i]).then( () => {
 					//now that nobody is seeing it, change the content of the texts!
 					updatePlayerName(i, player[i].name, player[i].tag);
 					//and fade the texts back in
@@ -337,26 +344,25 @@ async function getData(scInfo) {
 				});
 			}
 
-
 			//player character, skin and background change
 			if (pCharPrev[i] != player[i].character || pSkinPrev[i] != player[i].skin) {
 				
 				//move and fade out the character
-				charaFadeOut(pChara[i], pTrail[i], () => {
+				animsEnded.push(charaFadeOut(pChara[i], pTrail[i]).then( () => {
 					//update the character image and trail, and also storing its scale for later
-					updateChar(player[i].character, player[i].skin, color[i%2], i, pCharInfo[i], gamemode);
+					charsLoaded.push(updateChar(player[i].character, player[i].skin, color[i%2], i, pCharInfo[i], gamemode));
 					//will fade back in when the images load
-				});
+				}));
 
 				//background change here!
 				if (bgChangeLogic(player[i].skin, pSkinPrev[i], player[i].character, pCharPrev[i])) {
 					//fade it out
-					fadeOut(pBG[i], () => {
+					fadeOut(pBG[i], fadeOutTime+.2).then( () => {
 						//update the bg vid
 						updateBG(pBG[i], player[i].character, player[i].skin, pCharInfo[i]);
 						//fade it back
 						fadeIn(pBG[i], .3, fadeInTime+.2);
-					}, fadeOutTime+.2);
+					});
 				};
 				
 				pCharPrev[i] = player[i].character;
@@ -365,6 +371,14 @@ async function getData(scInfo) {
 			}
 
 		}
+		// now we use that array from earlier to animate all characters at the same time
+		Promise.all(animsEnded).then( () => { // need to sync somehow
+			Promise.all(charsLoaded).then( (value) => { // when all images are loaded
+				for (let i = 0; i < value.length; i++) { // for every character loaded
+					charaFadeIn(value[i][0], value[i][1]); // fade it in
+				}
+			})
+		})
 
 
 		//best of check
@@ -384,7 +398,7 @@ async function getData(scInfo) {
 
 		//update round text
 		if (roundEL.textContent != round){
-			fadeOut(roundEL, () => {
+			fadeOut(roundEL).then( () => {
 				updateText(roundEL, round, roundSize);
 				fadeIn(roundEL, .2);
 			});
@@ -392,7 +406,7 @@ async function getData(scInfo) {
 
 		//update tournament text
 		if (tournamentEL.textContent != tournamentName){
-			fadeOut(tournamentEL, () => {
+			fadeOut(tournamentEL).then( () => {
 				updateText(tournamentEL, tournamentName, tournamentSize);
 				fadeIn(tournamentEL, .2);
 			});
@@ -404,7 +418,7 @@ async function getData(scInfo) {
 			
 			//caster names
 			if (casterEL[i].textContent != caster[i].name){
-				fadeOut(casterEL[i], () => {
+				fadeOut(casterEL[i]).then( () => {
 					updateText(casterEL[i], caster[i].name, casterSize);
 					fadeIn(casterEL[i], .2);
 				});
@@ -629,11 +643,11 @@ function socialChange1(twitterWrapperEL, twitchWrapperEL) {
 	} else if (!!twitter1 && !!twitch1) {
 
 		if (socialSwitch) {
-			fadeOut(twitterWrapperEL, () => {
+			fadeOut(twitterWrapperEL).then( () => {
 				fadeIn(twitchWrapperEL);
 			});
 		} else {
-			fadeOut(twitchWrapperEL, () => {
+			fadeOut(twitchWrapperEL).then( () => {
 				fadeIn(twitterWrapperEL);
 			});
 		}
@@ -659,11 +673,11 @@ function socialChange2(twitterWrapperEL, twitchWrapperEL) {
 	} else if (!!twitter2 && !!twitch2) {
 
 		if (socialSwitch) {
-			fadeOut(twitterWrapperEL, () => {
+			fadeOut(twitterWrapperEL).then( () => {
 				fadeIn(twitchWrapperEL);
 			});
 		} else {
-			fadeOut(twitchWrapperEL, () => {
+			fadeOut(twitchWrapperEL).then( () => {
 				fadeIn(twitterWrapperEL);
 			});
 		}
@@ -679,11 +693,11 @@ function updateSocial(mainSocial, mainText, mainWrapper, otherSocial, otherWrapp
 	}
 	//check if this is their turn so we fade out the other one
 	if (localSwitch) {
-		fadeOut(otherWrapper, () => {})
+		fadeOut(otherWrapper)
 	}
 
 	//now do the classics
-	fadeOut(mainWrapper, () => {
+	fadeOut(mainWrapper).then( () => {
 		updateSocialText(mainText, mainSocial, twitterSize, mainWrapper);
 		//check if its twitter's turn to show up
 		if (otherSocial == "" && mainSocial != "") {
@@ -741,12 +755,10 @@ function getFontSize(textElement) {
 
 
 //fade out
-function fadeOut(itemID, funct, dur = fadeOutTime) {
+async function fadeOut(itemID, dur = fadeOutTime) {
 	itemID.style.animation = `fadeOut ${dur}s both`;
-
-	setTimeout(() => { // when the animation finishes
-		if (funct) funct();
-	}, dur * 1000); // we need miliseconds instead of seconds here
+	// this function will return a promise when the animation ends
+	await new Promise(resolve => setTimeout(resolve, dur * 1000)); // translate to miliseconds
 }
 
 //fade in
@@ -755,7 +767,7 @@ function fadeIn(itemID, delay = 0, dur = fadeInTime) {
 }
 
 //fade out for the characters
-function charaFadeOut(charaEL, trailEL, funct) {
+async function charaFadeOut(charaEL, trailEL) {
 
 	charaEL.style.animation = `charaMoveOut ${fadeOutTime}s both
 		,fadeOut ${fadeOutTime}s both`
@@ -763,9 +775,7 @@ function charaFadeOut(charaEL, trailEL, funct) {
 	// this is only so the animation change gets activated on fade in
 	trailEL.parentElement.style.animation = `trailMoveOut 0s both`;
 
-	setTimeout(() => {
-		if (funct) funct();
-	}, fadeOutTime * 1000);
+	await new Promise(resolve => setTimeout(resolve, fadeOutTime * 1000));
 
 }
 
@@ -828,7 +838,7 @@ function getCharInfo(pCharacter) {
 
 
 //character update!
-function updateChar(pCharacter, pSkin, color, pNum, charInfo, gamemode, startup = false) {
+async function updateChar(pCharacter, pSkin, color, pNum, charInfo, gamemode, startup = false) {
 
 	//store so code looks cleaner later
 	const charEL = pChar[pNum];
@@ -886,25 +896,22 @@ function updateChar(pCharacter, pSkin, color, pNum, charInfo, gamemode, startup 
 		trailEL.style.imageRendering = "pixelated";
 	}
 
+	// here we will store promises to use later
+	const charsLoaded = [];
 	//this will make the thing wait till the images are fully loaded
-	charEL.decode().then( () => {
-		trailEL.decode().then( () => {
-			//when both char and trail load, fade them in
-			if (startup) {
-				charaFadeIn(pChara[pNum], trailEL, introDelay);
-			} else {
-				charaFadeIn(pChara[pNum], trailEL);
-			}
-		})
-	}).catch( () => {
-		//if the image fails to load, we will use a placeholder
-		charEL.src = charPathBase + 'Random/P'+((pNum%2)+1)+'.png';
-		if (startup) {
-			charaFadeIn(pChara[pNum], trailEL), introDelay;
-		} else {
-			charaFadeIn(pChara[pNum], trailEL);
-		}
-	})
+	charsLoaded.push(
+		charEL.decode().catch( () => {
+			//if the image fails to load, we will use a placeholder
+			/* for whatever reason, catch doesnt work properly on firefox */
+			/* add an extra timeout before decode to fix */
+			charEL.src = charPathBase + 'Random/P'+((pNum%2)+1)+'.png';
+		} ),
+		trailEL.decode().catch( () => {} ) // if no trail, do nothing
+	);
+	// this function will send a promise when the images finish loading
+	await Promise.all(charsLoaded);
+
+	return [pChara[pNum], trailEL];
 
 }
 

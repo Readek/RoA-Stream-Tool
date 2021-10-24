@@ -173,7 +173,7 @@ async function getData(scInfo) {
 			});
 
 			//aaaaand fade out everything
-			fadeOut(document.getElementById("overlayIntro"), null, fadeInTime+.2, introDelay+1.6)
+			fadeOut(document.getElementById("overlayIntro"), fadeInTime+.2, introDelay+1.6)
 
 			//lets delay everything that comes after this so it shows after the intro
 			introDelay = 2.6;
@@ -200,6 +200,9 @@ async function getData(scInfo) {
 		}
 
 
+		// this will be used later to sync the animations for all character images
+		const charsLoaded = [];
+
 		// now for the actual initialization of players
 		for (let i = 0; i < maxPlayers; i++) {
 			
@@ -214,14 +217,21 @@ async function getData(scInfo) {
 			
 
 			//set the character image for the player
-			updateChar(player[i].character, player[i].skin, i, pCharInfo[i], mainMenu, introDelay+.25);
-			//when the image finishes loading, it will fade in (coded in updateChar())
+			charsLoaded.push(updateChar(player[i].character, player[i].skin, i, pCharInfo[i], mainMenu));
+			//the animation will be fired below, when the image finishes loading
 
 			//save the character/skin so we run the character change code only when this doesnt equal to the next
 			pCharPrev[i] = player[i].character;
 			pSkinPrev[i] = player[i].skin;
 
 		}
+
+		// now we use that array from earlier to animate all characters at the same time
+		Promise.all(charsLoaded).then( (value) => { // when all images are loaded
+			for (let i = 0; i < value.length; i++) { // for every character loaded
+				fadeInMove(value[i], introDelay+.25, true); // fade it in
+			}
+		})
 
 		// this will run for each side (so twice)
 		for (let i = 0; i < maxSides; i++) {
@@ -308,6 +318,8 @@ async function getData(scInfo) {
 		}
 
 
+		// this will be used later to sync the animations for all character images
+		const charsLoaded = [], animsEnded = [];
 		//lets check each player
 		for (let i = 0; i < maxPlayers; i++) {
 			
@@ -320,18 +332,17 @@ async function getData(scInfo) {
 				//if this is singles, move the texts while updating
 				if (gamemode == 1) {
 					//move and fade out the player 1's text
-					fadeOutMove(pWrapper[i], null, side, () => {
+					fadeOutMove(pWrapper[i], null, side).then( () => {
 						//now that nobody is seeing it, quick, change the text's content!
 						updatePlayerName(i, player[i].name, player[i].tag, gamemode);
-						
 						//fade the name back in with a sick movement
 						fadeInMove(pWrapper[i], 0, null, side);
 					});
 				} else { //if not singles, dont move the texts
-					fadeOut(pWrapper[i], () => {
+					fadeOut(pWrapper[i]).then( () => {
 						updatePlayerName(i, player[i].name, player[i].tag, gamemode);
 						fadeIn(pWrapper[i]);
-					});
+					}); 
 				}
 				
 			}
@@ -340,15 +351,23 @@ async function getData(scInfo) {
 			if (pCharPrev[i] != player[i].character || pSkinPrev[i] != player[i].skin || mainMenuPrev != mainMenu) {
 
 				//fade out the image while also moving it because that always looks cool
-				fadeOutMove(charImg[i], true, null, () => {
+				animsEnded.push(fadeOutMove(charImg[i], true, null).then( () => {
 					//now that nobody can see it, lets change the image!
-					updateChar(player[i].character, player[i].skin, i, pCharInfo[i], mainMenu);
+					charsLoaded.push(updateChar(player[i].character, player[i].skin, i, pCharInfo[i], mainMenu));
 					//will fade in when image finishes loading
-				});
+				}));
 				pCharPrev[i] = player[i].character;
 				pSkinPrev[i] = player[i].skin;
 			}
 		}
+		// now we use that array from earlier to animate all characters at the same time
+		Promise.all(animsEnded).then( () => { // need to sync somehow
+			Promise.all(charsLoaded).then( (value) => { // when all images are loaded
+				for (let i = 0; i < value.length; i++) { // for every character loaded
+					fadeInMove(value[i], .1, true); // fade it in
+				}
+			})
+		})
 
 
 		//now let's check stuff from each side
@@ -360,7 +379,7 @@ async function getData(scInfo) {
 				const side = (i % 2 == 0) ? true : false;
 
 				if (teamNames[i].textContent != teamName[i]) {
-					fadeOutMove(teamNames[i], null, side, () => {
+					fadeOutMove(teamNames[i], null, side).then( () => {
 						updateText(teamNames[i], teamName[i], nameSize);
 						fadeInMove(teamNames[i], 0, null, side);
 					});
@@ -370,7 +389,7 @@ async function getData(scInfo) {
 			//the [W] and [L] status for grand finals
 			if (wlPrev[i] != wl[i]) {
 				//move it away!
-				fadeOutWL(wlImg[i], gamemode, i, () => {
+				fadeOutWL(wlImg[i], gamemode, i).then( () => {
 					//change the thing!
 					updateWL(wl[i], i, gamemode);
 					//move it back!
@@ -394,14 +413,14 @@ async function getData(scInfo) {
 			//check if we have a logo we can place on the overlay
 			if (gamemode == 1) { //if this is singles, check the player tag
 				if (pTag[i].textContent != player[i].tag) {
-					fadeOut(tLogoImg[i], () => {
+					fadeOut(tLogoImg[i]).then( () => {
 						updateLogo(tLogoImg[i], player[i].tag, i, gamemode);
 						fadeIn(tLogoImg[i]);
 					});
 				}
 			} else { //if doubles, check the team name
 				if (teamNames[i].textContent != teamName[i]) {
-					fadeOut(tLogoImg[i], () => {
+					fadeOut(tLogoImg[i]).then( () => {
 						updateLogo(tLogoImg[i], teamName[i], i, gamemode);
 						fadeIn(tLogoImg[i]);
 					});
@@ -427,7 +446,7 @@ async function getData(scInfo) {
 		
 		//and finally, update the round text
 		if (textRound.textContent != round){
-			fadeOut(textRound, () => {
+			fadeOut(textRound).then( () => {
 				updateText(textRound, round, roundSize);
 				fadeIn(textRound);
 			});
@@ -581,16 +600,15 @@ function updateWL(pWL, pNum, gamemode) {
 
 
 //fade out
-function fadeOut(itemID, funct, dur = fadeOutTime, delay = 0) {
+async function fadeOut(itemID, dur = fadeOutTime, delay = 0) {
+	// actual animation
 	itemID.style.animation = `fadeOut ${dur}s ${delay}s both`;
-
-	setTimeout(() => { // when the animation finishes
-		if (funct) funct();
-	}, dur * 1000); // we need miliseconds instead of seconds here
+	// this function will return a promise when the animation ends
+	await new Promise(resolve => setTimeout(resolve, dur * 1000)); // translate to miliseconds
 }
 
 //fade out but with movement
-function fadeOutMove(itemID, chara, side, funct) {
+async function fadeOutMove(itemID, chara, side) {
 
 	if (chara) {
 		// we need to target a different element since chromium
@@ -611,9 +629,7 @@ function fadeOutMove(itemID, chara, side, funct) {
 		
 	}
 	
-	setTimeout(() => {
-		if (funct) funct();
-	}, fadeOutTime * 1000);
+	await new Promise(resolve => setTimeout(resolve, fadeOutTime * 1000));
 
 }
 
@@ -624,7 +640,6 @@ function fadeIn(itemID, delay = 0, dur = fadeInTime) {
 
 //fade in but with movement
 function fadeInMove(itemID, delay = .15, chara, side) {
-	console.log(chara);
 	if (chara) {
 		itemID.parentElement.style.animation = `charaMoveIn ${fadeOutTime}s ${delay}s both
 			, fadeIn ${fadeOutTime}s ${delay}s both`
@@ -639,12 +654,11 @@ function fadeInMove(itemID, delay = .15, chara, side) {
 				, fadeIn ${fadeInTime}s ${delay}s both`
 			;
 		}
-		
 	}
 }
 
 //movement for the [W]/[L] images
-function fadeOutWL(wlEL, gamemode, side, funct) {
+async function fadeOutWL(wlEL, gamemode, side) {
 	if (gamemode == 1) { //if singles, move it vertically
 		wlEL.style.animation = `wl1MoveOut .5s both`;
 	} else { // doubles, horizontal movement
@@ -654,9 +668,7 @@ function fadeOutWL(wlEL, gamemode, side, funct) {
 			wlEL.style.animation = `wl2MoveOutLeft .5s both`;
 		}
 	}
-	setTimeout(() => {
-		if (funct) funct();
-	}, 500);
+	await new Promise(resolve => setTimeout(resolve, 500));
 }
 function fadeInWL(wlEL, gamemode, side, delay = 0) {
 	if (gamemode == 1) {
@@ -746,7 +758,7 @@ function getCharInfo(pCharacter) {
 }
 
 //now the complicated "change character image" function!
-function updateChar(pCharacter, pSkin, pNum, charInfo, mainMenu, delay = 0) {
+async function updateChar(pCharacter, pSkin, pNum, charInfo, mainMenu) {
 
 	//store so code looks cleaner
 	const charEL = charImg[pNum];
@@ -788,14 +800,14 @@ function updateChar(pCharacter, pSkin, pNum, charInfo, mainMenu, delay = 0) {
 	charEL.style.top = charPos[1] + "px";
 	charEL.style.transform = "scale(" + charPos[2] + ")";
 
-	//this will make the thing wait till the image is fully loaded
-	charEL.decode().then(
-		//when the image loads, fade it in
-		fadeInMove(charImg[pNum], delay, true)
-	).catch( () => {
-		//if the image fails to load, we will use a placeholder
+	// this will make the thing wait till the image is fully loaded
+	await charEL.decode().catch( () => {
+		// if the image fails to load, we will use a placeholder
+		/* for whatever reason, catch doesnt work properly on firefox */
+		/* add an extra timeout before decode to fix */
 		charEL.src = charPathBase + 'Random/P'+((pNum%2)+1)+'.png';
-		fadeInMove(charImg[pNum], delay, true);
-	})
+	});
+
+	return charImg[pNum];
 
 }
