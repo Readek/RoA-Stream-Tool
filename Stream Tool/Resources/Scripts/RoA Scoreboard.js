@@ -10,8 +10,8 @@ let introDelay = .8; //all animations will get this delay when the html loads (u
 
 //max text sizes (used when resizing back)
 const introSize = "85px";
-const nameSize = "30px";
-const tagSize = "20px";
+const nameSize = "24px";
+const tagSize = "17px";
 const nameSizeDubs = "22px";
 const tagSizeDubs = "15px";
 const roundSize = "19px";
@@ -35,10 +35,6 @@ let bestOfPrev, workshopPrev, mainMenuPrev, gamemodePrev;
 let maxPlayers = 2;
 const maxSides = 2;
 
-//svg paths for the colors, 1 for Singles and 2 for Dubs
-const colorPath1 = "m 0,0 3.818e-5,16.32621 30.04434582,7.358723 2.100135,-0.314192 3.208067,-7.920963 H 162.45181 L 168.33879,0 h -6.96663 l -5.58928,14.381247 H 35.719909 L 41.352445,0 Z"
-const colorPath2 = "M 0,0 3.818e-5,24.05297 69.267529,23.684933 72.676776,15.449778 H 162.45181 L 168.33879,0 h -6.96663 l -5.58928,14.381247 H 73.044099 L 78.676635,0 Z"
-
 let startup = true;
 
 
@@ -49,7 +45,8 @@ const pName = document.getElementsByClassName("names");
 const teamNames = document.getElementsByClassName("teamName");
 const charImg = document.getElementsByClassName("pCharacter");
 const colorImg = document.getElementsByClassName("colors");
-const wlImg = document.getElementsByClassName("wlImg");
+const wlGroup = document.getElementsByClassName("wlGroup");
+const wlText = document.getElementsByClassName("wlText");
 const scoreImg = document.getElementsByClassName("scoreImgs");
 const scoreAnim = document.getElementsByClassName("scoreVid");
 const tLogoImg = document.getElementsByClassName("tLogos");
@@ -245,7 +242,7 @@ async function getData(scInfo) {
 			
 			//if its grands, we need to show the [W] and/or the [L] on the players
 			updateWL(wl[i], i, gamemode);
-			fadeInWL(wlImg[i], gamemode, i, introDelay+.5);
+			fadeInWL(wlGroup[i], gamemode, i, introDelay+.5);
 			
 			//save for later so the animation doesn't repeat over and over
 			wlPrev[i] = wl[i];
@@ -389,11 +386,11 @@ async function getData(scInfo) {
 			//the [W] and [L] status for grand finals
 			if (wlPrev[i] != wl[i]) {
 				//move it away!
-				fadeOutWL(wlImg[i], gamemode, i).then( () => {
+				fadeOutWL(wlGroup[i], gamemode, i).then( () => {
 					//change the thing!
 					updateWL(wl[i], i, gamemode);
 					//move it back!
-					fadeInWL(wlImg[i], gamemode, i)
+					fadeInWL(wlGroup[i], gamemode, i)
 				});
 				wlPrev[i] = wl[i];
 			}
@@ -484,11 +481,6 @@ function changeGM(gm) {
 		pWrapper[0].style.left = "155px";
 		pWrapper[1].style.right = "155px";
 
-		//change the color paths
-		for (let i = 0; i < 2; i++) {
-			colorImg[i].firstElementChild.setAttribute("d", colorPath2);			
-		}
-
 		//show all hidden elements
 		const dubELs = document.getElementsByClassName("dubEL");
 		for (let i = 0; i < dubELs.length; i++) {
@@ -517,10 +509,6 @@ function changeGM(gm) {
 		pWrapper[0].style.left = "158px";
 		pWrapper[1].style.right = "158px";
 
-		for (let i = 0; i < 2; i++) {
-			colorImg[i].firstElementChild.setAttribute("d", colorPath1);			
-		}
-
 		const dubELs = document.getElementsByClassName("dubEL");
 		for (let i = 0; i < dubELs.length; i++) {
 			dubELs[i].style.display = "none";
@@ -532,26 +520,20 @@ function changeGM(gm) {
 
 
 // update functions
-function updateScore(pScore, bestOf, pColor, pNum, gamemode, playAnim) {
+async function updateScore(pScore, bestOf, pColor, pNum, gamemode, playAnim) {
 
-	let delay = 0;
 	if (playAnim) { //do we want to play the score up animation?
-		//depending on the "bestOf" and the color, change the clip
-		scoreAnim[pNum].src = 'Resources/Overlay/Scoreboard/Score/' + gamemode + "/" + bestOf + '/' + pColor + '.webm';
+		// depending on the color, change the clip
+		scoreAnim[pNum].src = 'Resources/Overlay/Scoreboard/Score/' + gamemode + "/" + '/' + pColor + '.webm';
 		scoreAnim[pNum].play();
-		delay = 200; //add a bit of delay so the score change fits with the vid
-	}
-
-	//set timeout to the actual image change so it fits with the animation (if it played)
-	setTimeout(() => {
-		//change the image depending on the bestOf status and, of course, the current score
-		scoreImg[pNum].src = 'Resources/Overlay/Scoreboard/Score/Win Tick ' + bestOf + ' ' + pScore + '.png';
-	}, delay);
+	} 
+	// change the score image with the new values
+	scoreImg[pNum].src = 'Resources/Overlay/Scoreboard/Score/Win Tick ' + bestOf + ' ' + pScore + '.png';
 
 }
 
 function updateColor(colorEL, pColor) {
-	colorEL.style.fill = getHexColor(pColor);
+	colorEL.src = "Resources/Overlay/Scoreboard/Colors/" + pColor + ".png";
 }
 
 function updateBorder(bestOf, gamemode) {
@@ -590,11 +572,16 @@ function updateText(textEL, textToType, maxSize) {
 function updateWL(pWL, pNum, gamemode) {
 	//check if winning or losing in a GF, then change image
 	if (pWL == "W") {
-		wlImg[pNum].src = 'Resources/Overlay/Scoreboard/WLs/Winners P' + (pNum+1) + ' ' + gamemode + '.png';
+		wlText[pNum].textContent = "WINNERS";
+		wlText[pNum].style.color = "#76a276";
+		wlGroup[pNum].style.display = "block";
 	} else if (pWL == "L") {
-		wlImg[pNum].src = 'Resources/Overlay/Scoreboard/WLs/Losers P' + (pNum+1) + ' ' + gamemode + '.png';
-	} else if (pWL == "Nada") {
-		wlImg[pNum].src = '//:0'; //prevents error event
+		wlText[pNum].textContent = "LOSERS";
+		wlText[pNum].style.color = "#a27677";
+		wlGroup[pNum].style.display = "block";
+	} else {
+		wlText[pNum].textContent = ' ';
+		wlGroup[pNum].style.display = "none";
 	}
 }
 
@@ -639,7 +626,7 @@ function fadeIn(itemID, delay = 0, dur = fadeInTime) {
 }
 
 //fade in but with movement
-function fadeInMove(itemID, delay = .15, chara, side) {
+function fadeInMove(itemID, delay = 0, chara, side) {
 	if (chara) {
 		itemID.parentElement.style.animation = `charaMoveIn ${fadeOutTime}s ${delay}s both
 			, fadeIn ${fadeOutTime}s ${delay}s both`
@@ -660,7 +647,7 @@ function fadeInMove(itemID, delay = .15, chara, side) {
 //movement for the [W]/[L] images
 async function fadeOutWL(wlEL, gamemode, side) {
 	if (gamemode == 1) { //if singles, move it vertically
-		wlEL.style.animation = `wl1MoveOut .5s both`;
+		wlEL.style.animation = `wl1MoveOut .4s both`;
 	} else { // doubles, horizontal movement
 		if (side) {
 			wlEL.style.animation = `wl2MoveOutRight .5s both`;
@@ -668,11 +655,11 @@ async function fadeOutWL(wlEL, gamemode, side) {
 			wlEL.style.animation = `wl2MoveOutLeft .5s both`;
 		}
 	}
-	await new Promise(resolve => setTimeout(resolve, 500));
+	await new Promise(resolve => setTimeout(resolve, 400));
 }
 function fadeInWL(wlEL, gamemode, side, delay = 0) {
 	if (gamemode == 1) {
-		wlEL.style.animation = `wl1MoveIn .5s ${delay}s both`;
+		wlEL.style.animation = `wl1MoveIn .4s ${delay}s both`;
 	} else {
 		if (side) {
 			wlEL.style.animation = `wl2MoveInRight .5s ${delay}s both`;
@@ -787,18 +774,16 @@ async function updateChar(pCharacter, pSkin, pNum, charInfo, mainMenu) {
 	} else { //if the character isnt on the database, set positions for the "?" image
 		//this condition is used just to position images well on both sides
 		if (pNum % 2 == 0) {
-			charPos[0] = 29;
+			charPos[0] = 35;
 		} else {
-			charPos[0] = 15;
+			charPos[0] = 30;
 		}
-		charPos[1] = -14;
-		charPos[2] = 1.5;
+		charPos[1] = -10;
+		charPos[2] = 1.2;
 	}
 	
 	//to position the character
-	charEL.style.left = charPos[0] + "px";
-	charEL.style.top = charPos[1] + "px";
-	charEL.style.transform = "scale(" + charPos[2] + ")";
+	charEL.style.transform = `translate(${charPos[0]}px, ${charPos[1]}px) scale(${charPos[2]})`;
 
 	// this will make the thing wait till the image is fully loaded
 	await charEL.decode().catch( () => {
