@@ -19,6 +19,7 @@
         "Panda",
         "Genesis",
         "Ranked",
+        "Pool Party",
         "HD",
         "LoA HD"
     ],
@@ -34,8 +35,8 @@
             "scale": 1.9
         },
         "LoA HD": {
-            "x": 10,
-            "y": 175,
+            "x": 25,
+            "y": 180,
             "scale": 5
         },
         "HD": {

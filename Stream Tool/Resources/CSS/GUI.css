@@ -77,7 +77,8 @@ input[type="text"] {
   height: 100%;
   z-index: 2;
   display: flex;
-  transition: right 300ms ease;
+  transform: translateX(calc(-100% / 3));
+  transition: transform 300ms ease;
 }
 
 
@@ -666,7 +667,7 @@ input[type="text"] {
 /* settings section */
 #settings {
   width: calc(100% / 3);
-  height: 300px;
+  height: 100%;
   background-color: var(--bg5);
   z-index: 2;
 }
@@ -719,7 +720,7 @@ input[type="text"] {
 #goBack {
   position: absolute;
   width: calc(100% / 3);
-  height: 300px;
+  height: 100%;
   left: calc(100% / 3);
   z-index: 100;
   display: none;

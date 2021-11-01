@@ -1,0 +1,51 @@
+{
+    "name": "Test",
+    "tag": "One",
+    "characters": [
+        {
+            "character": "Absa",  "skin": "Default"
+        },
+        {
+            "character": "Clairen",  "skin": "Default"
+        },
+        {
+            "character": "Elliana",  "skin": "Default"
+        },
+        {
+            "character": "Etalus",  "skin": "Default"
+        },
+        {
+            "character": "Forsburn",  "skin": "Default"
+        },
+        {
+            "character": "Kragg",  "skin": "Default"
+        },
+        {
+            "character": "Maypul",  "skin": "Default"
+        },
+        {
+            "character": "Orcane",  "skin": "Default"
+        },
+        {
+            "character": "Ori and Sein",  "skin": "Default"
+        },
+        {
+            "character": "Ranno",  "skin": "Default"
+        },
+{
+            "character": "Shovel Knight",  "skin": "Default"
+        },
+{
+            "character": "Sylvanos",  "skin": "Default"
+        },
+{
+            "character": "Wrastor",  "skin": "Default"
+        },
+{
+            "character": "Zetterburn",  "skin": "Default"
+        },
+        {
+            "character": "Error",  "skin": "Default"
+        }
+    ]
+}

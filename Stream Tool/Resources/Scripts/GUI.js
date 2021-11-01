@@ -89,9 +89,6 @@ function init() {
     //if the viewport is moved, click anywhere on the center to go back
     document.getElementById('goBack').addEventListener("click", goBack);
 
-    //move the viewport to the center (this is to avoid animation bugs)
-    viewport.style.right = "100%";
-
 
     /* SETTINGS */
 
@@ -267,16 +264,16 @@ function isPresetOpen() {
 
 function moveViewport() {
     if (!movedSettings) {
-        viewport.style.right = "140%";
-        overlayDiv.style.opacity = "25%";
+        viewport.style.transform = "translateX(calc(-140% / 3))";
+        overlayDiv.style.opacity = ".25";
         goBackDiv.style.display = "block"
         movedSettings = true;
     }
 }
 
 function goBack() {
-    viewport.style.right = "100%";
-    overlayDiv.style.opacity = "100%";
+    viewport.style.transform = "translateX(calc(-100% / 3))";
+    overlayDiv.style.opacity = "1";
     goBackDiv.style.display = "none";
     movedSettings = false;
 }
