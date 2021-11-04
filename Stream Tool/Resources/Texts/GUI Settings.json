@@ -2,7 +2,7 @@
   "guiWidth": 600,
   "guiHeight": 300,
   "allowIntro": false,
-  "workshop": true,
+  "workshop": false,
   "forceMM": false,
   "forceHD": false,
   "noLoAHD": false,

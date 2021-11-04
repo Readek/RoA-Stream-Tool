@@ -1,8 +1,6 @@
 'use strict';
 
 //animation stuff
-const pCharMove = 30; //distance to move for the character images
-
 const fadeInTime = .4; //(seconds)
 const fadeOutTime = .3;
 const introDelay = .5; //all animations will get this delay when the html loads (use this so it times with your transition)

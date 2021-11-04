@@ -12,19 +12,27 @@
     <div id="scoreboardL" class="scoreboard absol">
 
         <img src="Resources/Overlay/Scoreboard/Name BG 1.png" id="bgL" class="absol" alt=""/>
+
+        <img id="p1Color" class="absol colors">
+
+        <img src="Resources/Overlay/Scoreboard/Name Dubs BG.png" class="dubEL absol" alt=""/>
         
         <div class="wlmask absol">
             <div class="absol wlGroup">
                 <img src="Resources/Overlay/Scoreboard/WL BG.png" id="wlbgL" class="wlbg absol"/>
-                <span id="wlTextL" class="absol wlText">WINNERS</span>
+                <span id="wlTextL" class="absol wlText"></span>
             </div>
         </div>
         
-        <img id="p1Color" class="absol colors">
-
-        <div id="p1CharaMask" class="mask maskSingles">
-            <div class="charTop">
+        <div id="p1CharaMask" class="mask">
+            <div>
                 <img id="p1Character" class="pCharacter" alt=""/>
+            </div>
+        </div>
+
+        <div id="p3CharaMask" class="mask charBot dubEL">
+            <div>
+                <img id="p3Character" class="pCharacter" alt=""/>
             </div>
         </div>
 
@@ -32,9 +40,16 @@
         <img id="borderP1" class="absol border" alt=""/>
 
         <span id="p1Wrapper" class="wrappers wrappersSingles">
-            <span id="p1tag" class="tags"></span>
+            <span id="p1Tag" class="tags"></span>
             <span id="p1Name" class="names"></span>
         </span>
+
+        <span id="p3Wrapper" class="wrappers wrappersDubs dubEL">
+            <span id="p3Tag" class="tags"></span>
+            <span id="p3Name" class="names"></span>
+        </span>
+
+        <span id="teamNameL" class="teamName dubEL"></span>
 
         <video id="p1ScoreUp" class="absol scoreVid"></video>
 
@@ -43,21 +58,29 @@
     <div id="scoreboardR" class="scoreboard absol">
         
         <img src="Resources/Overlay/Scoreboard/Name BG 1.png" id="bgR" class="absol" alt=""/>
+
+        <img id="p2Color" class="absol colors">
+
+        <img src="Resources/Overlay/Scoreboard/Name Dubs BG.png" class="dubEL absol" alt=""/>
         
         <div class="wlmask absol">
             <div class="absol wlGroup">
                 <img src="Resources/Overlay/Scoreboard/WL BG.png" id="wlbgR" class="wlbg absol"/>
                 <div class="flipBack absol">
-                    <span id="wlTextR" class="absol wlText">LOSERS</span>
+                    <span id="wlTextR" class="absol wlText"></span>
                 </div>
             </div>
         </div>
 
-        <img id="p2Color" class="absol colors">
-
-        <div id="p2CharaMask" class="mask maskSingles">
-            <div class="charTop">
+        <div id="p2CharaMask" class="mask">
+            <div>
                 <img id="p2Character" class="pCharacter" alt=""/>
+            </div>
+        </div>
+
+        <div id="p4CharaMask" class="mask charBot dubEL">
+            <div>
+                <img id="p4Character" class="pCharacter" alt=""/>
             </div>
         </div>
 
@@ -66,59 +89,34 @@
 
         <div class="flipBack absol">
             <span id="p2Wrapper" class="wrappers wrappersSingles">
-                <span id="p2tag" class="tags"></span>
+                <span id="p2Tag" class="tags"></span>
                 <span id="p2Name" class="names"></span>
             </span>
+        </div>
+
+        <div class="flipBack absol">
+            <span id="p4Wrapper" class="wrappers wrappersDubs dubEL">
+                <span id="p4Tag" class="tags"></span>
+                <span id="p4Name" class="names"></span>
+            </span>
+        </div>
+
+        <div class="flipBack absol">
+            <span id="teamNameR" class="teamName dubEL"></span>
         </div>
 
         <video id="p2ScoreUp" class="absol scoreVid"></video>
         
     </div>
 
-    <img src="Resources/Overlay/Scoreboard/Dubs name bg.png" alt="" class="dubEL absol" style="display: none;">
-    <img src="Resources/Overlay/Scoreboard/Dubs name bg.png" alt="" class="dubEL absol" style="display: none;">
-
-    <div id="pChars" class="absol">        
-
-        <div id="p3CharaMask" class="mask charBot dubEL">
-            <div class="charTop">
-                <img id="p3Character" class="pCharacter" alt=""/>
-            </div>
-        </div>
-    
-
-        <div id="p4CharaMask" class="mask charBot dubEL">
-            <div class="charTop">
-                <img id="p4Character" class="pCharacter" alt=""/>
-            </div>
-        </div>
-        
-    </div>
 
     <div id="tagLogos" class="absol">
         <img id="tagLogoP1" class="scoreboardP1 tLogos" alt=""/>
         <img id="tagLogoP2" class="scoreboardP2Fixed tLogos" alt=""/>
     </div>
 
-    <div id="pNames" class="absol">
 
-        <span id="p3Wrapper" class="wrappers wrappersDubs dubEL">
-            <span id="p3tag" class="tags"></span>
-            <span id="p3Name" class="names"></span>
-        </span>
-
-        <span id="p4Wrapper" class="wrappers wrappersDubs dubEL">
-            <span id="p4tag" class="tags"></span>
-            <span id="p4Name" class="names"></span>
-        </span>
-
-        <span id="teamNameL" class="teamName dubEL"></span>
-        <span id="teamNameR" class="teamName dubEL"></span>
-
-    </div>
-      
-
-    <div id="overlayRound">
+    <div id="overlayRound" class="absol">
         <img src="Resources/Overlay/Scoreboard/Round BG.png" id="roundBG" alt=""/>
         <span id="round"></span>
     </div>

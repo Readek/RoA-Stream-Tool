@@ -13,6 +13,10 @@
     src: url('../Fonts/LEMONMILK-Medium.otf');
 }
 
+:root {
+    --scoreboardX: 470px;
+    --scoreboardY: 25px;
+  }
 
 body {
     width: 1920px;
@@ -33,46 +37,32 @@ body {
 
 
 .scoreboard {
-    top: 25px;
+    top: var(--scoreboardY);
 }
 #scoreboardL {
-    left: 480px;
+    left: var(--scoreboardX);
 }
 #scoreboardR {
-    right: 480px;
+    right: var(--scoreboardX);
     transform: scaleX(-1);
 }
 
 
 .mask {
     position: absolute;
-}
-
-.maskSingles {
     -webkit-mask-image: url("../Overlay/Scoreboard/Icon Mask.png");
     width: 401px;
     height: 104px;
 }
 
-.maskDubs {
-    -webkit-mask-image: url("../Overlay/Scoreboard/Icon Mask 2.png");
-}
-
 .charTop {
-    position: absolute;
-    opacity: 0;
+    top: 0px;
+    left: 95px;
 }
+
 .charBot {
-    position: absolute;
-    top: 45px;
-}
-
-
-#p3CharaMask {
-    left: -18px;
-}
-#p4CharaMask {
-    right: -18px;
+    top: 25px;
+    left: -285px;
 }
 
 .pCharacter {
@@ -99,8 +89,10 @@ body {
 }
 
 .wrappersDubs {
-    width: 126px;
-    height: 54px;
+    width: 123px;
+    height: 30px;
+    line-height: 30px;
+    top: 32px;
 }
 
 .flipBack {
@@ -113,12 +105,10 @@ body {
     right: 38px;
 }
 #p3Wrapper {
-    top: 40px;
-    left: 138px;
+    left: 106px;
 }
 #p4Wrapper {
-    top: 40px;
-    right: 138px;
+    right: 106px;
 }
 
 .tags {
@@ -127,20 +117,19 @@ body {
 
 .teamName {
     position: absolute;
-    width: 290px;
-    height: 54px;
-    line-height: 54px;
+    width: 275px;
+    height: 32px;
+    line-height: 32px;
     text-align: center;
-    top: 0px;
+    top: 67px;
     opacity: 0;
     white-space: nowrap;
 }
 #teamNameL {
-    left: 298px;
+    left: 115px;
 }
-
 #teamNameR {
-    right: 298px;
+    right: 115px;
 }
 
 
@@ -167,18 +156,17 @@ body {
 
 #overlayRound {
     opacity: 0;
-}
-
-#roundBG {
-    position: absolute;
+    width: 1920px;
+    display: flex;
+    justify-content: center;
+    top: 900px;
 }
 
 #round {
     position: absolute;
     width: 215px;
     height: 34px;
-    left: 853px;
-    top: 914px;
+    top: 13px;
     line-height: 32px;
     text-align: center;
     font-family: "Roboto";
@@ -333,30 +321,12 @@ body {
     to {transform: translateX(0)}
 }
 
-@keyframes wl1MoveOut {
+@keyframes wlMoveOut {
     from {transform: translateY(0)}
     to {transform: translateY(20px)}
 }
 
-@keyframes wl1MoveIn {
+@keyframes wlMoveIn {
     from {transform: translateY(20px)}
     to {transform: translateY(0)}
-}
-
-@keyframes wl2MoveOutLeft {
-    from {transform: translateX(0)}
-    to {transform: translateX(-150px)}
-}
-@keyframes wl2MoveOutRight {
-    from {transform: translateX(0)}
-    to {transform: translateX(150px)}
-}
-
-@keyframes wl2MoveInLeft {
-    from {transform: translateX(-150px)}
-    to {transform: translateX(0)}
-}
-@keyframes wl2MoveInRight {
-    from {transform: translateX(150px)}
-    to {transform: translateX(0)}
 }
