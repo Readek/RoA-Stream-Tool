@@ -28,7 +28,6 @@ body {
     text-transform: uppercase;
     color: white;
     font-family: "Deansgate";
-    background-color: grey;
 }
 
 .absol {
@@ -278,6 +277,20 @@ body {
 
 .dubEL {
     display: none;
+}
+
+
+.tLogos {
+    max-width: 36px;
+    max-height: 36px;
+    top: 33px;
+    object-fit: scale-down;
+}
+#tagLogoP1 {
+    left: 248px;
+}
+#tagLogoP2 {
+    right: 248px;
 }
 
 

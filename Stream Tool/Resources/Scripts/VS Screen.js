@@ -27,7 +27,7 @@ let colorList;
 
 //to avoid the code constantly running the same method over and over
 const pCharPrev = [], pSkinPrev = [], scorePrev = [], colorPrev = [];
-let bestOfPrev, prevWorkshop, gamemodePrev;
+let bestOfPrev, workshopPrev, gamemodePrev;
 
 //variables for the twitter/twitch constant change
 let socialInt1, socialInt2;
@@ -98,6 +98,9 @@ async function getData(scInfo) {
 
 	const workshop = scInfo['workshop'];
 
+
+	// first of all, things that will always happen on each cycle
+
 	//check if we are forcing HD skins
 	if (scInfo['forceHD']) {
 		for (let i = 0; i < 4; i++) {
@@ -107,23 +110,47 @@ async function getData(scInfo) {
 			} else {
 				player[i].skin = "HD";
 			}
-			
 		}
 	}
+
+	// set the current char path
+	if (workshopPrev != workshop) {
+		workshop ? charPath = charPathWork : charPath = charPathBase;
+		// save the current workshop status so we know when it changes next time
+		workshopPrev = workshop;
+	}
+
+	// set the max players depending on singles or doubles
+	maxPlayers = gamemode == 1 ? 2 : 4;
+
+	// depending on best of, show or hide some score ticks
+	if (bestOfPrev != bestOf) {
+		updateBo(bestOf);
+		bestOfPrev = bestOf;
+	}
 	
-	// if there is no team name, just display "[Color] Team"
+	// now, things that will happen for each player
+	for (let i = 0; i < maxPlayers; i++) {
+
+		// get the character lists now before we do anything else
+		if (pCharPrev[i] != player[i].character) {
+			// gets us the character positions to be used when updating the char image
+			pCharInfo[i] = await getCharInfo(player[i].character);
+		}
+
+	}
+
+	// and lastly, things that will happen for each side
 	for (let i = 0; i < maxSides; i++) {
+
+		// if there is no team name, just display "[Color] Team"
 		if (!teamName[i]) teamName[i] = color[i] + " Team";
+
 	}
 	
 
-	//first, things that will happen only the first time the html loads
+	// now, things that will happen only the first time the html loads
 	if (startup) {
-
-		//first things first, set the current char path
-		workshop ? charPath = charPathWork : charPath = charPathBase;
-		//save the current workshop status so we know when it changes next time
-		prevWorkshop = workshop;
 
 		//initialize the colors list
 		colorList = await getColorInfo();
@@ -136,12 +163,6 @@ async function getData(scInfo) {
 		//save this variable so we know the next time it gets changed
 		gamemodePrev = gamemode;
 		
-
-		//this is on top of everything else because the await would desync the rest
-		for (let i = 0; i < maxPlayers; i++) { //for each available player
-			//gets us the character positions for the player
-			pCharInfo[i] = await getCharInfo(player[i].character);
-		}
 
 		// this will be used later to sync the animations for all character images
 		const charsLoaded = [];
@@ -202,17 +223,6 @@ async function getData(scInfo) {
 		}
 
 
-		//lets set the initial state of the score border
-		if (bestOf == "Bo5") {
-			scoreBorder.src = "Resources/Overlay/VS Screen/Score Border Bo5.png";
-		} else {
-			scoreBorder.src = "Resources/Overlay/VS Screen/Score Border Bo3.png";
-			scoreImg[2].style.opacity = 0;
-			scoreImg[5].style.opacity = 0;
-		}
-		bestOfPrev = bestOf;
-
-
 		//set the round text
 		updateText(roundEL, round, roundSize);
 		//set the tournament text
@@ -250,14 +260,8 @@ async function getData(scInfo) {
 		startup = false; //next time we run this function, it will skip all we just did
 	}
 
-	//now things that will happen constantly
+	// now things that will happen every other cycle
 	else {
-
-		//start by setting the correct char path
-		if (prevWorkshop != workshop) {
-			workshop ? charPath = charPathWork : charPath = charPathBase;
-			prevWorkshop = workshop;
-		}
 
 		//of course, check if the gamemode has changed
 		if (gamemodePrev != gamemode) {
@@ -318,15 +322,6 @@ async function getData(scInfo) {
 		}
 
 
-		//get the character lists now before we do anything else
-		for (let i = 0; i < maxPlayers; i++) {
-			//if the character has changed, update the info
-			if (pCharPrev[i] != player[i].character) {
-				pCharInfo[i] = await getCharInfo(player[i].character);
-			}
-		}
-
-
 		// this will be used later to sync the animations for all character images
 		const charsLoaded = [], animsEnded = [];
 		for (let i = 0; i < maxPlayers; i++) {
@@ -377,21 +372,6 @@ async function getData(scInfo) {
 				}
 			})
 		})
-
-
-		//best of check
-		if (bestOfPrev != bestOf) {
-			if (bestOf == "Bo5") {
-				scoreImg[2].style.opacity = 1;
-				scoreImg[5].style.opacity = 1;
-				scoreBorder.src = "Resources/Overlay/VS Screen/Score Border Bo5.png";
-			} else {
-				scoreImg[2].style.opacity = 0;
-				scoreImg[5].style.opacity = 0;
-				scoreBorder.src = "Resources/Overlay/VS Screen/Score Border Bo3.png";
-			}
-			bestOfPrev = bestOf;
-		}
 		
 
 		//update round text
@@ -441,8 +421,6 @@ async function getData(scInfo) {
 function changeGM(gm) {
 	if (gm == 2) {
 
-		maxPlayers = 4;
-
 		//change the white overlay
 		document.getElementById("vsOverlay").src = "Resources/Overlay/VS Screen/VS Overlay Dubs.png";
 
@@ -481,8 +459,6 @@ function changeGM(gm) {
 		}
 
 	} else {
-
-		maxPlayers = 2
 
 		document.getElementById("vsOverlay").src = "Resources/Overlay/VS Screen/VS Overlay.png";
 
@@ -616,6 +592,19 @@ function bgChangeLogic(pSkin, pSkinPrev, pChar, pCharPrev) {
 		return true;
 	} else if (pChar == "Shovel Knight" && (pSkin == "Golden" || pSkinPrev == "Golden")) { //now we just flexing
 		return true;
+	}
+}
+
+// to hide some score ticks and change score border
+function updateBo(bestOf) {
+	if (bestOf == "Bo5") {
+		scoreImg[2].style.opacity = 1;
+		scoreImg[5].style.opacity = 1;
+		scoreBorder.src = "Resources/Overlay/VS Screen/Score Border Bo5.png";
+	} else {
+		scoreImg[2].style.opacity = 0;
+		scoreImg[5].style.opacity = 0;
+		scoreBorder.src = "Resources/Overlay/VS Screen/Score Border Bo3.png";
 	}
 }
 

@@ -87,13 +87,54 @@ async function getData(scInfo) {
 
 	const mainMenu = scInfo['forceMM'];
 
-	// if there is no team name, just display "[Color] Team"
+
+	// first of all, things that will always happen on each cycle
+	
+	// set the current char path
+	if (workshopPrev != workshop) {
+		workshop ? charPath = charPathWork : charPath = charPathBase;
+		// save the current workshop status so we know when it changes next time
+		workshopPrev = workshop;
+	}
+
+	// set the max players depending on singles or doubles
+	maxPlayers = gamemode == 1 ? 2 : 4;
+
+	// change border depending of the Best Of status
+	if (bestOfPrev != bestOf) {
+		updateBorder(bestOf, gamemode); // update the border
+		// update the score ticks so they fit the bestOf border
+		updateScore(score[0], bestOf, color[0], 0, gamemode, false);
+		updateScore(score[1], bestOf, color[1], 1, gamemode, false);
+	}
+
+	// now, things that will happen for each player
+	for (let i = 0; i < maxPlayers; i++) {
+
+		// get the character lists now before we do anything else
+		if (pCharPrev[i] != player[i].character) {
+			// gets us the character positions to be used when updating the char image
+			pCharInfo[i] = await getCharInfo(player[i].character);
+		}
+
+	}
+
+	// and lastly, things that will happen for each side
 	for (let i = 0; i < maxSides; i++) {
+
+		// if there is no team name, just display "[Color] Team"
 		if (!teamName[i]) teamName[i] = color[i] + " Team";
+
+		// change the player background colors
+		if (colorPrev[i] != color[i]) {
+			updateColor(colorImg[i], color[i], gamemode);
+			colorPrev[i] = color[i];
+		}
+
 	}
 
 
-	//first, things that will happen only once, when the html loads
+	// now, things that will happen only once, when the html loads
 	if (startup) {
 
 		//first things first, initialize the colors list
@@ -106,11 +147,9 @@ async function getData(scInfo) {
 			document.getElementById('overlayIntro').style.opacity = 1;
 
 			//this vid is just the bars moving (todo: maybe do it through javascript?)
-			setTimeout(() => { 
-				const introVid = document.getElementById('introVid');
-				introVid.src = 'Resources/Overlay/Scoreboard/Intro.webm';
-				introVid.play();
-			}, 0); //if you need it to start later, change that 0 (and also update the introDelay)
+			const introVid = document.getElementById('introVid');
+			introVid.src = 'Resources/Overlay/Scoreboard/Intro.webm';
+			introVid.play();
 
 			if (score[0] + score[1] == 0) { //if this is the first game, introduce players
 
@@ -150,7 +189,7 @@ async function getData(scInfo) {
 
 				} else { //if game 5
 
-					if ((round.toUpperCase() == "True Finals".toUpperCase())) { //if true finals
+					if ((round.toUpperCase() == "TRUE FINALS")) { //if true finals
 
 						midTextEL.textContent = "True Final Game"; //i mean shit gets serious here
 						
@@ -159,7 +198,7 @@ async function getData(scInfo) {
 						midTextEL.textContent = "Final Game";
 						
 						//if GF, we dont know if its the last game or not, right?
-						if (round.toLocaleUpperCase() == "Grand Finals".toLocaleUpperCase() && !(wl[0] == "L" && wl[1] == "L")) {
+						if (round.toLocaleUpperCase() == "GRAND FINALS" && !(wl[0] == "L" && wl[1] == "L")) {
 							fadeIn(document.getElementById("superCoolInterrogation"), introDelay+.5, 1.5);
 						}
 
@@ -182,25 +221,12 @@ async function getData(scInfo) {
 			introDelay = 2.6;
 		}
 
-		
-		//finally out of the intro, first things first, set the current char path
-		workshop ? charPath = charPathWork : charPath = charPathBase;
-		//save the current workshop status so we know when it changes next time
-		workshopPrev = workshop;
-
 
 		//if this isnt a singles match, rearrange stuff
 		if (gamemode != 1) {
 			changeGM(gamemode);
 		}
 		gamemodePrev = gamemode;
-
-
-		//this is on top of everything else because the await would desync the rest
-		for (let i = 0; i < maxPlayers; i++) { //for each available player
-			//gets us the character positions for the player
-			pCharInfo[i] = await getCharInfo(player[i].character);
-		}
 
 
 		// this will be used later to sync the animations for all character images
@@ -257,15 +283,11 @@ async function getData(scInfo) {
 			updateScore(score[i], bestOf, color[i], i, gamemode, false);
 			scorePrev[i] = score[i];
 
-			//set the color
-			updateColor(colorImg[i], color[i], gamemode);
-			colorPrev[i] = color[i];
-
 			//check if we have a logo we can place on the overlay
 			if (gamemode == 1) { //if this is singles, check the player tag
-				updateLogo(tLogoImg[i], player[i].tag, i, gamemode);
+				updateLogo(tLogoImg[i], player[i].tag);
 			} else { //if doubles, check the team name
-				updateLogo(tLogoImg[i], teamName[i], i, gamemode);
+				updateLogo(tLogoImg[i], teamName[i]);
 			}
 			
 		}
@@ -276,10 +298,6 @@ async function getData(scInfo) {
 		fadeIn(overlayRound, introDelay);
 
 
-		//dont forget to update the border if its Bo3 or Bo5!
-		updateBorder(bestOf, gamemode);
-
-
 		//set this for later
 		mainMenuPrev = mainMenu;
 
@@ -287,14 +305,8 @@ async function getData(scInfo) {
 		startup = false; //next time we run this function, it will skip all we just did
 	}
 
-	//now things that will happen constantly
+	// now things that will happen on all the other cycles
 	else {
-
-		//start by setting the correct char path
-		if (workshopPrev != workshop) {
-			workshop ? charPath = charPathWork : charPath = charPathBase;
-			workshopPrev = workshop;
-		}
 
 		//of course, check if the gamemode has changed
 		if (gamemodePrev != gamemode) {
@@ -308,15 +320,6 @@ async function getData(scInfo) {
 			gamemodePrev = gamemode;
 		}
 		
-
-		//get the character lists now before we do anything else
-		for (let i = 0; i < maxPlayers; i++) {
-			//if the character has changed, update the info
-			if (pCharPrev[i] != player[i].character) {
-				pCharInfo[i] = await getCharInfo(player[i].character);
-			}
-		}
-
 
 		// this will be used later to sync the animations for all character images
 		const charsLoaded = [], animsEnded = [];
@@ -404,24 +407,18 @@ async function getData(scInfo) {
 				scorePrev[i] = score[i];
 			}
 
-			//change the player background colors
-			if (colorPrev[i] != color[i]) {
-				updateColor(colorImg[i], color[i], gamemode);
-				colorPrev[i] = color[i];
-			}
-
 			//check if we have a logo we can place on the overlay
 			if (gamemode == 1) { //if this is singles, check the player tag
 				if (pTag[i].textContent != player[i].tag) {
 					fadeOut(tLogoImg[i]).then( () => {
-						updateLogo(tLogoImg[i], player[i].tag, i, gamemode);
+						updateLogo(tLogoImg[i], player[i].tag);
 						fadeIn(tLogoImg[i]);
 					});
 				}
 			} else { //if doubles, check the team name
 				if (teamNames[i].textContent != teamName[i]) {
 					fadeOut(tLogoImg[i]).then( () => {
-						updateLogo(tLogoImg[i], teamName[i], i, gamemode);
+						updateLogo(tLogoImg[i], teamName[i]);
 						fadeIn(tLogoImg[i]);
 					});
 				}
@@ -433,15 +430,6 @@ async function getData(scInfo) {
 
 		//we place this one here so both characters can be updated in one go
 		mainMenuPrev = mainMenu;
-
-
-		//change border depending of the Best Of status
-		if (bestOfPrev != bestOf) {
-			updateBorder(bestOf, gamemode); //update the border
-			//update the score ticks so they fit the bestOf border
-			updateScore(score[0], bestOf, color[0], 0, gamemode, false);
-			updateScore(score[1], bestOf, color[1], 1, gamemode, false);
-		}
 
 		
 		//and finally, update the round text
@@ -460,8 +448,6 @@ async function getData(scInfo) {
 function changeGM(gm) {
 			
 	if (gm == 2) {
-
-		maxPlayers = 4;
 
 		// move the scoreboard to the new positions
 		const r = document.querySelector(':root');
@@ -488,6 +474,12 @@ function changeGM(gm) {
 		wlGroup[0].parentElement.style.left = "192px";
 		wlGroup[1].parentElement.style.left = "192px";
 
+		// move the team logos
+		tLogoImg[0].style.left = "352px";
+		tLogoImg[0].style.top = "65px";
+		tLogoImg[0].style.right = "352px";
+		tLogoImg[0].style.top = "65px";
+
 		//show all hidden elements
 		const dubELs = document.getElementsByClassName("dubEL");
 		for (let i = 0; i < dubELs.length; i++) {
@@ -495,8 +487,6 @@ function changeGM(gm) {
 		}
 
 	} else {
-
-		maxPlayers = 2
 
 		const r = document.querySelector(':root');
 		r.style.setProperty("--scoreboardX", "470px");
@@ -518,6 +508,11 @@ function changeGM(gm) {
 		wlGroup[0].parentElement.style.left = "0px";
 		wlGroup[1].parentElement.style.left = "0px";
 
+		tLogoImg[0].style.left = "248px";
+		tLogoImg[0].style.top = "33px";
+		tLogoImg[0].style.right = "248px";
+		tLogoImg[0].style.top = "33px";
+
 		const dubELs = document.getElementsByClassName("dubEL");
 		for (let i = 0; i < dubELs.length; i++) {
 			dubELs[i].style.display = "none";
@@ -525,7 +520,7 @@ function changeGM(gm) {
 		
 	}
 
-	// update the background borders
+	// update the background images
 	document.getElementById("bgL").src = `Resources/Overlay/Scoreboard/Name BG ${gm}.png`;
 	document.getElementById("bgR").src = `Resources/Overlay/Scoreboard/Name BG ${gm}.png`;
 
@@ -556,10 +551,8 @@ function updateBorder(bestOf, gamemode) {
 	bestOfPrev = bestOf
 }
 
-function updateLogo(logoEL, nameLogo, side, gamemode) {
-	const mode = gamemode==1 ? "Singles" : "Doubles";
-	const actualSide = side ? "Right" : "Left";
-	logoEL.src = 'Resources/Logos/' + mode + '/' + actualSide + '/' + nameLogo + '.png';
+function updateLogo(logoEL, nameLogo) {
+	logoEL.src = `Resources/Logos/${nameLogo}.png`;
 }
 
 function updatePlayerName(pNum, name, tag, gamemode) {
