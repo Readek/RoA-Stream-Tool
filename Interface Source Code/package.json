@@ -7,7 +7,7 @@
   "author": "Readek",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^15.1.1",
+    "electron": "^12.2.2",
     "electron-builder": "^22.11.7"
   },
   "scripts": {

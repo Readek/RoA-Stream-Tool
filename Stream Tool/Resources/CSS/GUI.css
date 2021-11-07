@@ -22,7 +22,14 @@
 }
 
 *::-webkit-scrollbar {
-  display: none;
+  width: 5px;
+  height: 5px;
+}
+*::-webkit-scrollbar-track {
+  background: var(--bg2);
+}
+*::-webkit-scrollbar-thumb {
+  background-color: var(--focused);
 }
 
 html, body {
