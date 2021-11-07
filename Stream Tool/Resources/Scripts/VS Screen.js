@@ -3,7 +3,7 @@
 //animation stuff
 const fadeInTime = .4; //(seconds)
 const fadeOutTime = .3;
-const introDelay = .5; //all animations will get this delay when the html loads (use this so it times with your transition)
+const introDelay = .05; //all animations will get this delay when the html loads (use this so it times with your transition)
 
 //max text sizes (used when resizing back)
 const playerSize = '90px';
@@ -173,7 +173,7 @@ async function getData(scInfo) {
 			updatePlayerName(i, player[i].name, player[i].tag);
 
 			//fade in the player text
-			fadeIn(pWrapper[i], introDelay+.15);
+			fadeIn(pWrapper[i], introDelay+.3);
 
 
 			//change the player's character image, and position it

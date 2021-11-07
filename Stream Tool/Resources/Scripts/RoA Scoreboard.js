@@ -3,7 +3,7 @@
 //animation stuff
 const fadeInTime = .3; //(seconds)
 const fadeOutTime = .2;
-let introDelay = .8; //all animations will get this delay when the html loads (use this so it times with your transition)
+let introDelay = .5; //all animations will get this delay when the html loads (use this so it times with your transition)
 
 //max text sizes (used when resizing back)
 const introSize = "85px";
@@ -37,6 +37,7 @@ let startup = true;
 
 
 //next, global variables for the html elements
+const scoreboard = document.getElementsByClassName("scoreboard");
 const teamNames = document.getElementsByClassName("teamName");
 const colorImg = document.getElementsByClassName("colors");
 const wlGroup = document.getElementsByClassName("wlGroup");
@@ -215,10 +216,10 @@ async function getData(scInfo) {
 			});
 
 			//aaaaand fade out everything
-			fadeOut(document.getElementById("overlayIntro"), fadeInTime+.2, introDelay+1.6)
+			fadeOut(document.getElementById("overlayIntro"), fadeInTime+.2, introDelay+1.8)
 
 			//lets delay everything that comes after this so it shows after the intro
-			introDelay = 2.6;
+			introDelay = 2.5;
 		}
 
 
@@ -265,12 +266,17 @@ async function getData(scInfo) {
 		// this will run for each side (so twice)
 		for (let i = 0; i < maxSides; i++) {
 
+			// to know animation direction
+			const side = (i % 2 == 0) ? true : false;
+
 			//set the team names if not singles
 			if (gamemode != 1) {
 				updateText(teamNames[i], teamName[i], teamSize);
-				const side = (i % 2 == 0) ? true : false;
 				fadeInMove(teamNames[i], introDelay, null, side);
 			}
+
+			// fade in move the scoreboards
+			fadeInMove(scoreboard[i].parentElement, introDelay-.1, null, side);
 			
 			//if its grands, we need to show the [W] and/or the [L] on the players
 			updateWL(wl[i], i);
