@@ -483,8 +483,8 @@ function changeGM(gm) {
 		// move the team logos
 		tLogoImg[0].style.left = "352px";
 		tLogoImg[0].style.top = "65px";
-		tLogoImg[0].style.right = "352px";
-		tLogoImg[0].style.top = "65px";
+		tLogoImg[1].style.right = "352px";
+		tLogoImg[1].style.top = "65px";
 
 		//show all hidden elements
 		const dubELs = document.getElementsByClassName("dubEL");
@@ -516,8 +516,8 @@ function changeGM(gm) {
 
 		tLogoImg[0].style.left = "248px";
 		tLogoImg[0].style.top = "33px";
-		tLogoImg[0].style.right = "248px";
-		tLogoImg[0].style.top = "33px";
+		tLogoImg[1].style.right = "248px";
+		tLogoImg[1].style.top = "33px";
 
 		const dubELs = document.getElementsByClassName("dubEL");
 		for (let i = 0; i < dubELs.length; i++) {
