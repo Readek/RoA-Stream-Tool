@@ -1,7 +1,7 @@
 
 <p align="center">
 
-  <img src="https://github.com/Readek/RoA-Stream-Tool/blob/main/preview.png" alt="Preview">
+  <img src="https://github.com/Readek/RoA-Stream-Tool/blob/master/preview.png" alt="Preview">
   
 </p>
 
