@@ -5,7 +5,7 @@
   
 </p>
 
-<h1 align="center">RoA Skin Recolorer</h1>
+<h1 align="center">RoA Stream Tool</h1>
 
 *Also available for [Melee](https://github.com/Readek/Melee-Stream-Tool) and [Rushdown Revolt](https://github.com/Readek/Rushdown-Revolt-Stream-Tool)!*
 
