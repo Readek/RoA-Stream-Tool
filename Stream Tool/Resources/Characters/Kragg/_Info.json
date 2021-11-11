@@ -20,7 +20,8 @@
         "Golden",
         "Ranked",
         "HD",
-        "LoA HD"
+        "LoA HD",
+        "LoA 1 HD"
     ],
     "scoreboard": {
         "neutral": {
@@ -33,9 +34,14 @@
             "y": -5,
             "scale": 1.5
         },
+        "LoA 1 HD": {
+            "x": -30,
+            "y": 12,
+            "scale": 4
+        },
         "LoA HD": {
-            "x": -35,
-            "y": 8,
+            "x": -5,
+            "y": 30,
             "scale": 4
         },
         "HD": {
@@ -51,6 +57,11 @@
             "scale": 1.03
         },
         "LoA HD": {
+            "x": -500,
+            "y": 70,
+            "scale": 1.1
+        },
+        "LoA 1 HD": {
             "x": -595,
             "y": 5,
             "scale": 1.1
@@ -68,6 +79,11 @@
             "scale": 3.5
         },
         "LoA HD": {
+            "x": 0,
+            "y": 18,
+            "scale": 5
+        },
+        "LoA 1 HD": {
             "x": -15,
             "y": 8,
             "scale": 4

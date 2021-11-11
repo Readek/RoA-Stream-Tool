@@ -1,7 +1,7 @@
 {
   "name": "anotherPlayer",
-  "twitter": "test2",
-  "tag": "test",
+  "twitter": "",
+  "tag": "Flame",
   "characters": [
     {
       "character": "Clairen",
@@ -11,5 +11,6 @@
       "character": "Elliana",
       "skin": "Blue"
     }
-  ]
+  ],
+  "pronouns": "anything goes"
 }

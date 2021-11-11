@@ -1,20 +1,20 @@
 {
   "player": [
     {
-      "name": "spade",
-      "twitter": "@SpadeLoK",
-      "pronouns": "He/Him",
-      "tag": "KT",
-      "character": "Sylvanos",
-      "skin": "White"
+      "name": "Bookworm",
+      "twitter": "@BookwormRoA",
+      "pronouns": "",
+      "tag": "Gooshi",
+      "character": "Elliana",
+      "skin": "Default"
     },
     {
-      "name": "Swaissey",
-      "twitter": "@swaissey",
-      "pronouns": "He/Him",
-      "tag": "KT",
+      "name": "Serris",
+      "twitter": "@serrisfroon",
+      "pronouns": "He/HIm",
+      "tag": "UGS",
       "character": "Ranno",
-      "skin": "Pink"
+      "skin": "Blue"
     },
     {
       "name": "",
@@ -49,9 +49,9 @@
     "Nada",
     "Nada"
   ],
-  "bestOf": "Bo5",
+  "bestOf": "Bo3",
   "gamemode": 1,
-  "round": "Grand Finals",
+  "round": "Friendlies",
   "tournamentName": "",
   "caster": [
     {

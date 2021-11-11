@@ -1,0 +1,56 @@
+{
+    "fullTourneyPlaylist": "PLVP3p26mqcPZHWywCnvL7OQ8MzoGvwCHd",
+    "addToFullPlaylist":true,
+    "game": "Rivals of Aether",
+    "playlistTitle": "Rivals of Aether - Ignition 239",
+    "tournament":"Ignition 239",
+    "descriptionLoc":"youtube_desc_ignition.txt",
+    "keywords":"Fighting, Platformer, Platform Fighter, Tournament, Action",
+    "privacyStatus": "public",
+    "category":"20",
+    "madeForKids": false,
+    "date":"2021-10-13T18:30:00.000Z",
+    "setInfo": [
+        {
+            "filename":"Ignition 239 - Winners Quarter-Finals - UGS - Serris (Ranno) Vs RPG - JRose (Ori and Sein)",
+            "title":"Ignition 239 - Winners Quarter-Finals - UGS | Serris (Ranno) Vs RPG | JRose (Ori)",
+            "round": "Winners Quarter-Finals"
+        },
+        {
+            "filename":"Ignition 239 - Winners Quarter-Finals - Eclipz (Clairen) Vs Risky (Shovel Knight,Ranno)",
+            "title":"Ignition 239 - Winners Quarter-Finals - Eclipz (Clairen) Vs Risky (Shovel Knight/Ranno)",
+            "round": "Winners Quarter-Finals"
+        },
+        {
+            "filename":"Ignition 239 - Winners Semi-Finals - GA - Squiggs (Kragg) Vs UGS - Serris (Ranno)",
+            "title":"Ignition 239 - Winners Semi-Finals - GA | Squiggs (Kragg) Vs UGS | Serris (Ranno)",
+            "round": "Winners Semi-Finals"
+        },
+        {
+            "filename":"Ignition 239 - Winners Semi-Finals - Hihahaba (Shovel Knight) Vs Eclipz (Clairen)",
+            "title":"Ignition 239 - Winners Semi-Finals - Hihahaba (Shovel Knight) Vs Eclipz (Clairen)",
+            "round": "Winners Semi-Finals"
+        },
+        {
+            "filename":"Ignition 239 - Winners Finals - Hihahaba (Shovel Knight) Vs GA - Squiggs (Kragg)",
+            "title":"Ignition 239 - Winners Finals - Hihahaba (Shovel Knight) Vs GA | Squiggs (Kragg)",
+            "round": "Winners Finals"
+        },
+        {
+            "filename":"Ignition 239 - Losers Semi-Finals - Eclipz (Clairen) Vs UGS - Serris (Ranno)",
+            "title":"Ignition 239 - Losers Semi-Finals - Eclipz (Clairen) Vs UGS | Serris (Ranno)",
+            "round": "Losers Semi-Finals"
+        },
+        {
+            "filename":"Ignition 239 - Losers Finals - GA - Squiggs (Kragg) Vs UGS - Serris (Ranno)",
+            "title":"Ignition 239 - Losers Finals - GA | Squiggs (Kragg) Vs UGS | Serris (Ranno)",
+            "round": "Losers Finals"
+        },
+        {
+            "filename":"Ignition 239 - Grand Finals - Hihahaba (Shovel Knight) Vs UGS - Serris (Ranno)",
+            "title":"Ignition 239 - Grand Finals - Hihahaba (Shovel Knight) Vs UGS | Serris (Ranno)",
+            "round": "Grand Finals"
+        }
+    ]
+    
+}

@@ -1,19 +1,19 @@
 {
   "player": [
     {
-      "name": "spade",
-      "twitter": "@SpadeLoK",
-      "pronouns": "He/Him",
-      "tag": "KT",
+      "name": "Bookworm",
+      "twitter": "@BookwormRoA",
+      "pronouns": "",
+      "tag": "Gooshi",
       "characters": [
-        "Sylvanos"
+        "Elliana"
       ]
     },
     {
-      "name": "Swaissey",
-      "twitter": "@swaissey",
-      "pronouns": "He/Him",
-      "tag": "KT",
+      "name": "Serris",
+      "twitter": "@serrisfroon",
+      "pronouns": "He/HIm",
+      "tag": "UGS",
       "characters": [
         "Ranno"
       ]
@@ -38,5 +38,5 @@
     }
   ],
   "tournamentName": "",
-  "round": "Grand Finals"
+  "round": "Friendlies"
 }

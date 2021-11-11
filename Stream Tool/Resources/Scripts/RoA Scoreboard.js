@@ -1,19 +1,17 @@
 'use strict';
 
 //animation stuff
-const pMove = 50; //distance to move for the player names (pixels)
-const pCharMove = 20; //distance to move for the character icons
-
 const fadeInTime = .3; //(seconds)
 const fadeOutTime = .2;
-let introDelay = .8; //all animations will get this delay when the html loads (use this so it times with your transition)
+let introDelay = .5; //all animations will get this delay when the html loads (use this so it times with your transition)
 
 //max text sizes (used when resizing back)
 const introSize = "85px";
-const nameSize = "30px";
-const tagSize = "20px";
+const nameSize = "24px";
+const tagSize = "17px";
 const nameSizeDubs = "22px";
 const tagSizeDubs = "15px";
+const teamSize = "22px"
 const roundSize = "19px";
 
 //to store the current character info
@@ -35,23 +33,15 @@ let bestOfPrev, workshopPrev, mainMenuPrev, gamemodePrev;
 let maxPlayers = 2;
 const maxSides = 2;
 
-//svg paths for the colors, 1 for Singles and 2 for Dubs
-const colorPath1 = "m 0,0 3.818e-5,16.32621 30.04434582,7.358723 2.100135,-0.314192 3.208067,-7.920963 H 162.45181 L 168.33879,0 h -6.96663 l -5.58928,14.381247 H 35.719909 L 41.352445,0 Z"
-const colorPath2 = "M 0,0 3.818e-5,24.05297 69.267529,23.684933 72.676776,15.449778 H 162.45181 L 168.33879,0 h -6.96663 l -5.58928,14.381247 H 73.044099 L 78.676635,0 Z"
-
 let startup = true;
 
 
 //next, global variables for the html elements
-const pWrapper = document.getElementsByClassName("wrappers");
-const pTag = document.getElementsByClassName("tags");
-const pName = document.getElementsByClassName("names");
-const pTwitter = document.getElementsByClassName("twitters");
-const pPronouns = document.getElementsByClassName("pronouns");
+const scoreboard = document.getElementsByClassName("scoreboard");
 const teamNames = document.getElementsByClassName("teamName");
-const charImg = document.getElementsByClassName("pCharacter");
 const colorImg = document.getElementsByClassName("colors");
-const wlImg = document.getElementsByClassName("wlImg");
+const wlGroup = document.getElementsByClassName("wlGroup");
+const wlText = document.getElementsByClassName("wlText");
 const scoreImg = document.getElementsByClassName("scoreImgs");
 const scoreAnim = document.getElementsByClassName("scoreVid");
 const tLogoImg = document.getElementsByClassName("tLogos");
@@ -59,13 +49,26 @@ const overlayRound = document.getElementById("overlayRound");
 const textRound = document.getElementById('round');
 const borderImg = document.getElementsByClassName('border');
 
+// we want the correct order, we cant use getClassName here
+const pWrapper = [], pTag = [], pName = [], pTwitter = [], pPronouns = [], charImg = [];
+function pushArrayInOrder(array, string) {
+    for (let i = 0; i < 4; i++) {
+        array.push(document.getElementById("p"+(i+1)+string));
+    }
+}
+pushArrayInOrder(pWrapper, "Wrapper");
+pushArrayInOrder(pTag, "Tag");
+pushArrayInOrder(pName, "Name");
+pushArrayInOrder(pTwitter, "Twitter");
+pushArrayInOrder(pPronouns, "Pronouns");
+pushArrayInOrder(charImg, "Character");
+
+
 //This is for the player's name to change to their twitter at for a period of time
 const twitterLoopMax = 15; // time in seconds = x / 2
 const nameLoopMax = 30;
 let showNameOrTwitter = "name";
 let loops = 0;
-
-
 
 /* script begin */
 async function mainLoop() {
@@ -106,13 +109,54 @@ async function getData(scInfo) {
 
 	const mainMenu = scInfo['forceMM'];
 
-	// if there is no team name, just display "[Color] Team"
+
+	// first of all, things that will always happen on each cycle
+	
+	// set the current char path
+	if (workshopPrev != workshop) {
+		workshop ? charPath = charPathWork : charPath = charPathBase;
+		// save the current workshop status so we know when it changes next time
+		workshopPrev = workshop;
+	}
+
+	// set the max players depending on singles or doubles
+	maxPlayers = gamemode == 1 ? 2 : 4;
+
+	// change border depending of the Best Of status
+	if (bestOfPrev != bestOf) {
+		updateBorder(bestOf, gamemode); // update the border
+		// update the score ticks so they fit the bestOf border
+		updateScore(score[0], bestOf, color[0], 0, gamemode, false);
+		updateScore(score[1], bestOf, color[1], 1, gamemode, false);
+	}
+
+	// now, things that will happen for each player
+	for (let i = 0; i < maxPlayers; i++) {
+
+		// get the character lists now before we do anything else
+		if (pCharPrev[i] != player[i].character) {
+			// gets us the character positions to be used when updating the char image
+			pCharInfo[i] = await getCharInfo(player[i].character);
+		}
+
+	}
+
+	// and lastly, things that will happen for each side
 	for (let i = 0; i < maxSides; i++) {
+
+		// if there is no team name, just display "[Color] Team"
 		if (!teamName[i]) teamName[i] = color[i] + " Team";
+
+		// change the player background colors
+		if (colorPrev[i] != color[i]) {
+			updateColor(colorImg[i], color[i], gamemode);
+			colorPrev[i] = color[i];
+		}
+
 	}
 
 
-	//first, things that will happen only once, when the html loads
+	// now, things that will happen only once, when the html loads
 	if (startup) {
 
 		//first things first, initialize the colors list
@@ -125,11 +169,9 @@ async function getData(scInfo) {
 			document.getElementById('overlayIntro').style.opacity = 1;
 
 			//this vid is just the bars moving (todo: maybe do it through javascript?)
-			setTimeout(() => { 
-				const introVid = document.getElementById('introVid');
-				introVid.src = 'Resources/Overlay/Scoreboard/Intro.webm';
-				introVid.play();
-			}, 0); //if you need it to start later, change that 0 (and also update the introDelay)
+			const introVid = document.getElementById('introVid');
+			introVid.src = 'Resources/Overlay/Scoreboard/Intro.webm';
+			introVid.play();
 
 			if (score[0] + score[1] == 0) { //if this is the first game, introduce players
 
@@ -155,15 +197,10 @@ async function getData(scInfo) {
 					
 				};
 
-				//player 1 name fade in
-				gsap.fromTo("#p1Intro",
-					{x: -pMove}, //from
-					{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}); //to
+				//player name fade in
+				fadeInMove(document.getElementById("p1Intro"), introDelay, null, true);
+				fadeInMove(document.getElementById("p2Intro"), introDelay, null, false);
 
-				//same for player 2
-				gsap.fromTo("#p2Intro",
-					{x: pMove},
-					{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
 
 			} else { //if its not the first game, show game count
 				const midTextEL = document.getElementById('midTextIntro');
@@ -174,7 +211,7 @@ async function getData(scInfo) {
 
 				} else { //if game 5
 
-					if ((round.toUpperCase() == "True Finals".toUpperCase())) { //if true finals
+					if ((round.toUpperCase() == "TRUE FINALS")) { //if true finals
 
 						midTextEL.textContent = "True Final Game"; //i mean shit gets serious here
 						
@@ -183,8 +220,8 @@ async function getData(scInfo) {
 						midTextEL.textContent = "Final Game";
 						
 						//if GF, we dont know if its the last game or not, right?
-						if (round.toLocaleUpperCase().indexOf("Grand Finals".toLocaleUpperCase()) != -1  && !(wl[0] == "L" && wl[1] == "L")) {
-							gsap.to("#superCoolInterrogation", {delay: introDelay+.5, opacity: 1, ease: "power2.out", duration: 1.5});
+						if (round.toLocaleUpperCase() == "GRAND FINALS" && !(wl[0] == "L" && wl[1] == "L")) {
+							fadeIn(document.getElementById("superCoolInterrogation"), introDelay+.5, 1.5);
 						}
 
 					}
@@ -195,20 +232,16 @@ async function getData(scInfo) {
 			document.getElementById('tNameIntro').textContent = scInfo['tournamentName'];
 			
 			//round, tournament and VS/GameX text fade in
-			gsap.to(".textIntro", {delay: introDelay-.2, opacity: 1, ease: "power2.out", duration: fadeInTime});
+			document.querySelectorAll(".textIntro").forEach(el => {
+				fadeIn(el, introDelay-.2, fadeInTime);
+			});
 
 			//aaaaand fade out everything
-			gsap.to("#overlayIntro", {delay: introDelay+1.6, opacity: 0, ease: "power2.out", duration: fadeInTime+.2});
+			fadeOut(document.getElementById("overlayIntro"), fadeInTime+.2, introDelay+1.8)
 
 			//lets delay everything that comes after this so it shows after the intro
-			introDelay = 2.6;
+			introDelay = 2.5;
 		}
-
-		
-		//finally out of the intro, first things first, set the current char path
-		workshop ? charPath = charPathWork : charPath = charPathBase;
-		//save the current workshop status so we know when it changes next time
-		workshopPrev = workshop;
 
 
 		//if this isnt a singles match, rearrange stuff
@@ -218,32 +251,25 @@ async function getData(scInfo) {
 		gamemodePrev = gamemode;
 
 
-		//this is on top of everything else because the await would desync the rest
-		for (let i = 0; i < maxPlayers; i++) { //for each available player
-			//gets us the character positions for the player
-			pCharInfo[i] = await getCharInfo(player[i].character);
-		}
-
+		// this will be used later to sync the animations for all character images
+		const charsLoaded = [];
 
 		// now for the actual initialization of players
 		for (let i = 0; i < maxPlayers; i++) {
-
+			
 			//lets start with the player names and tags
 			updatePlayerName(i, player[i].name, player[i].tag, player[i].pronouns, player[i].twitter, gamemode);
-			//set the starting position for the player text, then fade in and move the text to the next keyframe
 			if (gamemode == 1) { //if this is singles, fade the names in with a sick motion
-				const movement = (i % 2 == 0) ? -pMove : pMove; //to know direction
-				gsap.fromTo(pWrapper[i], 
-					{x: movement}, //from
-					{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}); //to
+				const side = (i % 2 == 0) ? true : false; //to know direction
+				fadeInMove(pWrapper[i], introDelay, null, side); // fade it in with some movement
 			} else { //if doubles, just fade them in
 				fadeIn(pWrapper[i], introDelay+.15)
 			}
 			
 
 			//set the character image for the player
-			updateChar(player[i].character, player[i].skin, i, pCharInfo[i], mainMenu, startup);
-			//when the image finishes loading, it will fade in (coded in updateChar())
+			charsLoaded.push(updateChar(player[i].character, player[i].skin, i, pCharInfo[i], mainMenu));
+			//the animation will be fired below, when the image finishes loading
 
 			//save the character/skin so we run the character change code only when this doesnt equal to the next
 			pCharPrev[i] = player[i].character;
@@ -251,30 +277,32 @@ async function getData(scInfo) {
 
 		}
 
+		// now we use that array from earlier to animate all characters at the same time
+		Promise.all(charsLoaded).then( (value) => { // when all images are loaded
+			for (let i = 0; i < value.length; i++) { // for every character loaded
+				fadeInMove(value[i], introDelay+.2, true); // fade it in
+			}
+		})
+
 		// this will run for each side (so twice)
 		for (let i = 0; i < maxSides; i++) {
 
+			// to know animation direction
+			const side = (i % 2 == 0) ? true : false;
+
 			//set the team names if not singles
 			if (gamemode != 1) {
-				updateText(teamNames[i], teamName[i], nameSize);
-				const movement = (i % 2 == 0) ? -pMove : pMove;
-				gsap.fromTo(teamNames[i], 
-					{x: movement},
-					{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
+				updateText(teamNames[i], teamName[i], teamSize);
+				fadeInMove(teamNames[i], introDelay, null, side);
 			}
+
+			// fade in move the scoreboards
+			fadeInMove(scoreboard[i].parentElement, introDelay-.1, null, side);
 			
 			//if its grands, we need to show the [W] and/or the [L] on the players
-			updateWL(wl[i], i, gamemode);
-			if (gamemode == 1) {
-				gsap.fromTo(wlImg[i], //if singles, move it vertically
-					{y: -pMove}, //set starting position some pixels up (it will be covered by the overlay)
-					{delay: introDelay+.5, y: 0, ease: "power2.out", duration: .5}); //move down to its default position
-			} else {
-				const movement = (i % 2 == 0) ? -pMove : pMove;
-				gsap.fromTo(wlImg[i], //if doubles, move it horizontally
-					{x: movement*3}, //set starting position some pixels up (it will be covered by the overlay)
-					{delay: introDelay+.5, x: 0, ease: "power2.out", duration: .5}); //move down to its default position
-			}
+			updateWL(wl[i], i);
+			fadeInWL(wlGroup[i], introDelay+.6);
+			
 			//save for later so the animation doesn't repeat over and over
 			wlPrev[i] = wl[i];
 
@@ -282,15 +310,11 @@ async function getData(scInfo) {
 			updateScore(score[i], bestOf, color[i], i, gamemode, false);
 			scorePrev[i] = score[i];
 
-			//set the color
-			updateColor(colorImg[i], color[i]);
-			colorPrev[i] = color[i];
-
 			//check if we have a logo we can place on the overlay
 			if (gamemode == 1) { //if this is singles, check the player tag
-				updateLogo(tLogoImg[i], player[i].tag, i, gamemode);
+				updateLogo(tLogoImg[i], player[i].tag);
 			} else { //if doubles, check the team name
-				updateLogo(tLogoImg[i], teamName[i], i, gamemode);
+				updateLogo(tLogoImg[i], teamName[i]);
 			}
 			
 		}
@@ -301,10 +325,6 @@ async function getData(scInfo) {
 		fadeIn(overlayRound, introDelay);
 
 
-		//dont forget to update the border if its Bo3 or Bo5!
-		updateBorder(bestOf, gamemode);
-
-
 		//set this for later
 		mainMenuPrev = mainMenu;
 
@@ -312,30 +332,24 @@ async function getData(scInfo) {
 		startup = false; //next time we run this function, it will skip all we just did
 	}
 
-	//now things that will happen constantly
+	// now things that will happen on all the other cycles
 	else {
-
-		//start by setting the correct char path
-		if (workshopPrev != workshop) {
-			workshop ? charPath = charPathWork : charPath = charPathBase;
-			workshopPrev = workshop;
-		}
 
 		//of course, check if the gamemode has changed
 		if (gamemodePrev != gamemode) {
 			changeGM(gamemode);
+			// we need to update some things
 			updateBorder(bestOf, gamemode);
 			for (let i = 0; i < maxSides; i++) {
-				updateWL(wl[i], i, gamemode);
-				if (gamemode == 1) {
-					updateLogo(tLogoImg[i], player[i].tag, i, gamemode);
-				} else {
-					updateLogo(tLogoImg[i], teamName[i], i, gamemode);
-				}
-			}			
+				updateColor(colorImg[i], color[i], gamemode);
+				updateScore(score[i], bestOf, color[i], i, gamemode, false);
+			}
 			gamemodePrev = gamemode;
 		}
 		
+
+		// this will be used later to sync the animations for all character images
+		const charsLoaded = [], animsEnded = [];
 
 		//get the character lists now before we do anything else
 		for (let i = 0; i < maxPlayers; i++) {
@@ -344,17 +358,21 @@ async function getData(scInfo) {
 				pCharInfo[i] = await getCharInfo(player[i].character);
 			}
 		}
-
-
+		
+		
 		//lets check each player
 		for (let i = 0; i < maxPlayers; i++) {
 			let playerName = player[i].name;
 			let playerTag = player[i].tag;
 			let playerPronouns = player[i].pronouns;
-			if (showNameOrTwitter == "twitter" && player[i].twitter) {
+			if (showNameOrTwitter == "twitter" && (player[i].twitter || player[i].pronouns)) {
 				playerName = player[i].twitter; //change the actual text
 				playerTag = "";
+				
+				tLogoImg[i].style.display = "none";
+			} else {
 				playerPronouns = "";
+				tLogoImg[i].style.display = "block";
 			}
 
 
@@ -362,22 +380,22 @@ async function getData(scInfo) {
 			if (pName[i].textContent != playerName || pTag[i].textContent != playerTag || pPronouns[i].textContent != playerPronouns) {
 
 				//check the player's side so we know the direction of the movement
-				const movement = (i % 2 == 0) ? -pMove : pMove;
+				const side = (i % 2 == 0) ? true : false;
 
 				//if this is singles, move the texts while updating
 				if (gamemode == 1) {
 					//move and fade out the player 1's text
-					fadeOutMove(pWrapper[i], movement, () => {
+					fadeOutMove(pWrapper[i], null, side).then( () => {
 						//now that nobody is seeing it, quick, change the text's content!
 						updatePlayerName(i, playerName, playerTag, playerPronouns, player[i].twitter, gamemode);
 						//fade the name back in with a sick movement
-						fadeInMove(pWrapper[i]);
+						fadeInMove(pWrapper[i], 0, null, side);
 					});
 				} else { //if not singles, dont move the texts
-					fadeOut(pWrapper[i], () => {
+					fadeOut(pWrapper[i]).then( () => {
 						updatePlayerName(i, playerName, playerTag, playerPronouns, player[i].twitter, gamemode);
 						fadeIn(pWrapper[i]);
-					});
+					}); 
 				}
 				
 			}
@@ -386,16 +404,23 @@ async function getData(scInfo) {
 			if (pCharPrev[i] != player[i].character || pSkinPrev[i] != player[i].skin || mainMenuPrev != mainMenu) {
 
 				//fade out the image while also moving it because that always looks cool
-				fadeOutMove(charImg[i], -pCharMove, () => {
+				animsEnded.push(fadeOutMove(charImg[i], true, null).then( () => {
 					//now that nobody can see it, lets change the image!
-					updateChar(player[i].character, player[i].skin, i, pCharInfo[i], mainMenu);
+					charsLoaded.push(updateChar(player[i].character, player[i].skin, i, pCharInfo[i], mainMenu));
 					//will fade in when image finishes loading
-				});
+				}));
 				pCharPrev[i] = player[i].character;
 				pSkinPrev[i] = player[i].skin;
 			}
-			//displayName = "";
 		}
+		// now we use that array from earlier to animate all characters at the same time
+		Promise.all(animsEnded).then( () => { // need to sync somehow
+			Promise.all(charsLoaded).then( (value) => { // when all images are loaded
+				for (let i = 0; i < value.length; i++) { // for every character loaded
+					fadeInMove(value[i], .1, true); // fade it in
+				}
+			})
+		})
 
 
 		//now let's check stuff from each side
@@ -404,25 +429,24 @@ async function getData(scInfo) {
 			//check if the team names changed
 			if (gamemode != 1) {
 
-				const movement = i % 2 == 0 ? -pMove : pMove;
+				const side = (i % 2 == 0) ? true : false;
 
 				if (teamNames[i].textContent != teamName[i]) {
-					fadeOutMove(teamNames[i], movement, () => {
-						updateText(teamNames[i], teamName[i], nameSize);
-						fadeInMove(teamNames[i]);
+					fadeOutMove(teamNames[i], null, side).then( () => {
+						updateText(teamNames[i], teamName[i], teamSize);
+						fadeInMove(teamNames[i], 0, null, side);
 					});
 				}
 			}
 			
 			//the [W] and [L] status for grand finals
 			if (wlPrev[i] != wl[i]) {
-				const movement = (i % 2 == 0) ? -pMove : pMove;
 				//move it away!
-				fadeOutWL(wlImg[i], movement, gamemode, () => {
+				fadeOutWL(wlGroup[i]).then( () => {
 					//change the thing!
-					updateWL(wl[i], i, gamemode);
+					updateWL(wl[i], i);
 					//move it back!
-					fadeInWL(wlImg[i], gamemode)
+					fadeInWL(wlGroup[i])
 				});
 				wlPrev[i] = wl[i];
 			}
@@ -433,24 +457,18 @@ async function getData(scInfo) {
 				scorePrev[i] = score[i];
 			}
 
-			//change the player background colors
-			if (colorPrev[i] != color[i]) {
-				updateColor(colorImg[i], color[i]);
-				colorPrev[i] = color[i];
-			}
-
 			//check if we have a logo we can place on the overlay
 			if (gamemode == 1) { //if this is singles, check the player tag
 				if (pTag[i].textContent != player[i].tag) {
-					fadeOut(tLogoImg[i], () => {
-						updateLogo(tLogoImg[i], player[i].tag, i, gamemode);
+					fadeOut(tLogoImg[i]).then( () => {
+						updateLogo(tLogoImg[i], player[i].tag);
 						fadeIn(tLogoImg[i]);
 					});
 				}
 			} else { //if doubles, check the team name
 				if (teamNames[i].textContent != teamName[i]) {
-					fadeOut(tLogoImg[i], () => {
-						updateLogo(tLogoImg[i], teamName[i], i, gamemode);
+					fadeOut(tLogoImg[i]).then( () => {
+						updateLogo(tLogoImg[i], teamName[i]);
 						fadeIn(tLogoImg[i]);
 					});
 				}
@@ -463,19 +481,10 @@ async function getData(scInfo) {
 		//we place this one here so both characters can be updated in one go
 		mainMenuPrev = mainMenu;
 
-
-		//change border depending of the Best Of status
-		if (bestOfPrev != bestOf) {
-			updateBorder(bestOf, gamemode); //update the border
-			//update the score ticks so they fit the bestOf border
-			updateScore(score[0], bestOf, color[0], 0, gamemode, false);
-			updateScore(score[1], bestOf, color[1], 1, gamemode, false);
-		}
-
 		
 		//and finally, update the round text
 		if (textRound.textContent != round){
-			fadeOut(textRound, () => {
+			fadeOut(textRound).then( () => {
 				updateText(textRound, round, roundSize);
 				fadeIn(textRound);
 			});
@@ -490,33 +499,37 @@ function changeGM(gm) {
 			
 	if (gm == 2) {
 
-		maxPlayers = 4;
+		// move the scoreboard to the new positions
+		const r = document.querySelector(':root');
+		r.style.setProperty("--scoreboardX", "15px");
+		r.style.setProperty("--scoreboardY", "13px");
 
-		//change the positions for the character images
-		const charTop = document.getElementsByClassName("charTop");
-		for (let i = 0; i < charTop.length; i++) {
-			charTop[i].parentElement.classList.remove("maskSingles");
-			charTop[i].parentElement.classList.add("maskDubs");
-			charTop[i].style.top = "-15px"
-		}
+		// add new positions for the character images
+		charImg[0].parentElement.parentElement.classList.add("charTop");
+		charImg[1].parentElement.parentElement.classList.add("charTop");
 
 		//change the positions for the player texts
 		for (let i = 0; i < 2; i++) {
 			pWrapper[i].classList.remove("wrappersSingles");
 			pWrapper[i].classList.add("wrappersDubs");
-			pWrapper[i].style.top = "-5px";
 			//update the text size and resize it if it overflows
 			pName[i].style.fontSize = nameSizeDubs;
 			pTag[i].style.fontSize = tagSizeDubs;
+			pPronouns[i].style.fontSize = tagSizeDubs;
 			resizeText(pWrapper[i]);
 		}
-		pWrapper[0].style.left = "155px";
-		pWrapper[1].style.right = "155px";
+		pWrapper[0].style.left = "257px";
+		pWrapper[1].style.right = "257px";
 
-		//change the color paths
-		for (let i = 0; i < 2; i++) {
-			colorImg[i].firstElementChild.setAttribute("d", colorPath2);			
-		}
+		// move the [W]/[L] indicators
+		wlGroup[0].parentElement.style.left = "192px";
+		wlGroup[1].parentElement.style.left = "192px";
+
+		// move the team logos
+		tLogoImg[0].style.left = "352px";
+		tLogoImg[0].style.top = "65px";
+		tLogoImg[1].style.right = "352px";
+		tLogoImg[1].style.top = "65px";
 
 		//show all hidden elements
 		const dubELs = document.getElementsByClassName("dubEL");
@@ -526,29 +539,31 @@ function changeGM(gm) {
 
 	} else {
 
-		maxPlayers = 2
+		const r = document.querySelector(':root');
+		r.style.setProperty("--scoreboardX", "470px");
+		r.style.setProperty("--scoreboardY", "25px");
 
-		const charTop = document.getElementsByClassName("charTop");
-		for (let i = 0; i < charTop.length; i++) {
-			charTop[i].parentElement.classList.remove("maskDubs");
-			charTop[i].parentElement.classList.add("maskSingles");
-			charTop[i].style.top = "0px"
-		}
+		charImg[0].parentElement.parentElement.classList.remove("charTop");
+		charImg[1].parentElement.parentElement.classList.remove("charTop");
 
 		for (let i = 0; i < 2; i++) {
 			pWrapper[i].classList.remove("wrappersDubs");
 			pWrapper[i].classList.add("wrappersSingles");
-			pWrapper[i].style.top = "0px";
 			pName[i].style.fontSize = nameSize;
 			pTag[i].style.fontSize = tagSize;
+			pPronouns[i].style.fontSize = tagSize;
 			resizeText(pWrapper[i]);
 		}
-		pWrapper[0].style.left = "158px";
-		pWrapper[1].style.right = "158px";
+		pWrapper[0].style.left = "38px";
+		pWrapper[1].style.right = "38px";
 
-		for (let i = 0; i < 2; i++) {
-			colorImg[i].firstElementChild.setAttribute("d", colorPath1);			
-		}
+		wlGroup[0].parentElement.style.left = "0px";
+		wlGroup[1].parentElement.style.left = "0px";
+
+		tLogoImg[0].style.left = "248px";
+		tLogoImg[0].style.top = "33px";
+		tLogoImg[1].style.right = "248px";
+		tLogoImg[1].style.top = "33px";
 
 		const dubELs = document.getElementsByClassName("dubEL");
 		for (let i = 0; i < dubELs.length; i++) {
@@ -557,52 +572,50 @@ function changeGM(gm) {
 		
 	}
 
+	// update the background images
+	document.getElementById("bgL").src = `Resources/Overlay/Scoreboard/Name BG ${gm}.png`;
+	document.getElementById("bgR").src = `Resources/Overlay/Scoreboard/Name BG ${gm}.png`;
+
 }
 
 
 // update functions
-function updateScore(pScore, bestOf, pColor, pNum, gamemode, playAnim) {
+async function updateScore(pScore, bestOf, pColor, pNum, gamemode, playAnim) {
 
-	let delay = 0;
 	if (playAnim) { //do we want to play the score up animation?
-		//depending on the "bestOf" and the color, change the clip
-		scoreAnim[pNum].src = 'Resources/Overlay/Scoreboard/Score/' + gamemode + "/" + bestOf + '/' + pColor + '.webm';
+		// depending on the color, change the clip
+		scoreAnim[pNum].src = `Resources/Overlay/Scoreboard/Score/${gamemode}/${pColor}.webm`;
 		scoreAnim[pNum].play();
-		delay = 200; //add a bit of delay so the score change fits with the vid
-	}
-
-	//set timeout to the actual image change so it fits with the animation (if it played)
-	setTimeout(() => {
-		//change the image depending on the bestOf status and, of course, the current score
-		scoreImg[pNum].src = 'Resources/Overlay/Scoreboard/Score/Win Tick ' + bestOf + ' ' + pScore + '.png';
-	}, delay);
+	} 
+	// change the score image with the new values
+	scoreImg[pNum].src = `Resources/Overlay/Scoreboard/Score/${gamemode}/${bestOf} ${pScore}.png`;
 
 }
 
-function updateColor(colorEL, pColor) {
-	gsap.to(colorEL, {fill: getHexColor(pColor), duration: fadeInTime});
+function updateColor(colorEL, pColor, gamemode) {
+	colorEL.src = `Resources/Overlay/Scoreboard/Colors/${gamemode}/${pColor}.png`;
 }
 
 function updateBorder(bestOf, gamemode) {
 	for (let i = 0; i < borderImg.length; i++) {
-		borderImg[i].src = 'Resources/Overlay/Scoreboard/Borders/Border ' + gamemode + " " + bestOf + '.png';
+		borderImg[i].src = `Resources/Overlay/Scoreboard/Borders/Border ${gamemode} ${bestOf}.png`;
 	}
 	bestOfPrev = bestOf
 }
 
-function updateLogo(logoEL, nameLogo, side, gamemode) {
-	const mode = gamemode==1 ? "Singles" : "Doubles";
-	const actualSide = side ? "Right" : "Left";
-	logoEL.src = 'Resources/Logos/' + mode + '/' + actualSide + '/' + nameLogo + '.png';
+function updateLogo(logoEL, nameLogo) {
+	logoEL.src = `Resources/Logos/${nameLogo}.png`;
 }
 
 function updatePlayerName(pNum, name, tag, pronouns, twitter, gamemode) {
 	if (gamemode == 2) {
 		pName[pNum].style.fontSize = nameSizeDubs; //set original text size
 		pTag[pNum].style.fontSize = tagSizeDubs;
+		pPronouns[pNum].style.fontSize = tagSizeDubs;
 	} else {
 		pName[pNum].style.fontSize = nameSize;
 		pTag[pNum].style.fontSize = tagSize;
+		pPronouns[pNum].style.fontSize = tagSize;			
 		// pTwitter[pNum].style.fontSize = tagSize;
 	}
 	// if (showNameOrTwitter == "name") {
@@ -624,66 +637,88 @@ function updateText(textEL, textToType, maxSize) {
 	resizeText(textEL); //resize it if it overflows
 }
 
-function updateWL(pWL, pNum, gamemode) {
+function updateWL(pWL, pNum) {
 	//check if winning or losing in a GF, then change image
 	if (pWL == "W") {
-		wlImg[pNum].src = 'Resources/Overlay/Scoreboard/WLs/Winners P' + (pNum+1) + ' ' + gamemode + '.png';
+		wlText[pNum].textContent = "WINNERS";
+		wlText[pNum].style.color = "#76a276";
+		wlGroup[pNum].style.display = "block";
 	} else if (pWL == "L") {
-		wlImg[pNum].src = 'Resources/Overlay/Scoreboard/WLs/Losers P' + (pNum+1) + ' ' + gamemode + '.png';
-	} else if (pWL == "Nada") {
-		wlImg[pNum].src = 'Literally nothing.png';
+		wlText[pNum].textContent = "LOSERS";
+		wlText[pNum].style.color = "#a27677";
+		wlGroup[pNum].style.display = "block";
+	} else {
+		wlText[pNum].textContent = ' ';
+		wlGroup[pNum].style.display = "none";
 	}
 }
 
 
 //fade out
-function fadeOut(itemID, funct) {
-	gsap.to(itemID, {opacity: 0, duration: fadeOutTime, onComplete: funct});
+async function fadeOut(itemID, dur = fadeOutTime, delay = 0) {
+	// actual animation
+	itemID.style.animation = `fadeOut ${dur}s ${delay}s both`;
+	// this function will return a promise when the animation ends
+	await new Promise(resolve => setTimeout(resolve, dur * 1000)); // translate to miliseconds
 }
 
 //fade out but with movement
-function fadeOutMove(itemID, move, funct) {
-	gsap.to(itemID, {x: move, opacity: 0, ease: "power1.in", duration: fadeOutTime, onComplete: funct});
+async function fadeOutMove(itemID, chara, side) {
+
+	if (chara) {
+		// we need to target a different element since chromium
+		// does not support idependent transforms on css yet
+		itemID.parentElement.style.animation = `charaMoveOut ${fadeOutTime}s both
+			,fadeOut ${fadeOutTime}s both`
+		;
+	} else {
+		if (side) {
+			itemID.style.animation = `moveOutLeft ${fadeOutTime}s both
+				,fadeOut ${fadeOutTime}s both`
+			;
+		} else {
+			itemID.style.animation = `moveOutRight ${fadeOutTime}s both
+				,fadeOut ${fadeOutTime}s both`
+			;
+		}
+		
+	}
+	
+	await new Promise(resolve => setTimeout(resolve, fadeOutTime * 1000));
+
 }
 
 //fade in
-function fadeIn(itemID, delayTime = .2) {
-	gsap.to(itemID, {delay: delayTime, opacity: 1, duration: fadeInTime});
+function fadeIn(itemID, delay = 0, dur = fadeInTime) {
+	itemID.style.animation = `fadeIn ${dur}s ${delay}s both`;
 }
 
 //fade in but with movement
-function fadeInMove(itemID) {
-	gsap.to(itemID, {delay: .3, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
-}
-
-//fade in but for the character image
-function fadeInChara(charaEL, charScale, startup) {
-	if (startup) {
-		gsap.fromTo(charaEL,
-			{x: -pCharMove},
-			{delay: introDelay+.20, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
+function fadeInMove(itemID, delay = 0, chara, side) {
+	if (chara) {
+		itemID.parentElement.style.animation = `charaMoveIn ${fadeOutTime}s ${delay}s both
+			, fadeIn ${fadeOutTime}s ${delay}s both`
+		;
 	} else {
-		gsap.fromTo(charaEL,
-			{scale: charScale}, //set scale keyframe so it doesnt scale while transitioning
-			{delay: .2, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime}
-		);
+		if (side) {
+			itemID.style.animation = `moveInLeft ${fadeInTime}s ${delay}s both
+				, fadeIn ${fadeInTime}s ${delay}s both`
+			;
+		} else {
+			itemID.style.animation = `moveInRight ${fadeInTime}s ${delay}s both
+				, fadeIn ${fadeInTime}s ${delay}s both`
+			;
+		}
 	}
 }
 
 //movement for the [W]/[L] images
-function fadeOutWL(wlEL, move, gamemode, funct) {
-	if (gamemode == 1) {
-		gsap.to(wlEL, {y: move, ease: "power1.in", duration: .5, onComplete: funct});
-	} else {
-		gsap.to(wlEL, {x: move*3, ease: "power1.in", duration: .5, onComplete: funct});
-	}
+async function fadeOutWL(wlEL) {
+	wlEL.style.animation = `wlMoveOut .4s both`;
+	await new Promise(resolve => setTimeout(resolve, 400));
 }
-function fadeInWL(wlEL, gamemode) {
-	if (gamemode == 1) {
-		gsap.to(wlEL, {delay: .1, y: 0, ease: "power2.out", duration: .5});
-	} else {
-		gsap.to(wlEL, {delay: .1, x: 0, ease: "power2.out", duration: .5});
-	}
+function fadeInWL(wlEL, delay = 0) {
+	wlEL.style.animation = `wlMoveIn .4s ${delay}s both`;
 }
 
 
@@ -750,19 +785,19 @@ function getCharInfo(pCharacter) {
 	return new Promise(function (resolve) {
 		const oReq = new XMLHttpRequest();
 		oReq.addEventListener("load", reqListener);
-		oReq.onerror = () => {resolve("notFound")}; //for obs local file browser sources
+		oReq.onerror = () => {resolve(null)}; //for obs local file browser sources
 		oReq.open("GET", charPath + pCharacter + '/_Info.json');
 		oReq.send();
 
 		function reqListener () {
 			try {resolve(JSON.parse(oReq.responseText))}
-			catch {resolve("notFound")} //for live servers
+			catch {resolve(null)} //for live servers
 		}
 	})
 }
 
 //now the complicated "change character image" function!
-function updateChar(pCharacter, pSkin, pNum, charInfo, mainMenu, startup = false) {
+async function updateChar(pCharacter, pSkin, pNum, charInfo, mainMenu) {
 
 	//store so code looks cleaner
 	const charEL = charImg[pNum];
@@ -770,10 +805,10 @@ function updateChar(pCharacter, pSkin, pNum, charInfo, mainMenu, startup = false
 	//change the image path depending on the character and skin
 	charEL.src = charPath + pCharacter + '/' + pSkin + '.png';
 
-	//             x, y, scale
-	let charPos = [0, 0, 1];
+	//               x, y, scale
+	const charPos = [0, 0, 1];
 	//now, check if the character and skin exist in the database down there
-	if (charInfo != "notFound") {
+	if (charInfo) {
 		if (charInfo.scoreboard[pSkin]) { //if the skin has a specific position
 			charPos[0] = charInfo.scoreboard[pSkin].x;
 			charPos[1] = charInfo.scoreboard[pSkin].y;
@@ -791,28 +826,25 @@ function updateChar(pCharacter, pSkin, pNum, charInfo, mainMenu, startup = false
 	} else { //if the character isnt on the database, set positions for the "?" image
 		//this condition is used just to position images well on both sides
 		if (pNum % 2 == 0) {
-			charPos[0] = 29;
+			charPos[0] = 35;
 		} else {
-			charPos[0] = 15;
+			charPos[0] = 30;
 		}
-		charPos[1] = -14;
-		charPos[2] = 1.5;
+		charPos[1] = -10;
+		charPos[2] = 1.2;
 	}
 	
 	//to position the character
-	charEL.style.left = charPos[0] + "px";
-	charEL.style.top = charPos[1] + "px";
-	charEL.style.transform = "scale(" + charPos[2] + ")";
+	charEL.style.transform = `translate(${charPos[0]}px, ${charPos[1]}px) scale(${charPos[2]})`;
 
-
-	//this will make the thing wait till the image is fully loaded
-	charEL.decode().then(
-		//when the image loads, fade it in
-		fadeInChara(charImg[pNum], charPos[2], startup)
-	).catch( () => {
-		//if the image fails to load, we will use a placeholder
+	// this will make the thing wait till the image is fully loaded
+	await charEL.decode().catch( () => {
+		// if the image fails to load, we will use a placeholder
+		/* for whatever reason, catch doesnt work properly on firefox */
+		/* add an extra timeout before decode to fix */
 		charEL.src = charPathBase + 'Random/P'+((pNum%2)+1)+'.png';
-		fadeInChara(charImg[pNum], charPos[2], startup);
-	})
+	});
+
+	return charImg[pNum];
 
 }

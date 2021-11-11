@@ -18,6 +18,7 @@
         "Early Access",
         "Penguin",
         "Ranked",
+        "Steampunk",
         "LoA",
         "HD",
         "LoA HD"
@@ -34,8 +35,8 @@
             "scale": 2.6
         },
         "LoA": {
-            "x": 33,
-            "y": 108,
+            "x": 30,
+            "y": 105,
             "scale": 4.7
         },
         "LoA HD": {

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RoA Game Overlay</title>
+
+    <script src="Resources/Scripts/gsap.min.js" defer></script>
+    <script src="Resources/Scripts/RoA Scoreboard.js" defer></script>
+    
+    <link rel="stylesheet" href="Resources/CSS/RoA Scoreboard.css">
+
+</head>
+
+<body>
+
+    <div id="scBGs">
+        <img src="Resources/Overlay/Scoreboard/BG.png" class="scoreboardP1" id="bgL" alt=""/>
+        <img src="Resources/Overlay/Scoreboard/BG.png" class="scoreboardP2" id="bgR" alt=""/>
+    </div>
+
+    <div id="wlImgs">
+        <img id="wlP1" class="scoreboardP1 wlImg" alt=""/>
+        <img id="wlP2" class="scoreboardP2Fixed wlImg" alt=""/>
+    </div>
+
+    <div id="pColors">
+        <svg id="p1Color" class="scoreboardP1 colors" alt="" viewBox="0 0 168.33879 23.684933">
+            <path d="m 0,0 3.818e-5,16.32621 30.04434582,7.358723 2.100135,-0.314192 3.208067,-7.920963 H 162.45181 L 168.33879,0 h -6.96663 l -5.58928,14.381247 H 35.719909 L 41.352445,0 Z"/>
+        </svg>
+        <svg id="p2Color" class="scoreboardP2 colors" alt="" viewBox="0 0 168.33879 23.684933">
+            <path d="m 0,0 3.818e-5,16.32621 30.04434582,7.358723 2.100135,-0.314192 3.208067,-7.920963 H 162.45181 L 168.33879,0 h -6.96663 l -5.58928,14.381247 H 35.719909 L 41.352445,0 Z"/>
+        </svg>
+    </div>
+
+    <img src="Resources/Overlay/Scoreboard/Dubs name bg.png" alt="" class="dubEL scoreboardP1" style="display: none;">
+    <img src="Resources/Overlay/Scoreboard/Dubs name bg.png" alt="" class="dubEL scoreboardP2" style="display: none;">
+
+    <div id="pChars">
+
+        <div id="p1CharaMask" class="mask maskSingles">
+            <div class="charTop">
+                <img id="p1Character" class="pCharacter"/>
+            </div>
+        </div>
+    
+
+        <div id="p2CharaMask" class="mask maskSingles">
+            <div class="charTop">
+                <img id="p2Character" class="pCharacter"/>
+            </div>
+        </div>
+
+        <div id="p3CharaMask" class="mask charBot dubEL">
+            <div class="charTop">
+                <img id="p3Character" class="pCharacter"/>
+            </div>
+        </div>
+    
+
+        <div id="p4CharaMask" class="mask charBot dubEL">
+            <div class="charTop">
+                <img id="p4Character" class="pCharacter"/>
+            </div>
+        </div>
+        
+    </div>
+
+    <div id="scores">
+        <img id="p1Score" class="scoreboardP1 scoreImgs" alt=""/>
+        <img id="p2Score" class="scoreboardP2 scoreImgs" alt=""/>
+    </div>
+
+    <div id="borders">
+        <img id="borderP1" class="scoreboardP1 border" alt=""/>
+        <img id="borderP2" class="scoreboardP2 border" alt=""/>
+    </div>
+
+    <div id="tagLogos">
+        <img id="tagLogoP1" class="scoreboardP1 tLogos" alt=""/>
+        <img id="tagLogoP2" class="scoreboardP2Fixed tLogos" alt=""/>
+    </div>
+
+    <div id="scoreAnims">
+        <video id="p1ScoreUp" class="scoreboardP1 scoreVid"></video>
+        <video id="p2ScoreUp" class="scoreboardP2 scoreVid"></video>
+    </div>
+
+    <div id="pNames">
+
+        <span id="p1Wrapper" class="wrappers wrappersSingles">
+            <span id="p1tag" class="tags"></span>
+            <span id="p1Name" class="names"></span>
+            <span id="p1Twitter" class="twitters"></span>
+            <span id="p1Pronouns" class="pronouns"></span>
+        </span>
+
+        <span id="p2Wrapper" class="wrappers wrappersSingles">
+            <span id="p2tag" class="tags"></span>
+            <span id="p2Name" class="names"></span>
+            <span id="p2Twitter" class="twitters"></span>
+            <span id="p2Pronouns" class="pronouns"></span>
+        </span>
+
+        <span id="p3Wrapper" class="wrappers wrappersDubs dubEL">
+            <span id="p3tag" class="tags"></span>
+            <span id="p3Name" class="names"></span>
+            <span id="p3Twitter" class="twitters"></span>
+            <span id="p3Pronouns" class="pronouns"></span>
+        </span>
+
+        <span id="p4Wrapper" class="wrappers wrappersDubs dubEL">
+            <span id="p4tag" class="tags"></span>
+            <span id="p4Name" class="names"></span>
+            <span id="p4Twitter" class="twitters"></span>
+            <span id="p4Pronouns" class="pronouns"></span>
+        </span>
+
+        <span id="teamNameL" class="teamName dubEL"></span>
+        <span id="teamNameR" class="teamName dubEL"></span>
+
+    </div>
+      
+
+    <div id="overlayRound">
+        <img src="Resources/Overlay/Scoreboard/Round BG.png" id="roundBG" alt=""/>
+        <span id="round"></span>
+    </div>
+
+    <div id="overlayIntro">
+        <div id="introBG"></div>
+        <div id="introTopBar" class="blackBar"></div>
+        <div id="introBotBar" class="blackBar"></div>
+
+        <video id="introVid" width="1920" height="1080"></video>
+
+        <div id="playersIntro">
+            <span id="p1Intro" class="pIntro"></span>
+            <span id="p2Intro" class="pIntro"></span>
+        </div>
+        
+        <div id="textsIntro">
+            <span id="midTextIntro" class="textIntro">VS</span>
+            <div id="rtIntro">
+                <span id="roundIntro" class="textIntro"></span>
+                <span id="tNameIntro" class="textIntro"></span>
+            </div>
+        </div>
+
+        <span id="superCoolInterrogation">?</span>
+    </div>
+
+</body>
+</html>

@@ -19,6 +19,7 @@
         "Pool Party",
         "Champion",
         "Ranked",
+        "Steampunk",
         "HD",
         "LoA HD"
     ],
@@ -39,7 +40,7 @@
             "scale": 3.2
         },
         "HD": {
-            "x": -45,
+            "x": -35,
             "y": 34,
             "scale": 3
         }

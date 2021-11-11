@@ -1,0 +1,11 @@
+{
+  "guiWidth": 776,
+  "guiHeight": 400,
+  "allowIntro": true,
+  "workshop": false,
+  "forceMM": true,
+  "forceHD": true,
+  "noLoAHD": false,
+  "forceWL": false,
+  "alwaysOnTop": true
+}

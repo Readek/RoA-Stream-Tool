@@ -1,76 +1,26 @@
 {
   "name": "roa-st-gui",
-  "productName": "RoA Stream Tool - Ateozc Build",
-  "version": "1.1.0",
+  "version": "1.0.0",
   "description": "An electron interface for RoA tournament streams.",
-  "main": "src/index.js",
-  "scripts": {
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
-    "lint": "echo \"No linting configured\"",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder --win=portable"
-  },
-  "keywords": [],
-  "author": {
-    "name": "Readek",
-    "email": "readeku@gmail.com"
-  },
+  "main": "index.js",
+  "repository": "https://github.com/Readek/RoA-Stream-Tool",
+  "author": "Readek",
   "license": "MIT",
-  "config": {
-    "forge": {
-      "packagerConfig": {},
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "roa_st_gui"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ]
-    }
-  },
-  "dependencies": {
-    "@angular/cli": "^12.2.9",
-    "electron-squirrel-startup": "^1.0.0"
-  },
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.59",
-    "@electron-forge/maker-deb": "^6.0.0-beta.59",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.59",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.59",
-    "@electron-forge/maker-zip": "^6.0.0-beta.59",
-    "electron": "^9.0.5",
-    "npm2yarn": "^1.0.0"
+    "electron": "^15.3.1",
+    "electron-builder": "^22.13.1"
+  },
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
   },
   "build": {
-    "appId": "test.testo.testu",
+    "appId": "roa.st.gui",
     "linux": {
       "target": "AppImage"
+    },
+    "win": {
+      "target": "portable"
     }
-  },
-  "win": {
-    "target": [
-      "portable"
-    ]
-  },
-  "portable": {
-    "artifactName": "RoA Stream Tool.exe"
   }
 }

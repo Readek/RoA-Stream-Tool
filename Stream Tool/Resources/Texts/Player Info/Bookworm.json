@@ -1,11 +1,12 @@
 {
-    "name": "Bookworm",
-    "twitter": "@BookwormRoA",
-    "tag": "",
-    "characters": [
-        {
-            "character": "Elliana",
-            "skin": "Default"
-        }
-    ]
+  "name": "Bookworm",
+  "twitter": "@BookwormRoA",
+  "tag": "Gooshi",
+  "characters": [
+    {
+      "character": "Elliana",
+      "skin": "Default"
+    }
+  ],
+  "pronouns": ""
 }

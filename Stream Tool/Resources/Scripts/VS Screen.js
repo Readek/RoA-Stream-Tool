@@ -1,11 +1,9 @@
 'use strict';
 
 //animation stuff
-const pCharMove = 30; //distance to move for the character images
-
 const fadeInTime = .4; //(seconds)
 const fadeOutTime = .3;
-const introDelay = .5; //all animations will get this delay when the html loads (use this so it times with your transition)
+const introDelay = .05; //all animations will get this delay when the html loads (use this so it times with your transition)
 
 //max text sizes (used when resizing back)
 const playerSize = '90px';
@@ -29,7 +27,7 @@ let colorList;
 
 //to avoid the code constantly running the same method over and over
 const pCharPrev = [], pSkinPrev = [], scorePrev = [], colorPrev = [];
-let bestOfPrev, prevWorkshop, gamemodePrev;
+let bestOfPrev, workshopPrev, gamemodePrev;
 
 //variables for the twitter/twitch constant change
 let socialInt1, socialInt2;
@@ -103,6 +101,9 @@ async function getData(scInfo) {
 
 	const workshop = scInfo['workshop'];
 
+
+	// first of all, things that will always happen on each cycle
+
 	//check if we are forcing HD skins
 	if (scInfo['forceHD']) {
 		for (let i = 0; i < 4; i++) {
@@ -112,23 +113,47 @@ async function getData(scInfo) {
 			} else {
 				player[i].skin = "HD";
 			}
-			
 		}
 	}
+
+	// set the current char path
+	if (workshopPrev != workshop) {
+		workshop ? charPath = charPathWork : charPath = charPathBase;
+		// save the current workshop status so we know when it changes next time
+		workshopPrev = workshop;
+	}
+
+	// set the max players depending on singles or doubles
+	maxPlayers = gamemode == 1 ? 2 : 4;
+
+	// depending on best of, show or hide some score ticks
+	if (bestOfPrev != bestOf) {
+		updateBo(bestOf);
+		bestOfPrev = bestOf;
+	}
 	
-	// if there is no team name, just display "[Color] Team"
+	// now, things that will happen for each player
+	for (let i = 0; i < maxPlayers; i++) {
+
+		// get the character lists now before we do anything else
+		if (pCharPrev[i] != player[i].character) {
+			// gets us the character positions to be used when updating the char image
+			pCharInfo[i] = await getCharInfo(player[i].character);
+		}
+
+	}
+
+	// and lastly, things that will happen for each side
 	for (let i = 0; i < maxSides; i++) {
+
+		// if there is no team name, just display "[Color] Team"
 		if (!teamName[i]) teamName[i] = color[i] + " Team";
+
 	}
 	
 
-	//first, things that will happen only the first time the html loads
+	// now, things that will happen only the first time the html loads
 	if (startup) {
-
-		//first things first, set the current char path
-		workshop ? charPath = charPathWork : charPath = charPathBase;
-		//save the current workshop status so we know when it changes next time
-		prevWorkshop = workshop;
 
 		//initialize the colors list
 		colorList = await getColorInfo();
@@ -142,13 +167,8 @@ async function getData(scInfo) {
 		gamemodePrev = gamemode;
 		
 
-		//this is on top of everything else because the await would desync the rest
-		for (let i = 0; i < maxPlayers; i++) { //for each available player
-			//gets us the character positions for the player
-			pCharInfo[i] = await getCharInfo(player[i].character);
-		}
-
-
+		// this will be used later to sync the animations for all character images
+		const charsLoaded = [];
 		// now the real part begins
 		for (let i = 0; i < maxPlayers; i++) {
 
@@ -156,11 +176,11 @@ async function getData(scInfo) {
 			updatePlayerName(i, player[i].name, player[i].tag, player[i].pronouns);
 
 			//fade in the player text
-			fadeIn(pWrapper[i], introDelay+.15);
+			fadeIn(pWrapper[i], introDelay+.3);
 
 
 			//change the player's character image, and position it
-			updateChar(player[i].character, player[i].skin, color[i%2], i, pCharInfo[i], gamemode, startup)
+			charsLoaded.push(updateChar(player[i].character, player[i].skin, color[i%2], i, pCharInfo[i], gamemode, startup));
 			//character will fade in when the image finishes loading
 
 			//save character info so we change them later if different
@@ -172,6 +192,12 @@ async function getData(scInfo) {
 			updateBG(pBG[i], player[i].character, player[i].skin, pCharInfo[i]);	
 
 		}
+		// now we use that array from earlier to animate all characters at the same time
+		Promise.all(charsLoaded).then( (value) => { // when all images are loaded
+			for (let i = 0; i < value.length; i++) { // for every character loaded
+				charaFadeIn(value[i][0], value[i][1], introDelay); // fade it in
+			}
+		})
 
 
 		// this will run for each side (so twice)
@@ -198,17 +224,6 @@ async function getData(scInfo) {
 		if (score[0] == 0 && score[1] == 0) {
 			scoreOverlay.style.opacity = 0;
 		}
-
-
-		//lets set the initial state of the score border
-		if (bestOf == "Bo5") {
-			scoreBorder.src = "Resources/Overlay/VS Screen/Score Border Bo5.png";
-		} else {
-			scoreBorder.src = "Resources/Overlay/VS Screen/Score Border Bo3.png";
-			scoreImg[2].style.opacity = 0;
-			scoreImg[5].style.opacity = 0;
-		}
-		bestOfPrev = bestOf;
 
 
 		//set the round text
@@ -248,14 +263,8 @@ async function getData(scInfo) {
 		startup = false; //next time we run this function, it will skip all we just did
 	}
 
-	//now things that will happen constantly
+	// now things that will happen every other cycle
 	else {
-
-		//start by setting the correct char path
-		if (prevWorkshop != workshop) {
-			workshop ? charPath = charPathWork : charPath = charPathBase;
-			prevWorkshop = workshop;
-		}
 
 		//of course, check if the gamemode has changed
 		if (gamemodePrev != gamemode) {
@@ -293,7 +302,7 @@ async function getData(scInfo) {
 				if (score[0] == 0 && score[1] == 0) {
 					fadeOut(scoreOverlay);
 				} else {
-					fadeIn(scoreOverlay, 0);
+					fadeIn(scoreOverlay);
 				}
 
 				scorePrev[i] = score[i];
@@ -303,20 +312,21 @@ async function getData(scInfo) {
 			//did any of the team names change?
 			if (gamemode != 1) {
 				if (teamNames[i].textContent != teamName[i]) {
-
 					//hide the text before doing anything
-					fadeOut(teamNames[i], () => {
+					fadeOut(teamNames[i]).then( () => {
 						//update the text while nobody can see it
 						updateText(teamNames[i], teamName[i], teamSize);
 						//and fade it back to normal
 						fadeIn(teamNames[i]);
-
 					});
 				}
 			}
 
 		}
 
+
+		// this will be used later to sync the animations for all character images
+		const charsLoaded = [], animsEnded = [];
 
 		//get the character lists now before we do anything else
 		for (let i = 0; i < maxPlayers; i++) {
@@ -326,13 +336,13 @@ async function getData(scInfo) {
 			}
 		}
 
-
+		
 		for (let i = 0; i < maxPlayers; i++) {
 
 			// players name change, if either name or tag have changed
 			if (pName[i].textContent != player[i].name || pTag[i].textContent != player[i].tag || pPronouns[i].textContent != player[i].pronouns) {
 				//fade out the player's text
-				fadeOut(pWrapper[i], () => {
+				fadeOut(pWrapper[i]).then( () => {
 					//now that nobody is seeing it, change the content of the texts!
 					updatePlayerName(i, player[i].name, player[i].tag, player[i].pronouns);
 					//and fade the texts back in
@@ -340,26 +350,25 @@ async function getData(scInfo) {
 				});
 			}
 
-
 			//player character, skin and background change
 			if (pCharPrev[i] != player[i].character || pSkinPrev[i] != player[i].skin) {
 				
 				//move and fade out the character
-				charaFadeOut(pChara[i], () => {
+				animsEnded.push(charaFadeOut(pChara[i], pTrail[i]).then( () => {
 					//update the character image and trail, and also storing its scale for later
-					updateChar(player[i].character, player[i].skin, color[i%2], i, pCharInfo[i], gamemode);
+					charsLoaded.push(updateChar(player[i].character, player[i].skin, color[i%2], i, pCharInfo[i], gamemode));
 					//will fade back in when the images load
-				});
+				}));
 
 				//background change here!
 				if (bgChangeLogic(player[i].skin, pSkinPrev[i], player[i].character, pCharPrev[i])) {
 					//fade it out
-					fadeOut(pBG[i], () => {
+					fadeOut(pBG[i], fadeOutTime+.2).then( () => {
 						//update the bg vid
 						updateBG(pBG[i], player[i].character, player[i].skin, pCharInfo[i]);
 						//fade it back
 						fadeIn(pBG[i], .3, fadeInTime+.2);
-					}, fadeOutTime+.2);
+					});
 				};
 				
 				pCharPrev[i] = player[i].character;
@@ -368,26 +377,19 @@ async function getData(scInfo) {
 			}
 
 		}
-
-
-		//best of check
-		if (bestOfPrev != bestOf) {
-			if (bestOf == "Bo5") {
-				scoreImg[2].style.opacity = 1;
-				scoreImg[5].style.opacity = 1;
-				scoreBorder.src = "Resources/Overlay/VS Screen/Score Border Bo5.png";
-			} else {
-				scoreImg[2].style.opacity = 0;
-				scoreImg[5].style.opacity = 0;
-				scoreBorder.src = "Resources/Overlay/VS Screen/Score Border Bo3.png";
-			}
-			bestOfPrev = bestOf;
-		}
+		// now we use that array from earlier to animate all characters at the same time
+		Promise.all(animsEnded).then( () => { // need to sync somehow
+			Promise.all(charsLoaded).then( (value) => { // when all images are loaded
+				for (let i = 0; i < value.length; i++) { // for every character loaded
+					charaFadeIn(value[i][0], value[i][1]); // fade it in
+				}
+			})
+		})
 		
 
 		//update round text
 		if (roundEL.textContent != round){
-			fadeOut(roundEL, () => {
+			fadeOut(roundEL).then( () => {
 				updateText(roundEL, round, roundSize);
 				fadeIn(roundEL, .2);
 			});
@@ -395,7 +397,7 @@ async function getData(scInfo) {
 
 		//update tournament text
 		if (tournamentEL.textContent != tournamentName){
-			fadeOut(tournamentEL, () => {
+			fadeOut(tournamentEL).then( () => {
 				updateText(tournamentEL, tournamentName, tournamentSize);
 				fadeIn(tournamentEL, .2);
 			});
@@ -407,7 +409,7 @@ async function getData(scInfo) {
 			
 			//caster names
 			if (casterEL[i].textContent != caster[i].name){
-				fadeOut(casterEL[i], () => {
+				fadeOut(casterEL[i]).then( () => {
 					updateText(casterEL[i], caster[i].name, casterSize);
 					fadeIn(casterEL[i], .2);
 				});
@@ -431,8 +433,6 @@ async function getData(scInfo) {
 // the gamemode manager
 function changeGM(gm) {
 	if (gm == 2) {
-
-		maxPlayers = 4;
 
 		//change the white overlay
 		document.getElementById("vsOverlay").src = "Resources/Overlay/VS Screen/VS Overlay Dubs.png";
@@ -472,8 +472,6 @@ function changeGM(gm) {
 		}
 
 	} else {
-
-		maxPlayers = 2
 
 		document.getElementById("vsOverlay").src = "Resources/Overlay/VS Screen/VS Overlay.png";
 
@@ -585,7 +583,7 @@ function updateBG(vidEL, pCharacter, pSkin, charInfo) {
 		vidEL.src = 'Resources/Backgrounds/SK Golden.webm';
 	} else {
 		let vidName;
-		if (charInfo != "notFound") { //safety check
+		if (charInfo) { //safety check
 			if (charInfo.vsScreen["background"]) { //if the character has a specific BG
 				vidName = charInfo.vsScreen["background"];
 			} else { //if not, just use the character name
@@ -607,6 +605,19 @@ function bgChangeLogic(pSkin, pSkinPrev, pChar, pCharPrev) {
 		return true;
 	} else if (pChar == "Shovel Knight" && (pSkin == "Golden" || pSkinPrev == "Golden")) { //now we just flexing
 		return true;
+	}
+}
+
+// to hide some score ticks and change score border
+function updateBo(bestOf) {
+	if (bestOf == "Bo5") {
+		scoreImg[2].style.opacity = 1;
+		scoreImg[5].style.opacity = 1;
+		scoreBorder.src = "Resources/Overlay/VS Screen/Score Border Bo5.png";
+	} else {
+		scoreImg[2].style.opacity = 0;
+		scoreImg[5].style.opacity = 0;
+		scoreBorder.src = "Resources/Overlay/VS Screen/Score Border Bo3.png";
 	}
 }
 
@@ -632,12 +643,12 @@ function socialChange1(twitterWrapperEL, twitchWrapperEL) {
 	} else if (!!twitter1 && !!twitch1) {
 
 		if (socialSwitch) {
-			fadeOut(twitterWrapperEL, () => {
-				fadeIn(twitchWrapperEL, 0);
+			fadeOut(twitterWrapperEL).then( () => {
+				fadeIn(twitchWrapperEL);
 			});
 		} else {
-			fadeOut(twitchWrapperEL, () => {
-				fadeIn(twitterWrapperEL, 0);
+			fadeOut(twitchWrapperEL).then( () => {
+				fadeIn(twitterWrapperEL);
 			});
 		}
 
@@ -662,12 +673,12 @@ function socialChange2(twitterWrapperEL, twitchWrapperEL) {
 	} else if (!!twitter2 && !!twitch2) {
 
 		if (socialSwitch) {
-			fadeOut(twitterWrapperEL, () => {
-				fadeIn(twitchWrapperEL, 0);
+			fadeOut(twitterWrapperEL).then( () => {
+				fadeIn(twitchWrapperEL);
 			});
 		} else {
-			fadeOut(twitchWrapperEL, () => {
-				fadeIn(twitterWrapperEL, 0);
+			fadeOut(twitchWrapperEL).then( () => {
+				fadeIn(twitterWrapperEL);
 			});
 		}
 
@@ -682,11 +693,11 @@ function updateSocial(mainSocial, mainText, mainWrapper, otherSocial, otherWrapp
 	}
 	//check if this is their turn so we fade out the other one
 	if (localSwitch) {
-		fadeOut(otherWrapper, () => {})
+		fadeOut(otherWrapper)
 	}
 
 	//now do the classics
-	fadeOut(mainWrapper, () => {
+	fadeOut(mainWrapper).then( () => {
 		updateSocialText(mainText, mainSocial, twitterSize, mainWrapper);
 		//check if its twitter's turn to show up
 		if (otherSocial == "" && mainSocial != "") {
@@ -746,38 +757,38 @@ function getFontSize(textElement) {
 
 
 //fade out
-function fadeOut(itemID, funct = console.log("Hola!"), dur = fadeOutTime) {
-	gsap.to(itemID, {opacity: 0, duration: dur, onComplete: funct});
+async function fadeOut(itemID, dur = fadeOutTime) {
+	itemID.style.animation = `fadeOut ${dur}s both`;
+	// this function will return a promise when the animation ends
+	await new Promise(resolve => setTimeout(resolve, dur * 1000)); // translate to miliseconds
 }
 
 //fade in
-function fadeIn(itemID, timeDelay, dur = fadeInTime) {
-	gsap.to(itemID, {delay: timeDelay, opacity: 1, duration: dur});
+function fadeIn(itemID, delay = 0, dur = fadeInTime) {
+	itemID.style.animation = `fadeIn ${dur}s ${delay}s both`;
 }
 
 //fade out for the characters
-function charaFadeOut(itemID, funct) {
-	gsap.to(itemID, {delay: .2, x: -pCharMove, opacity: 0, ease: "power1.in", duration: fadeOutTime, onComplete: funct});
+async function charaFadeOut(charaEL, trailEL) {
+
+	charaEL.style.animation = `charaMoveOut ${fadeOutTime}s both
+		,fadeOut ${fadeOutTime}s both`
+	;
+	// this is only so the animation change gets activated on fade in
+	trailEL.parentElement.style.animation = `trailMoveOut 0s both`;
+
+	await new Promise(resolve => setTimeout(resolve, fadeOutTime * 1000));
+
 }
 
 //fade in characters edition
-function charaFadeIn(charaID, trailID, charScale) {
-	//move the character
-	gsap.to(charaID, {delay: .2, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime+.1});
-	//move the trail
-	gsap.fromTo(trailID,
-		{scale: charScale, x: 0, opacity: 0},
-		{delay: .4, x: -pCharMove, opacity: 1, ease: "power2.out", duration: fadeInTime+.1});
-}
-
-//initial characters fade in
-function initCharaFade(charaID, trailID) {
-	//character movement
-	gsap.fromTo(charaID,
-		{x: -pCharMove, opacity: 0},
-		{delay: introDelay, x: 0, opacity: 1, ease: "power2.out", duration: fadeInTime});
-	//trail movement
-	gsap.to(trailID, {delay: introDelay+.15, x: -pCharMove, opacity: 1, ease: "power2.out", duration: fadeInTime+.1});
+function charaFadeIn(charaEL, trailEL, delay = 0) {
+	charaEL.style.animation = `charaMoveIn ${fadeInTime + .1}s ${delay + .2}s both
+		, fadeIn ${fadeInTime + .1}s ${delay + .2}s both`
+	;
+	trailEL.parentElement.style.animation = `trailMoveIn ${fadeInTime + .1}s ${delay + .4}s both
+		, fadeIn ${fadeInTime + .1}s ${delay + .4}s both`
+	;
 }
 
 
@@ -816,20 +827,20 @@ function getCharInfo(pCharacter) {
 	return new Promise(function (resolve) {
 		const oReq = new XMLHttpRequest();
 		oReq.addEventListener("load", reqListener);
-		oReq.onerror = () => {resolve("notFound")}; //for obs local file browser sources
+		oReq.onerror = () => {resolve(null)}; //for obs local file browser sources
 		oReq.open("GET", charPath + pCharacter + '/_Info.json');
 		oReq.send();
 
 		function reqListener () {
 			try {resolve(JSON.parse(oReq.responseText))}
-			catch {resolve("notFound")} //for live servers
+			catch {resolve(null)} //for live servers
 		}
 	})
 }
 
 
 //character update!
-function updateChar(pCharacter, pSkin, color, pNum, charInfo, gamemode, startup = false) {
+async function updateChar(pCharacter, pSkin, color, pNum, charInfo, gamemode, startup = false) {
 
 	//store so code looks cleaner later
 	const charEL = pChar[pNum];
@@ -838,10 +849,10 @@ function updateChar(pCharacter, pSkin, color, pNum, charInfo, gamemode, startup 
 	//change the image path depending on the character and skin
 	charEL.src = charPath + pCharacter + '/' + pSkin + '.png';
 
-	//             x, y, scale
+	//               x, y, scale
 	const charPos = [0, 0, 1];
 	//now, check if the character or skin exists in the json file we checked earler
-	if (charInfo != "notFound") {
+	if (charInfo) {
 		if (charInfo.vsScreen[pSkin]) { //if the skin has a specific position
 			charPos[0] = charInfo.vsScreen[pSkin].x;
 			charPos[1] = charInfo.vsScreen[pSkin].y;
@@ -871,47 +882,40 @@ function updateChar(pCharacter, pSkin, color, pNum, charInfo, gamemode, startup 
 	}
 
 	//to position the character
-	charEL.style.left = charPos[0] + "px";
-	charEL.style.top = charPos[1] + "px";
-	charEL.style.transform = "scale(" + charPos[2] + ")";
-	trailEL.style.left = charPos[0] + "px";
-	trailEL.style.top = charPos[1] + "px";
-	trailEL.style.transform = "scale(" + charPos[2] + ")";
+	charEL.style.transform = `translate(${charPos[0]}px, ${charPos[1]}px) scale(${charPos[2]})`;
+	trailEL.style.transform = `translate(${charPos[0]}px, ${charPos[1]}px) scale(${charPos[2]})`;
 
 	//to decide scalling
 	if (pSkin.includes("HD")) {
 		charEL.style.imageRendering = "auto"; //default scalling
 		trailEL.style.imageRendering = "auto";
 	} else {
-		charEL.style.imageRendering = "pixelated"; //sharp scalling
+		charEL.style.imageRendering = "pixelated"; //default scalling
 		trailEL.style.imageRendering = "pixelated";
 	}
 
+	// here we will store promises to use later
+	const charsLoaded = [];
 	//this will make the thing wait till the images are fully loaded
-	charEL.decode().then( () => {
-		trailEL.decode().then( () => {
-			//when both char and trail load, fade them in
-			if (startup) {
-				initCharaFade(pChara[pNum], trailEL);
-			} else {
-				charaFadeIn(pChara[pNum], trailEL, charPos[2]);
-			}
-		})
-	}).catch( () => {
-		//if the image fails to load, we will use a placeholder
-		charEL.src = charPathBase + 'Random/P'+((pNum%2)+1)+'.png';
-		if (startup) {
-			initCharaFade(pChara[pNum], trailEL);
-		} else {
-			charaFadeIn(pChara[pNum], trailEL, charPos[2]);
-		}
-	})
+	charsLoaded.push(
+		charEL.decode().catch( () => {
+			//if the image fails to load, we will use a placeholder
+			/* for whatever reason, catch doesnt work properly on firefox */
+			/* add an extra timeout before decode to fix */
+			charEL.src = charPathBase + 'Random/P'+((pNum%2)+1)+'.png';
+		} ),
+		trailEL.decode().catch( () => {} ) // if no trail, do nothing
+	);
+	// this function will send a promise when the images finish loading
+	await Promise.all(charsLoaded);
+
+	return [pChara[pNum], trailEL];
 
 }
 
 //this gets called just to change the color of a trail
 function colorTrail(trailEL, pCharacter, pSkin, color, charInfo) {
-	if (charInfo != "notFound") {
+	if (charInfo) {
 		if (charInfo.vsScreen[pSkin]) { //if the skin positions are not the default ones
 			trailEL.src = charPath + pCharacter + '/Trails/' + color + ' ' + pSkin + '.png';
 		} else {

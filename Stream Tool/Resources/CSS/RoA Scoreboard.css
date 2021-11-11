@@ -13,6 +13,10 @@
     src: url('../Fonts/LEMONMILK-Medium.otf');
 }
 
+:root {
+    --scoreboardX: 470px;
+    --scoreboardY: 25px;
+  }
 
 body {
     width: 1920px;
@@ -26,68 +30,47 @@ body {
     font-family: "Deansgate";
 }
 
-
-.scoreboardP1 {
+.absol {
     position: absolute;
-    left: 0px;
 }
-.scoreboardP2 {
-    position: absolute;
-    right: 0px;
+
+
+.scoreboard {
+    top: var(--scoreboardY);
+}
+#scoreboardL {
+    left: var(--scoreboardX);
+}
+#scoreboardR {
+    right: var(--scoreboardX);
     transform: scaleX(-1);
-}
-.scoreboardP2Fixed {
-    position: absolute;
-    right: 0px;
-}
-
-
-.colors {
-    width: 636px;
-    height: 90px;
 }
 
 
 .mask {
-    -webkit-mask-repeat: no-repeat;
-    width: 1920px;
-    height: 1080px;
     position: absolute;
-}
-
-.maskSingles {
     -webkit-mask-image: url("../Overlay/Scoreboard/Icon Mask.png");
-}
-
-.maskDubs {
-    -webkit-mask-image: url("../Overlay/Scoreboard/Icon Mask 2.png");
+    width: 401px;
+    height: 104px;
 }
 
 .charTop {
-    position: absolute;
+    top: 0px;
+    left: 95px;
 }
+
 .charBot {
-    position: absolute;
-    top: 45px;
-}
-
-#p2CharaMask, #p4CharaMask {
-    transform: scaleX(-1);
-}
-
-#p3CharaMask {
-    left: -18px;
-}
-#p4CharaMask {
-    right: -18px;
+    top: 25px;
+    left: -285px;
 }
 
 .pCharacter {
-    opacity: 0;
     width: 100px;
     height: 100px;
     object-fit: scale-down;
     position: absolute;
+    left: 260px;
+    top: 12px;
 }
 
 
@@ -98,69 +81,95 @@ body {
     white-space: nowrap;
 }
 .wrappersSingles {
-    width: 430px;
-    height: 54px;
-    line-height: 54px;
+    width: 246px;
+    height: 36px;   
+    top: 34px;
+    line-height: 32px;
 }
 
 .wrappersDubs {
-    width: 126px;
-    height: 54px;
-    line-height: 54px;
+    width: 123px;
+    height: 30px;
+    line-height: 30px;
+    top: 32px;
 }
 
+.flipBack {
+    transform: scaleX(-1);
+}
 #p1Wrapper {
-    left: 158px;
+    left: 38px;
 }
 #p2Wrapper {
-    right: 158px;
+    right: 38px;
 }
 #p3Wrapper {
-    top: 40px;
-    left: 138px;
+    left: 106px;
 }
 #p4Wrapper {
-    top: 40px;
-    right: 138px;
+    right: 106px;
 }
 
 .tags {
     color: lightgray;
 }
 
+.pronouns {
+    color: lightgray;
+}
+
 .teamName {
     position: absolute;
-    width: 290px;
-    height: 54px;
-    line-height: 54px;
+    width: 275px;
+    height: 32px;
+    line-height: 32px;
     text-align: center;
-    top: 0px;
+    top: 67px;
     opacity: 0;
     white-space: nowrap;
 }
 #teamNameL {
-    left: 298px;
+    left: 115px;
+}
+#teamNameR {
+    right: 115px;
 }
 
-#teamNameR {
-    right: 298px;
+
+.wlmask {
+    overflow: hidden;
+    width: 90px;
+    height: 25px;
+}
+.wlbg {
+    top: 5px;
+}
+.wlText {
+    top: 5px;
+    width: 70px;
+    text-align: center;
+}
+#wlTextL {
+    left: 10px;
+}
+#wlTextR {
+    right: 10px;
 }
 
 
 #overlayRound {
     opacity: 0;
-}
-
-#roundBG {
-    position: absolute;
+    width: 1920px;
+    display: flex;
+    justify-content: center;
+    top: 900px;
 }
 
 #round {
     position: absolute;
     width: 215px;
     height: 34px;
-    left: 853px;
-    top: 914px;
+    top: 13px;
     line-height: 32px;
     text-align: center;
     font-family: "Roboto";
@@ -268,4 +277,73 @@ body {
 
 #overlayIntro {
     opacity: 0;
+}
+
+.dubEL {
+    display: none;
+}
+
+
+.tLogos {
+    max-width: 36px;
+    max-height: 36px;
+    top: 33px;
+    object-fit: scale-down;
+}
+#tagLogoP1 {
+    left: 248px;
+}
+#tagLogoP2 {
+    right: 248px;
+}
+
+
+/* Animations! */
+
+@keyframes fadeOut {
+    from {opacity: 1}
+    to {opacity: 0}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0}
+    to {opacity: 1}
+}
+
+@keyframes moveOutLeft {
+    from {transform: translateX(0)}
+    to {transform: translateX(40px)}
+}
+@keyframes moveOutRight {
+    from {transform: translateX(0)}
+    to {transform: translateX(-40px)}
+}
+
+@keyframes moveInLeft {
+    from {transform: translateX(-40px)}
+    to {transform: translateX(0)}
+}
+@keyframes moveInRight {
+    from {transform: translateX(40px)}
+    to {transform: translateX(0)}
+}
+
+@keyframes charaMoveOut {
+    from {transform: translateX(0)}
+    to {transform: translateX(-20px)}
+}
+
+@keyframes charaMoveIn {
+    from {transform: translateX(-20px)}
+    to {transform: translateX(0)}
+}
+
+@keyframes wlMoveOut {
+    from {transform: translateY(0)}
+    to {transform: translateY(20px)}
+}
+
+@keyframes wlMoveIn {
+    from {transform: translateY(20px)}
+    to {transform: translateY(0)}
 }

@@ -22,8 +22,8 @@
     ],
     "scoreboard": {
         "neutral": {
-            "x": -20,
-            "y": 58,
+            "x": -25,
+            "y": 55,
             "scale": 3.2,
             "comment": "Also works for HD"
         },
