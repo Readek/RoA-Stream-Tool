@@ -557,28 +557,26 @@ function updateBG(vidEL, pCharacter, pSkin, charInfo) {
 	if (startup) {
 		//if the video cant be found, show aethereal gates
 		vidEL.addEventListener("error", () => {
-			vidEL.src = 'Resources/Backgrounds/Default.webm'
+			vidEL.src = 'Resources/BG.webm';
 		});
 	}
 
 	//change the BG path depending on the character
 	if (pSkin.includes("LoA")) {
-		vidEL.src = 'Resources/Backgrounds/LoA.webm';
+		vidEL.src = charPath + 'LoA BG.webm';
 	} else if (pSkin == "Ragnir") { //ragnir shows the default stages in the actual game
-		vidEL.src = 'Resources/Backgrounds/Default.webm';
+		vidEL.src = charPath + 'BG.webm';
 	} else if (pCharacter == "Shovel Knight" && pSkin == "Golden") { //why not
-		vidEL.src = 'Resources/Backgrounds/SK Golden.webm';
+		vidEL.src = charPath + pCharacter + '/BG Golden.webm';
 	} else {
-		let vidName;
+		let charBG = pCharacter; // by default, use current char name
 		if (charInfo) { //safety check
 			if (charInfo.vsScreen["background"]) { //if the character has a specific BG
-				vidName = charInfo.vsScreen["background"];
-			} else { //if not, just use the character name
-				vidName = pCharacter;
+				charBG = charInfo.vsScreen["background"];
 			}
 		}
 		//actual video path change
-		vidEL.src = 'Resources/Backgrounds/' + vidName + '.webm';
+		vidEL.src = charPath + charBG + '/BG.webm';
 	}
 }
 //it was too long to be in just one 'if'

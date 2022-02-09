@@ -20,7 +20,7 @@
             "y": 175,
             "scale": 1
         },
-        "background": "Absa"
+        "background": "../Absa"
     },
     "gui": {
         "neutral": {
