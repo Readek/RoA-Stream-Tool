@@ -27,7 +27,7 @@ let colorList;
 
 //to avoid the code constantly running the same method over and over
 const pCharPrev = [], pSkinPrev = [], scorePrev = [], colorPrev = [], wlPrev = [];
-let bestOfPrev, workshopPrev, mainMenuPrev, gamemodePrev;
+let bestOfPrev, workshopPrev, altArtPrev, gamemodePrev;
 
 //to consider how many loops will we do
 let maxPlayers = 2;
@@ -86,7 +86,7 @@ async function getData(scInfo) {
 
 	const workshop = scInfo['workshop'];
 
-	const mainMenu = scInfo['forceMM'];
+	const altArt = scInfo['forceAlt'];
 
 
 	// first of all, things that will always happen on each cycle
@@ -247,7 +247,7 @@ async function getData(scInfo) {
 			
 
 			//set the character image for the player
-			charsLoaded.push(updateChar(player[i].character, player[i].skin, i, pCharInfo[i], mainMenu));
+			charsLoaded.push(updateChar(player[i].character, player[i].skin, i, pCharInfo[i], altArt));
 			//the animation will be fired below, when the image finishes loading
 
 			//save the character/skin so we run the character change code only when this doesnt equal to the next
@@ -305,7 +305,7 @@ async function getData(scInfo) {
 
 
 		//set this for later
-		mainMenuPrev = mainMenu;
+		altArtPrev = altArt;
 
 
 		startup = false; //next time we run this function, it will skip all we just did
@@ -357,12 +357,12 @@ async function getData(scInfo) {
 			}
 
 			//player characters and skins
-			if (pCharPrev[i] != player[i].character || pSkinPrev[i] != player[i].skin || mainMenuPrev != mainMenu) {
+			if (pCharPrev[i] != player[i].character || pSkinPrev[i] != player[i].skin || altArtPrev != altArt) {
 
 				//fade out the image while also moving it because that always looks cool
 				animsEnded.push(fadeOutMove(charImg[i], true, null).then( () => {
 					//now that nobody can see it, lets change the image!
-					charsLoaded.push(updateChar(player[i].character, player[i].skin, i, pCharInfo[i], mainMenu));
+					charsLoaded.push(updateChar(player[i].character, player[i].skin, i, pCharInfo[i], altArt));
 					//will fade in when image finishes loading
 				}));
 				pCharPrev[i] = player[i].character;
@@ -435,7 +435,7 @@ async function getData(scInfo) {
 
 
 		//we place this one here so both characters can be updated in one go
-		mainMenuPrev = mainMenu;
+		altArtPrev = altArt;
 
 		
 		//and finally, update the round text
@@ -741,7 +741,7 @@ function getCharInfo(pCharacter) {
 }
 
 //now the complicated "change character image" function!
-async function updateChar(pCharacter, pSkin, pNum, charInfo, mainMenu) {
+async function updateChar(pCharacter, pSkin, pNum, charInfo, altArt) {
 
 	//store so code looks cleaner
 	const charEL = charImg[pNum];
@@ -757,11 +757,11 @@ async function updateChar(pCharacter, pSkin, pNum, charInfo, mainMenu) {
 			charPos[0] = charInfo.scoreboard[pSkin].x;
 			charPos[1] = charInfo.scoreboard[pSkin].y;
 			charPos[2] = charInfo.scoreboard[pSkin].scale;
-		} else if (mainMenu && charInfo.scoreboard.mainMenu) { //for the main menu renders, or some extras for workshop characters
-			charPos[0] = charInfo.scoreboard.mainMenu.x;
-			charPos[1] = charInfo.scoreboard.mainMenu.y;
-			charPos[2] = charInfo.scoreboard.mainMenu.scale;
-			charEL.src = charPath + pCharacter + '/MainMenu/'+pSkin+'.png';
+		} else if (altArt && charInfo.scoreboard.alt) { //for workshop alternative art
+			charPos[0] = charInfo.scoreboard.alt.x;
+			charPos[1] = charInfo.scoreboard.alt.y;
+			charPos[2] = charInfo.scoreboard.alt.scale;
+			charEL.src = charPath + pCharacter + '/Alt/'+pSkin+'.png';
 		} else { //if none of the above, use a default position
 			charPos[0] = charInfo.scoreboard.neutral.x;
 			charPos[1] = charInfo.scoreboard.neutral.y;

@@ -1,0 +1,48 @@
+{
+    "skinList": [
+        "Student President",
+        "False Messiah",
+        "Icy",
+        "Gray",
+        "Watermelon EX",
+        "Sakura",
+        "0 Attempt",
+        "BBat",
+        "99999",
+        "Kumak",
+        "Xeha",
+        "R00",
+        "Glitch",
+        "Yeah she's gay",
+        "Negative Mage",
+        "Mayo",
+        "California",
+        "Day1 Zetta"
+    ],
+    "scoreboard": {
+        "neutral": {
+            "x": 30,
+            "y": 90,
+            "scale": 4
+        },
+		"alt": {
+			"x": 25,
+			"y": -10,
+			"scale": 2
+		}
+    },
+    "vsScreen": {
+        "neutral": {
+            "x": -500,
+            "y": 120,
+            "scale": 1.1
+        }
+    },
+    "gui": {
+        "neutral": {
+            "x": 15,
+            "y": 50,
+            "scale": 5.5
+        }
+    }
+}

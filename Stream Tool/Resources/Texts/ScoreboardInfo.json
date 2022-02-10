@@ -61,5 +61,5 @@
   "workshop": false,
   "forceHD": true,
   "noLoAHD": false,
-  "forceMM": true
+  "forceAlt": true
 }

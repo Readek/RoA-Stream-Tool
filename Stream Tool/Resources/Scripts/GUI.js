@@ -95,7 +95,7 @@ function init() {
     //set listeners for the settings checkboxes
     document.getElementById("allowIntro").addEventListener("click", saveGUISettings);
     workshopCheck.addEventListener("click", workshopToggle);
-    document.getElementById("forceMM").addEventListener("click", saveGUISettings);
+    document.getElementById("forceAlt").addEventListener("click", saveGUISettings);
     document.getElementById('forceHD').addEventListener("click", HDtoggle);
     document.getElementById("noLoAHD").addEventListener("click", saveGUISettings);
     forceWL.addEventListener("click", forceWLtoggle);
@@ -106,7 +106,7 @@ function init() {
     const guiSettings = JSON.parse(fs.readFileSync(textPath + "/GUI Settings.json", "utf-8"));
     if (guiSettings.allowIntro) {document.getElementById("allowIntro").checked = true};
     if (guiSettings.workshop) {workshopCheck.checked = true};
-    if (guiSettings.forceMM) {document.getElementById("forceMM").checked = true};
+    if (guiSettings.forceAlt) {document.getElementById("forceAlt").checked = true};
     if (guiSettings.forceHD) {document.getElementById("forceHD").checked = true};
     if (guiSettings.noLoAHD) {noLoAHDCheck.checked = true; noLoAHDCheck.disabled = false};
     if (guiSettings.forceWL) {forceWL.click()};
@@ -1214,13 +1214,11 @@ function workshopToggle() {
         skinLists[i].style.display = "none";
     }
 
-    //change the Main Menu button for a CSS button
+    // disable or enable alt arts checkbox
     if (this.checked) {
-        document.getElementById('mmText').innerText = "CSS renders in Scoreboard"
-        document.getElementById('mmText').title = "Forces showing the Character Select Screen\nrenders (if any) on 'RoA Scoreboard.html'."
+        document.getElementById("forceAlt").disabled = false;
     } else {
-        document.getElementById('mmText').innerText = "Main Menu renders in Scoreboard"
-        document.getElementById('mmText').title = "Forces showing the 'Main Menu' character\nrenders on 'RoA Scoreboard.html'."
+        document.getElementById("forceAlt").disabled = true;
     }
 
     // save current checkbox value to the settings file
@@ -1303,7 +1301,7 @@ function saveGUISettings() {
     // update the settings to current values
     guiSettings.allowIntro = document.getElementById("allowIntro").checked;
     guiSettings.workshop = workshopCheck.checked;
-    guiSettings.forceMM = document.getElementById("forceMM").checked;
+    guiSettings.forceAlt = document.getElementById("forceAlt").checked;
     guiSettings.forceHD = document.getElementById("forceHD").checked;
     guiSettings.noLoAHD = noLoAHDCheck.checked;
     guiSettings.forceWL = forceWL.checked;
@@ -1346,7 +1344,7 @@ function writeScoreboard() {
         workshop: workshopCheck.checked,
         forceHD: document.getElementById('forceHD').checked,
         noLoAHD: noLoAHDCheck.checked,
-        forceMM: document.getElementById('forceMM').checked
+        forceAlt: document.getElementById('forceAlt').checked
     };
     //add the player's info to the player section of the json
     for (let i = 0; i < maxPlayers; i++) {
