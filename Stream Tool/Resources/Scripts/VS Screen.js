@@ -557,15 +557,15 @@ function updateBG(vidEL, pCharacter, pSkin, charInfo) {
 	if (startup) {
 		//if the video cant be found, show aethereal gates
 		vidEL.addEventListener("error", () => {
-			vidEL.src = 'Resources/BG.webm';
+			vidEL.src = 'Resources/Characters/BG.webm';
 		});
 	}
 
 	//change the BG path depending on the character
 	if (pSkin.includes("LoA")) {
-		vidEL.src = charPath + 'LoA BG.webm';
+		vidEL.src = 'Resources/Characters/LoA BG.webm';
 	} else if (pSkin == "Ragnir") { //ragnir shows the default stages in the actual game
-		vidEL.src = charPath + 'BG.webm';
+		vidEL.src = 'Resources/Characters/BG.webm';
 	} else if (pCharacter == "Shovel Knight" && pSkin == "Golden") { //why not
 		vidEL.src = charPath + pCharacter + '/BG Golden.webm';
 	} else {
