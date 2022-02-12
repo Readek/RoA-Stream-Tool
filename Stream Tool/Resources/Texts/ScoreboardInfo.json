@@ -3,14 +3,14 @@
     {
       "name": "Player 1",
       "tag": "",
-      "character": "Elliana",
-      "skin": "Default"
+      "character": "Pomme",
+      "skin": "HD"
     },
     {
       "name": "Player 2",
       "tag": "Tag",
       "character": "Kragg",
-      "skin": "Default"
+      "skin": "HD"
     },
     {
       "name": "Player 3",
