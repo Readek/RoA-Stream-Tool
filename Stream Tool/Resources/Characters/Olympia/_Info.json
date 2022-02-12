@@ -1,0 +1,42 @@
+{
+    "skinList": [
+        "Default",
+        "HD"
+    ],
+    "scoreboard": {
+        "neutral": {
+            "x": 0,
+            "y": 70,
+            "scale": 3.5
+        },
+        "HD": {
+            "x": 0,
+            "y": 70,
+            "scale": 3.5
+        }
+    },
+    "vsScreen": {
+        "neutral": {
+            "x": -500,
+            "y": 185,
+            "scale": 1.15
+        },
+        "HD": {
+            "x": -550,
+            "y": 150,
+            "scale": 1.15
+        }
+    },
+    "gui": {
+        "neutral": {
+            "x": -5,
+            "y": 40,
+            "scale": 4.6
+        },
+        "HD": {
+            "x": -5,
+            "y": 40,
+            "scale": 4.6
+        }
+    }
+}
