@@ -292,12 +292,17 @@ function getJson(jPath) {
 //calls the main settings file and fills a combo list
 function loadCharacters() {
 
-    //if the folder name contains '_Workshop' or 'Random', exclude it
-    const characterList = fs.readdirSync(charPath).filter((name) => {
-        if (name != "_Workshop" && name != "Random") {
-            return true;
+    // create a list with folder names on charPath
+    const characterList = fs.readdirSync(charPath, { withFileTypes: true })
+        .filter(dirent => dirent.isDirectory())
+        .map(dirent => dirent.name)
+        .filter((name) => {
+            // if the folder name contains '_Workshop' or 'Random', exclude it
+            if (name != "_Workshop" && name != "Random") {
+                return true;
+            }
         }
-    });
+    )
 
     //for each player
     for (let i=0; i < maxPlayers; i++) {
