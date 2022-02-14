@@ -25,14 +25,9 @@
     ],
     "scoreboard": {
         "neutral": {
-            "x": -60,
-            "y": 118,
-            "scale": 4.7
-        },
-        "mainMenu": {
-            "x": 40,
-            "y": 5,
-            "scale": 2
+            "x": -55,
+            "y": 120,
+            "scale": 4.5
         },
         "Bradshaw": {
             "x": -35,
@@ -57,8 +52,8 @@
     },
     "vsScreen": {
         "neutral": {
-            "x": -670,
-            "y": 185,
+            "x": -600,
+            "y": 200,
             "scale": 1.19
         },
         "Bradshaw": {
@@ -84,9 +79,9 @@
     },
     "gui": {
         "neutral": {
-            "x": -20,
-            "y": 58,
-            "scale": 5
+            "x": -22,
+            "y": 65,
+            "scale": 5.5
         },
         "Bradshaw": {
             "x": -10,

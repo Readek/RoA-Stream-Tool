@@ -24,14 +24,9 @@
     ],
     "scoreboard": {
         "neutral": {
-            "x": -97,
-            "y": -5,
-            "scale": 3.5
-        },
-        "mainMenu": {
-            "x": 16,
-            "y": -12,
-            "scale": 1.8
+            "x": -80,
+            "y": 19,
+            "scale": 4
         },
         "LoA HD": {
             "x": -25,
@@ -46,9 +41,9 @@
     },
     "vsScreen": {
         "neutral": {
-            "x": -800,
-            "y": 40,
-            "scale": 1.1
+            "x": -675,
+            "y": 30,
+            "scale": 1.04
         },
         "LoA HD": {
             "x": -500,
@@ -63,9 +58,9 @@
     },
     "gui": {
         "neutral": {
-            "x": -54,
-            "y": 0,
-            "scale": 4
+            "x": -55,
+            "y": 15,
+            "scale": 4.5
         },
         "LoA HD": {
             "x": 5,
