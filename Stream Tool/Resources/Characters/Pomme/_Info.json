@@ -1,6 +1,19 @@
 {
     "skinList": [
         "Default",
+        "Blue",
+        "Red",
+        "Green",
+        "White",
+        "Purple",
+        "Christmas",
+        "Valentines",
+        "Summer",
+        "Halloween",
+        "Default Custom 1",
+        "Default Custom 2",
+        "Abyss",
+        "Early Access",
         "HD"
     ],
     "scoreboard": {
