@@ -105,7 +105,10 @@ function init() {
     // load GUI settings
     const guiSettings = JSON.parse(fs.readFileSync(textPath + "/GUI Settings.json", "utf-8"));
     if (guiSettings.allowIntro) {document.getElementById("allowIntro").checked = true};
-    if (guiSettings.workshop) {workshopCheck.checked = true};
+    if (guiSettings.workshop) {workshopCheck.checked = true} else {
+        // disable alt arts checkbox
+        document.getElementById("forceAlt").disabled = true;
+    };
     if (guiSettings.forceAlt) {document.getElementById("forceAlt").checked = true};
     if (guiSettings.forceHD) {document.getElementById("forceHD").checked = true};
     if (guiSettings.noLoAHD) {noLoAHDCheck.checked = true; noLoAHDCheck.disabled = false};
