@@ -17,12 +17,11 @@ So you want to do a Rivals of Aether stream, huh? Well, today is your lucky day,
 - [Easy and fast setup](https://gfycat.com/rectangulartintedabyssiniangroundhornbill) using a browser source. Drag and drop!
 - [Handy interface](https://gfycat.com/thirstyripeeyra) to quickly change everything you need, like player names, characters, scores, round, casters...
 - Customizable [Player Presets](https://gfycat.com/melodicwearybuzzard) to setup your match in no time!
-- Every single skin the game has to offer is supported (more than 300 different skins!), including HD renders. Some **Workshop** characters are also supported!
+- Every single skin the game has to offer is supported (more than 300 different skins!), including HD renders. **Workshop** characters are also supported!
 - Now with [2v2 support](https://gfycat.com/brokenbravehumpbackwhale)!
 - [Dynamic, optional intro](https://gfycat.com/revolvingsmarteuropeanpolecat) to be played when changing to the game scene.
 - A "[VS Screen](https://gfycat.com/peacefulelatedblowfish)" to be displayed when waiting for the next game.
 - Easy to customize! Add your own skins, workshop characters, custom overlays or even dive into the code if you're brave enough!
-- This is **not** a [Stream Control](http://farpnut.net/StreamControl) clone. It doesn't have anything to do with it, everything is custom made.
 
 ---
 
@@ -31,7 +30,7 @@ These are instructions for regular OBS Studio, but I imagine you can do the same
 - Get the [latest release](https://github.com/Readek/RoA-Stream-Control/releases).
 - Extract somewhere.
 - Drag and drop `RoA Scoreboard.htlm` into OBS, or add a new browser source in OBS pointing at the local file.
-- If the source looks weird, manually set the source's properties to 1920 width and 1080 height, or set your OBS canvas resolution to 1080p, or make the source fit the screen.
+  - If the source looks weird, manually set the source's properties to 1920 width and 1080 height, or set your OBS canvas resolution to 1080p, or make the source fit the screen.
 - In the source's properties, change *Use custom frame rate* -> `60` (if streaming at 60fps of course).
 - **Also tick `Refresh browser when scene becomes active`**. With it, the intro animation of the html will play each time we swap to this scene.
 - Manage it all with the `RoA Stream Tool` executable.
@@ -69,7 +68,7 @@ Also, you may find the "3 2 1" of the game's intro a bit distracting when combin
 ## Other stuff...
 Do you want to customize something? Do you need some OBS tips and tricks for a RoA stream? **Please, go to the [wiki](https://github.com/Readek/RoA-Stream-Control/wiki)**!
 
-Workshop creators! Do you want your character added to the Stream Tool? There's [a guide](https://github.com/Readek/RoA-Stream-Tool/wiki/6.-Workshop-characters) to help you do that, don't worry! If you end up adding a workshop character, please let me know so it can be added to the main project. You can either create a pull request here, or contact me directly through [Twitter](https://twitter.com/Readeku) or Discord `Readek#5869`.
+Workshop creators! Do you want your character added to the Stream Tool? There's [a guide](https://github.com/Readek/RoA-Stream-Tool/wiki/6.-Workshop-characters) to help you do that, don't worry!
 
 Do you want to adapt this project to another game but can't figure out how to? Lucky for you, I'm open for commisions! Contact me on Twitter [@Readeku](https://twitter.com/Readeku) or on Discord `Readek#5869`!
 
