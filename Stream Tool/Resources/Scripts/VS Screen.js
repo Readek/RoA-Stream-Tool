@@ -563,7 +563,7 @@ function updateBG(vidEL, pCharacter, pSkin, charInfo) {
 
 	//change the BG path depending on the character
 	if (pSkin.includes("LoA")) {
-		vidEL.src = 'Resources/Characters/LoA BG.webm';
+		vidEL.src = 'Resources/Characters/BG LoA.webm';
 	} else if (pSkin == "Ragnir") { //ragnir shows the default stages in the actual game
 		vidEL.src = 'Resources/Characters/BG.webm';
 	} else if (pCharacter == "Shovel Knight" && pSkin == "Golden") { //why not
