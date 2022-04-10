@@ -14,20 +14,9 @@ const tagSizeDubs = "15px";
 const teamSize = "22px"
 const roundSize = "19px";
 
-//to store the current character info
-const pCharInfo = [];
-
-//the characters image file path will change depending if they're workshop or not
-let charPath;
-const charPathBase = "Resources/Characters/";
-const charPathWork = "Resources/Characters/_Workshop/";
-
-//color list will be stored here on startup
-let colorList;
-
 //to avoid the code constantly running the same method over and over
-const pCharPrev = [], pSkinPrev = [], scorePrev = [], colorPrev = [], wlPrev = [];
-let bestOfPrev, workshopPrev, altArtPrev, gamemodePrev;
+const pCharPrev = [], scorePrev = [], colorPrev = [], wlPrev = [];
+let bestOfPrev, gamemodePrev;
 
 //to consider how many loops will we do
 let maxPlayers = 2;
@@ -108,20 +97,9 @@ async function updateData(scInfo) {
 
 	const round = scInfo['round'];
 
-	const workshop = scInfo['workshop'];
-
-	const altArt = scInfo['forceAlt'];
-
 
 	// first of all, things that will always happen on each cycle
 	
-	// set the current char path
-	if (workshopPrev != workshop) {
-		workshop ? charPath = charPathWork : charPath = charPathBase;
-		// save the current workshop status so we know when it changes next time
-		workshopPrev = workshop;
-	}
-
 	// set the max players depending on singles or doubles
 	maxPlayers = gamemode == 1 ? 2 : 4;
 
@@ -133,27 +111,16 @@ async function updateData(scInfo) {
 		updateScore(score[1], bestOf, color[1], 1, gamemode, false);
 	}
 
-	// now, things that will happen for each player
-	for (let i = 0; i < maxPlayers; i++) {
-
-		// get the character lists now before we do anything else
-		if (pCharPrev[i] != player[i].character) {
-			// gets us the character positions to be used when updating the char image
-			pCharInfo[i] = await getCharInfo(player[i].character);
-		}
-
-	}
-
-	// and lastly, things that will happen for each side
+	// things that will happen for each side
 	for (let i = 0; i < maxSides; i++) {
 
 		// if there is no team name, just display "[Color] Team"
-		if (!teamName[i]) teamName[i] = color[i] + " Team";
+		if (!teamName[i]) teamName[i] = color[i].name + " Team";
 
 		// change the player background colors
-		if (colorPrev[i] != color[i]) {
+		if (colorPrev[i] != color[i].name) {
 			updateColor(colorImg[i], color[i], gamemode);
-			colorPrev[i] = color[i];
+			colorPrev[i] = color[i].name;
 		}
 
 	}
@@ -161,9 +128,6 @@ async function updateData(scInfo) {
 
 	// now, things that will happen only once, when the html loads
 	if (startup) {
-
-		//first things first, initialize the colors list
-		colorList = await getColorInfo();		
 
 		//of course, we have to start with the cool intro stuff
 		if (scInfo['allowIntro']) {
@@ -185,7 +149,7 @@ async function updateData(scInfo) {
 					if (gamemode == 1) { //if singles, show player 1 and 2 names
 						pIntroEL.textContent = player[i].name;
 					} else { //if doubles
-						if (teamName[i] == color[i] + " Team") { //if theres no team name, show player names
+						if (teamName[i] == color[i].name + " Team") { //if theres no team name, show player names
 							pIntroEL.textContent = player[i].name + " & " + player[i+2].name;
 						} else { //else, show the team name
 							pIntroEL.textContent = teamName[i];
@@ -196,7 +160,7 @@ async function updateData(scInfo) {
 					resizeText(pIntroEL); //resize the text if its too large
 
 					//change the color of the player text shadows
-					pIntroEL.style.textShadow = '0px 0px 20px ' + getHexColor(color[i]);
+					pIntroEL.style.textShadow = '0px 0px 20px ' + color[i].hex;
 					
 				};
 
@@ -268,15 +232,13 @@ async function updateData(scInfo) {
 			} else { //if doubles, just fade them in
 				fadeIn(pWrapper[i], introDelay+.15)
 			}
-			
 
 			//set the character image for the player
-			charsLoaded.push(updateChar(player[i].character, player[i].skin, i, pCharInfo[i], altArt));
+			charsLoaded.push(updateChar(player[i].sc.charImg, player[i].sc.charPos, i));
 			//the animation will be fired below, when the image finishes loading
 
-			//save the character/skin so we run the character change code only when this doesnt equal to the next
-			pCharPrev[i] = player[i].character;
-			pSkinPrev[i] = player[i].skin;
+			//save the character so we run the character change code only when this doesnt equal to the next
+			pCharPrev[i] = player[i].sc.charImg;
 
 		}
 
@@ -322,15 +284,9 @@ async function updateData(scInfo) {
 			
 		}
 
-
 		//update the round text	and fade it in
 		updateText(textRound, round, roundSize);
 		fadeIn(overlayRound, introDelay);
-
-
-		//set this for later
-		altArtPrev = altArt;
-
 
 		startup = false; //next time we run this function, it will skip all we just did
 	}
@@ -350,7 +306,6 @@ async function updateData(scInfo) {
 			gamemodePrev = gamemode;
 		}
 		
-
 		// this will be used later to sync the animations for all character images
 		const charsLoaded = [], animsEnded = [];
 		//lets check each player
@@ -381,17 +336,17 @@ async function updateData(scInfo) {
 			}
 
 			//player characters and skins
-			if (pCharPrev[i] != player[i].character || pSkinPrev[i] != player[i].skin || altArtPrev != altArt) {
+			if (pCharPrev[i] != player[i].sc.charImg) {
 
 				//fade out the image while also moving it because that always looks cool
 				animsEnded.push(fadeOutMove(charImg[i], true, null).then( () => {
 					//now that nobody can see it, lets change the image!
-					charsLoaded.push(updateChar(player[i].character, player[i].skin, i, pCharInfo[i], altArt));
+					charsLoaded.push(updateChar(player[i].sc.charImg, player[i].sc.charPos, i));
 					//will fade in when image finishes loading
 				}));
-				pCharPrev[i] = player[i].character;
-				pSkinPrev[i] = player[i].skin;
+				pCharPrev[i] = player[i].sc.charImg;
 			}
+
 		}
 		// now we use that array from earlier to animate all characters at the same time
 		Promise.all(animsEnded).then( () => { // need to sync somehow
@@ -401,7 +356,6 @@ async function updateData(scInfo) {
 				}
 			})
 		})
-
 
 		//now let's check stuff from each side
 		for (let i = 0; i < maxSides; i++) {
@@ -433,7 +387,7 @@ async function updateData(scInfo) {
 
 			//score check
 			if (scorePrev[i] != score[i]) {
-				updateScore(score[i], bestOf, color[i], i, gamemode, true); //if true, animation will play
+				updateScore(score[i], bestOf, color[i], i, gamemode, true);
 				scorePrev[i] = score[i];
 			}
 
@@ -456,11 +410,6 @@ async function updateData(scInfo) {
 
 
 		}
-
-
-		//we place this one here so both characters can be updated in one go
-		altArtPrev = altArt;
-
 		
 		//and finally, update the round text
 		if (textRound.textContent != round){
@@ -562,7 +511,7 @@ async function updateScore(pScore, bestOf, pColor, pNum, gamemode, playAnim) {
 
 	if (playAnim) { //do we want to play the score up animation?
 		// depending on the color, change the clip
-		scoreAnim[pNum].src = `Resources/Overlay/Scoreboard/Score/${gamemode}/${pColor}.webm`;
+		scoreAnim[pNum].src = `Resources/Overlay/Scoreboard/Score/${gamemode}/${pColor.name}.webm`;
 		scoreAnim[pNum].play();
 	} 
 	// change the score image with the new values
@@ -571,7 +520,7 @@ async function updateScore(pScore, bestOf, pColor, pNum, gamemode, playAnim) {
 }
 
 function updateColor(colorEL, pColor, gamemode) {
-	colorEL.src = `Resources/Overlay/Scoreboard/Colors/${gamemode}/${pColor}.png`;
+	colorEL.src = `Resources/Overlay/Scoreboard/Colors/${gamemode}/${pColor.name}.png`;
 }
 
 function updateBorder(bestOf, gamemode) {
@@ -709,109 +658,17 @@ function getFontSize(textElement) {
 	return (parseFloat(textElement.style.fontSize.slice(0, -2)) * .90) + 'px';
 }
 
-//so we can get the exact color used by the game!
-function getHexColor(color) {
-	for (let i = 0; i < colorList.length; i++) {
-		if (colorList[i].name == color) {
-			return colorList[i].hex;
-		}
-	}
-}
+// time to change that image!
+async function updateChar(charSrc, charPos, pNum) {
 
-//searches for the main json file
-function getInfo() {
-	return new Promise(function (resolve) {
-		const oReq = new XMLHttpRequest();
-		oReq.addEventListener("load", reqListener);
-		oReq.open("GET", 'Resources/Texts/ScoreboardInfo.json');
-		oReq.send();
+	// change the image path
+	charImg[pNum].src = charSrc;
 
-		//will trigger when file loads
-		function reqListener () {
-			resolve(JSON.parse(oReq.responseText))
-		}
-	})
-	//i would gladly have used fetch, but OBS local files wont support that :(
-}
-
-//searches for the colors list json file
-function getColorInfo() {
-	return new Promise(function (resolve) {
-		const oReq = new XMLHttpRequest();
-		oReq.addEventListener("load", reqListener);
-		oReq.open("GET", 'Resources/Texts/Color Slots.json');
-		oReq.send();
-
-		function reqListener () {
-			resolve(JSON.parse(oReq.responseText))
-		}
-	})
-}
-
-//searches for a json file with character data
-function getCharInfo(pCharacter) {
-	return new Promise(function (resolve) {
-		const oReq = new XMLHttpRequest();
-		oReq.addEventListener("load", reqListener);
-		oReq.onerror = () => {resolve(null)}; //for obs local file browser sources
-		oReq.open("GET", charPath + pCharacter + '/_Info.json');
-		oReq.send();
-
-		function reqListener () {
-			try {resolve(JSON.parse(oReq.responseText))}
-			catch {resolve(null)} //for live servers
-		}
-	})
-}
-
-//now the complicated "change character image" function!
-async function updateChar(pCharacter, pSkin, pNum, charInfo, altArt) {
-
-	//store so code looks cleaner
-	const charEL = charImg[pNum];
-
-	//change the image path depending on the character and skin
-	charEL.src = charPath + pCharacter + '/' + pSkin + '.png';
-
-	//               x, y, scale
-	const charPos = [0, 0, 1];
-	//now, check if the character and skin exist in the database down there
-	if (charInfo) {
-		if (charInfo.scoreboard[pSkin]) { //if the skin has a specific position
-			charPos[0] = charInfo.scoreboard[pSkin].x;
-			charPos[1] = charInfo.scoreboard[pSkin].y;
-			charPos[2] = charInfo.scoreboard[pSkin].scale;
-		} else if (altArt && charInfo.scoreboard.alt) { //for workshop alternative art
-			charPos[0] = charInfo.scoreboard.alt.x;
-			charPos[1] = charInfo.scoreboard.alt.y;
-			charPos[2] = charInfo.scoreboard.alt.scale;
-			charEL.src = charPath + pCharacter + '/Alt/'+pSkin+'.png';
-		} else { //if none of the above, use a default position
-			charPos[0] = charInfo.scoreboard.neutral.x;
-			charPos[1] = charInfo.scoreboard.neutral.y;
-			charPos[2] = charInfo.scoreboard.neutral.scale;
-		}
-	} else { //if the character isnt on the database, set positions for the "?" image
-		//this condition is used just to position images well on both sides
-		if (pNum % 2 == 0) {
-			charPos[0] = 35;
-		} else {
-			charPos[0] = 30;
-		}
-		charPos[1] = -10;
-		charPos[2] = 1.2;
-	}
-	
-	//to position the character
-	charEL.style.transform = `translate(${charPos[0]}px, ${charPos[1]}px) scale(${charPos[2]})`;
+	// position the character
+	charImg[pNum].style.transform = `translate(${charPos[0]}px, ${charPos[1]}px) scale(${charPos[2]})`;
 
 	// this will make the thing wait till the image is fully loaded
-	await charEL.decode().catch( () => {
-		// if the image fails to load, we will use a placeholder
-		/* for whatever reason, catch doesnt work properly on firefox */
-		/* add an extra timeout before decode to fix */
-		charEL.src = charPathBase + 'Random/P'+((pNum%2)+1)+'.png';
-	});
+	await charImg[pNum].decode();
 
 	return charImg[pNum];
 

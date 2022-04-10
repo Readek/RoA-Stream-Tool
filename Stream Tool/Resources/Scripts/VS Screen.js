@@ -14,20 +14,9 @@ const tournamentSize = '28px';
 const casterSize = '25px';
 const twitterSize = '20px';
 
-//to store the current character info
-const pCharInfo = [];
-
-//the characters image file path will change depending if they're workshop or not
-let charPath;
-const charPathBase = "Resources/Characters/";
-const charPathWork = "Resources/Characters/_Workshop/";
-
-//color list will be stored here on startup
-let colorList;
-
 //to avoid the code constantly running the same method over and over
-const pCharPrev = [], pSkinPrev = [], scorePrev = [], colorPrev = [];
-let bestOfPrev, workshopPrev, gamemodePrev;
+const pCharPrev = [], pBgPrev = [], scorePrev = [], colorPrev = [];
+let bestOfPrev, gamemodePrev;
 
 //variables for the twitter/twitch constant change
 let socialInt1, socialInt2;
@@ -97,7 +86,7 @@ function errorWebsocket() {
 
 }
 
-	
+
 async function updateData(scInfo) {
 
 	const player = scInfo['player'];
@@ -119,29 +108,8 @@ async function updateData(scInfo) {
 	twitter2 = caster[1].twitter;
 	twitch2 = caster[1].twitch;
 
-	const workshop = scInfo['workshop'];
-
 
 	// first of all, things that will always happen on each cycle
-
-	//check if we are forcing HD skins
-	if (scInfo['forceHD']) {
-		for (let i = 0; i < 4; i++) {
-			//check if we dont want to show the LoA renders
-			if (player[i].skin.includes("LoA") && !scInfo['noLoAHD']) {
-				player[i].skin = "LoA HD";
-			} else {
-				player[i].skin = "HD";
-			}
-		}
-	}
-
-	// set the current char path
-	if (workshopPrev != workshop) {
-		workshop ? charPath = charPathWork : charPath = charPathBase;
-		// save the current workshop status so we know when it changes next time
-		workshopPrev = workshop;
-	}
 
 	// set the max players depending on singles or doubles
 	maxPlayers = gamemode == 1 ? 2 : 4;
@@ -151,33 +119,18 @@ async function updateData(scInfo) {
 		updateBo(bestOf);
 		bestOfPrev = bestOf;
 	}
-	
-	// now, things that will happen for each player
-	for (let i = 0; i < maxPlayers; i++) {
 
-		// get the character lists now before we do anything else
-		if (pCharPrev[i] != player[i].character) {
-			// gets us the character positions to be used when updating the char image
-			pCharInfo[i] = await getCharInfo(player[i].character);
-		}
-
-	}
-
-	// and lastly, things that will happen for each side
+	// now, things that will happen for each side
 	for (let i = 0; i < maxSides; i++) {
 
 		// if there is no team name, just display "[Color] Team"
-		if (!teamName[i]) teamName[i] = color[i] + " Team";
+		if (!teamName[i]) teamName[i] = color[i].name + " Team";
 
 	}
 	
 
 	// now, things that will happen only the first time the html loads
 	if (startup) {
-
-		//initialize the colors list
-		colorList = await getColorInfo();
-
 
 		//if this isnt a singles match, rearrange stuff
 		if (gamemode != 1) {
@@ -200,16 +153,16 @@ async function updateData(scInfo) {
 
 
 			//change the player's character image, and position it
-			charsLoaded.push(updateChar(player[i].character, player[i].skin, color[i%2], i, pCharInfo[i], gamemode, startup));
+			charsLoaded.push(updateChar(player[i].vs, i));
 			//character will fade in when the image finishes loading
 
 			//save character info so we change them later if different
-			pCharPrev[i] = player[i].character;
-			pSkinPrev[i] = player[i].skin;
+			pCharPrev[i] = player[i].vs.charImg;
 
 
 			//set the character backgrounds
-			updateBG(pBG[i], player[i].character, player[i].skin, pCharInfo[i]);	
+			updateBG(pBG[i], player[i].vs.bgVid);
+			pBgPrev[i] = player[i].vs.bgVid;
 
 		}
 		// now we use that array from earlier to animate all characters at the same time
@@ -231,7 +184,7 @@ async function updateData(scInfo) {
 
 			//set the colors
 			updateColor(colorBG[i], textBG[i], color[i], i, gamemode);
-			colorPrev[i] = color[i];
+			colorPrev[i] = color[i].name;
 
 			//initialize the score ticks
 			updateScore(i, score[i], color[i]);
@@ -301,15 +254,15 @@ async function updateData(scInfo) {
 
 			//color change, this is up here before char/skin change so it doesnt change the
 			//trail to the next one if the character has changed, but it will change its color
-			if (colorPrev[i] != color[i]) {
+			if (colorPrev[i] != color[i].name) {
 				updateColor(colorBG[i], textBG[i], color[i], i, gamemode);
-				colorTrail(pTrail[i], pCharPrev[i], pSkinPrev[i], color[i], pCharInfo[i]);
+				colorTrail(pTrail[i], player[i]);
 				//if this is doubles, we also need to change the colors for players 3 and 4
 				if (gamemode == 2) {
-					colorTrail(pTrail[i+2], pCharPrev[i+2], pSkinPrev[i+2], color[i], pCharInfo[i+2]);
+					colorTrail(pTrail[i+2], player[i+2]);
 				}
 				updateScore(i, score[i], color[i]);
-				colorPrev[i] = color[i];
+				colorPrev[i] = color[i].name;
 			}
 
 			//check if the scores changed
@@ -360,30 +313,30 @@ async function updateData(scInfo) {
 				});
 			}
 
-			//player character, skin and background change
-			if (pCharPrev[i] != player[i].character || pSkinPrev[i] != player[i].skin) {
+			// player character change
+			if (pCharPrev[i] != player[i].vs.charImg) {
 				
 				//move and fade out the character
 				animsEnded.push(charaFadeOut(pChara[i], pTrail[i]).then( () => {
 					//update the character image and trail, and also storing its scale for later
-					charsLoaded.push(updateChar(player[i].character, player[i].skin, color[i%2], i, pCharInfo[i], gamemode));
+					charsLoaded.push(updateChar(player[i].vs, i));
 					//will fade back in when the images load
 				}));
-
-				//background change here!
-				if (bgChangeLogic(player[i].skin, pSkinPrev[i], player[i].character, pCharPrev[i])) {
-					//fade it out
-					fadeOut(pBG[i], fadeOutTime+.2).then( () => {
-						//update the bg vid
-						updateBG(pBG[i], player[i].character, player[i].skin, pCharInfo[i]);
-						//fade it back
-						fadeIn(pBG[i], .3, fadeInTime+.2);
-					});
-				};
 				
-				pCharPrev[i] = player[i].character;
-				pSkinPrev[i] = player[i].skin;
+				pCharPrev[i] = player[i].vs.charImg;
 
+			}
+
+			// background change here!
+			if (pBgPrev[i] != player[i].vs.bgVid) {
+				//fade it out
+				fadeOut(pBG[i], fadeOutTime+.2).then( () => {
+					//update the bg vid
+					updateBG(pBG[i], player[i].vs.bgVid);
+					//fade it back
+					fadeIn(pBG[i], .3, fadeInTime+.2);
+				});
+				pBgPrev[i] = player[i].vs.bgVid;
 			}
 
 		}
@@ -530,17 +483,17 @@ function updateScore(side, pScore, pColor) {
 		scoreImg[side+1].style.fill = "#414141";
 		scoreImg[side+2].style.fill = "#414141";
 	} else if (pScore == 1) {
-		scoreImg[side].style.fill = getHexColor(pColor);
+		scoreImg[side].style.fill = pColor.hex;
 		scoreImg[side+1].style.fill = "#414141";
 		scoreImg[side+2].style.fill = "#414141";
 	} else if (pScore == 2) {
-		scoreImg[side].style.fill = getHexColor(pColor);
-		scoreImg[side+1].style.fill = getHexColor(pColor);
+		scoreImg[side].style.fill = pColor.hex;
+		scoreImg[side+1].style.fill = pColor.hex;
 		scoreImg[side+2].style.fill = "#414141";
 	} else if (pScore == 3) {
-		scoreImg[side].style.fill = getHexColor(pColor);
-		scoreImg[side+1].style.fill = getHexColor(pColor);
-		scoreImg[side+2].style.fill = getHexColor(pColor);
+		scoreImg[side].style.fill = pColor.hex;
+		scoreImg[side+1].style.fill = pColor.hex;
+		scoreImg[side+2].style.fill = pColor.hex;
 	}
 }
 
@@ -549,14 +502,14 @@ function updateScore(side, pScore, pColor) {
 function updateColor(gradEL, textBGEL, color, i, gamemode) {
 
 	//change the color gradient image path depending on the color
-	gradEL.src = 'Resources/Overlay/VS Screen/Grads/' + color + '.png';
+	gradEL.src = 'Resources/Overlay/VS Screen/Grads/' + color.name + '.png';
 
 	//same but with the text background
-	textBGEL.src = 'Resources/Overlay/VS Screen/Text BGs/' + gamemode + '/' + color + '.png';
+	textBGEL.src = 'Resources/Overlay/VS Screen/Text BGs/' + gamemode + '/' + color.name + '.png';
 	
 	if (gamemode == 2) {
-		pWrapper[i].style.backgroundColor = getHexColor(color)+"ff";
-		pWrapper[i+2].style.backgroundColor = getHexColor(color)+"ff";		
+		pWrapper[i].style.backgroundColor = color.hex+"ff";
+		pWrapper[i+2].style.backgroundColor = color.hex+"ff";		
 	} else {
 		pWrapper[i].style.backgroundColor = "";
 		pWrapper[i+2].style.backgroundColor = "";	
@@ -564,57 +517,13 @@ function updateColor(gradEL, textBGEL, color, i, gamemode) {
 
 }
 
-//so we can get the exact color used by the game!
-function getHexColor(color) {
-	for (let i = 0; i < colorList.length; i++) {
-		if (colorList[i].name == color) {
-			return colorList[i].hex;
-		}
-	}
-}
-
 
 //background change
-function updateBG(vidEL, pCharacter, pSkin, charInfo) {
-
-	if (startup) {
-		//if the video cant be found, show aethereal gates
-		vidEL.addEventListener("error", () => {
-			vidEL.src = 'Resources/Characters/BG.webm';
-		});
-	}
-
-	//change the BG path depending on the character
-	if (pSkin.includes("LoA")) {
-		vidEL.src = 'Resources/Characters/BG LoA.webm';
-	} else if (pSkin == "Ragnir") { //ragnir shows the default stages in the actual game
-		vidEL.src = 'Resources/Characters/BG.webm';
-	} else if (pCharacter == "Shovel Knight" && pSkin == "Golden") { //why not
-		vidEL.src = charPath + pCharacter + '/BG Golden.webm';
-	} else {
-		let charBG = pCharacter; // by default, use current char name
-		if (charInfo) { //safety check
-			if (charInfo.vsScreen["background"]) { //if the character has a specific BG
-				charBG = charInfo.vsScreen["background"];
-			}
-		}
-		//actual video path change
-		vidEL.src = charPath + charBG + '/BG.webm';
-	}
+function updateBG(vidEL, vidSrc) {
+	// well this used to be more complicated than this
+	vidEL.src = vidSrc;
 }
-//it was too long to be in just one 'if'
-function bgChangeLogic(pSkin, pSkinPrev, pChar, pCharPrev) {
-	//change the background when
-	if (pChar != pCharPrev) { //always when changing character
-		return true;
-	} else if (pSkin == "Ragnir" || pSkinPrev == "Ragnir") { //yes ragnir has a dif bg
-		return true;
-	} else if (pSkin.includes("LoA") || pSkinPrev.includes("LoA")) { //aether high!
-		return true;
-	} else if (pChar == "Shovel Knight" && (pSkin == "Golden" || pSkinPrev == "Golden")) { //now we just flexing
-		return true;
-	}
-}
+
 
 // to hide some score ticks and change score border
 function updateBo(bestOf) {
@@ -798,102 +707,35 @@ function charaFadeIn(charaEL, trailEL, delay = 0) {
 }
 
 
-//searches for the colors list json file
-function getColorInfo() {
-	return new Promise(function (resolve) {
-		const oReq = new XMLHttpRequest();
-		oReq.addEventListener("load", reqListener);
-		oReq.open("GET", 'Resources/Texts/Color Slots.json');
-		oReq.send();
-
-		function reqListener () {
-			resolve(JSON.parse(oReq.responseText))
-		}
-	})
-}
-
-//searches for a json file with character data
-function getCharInfo(pCharacter) {
-	return new Promise(function (resolve) {
-		const oReq = new XMLHttpRequest();
-		oReq.addEventListener("load", reqListener);
-		oReq.onerror = () => {resolve(null)}; //for obs local file browser sources
-		oReq.open("GET", charPath + pCharacter + '/_Info.json');
-		oReq.send();
-
-		function reqListener () {
-			try {resolve(JSON.parse(oReq.responseText))}
-			catch {resolve(null)} //for live servers
-		}
-	})
-}
-
-
 //character update!
-async function updateChar(pCharacter, pSkin, color, pNum, charInfo, gamemode, startup = false) {
+async function updateChar(charInfo, pNum) {
 
 	//store so code looks cleaner later
 	const charEL = pChar[pNum];
 	const trailEL = pTrail[pNum];
 
 	//change the image path depending on the character and skin
-	charEL.src = charPath + pCharacter + '/' + pSkin + '.png';
-
-	//               x, y, scale
-	const charPos = [0, 0, 1];
-	//now, check if the character or skin exists in the json file we checked earler
-	if (charInfo) {
-		if (charInfo.vsScreen[pSkin]) { //if the skin has a specific position
-			charPos[0] = charInfo.vsScreen[pSkin].x;
-			charPos[1] = charInfo.vsScreen[pSkin].y;
-			charPos[2] = charInfo.vsScreen[pSkin].scale;
-			trailEL.src = charPath + pCharacter + '/Trails/' + color + ' ' + pSkin + '.png';
-		} else { //if not, use a default position
-			charPos[0] = charInfo.vsScreen.neutral.x;
-			charPos[1] = charInfo.vsScreen.neutral.y;
-			charPos[2] = charInfo.vsScreen.neutral.scale;
-			trailEL.src = charPath + pCharacter + '/Trails/' + color + '.png';
-		}
-	} else { //if the character isnt on the database, set positions for the "?" image
-		//this condition is used just to position images well on both sides
-		if (pNum % 2 == 0) {
-			charPos[0] = -475;
-		} else {
-			charPos[0] = -500;
-		}
-		//if doubles, we need to move it up a bit
-		if (gamemode == 2) {
-			charPos[1] = -125;
-		} else {
-			charPos[1] = 0;
-		}
-		charPos[2] = .8;
-		trailEL.src = charPath + pCharacter + '/Trails/' + color + '.png';
-	}
+	charEL.src = charInfo.charImg;
+	trailEL.src = charInfo.trailImg;
 
 	//to position the character
+	const charPos = charInfo.charPos;
 	charEL.style.transform = `translate(${charPos[0]}px, ${charPos[1]}px) scale(${charPos[2]})`;
 	trailEL.style.transform = `translate(${charPos[0]}px, ${charPos[1]}px) scale(${charPos[2]})`;
 
 	//to decide scalling
-	if (pSkin.includes("HD")) {
-		charEL.style.imageRendering = "auto"; //default scalling
+	if (charInfo.charImg.includes("HD")) {
+		charEL.style.imageRendering = "auto"; // default scalling
 		trailEL.style.imageRendering = "auto";
 	} else {
-		charEL.style.imageRendering = "pixelated"; //default scalling
+		charEL.style.imageRendering = "pixelated"; // pixel art scalling
 		trailEL.style.imageRendering = "pixelated";
 	}
 
 	// here we will store promises to use later
 	const charsLoaded = [];
 	//this will make the thing wait till the images are fully loaded
-	charsLoaded.push(
-		charEL.decode().catch( () => {
-			//if the image fails to load, we will use a placeholder
-			/* for whatever reason, catch doesnt work properly on firefox */
-			/* add an extra timeout before decode to fix */
-			charEL.src = charPathBase + 'Random/P'+((pNum%2)+1)+'.png';
-		} ),
+	charsLoaded.push(charEL.decode(),
 		trailEL.decode().catch( () => {} ) // if no trail, do nothing
 	);
 	// this function will send a promise when the images finish loading
@@ -904,12 +746,6 @@ async function updateChar(pCharacter, pSkin, color, pNum, charInfo, gamemode, st
 }
 
 //this gets called just to change the color of a trail
-function colorTrail(trailEL, pCharacter, pSkin, color, charInfo) {
-	if (charInfo) {
-		if (charInfo.vsScreen[pSkin]) { //if the skin positions are not the default ones
-			trailEL.src = charPath + pCharacter + '/Trails/' + color + ' ' + pSkin + '.png';
-		} else {
-			trailEL.src = charPath + pCharacter + '/Trails/' + color + '.png';
-		}
-	}
+function colorTrail(trailEL, char) {
+	trailEL.src = char.vs.trailImg;
 }

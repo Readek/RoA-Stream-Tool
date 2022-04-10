@@ -13,7 +13,7 @@ const charPathRandom = __dirname + '/Characters/Random';
 let charPath;
 
 const colorList = getJson(textPath + "/Color Slots");
-let colorL, colorR;
+let currentColors = [0, 0];
 
 let scData; // we will store data to send to the browsers here
 
@@ -77,8 +77,10 @@ const tournamentInp = document.getElementById('tournamentName');
 const casters = document.getElementsByClassName("caster");
 
 const workshopCheck = document.getElementById('workshopToggle');
+const forceHDCheck = document.getElementById('forceHD');
 const noLoAHDCheck = document.getElementById('noLoAHD');
 const forceWL = document.getElementById('forceWLToggle');
+const forceAlt = document.getElementById("forceAlt");
 
 
 init();
@@ -97,9 +99,9 @@ function init() {
     //set listeners for the settings checkboxes
     document.getElementById("allowIntro").addEventListener("click", saveGUISettings);
     workshopCheck.addEventListener("click", workshopToggle);
-    document.getElementById("forceAlt").addEventListener("click", saveGUISettings);
-    document.getElementById('forceHD').addEventListener("click", HDtoggle);
-    document.getElementById("noLoAHD").addEventListener("click", saveGUISettings);
+    forceAlt.addEventListener("click", saveGUISettings);
+    forceHDCheck.addEventListener("click", HDtoggle);
+    noLoAHDCheck.addEventListener("click", saveGUISettings);
     forceWL.addEventListener("click", forceWLtoggle);
     document.getElementById("alwaysOnTop").addEventListener("click", alwaysOnTop);
     document.getElementById("copyMatch").addEventListener("click", copyMatch);
@@ -109,10 +111,10 @@ function init() {
     if (guiSettings.allowIntro) {document.getElementById("allowIntro").checked = true};
     if (guiSettings.workshop) {workshopCheck.checked = true} else {
         // disable alt arts checkbox
-        document.getElementById("forceAlt").disabled = true;
+        forceAlt.disabled = true;
     };
-    if (guiSettings.forceAlt) {document.getElementById("forceAlt").checked = true};
-    if (guiSettings.forceHD) {document.getElementById("forceHD").checked = true};
+    if (guiSettings.forceAlt) {forceAlt.checked = true};
+    if (guiSettings.forceHD) {forceHDCheck.checked = true};
     if (guiSettings.noLoAHD) {noLoAHDCheck.checked = true; noLoAHDCheck.disabled = false};
     if (guiSettings.forceWL) {forceWL.click()};
     if (guiSettings.alwaysOnTop) {document.getElementById("alwaysOnTop").click()};
@@ -520,9 +522,9 @@ function updateColor() {
             
             //change the variable that will be read when clicking the update button
             if (side == "l") {
-                colorL = colorList[i].name;
+                currentColors[0] = colorList[i];
             } else {
-                colorR = colorList[i].name;
+                currentColors[1] = colorList[i];
             }
 
             //then change both the color rectangle and the background gradient
@@ -1228,9 +1230,9 @@ function workshopToggle() {
 
     // disable or enable alt arts checkbox
     if (this.checked) {
-        document.getElementById("forceAlt").disabled = false;
+        forceAlt.disabled = false;
     } else {
-        document.getElementById("forceAlt").disabled = true;
+        forceAlt.disabled = true;
     }
 
     // save current checkbox value to the settings file
@@ -1314,7 +1316,7 @@ function saveGUISettings() {
     guiSettings.allowIntro = document.getElementById("allowIntro").checked;
     guiSettings.workshop = workshopCheck.checked;
     guiSettings.forceAlt = document.getElementById("forceAlt").checked;
-    guiSettings.forceHD = document.getElementById("forceHD").checked;
+    guiSettings.forceHD = forceHDCheck.checked;
     guiSettings.noLoAHD = noLoAHDCheck.checked;
     guiSettings.forceWL = forceWL.checked;
     guiSettings.alwaysOnTop = document.getElementById("alwaysOnTop").checked;
@@ -1328,17 +1330,14 @@ function saveGUISettings() {
 //time to write it down
 function writeScoreboard() {
 
-    //this is what's going to be in the json file
+    //this is what's going to be sent to the browsers
     const scoreboardJson = {
         player: [], //more lines will be added below
         teamName: [
             tNameInps[0].value,
             tNameInps[1].value
         ],
-        color: [
-            colorL,
-            colorR
-        ],
+        color: [],
         score: [
             checkScore(p1Win1, p1Win2, p1Win3),
             checkScore(p2Win1, p2Win2, p2Win3)
@@ -1352,30 +1351,169 @@ function writeScoreboard() {
         round: roundInp.value,
         tournamentName: tournamentInp.value,
         caster: [],
-        allowIntro: document.getElementById('allowIntro').checked,
-        workshop: workshopCheck.checked,
-        forceHD: document.getElementById('forceHD').checked,
-        noLoAHD: noLoAHDCheck.checked,
-        forceAlt: document.getElementById('forceAlt').checked
+        allowIntro: document.getElementById('allowIntro').checked
     };
+
     //add the player's info to the player section of the json
     for (let i = 0; i < maxPlayers; i++) {
 
-        //we need to perform this check since the program would halt when reading from null
-        let realSkin;
+        // to simplify code
+        const charname = charLists[i].selectedOptions[0].text;
+        // we need to perform this check since the program would halt when reading from null
+        let charSkin;
         try {
-            realSkin = skinLists[i].selectedOptions[0].text
+            charSkin = skinLists[i].selectedOptions[0].text
         } catch (error) {
-            realSkin = "";
+            charSkin = "";
+        }
+        // get the character position data
+        let charPos = getJson(`${charPath}/${charname}/_Info`);
+
+        // get us the path used by the browser sources
+        let browserCharPath = "Resources/Characters";
+        if (workshopCheck.checked) {
+            browserCharPath = "Resources/Characters/_Workshop";
         }
 
+        // set data for the scoreboard
+        let scCharImg = `${browserCharPath}/${charname}/${charSkin}.png`;
+        let scCharPos = [];
+        // if alt art is enabled, change the path
+        if (forceAlt.checked) {
+            scCharImg = `${browserCharPath}/${charname}/Alt/${charSkin}.png`;
+            // if an alt for this character can't be found, go back to regular path
+            if (!fs.existsSync(scCharImg)) {
+                scCharImg = `${browserCharPath}/${charname}/${charSkin}.png`;
+            }
+        }
+        // if the file doesnt exist, send the Random image
+        let scImgFound = true;
+        if (!fs.existsSync(scCharImg)) {
+            scCharImg = `Resources/Characters/Random/P${(i % 2) + 1}.png`;
+            scImgFound = false;
+        }
+        // get the character positions
+        if (charPos && scImgFound) {
+            if (charPos.scoreboard[charSkin]) { // if the skin has a specific position
+                scCharPos[0] = charPos.scoreboard[charSkin].x;
+                scCharPos[1] = charPos.scoreboard[charSkin].y;
+                scCharPos[2] = charPos.scoreboard[charSkin].scale;
+            } else if (forceAlt.checked && charPos.scoreboard.alt) { // for workshop alternative art
+                scCharPos[0] = charPos.scoreboard.alt.x;
+                scCharPos[1] = charPos.scoreboard.alt.y;
+                scCharPos[2] = charPos.scoreboard.alt.scale;
+            } else { // if none of the above, use a default position
+                scCharPos[0] = charPos.scoreboard.neutral.x;
+                scCharPos[1] = charPos.scoreboard.neutral.y;
+                scCharPos[2] = charPos.scoreboard.neutral.scale;
+            }
+        } else { // if there are no character positions, set positions for "Random"
+            if (i % 2 == 0) {
+                scCharPos[0] = 35;
+            } else {
+                scCharPos[0] = 30;
+            }
+            scCharPos[1] = -10;
+            scCharPos[2] = 1.2;
+        }
+
+        // now, basically the same as above, but for the VS
+        let vsCharImg = `${browserCharPath}/${charname}/${charSkin}.png`;
+        let vsCharPos = [];
+        let vsTrailImg;
+        let vsBG = `${browserCharPath}/${charname}/BG.webm`;
+        // for HD skins
+        if (forceHDCheck.checked) {
+            if (charSkin.includes("LoA") && !noLoAHDCheck.checked) {
+                vsCharImg = `${browserCharPath}/${charname}/LoA HD.png`;
+            } else {
+                vsCharImg = `${browserCharPath}/${charname}/HD.png`;
+            }
+            if (!fs.existsSync(vsCharImg)) {
+                vsCharImg = `${browserCharPath}/${charname}/${charSkin}.png`;
+            }
+        }
+        // if the file doesnt exist, send the Random image
+        let vsImgFound = true;
+        if (!fs.existsSync(vsCharImg)) {
+            vsCharImg = `Resources/Characters/Random/P${(i % 2) + 1}.png`;
+            vsImgFound = false;
+        }
+        // get the character positions
+        if (charPos && vsImgFound) {
+            if (charPos.vsScreen[charSkin]) { // if the skin has a specific position
+                vsCharPos[0] = charPos.vsScreen[charSkin].x;
+                vsCharPos[1] = charPos.vsScreen[charSkin].y;
+                vsCharPos[2] = charPos.vsScreen[charSkin].scale;
+                vsTrailImg = `${browserCharPath}/${charname}/Trails/${currentColors[i%2].name} ${charSkin}.png`;
+                console.log(vsTrailImg);
+            } else { //if not, use a default position
+                vsCharPos[0] = charPos.vsScreen.neutral.x;
+                vsCharPos[1] = charPos.vsScreen.neutral.y;
+                vsCharPos[2] = charPos.vsScreen.neutral.scale;
+                vsTrailImg = `${browserCharPath}/${charname}/Trails/${currentColors[i%2].name}.png`;
+            }
+        } else { // if there are no character positions, set positions for "Random"
+            if (i % 2 == 0) {
+                vsCharPos[0] = -475;
+            } else {
+                vsCharPos[0] = -500;
+            }
+            //if doubles, we need to move it up a bit
+            if (gamemode == 2) {
+                vsCharPos[1] = -125;
+            } else {
+                vsCharPos[1] = 0;
+            }
+            vsCharPos[2] = .8;
+        }
+        // check if the trail actually exists
+        if (!fs.existsSync(vsTrailImg)) {
+            console.log("trail not foond");
+        }
+        // oh we are still not done here, we need to check the BG
+        if (charSkin.includes("LoA")) { // show LoA background if the skin is LoA
+            vsBG = 'Resources/Characters/BG LoA.webm';
+        } else if (charSkin == "Ragnir") { // Ragnir shows the default stages in the actual game
+            vsBG = 'Resources/Characters/BG.webm';
+        } else if (charname == "Shovel Knight" && charSkin == "Golden") { // why not
+            vsBG = browserCharPath + charname + '/BG Golden.webm';
+        } else if (charPos) { // safety check
+            if (charPos.vsScreen["background"]) { // if the character has a specific BG
+                vsBG = `${browserCharPath}/${charPos.vsScreen["background"]}/BG.webm`;
+            }
+        }
+        // if it doesnt exist, use a default BG
+        if (!fs.existsSync(vsBG)) {
+            vsBG = "Resources/Characters/BG.webm";
+        }
+
+        // finally, add it to the main json
         scoreboardJson.player.push({
             name: pNameInps[i].value,
             tag: pTagInps[i].value,
-            character: charLists[i].selectedOptions[0].text,
-            skin: realSkin,
+            sc : {
+                charImg: scCharImg,
+                charPos: scCharPos
+            },
+            vs : {
+                charImg: vsCharImg,
+                charPos: vsCharPos,
+                trailImg: vsTrailImg,
+                bgVid: vsBG,
+            }
         })
     }
+
+    // stuff that needs to be done for both sides
+    for (let i = 0; i < 2; i++) {
+        // add color info
+        scoreboardJson.color.push({
+            name: currentColors[i].name,
+            hex: currentColors[i].hex
+        })
+    }
+
     //do the same for the casters
     for (let i = 0; i < casters.length; i++) {
         scoreboardJson.caster.push({
