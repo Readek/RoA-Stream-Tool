@@ -15,6 +15,8 @@ let charPath;
 const colorList = getJson(textPath + "/Color Slots");
 let colorL, colorR;
 
+let scData; // we will store data to send to the browsers here
+
 let currentP1WL = "Nada";
 let currentP2WL = "Nada";
 let currentBestOf = "Bo5";
@@ -116,8 +118,6 @@ function init() {
     if (guiSettings.alwaysOnTop) {document.getElementById("alwaysOnTop").click()};
 
 
-    /* Overlay */
-
     //load color slot list and add the color background on each side
     loadColors();
 
@@ -193,6 +193,10 @@ function init() {
     document.getElementById('swapButton').addEventListener("click", swap);
     //add a listener to the clear button
     document.getElementById('clearButton').addEventListener("click", clearPlayers);
+
+
+    // finally, update the GUI on startup so we have something to send to browsers
+    writeScoreboard();
 
 
     /* KEYBOARD SHORTCUTS */
@@ -1381,9 +1385,9 @@ function writeScoreboard() {
         })
     }
 
-    //now convert it to a text we can save intro a file
-    const data = JSON.stringify(scoreboardJson, null, 2);
-    fs.writeFileSync(textPath + "/ScoreboardInfo.json", data);
+    // now convert it into something readable to send to OBS
+    scData = JSON.stringify(scoreboardJson, null, 2);
+    sendData();
 
 
     //simple .txt files
@@ -1406,4 +1410,13 @@ function writeScoreboard() {
         fs.writeFileSync(textPath + "/Simple Texts/Caster "+(i+1)+" Twitch.txt", document.getElementById('cTwitch'+(i+1)).value);    
     }
 
+}
+
+// when a new browser connects
+ipc.on('requestData', () => {
+    sendData();
+})
+// every time we need to send data to them browsers
+function sendData() {
+    ipc.send('sendData', scData);
 }

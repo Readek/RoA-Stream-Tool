@@ -62,15 +62,39 @@ pushArrayInOrder(pName, "Name");
 pushArrayInOrder(charImg, "Character");
 
 
-/* script begin */
-async function mainLoop() {
-	const scInfo = await getInfo();
-	getData(scInfo);
-}
-mainLoop();
-setInterval( () => { mainLoop(); }, 500); //update interval
+// first we will start by connecting with the GUI with a websocket
+startWebsocket();
+function startWebsocket() {
 
-async function getData(scInfo) {
+	// change this to the IP of where the GUI is being used for remote control
+	const webSocket = new WebSocket("ws://localhost:8080");
+	webSocket.onopen = () => { // if it connects successfully
+		// everything will update everytime we get data from the server (the GUI)
+		webSocket.onmessage = function (event) {
+			updateData(JSON.parse(event.data))
+		}
+		// hide error message in case it was up
+		document.getElementById('connErrorDiv').style.display = 'none';
+	}
+
+	// if the GUI closes, wait for it to reopen
+	webSocket.onclose = () => {errorWebsocket()}
+	// if connection fails for any reason
+	webSocket.onerror = () => {errorWebsocket()}
+
+}
+function errorWebsocket() {
+
+	// show error message
+	document.getElementById('connErrorDiv').style.display = 'flex';
+	// we will attempt to reconect every 5 seconds
+	setTimeout(() => {
+		startWebsocket();
+	}, 5000);
+
+}
+
+async function updateData(scInfo) {
 
 	const player = scInfo['player'];
 	const teamName = scInfo['teamName'];

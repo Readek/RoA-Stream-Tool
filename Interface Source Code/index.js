@@ -1,13 +1,16 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
 const fs = require('fs')
 const path = require('path')
-const { ipcMain } = require('electron')
+const WebSocket = require('ws')
 
-let failed = false;
+
+// start a web socket server on boot
+const server = new WebSocket.Server({ port: 8080 });
+let sockets = [];
 
 function createWindow() {
 
-    let resourcesPath, guiWidth, guiHeight;
+    let resourcesPath, guiWidth, guiHeight, failed;
 
     try {
 
@@ -16,6 +19,8 @@ function createWindow() {
         } else { // if on Linux
             resourcesPath = path.resolve('.', 'Resources')
         }
+        // if using npm/yarn start
+        /* resourcesPath = path.resolve('..', 'Stream Tool', 'Resources') */
         
         const guiSettings = JSON.parse(fs.readFileSync(resourcesPath + "/Texts/GUI Settings.json"))
         guiWidth = guiSettings.guiWidth
@@ -24,7 +29,7 @@ function createWindow() {
             guiHeight = guiHeight + 29 // windows why cant you be normal
         }
 
-    } catch (e) {
+    } catch (e) { // if the settings file cant be found
         failed = true
         guiWidth = 600
         guiHeight = 300
@@ -71,6 +76,7 @@ function createWindow() {
         }
     })
 
+    // always on top toggle from the GUI
     ipcMain.on('alwaysOnTop', (event, arg) => {
         if (arg) {
             win.setAlwaysOnTop(true)
@@ -78,9 +84,31 @@ function createWindow() {
             win.setAlwaysOnTop(false)
         }
     })
+
+    server.on('connection', (socket) => {
+
+        // add this new connection to the array to keep track of them
+        sockets.push(socket)
+    
+        // when a new client connects, send current data
+        win.webContents.send('requestData')
+    
+        // when a socket closes, or disconnects, remove it from the array.
+        socket.on('close', function() {
+            sockets = sockets.filter(s => s !== socket)
+        });
+    
+    });
     
 }
 
+
+// when the GUI is ready to send data to browsers
+ipcMain.on('sendData', (event, data) => {
+    sockets.forEach(socket => {
+        socket.send(data)
+    })
+})
 
 
 // create window on startup

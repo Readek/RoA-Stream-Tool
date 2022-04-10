@@ -65,17 +65,40 @@ const twitchEL = document.getElementsByClassName("twitch");
 const twitchWrEL = document.getElementsByClassName("twitchWrapper");
 
 
-/* script begin */
-async function mainLoop() {
-	const scInfo = await getInfo();
-	getData(scInfo);
+// first we will start by connecting with the GUI with a websocket
+startWebsocket();
+function startWebsocket() {
+
+	// change this to the IP of where the GUI is being used for remote control
+	const webSocket = new WebSocket("ws://localhost:8080");
+	webSocket.onopen = () => { // if it connects successfully
+		// everything will update everytime we get data from the server (the GUI)
+		webSocket.onmessage = function (event) {
+			updateData(JSON.parse(event.data))
+		}
+		// hide error message in case it was up
+		document.getElementById('connErrorDiv').style.display = 'none';
+	}
+
+	// if the GUI closes, wait for it to reopen
+	webSocket.onclose = () => {errorWebsocket()}
+	// if connection fails for any reason
+	webSocket.onerror = () => {errorWebsocket()}
+
+}
+function errorWebsocket() {
+
+	// show error message
+	document.getElementById('connErrorDiv').style.display = 'flex';
+	// we will attempt to reconect every 5 seconds
+	setTimeout(() => {
+		startWebsocket();
+	}, 5000);
+
 }
 
-mainLoop();
-setInterval( () => { mainLoop() }, 500); //update interval
-
 	
-async function getData(scInfo) {
+async function updateData(scInfo) {
 
 	const player = scInfo['player'];
 	const teamName = scInfo['teamName'];
@@ -774,22 +797,6 @@ function charaFadeIn(charaEL, trailEL, delay = 0) {
 	;
 }
 
-
-//searches for the main json file
-function getInfo() {
-	return new Promise(function (resolve) {
-		const oReq = new XMLHttpRequest();
-		oReq.addEventListener("load", reqListener);
-		oReq.open("GET", 'Resources/Texts/ScoreboardInfo.json');
-		oReq.send();
-
-		//will trigger when file loads
-		function reqListener () {
-			resolve(JSON.parse(oReq.responseText))
-		}
-	})
-	//i would gladly have used fetch, but OBS local files wont support that :(
-}
 
 //searches for the colors list json file
 function getColorInfo() {
