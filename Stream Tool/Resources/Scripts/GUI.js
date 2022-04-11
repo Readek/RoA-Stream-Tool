@@ -273,7 +273,7 @@ function isPresetOpen() {
 
 function moveViewport() {
     if (!movedSettings) {
-        viewport.style.transform = "translateX(calc(-140% / 3))";
+        viewport.style.transform = "translateX(-40%)";
         overlayDiv.style.opacity = ".25";
         goBackDiv.style.display = "block"
         movedSettings = true;
@@ -281,7 +281,7 @@ function moveViewport() {
 }
 
 function goBack() {
-    viewport.style.transform = "translateX(calc(-100% / 3))";
+    viewport.style.transform = "translateX(0)";
     overlayDiv.style.opacity = "1";
     goBackDiv.style.display = "none";
     movedSettings = false;
@@ -481,9 +481,7 @@ function loadColors() {
         
         //create the color's rectangle
         const newRect = document.createElement('div');
-        newRect.style.width = "13px";
-        newRect.style.height = "13px";
-        newRect.style.margin = "5px";
+        newRect.className = "colorInList";
         newRect.style.backgroundColor = colorList[i].hex;
 
         //add them to the div we created before
@@ -973,7 +971,7 @@ function changeGamemode() {
                 skinLists[i+1].style.display = "block";
             }
 
-            document.getElementById('pInfo'+(i+2)).style.display = "block";
+            document.getElementById('pInfo'+(i+2)).style.display = "flex";
         }
 
         //add some left margin to the name/tag inputs, add border radius, change max width
@@ -1446,7 +1444,6 @@ function writeScoreboard() {
                 vsCharPos[1] = charPos.vsScreen[charSkin].y;
                 vsCharPos[2] = charPos.vsScreen[charSkin].scale;
                 vsTrailImg = `${browserCharPath}/${charname}/Trails/${currentColors[i%2].name} ${charSkin}.png`;
-                console.log(vsTrailImg);
             } else { //if not, use a default position
                 vsCharPos[0] = charPos.vsScreen.neutral.x;
                 vsCharPos[1] = charPos.vsScreen.neutral.y;
@@ -1466,10 +1463,6 @@ function writeScoreboard() {
                 vsCharPos[1] = 0;
             }
             vsCharPos[2] = .8;
-        }
-        // check if the trail actually exists
-        if (!fs.existsSync(vsTrailImg)) {
-            console.log("trail not foond");
         }
         // oh we are still not done here, we need to check the BG
         if (charSkin.includes("LoA")) { // show LoA background if the skin is LoA

@@ -80,18 +80,17 @@ input[type="text"] {
 /* main viewport */
 #viewport {
   position: relative;
-  width: 300%;
+  width: 100%;
   height: 100%;
-  z-index: 2;
   display: flex;
-  transform: translateX(calc(-100% / 3));
   transition: transform 300ms ease;
 }
 
 
 /* where all the magic happens */
 #overlay {
-  width: calc(100% / 3);
+  position: absolute;
+  width: 100%;
   height: 100%;
   transition: opacity 300ms;
   display: flex;
@@ -105,7 +104,7 @@ input[type="text"] {
 }
 
 .side {
-  width: 49%;
+  width: 100%;
   position: relative;
 }
 
@@ -120,22 +119,23 @@ input[type="text"] {
 }
 
 .row {
-  padding-left: 10px;
-  padding-right: 10px;
+  padding: 0px 10px;
   display: flex;
   align-items: center;
 }
 
 
 .teamName {
-  float: left;
   width: 100%;
   display: none;
   margin-right: 5px;
 }
 
+.playerInfo {
+  display: flex;
+}
+
 .tagInput {
-  float: left;
   min-width: 34px;
   max-width: 70px;
   width: 34px;
@@ -144,7 +144,6 @@ input[type="text"] {
 }
 
 .nameInput {
-  float: left;
   min-width: 60px;
   max-width: 173px;
   width: 60px;
@@ -152,7 +151,6 @@ input[type="text"] {
 }
 
 .pFinderPosition {
-  float: left;
   position: relative;
 }
 .playerFinder {
@@ -223,7 +221,6 @@ input[type="text"] {
 
 
 .pColor {
-  float: left;
   width: 30px;
   height: 30px;
   color: var(--text1);
@@ -255,8 +252,9 @@ input[type="text"] {
 }
 
 .pColorRect {
-  height: 15px;
-  width: 15px;
+  border-radius: 100%;
+  height: 14px;
+  width: 14px;
 }
 
 .dropdownColor {
@@ -271,11 +269,18 @@ input[type="text"] {
 
 .colorEntry {
   display: flex;
-  align-items: center;  
+  align-items: center;
 }
 
 .colorEntry:hover {
   background-color: var(--bg2);
+}
+
+.colorInList {
+  width: 11px;
+  height: 11px;
+  margin: 6px 5px;
+  border-radius: 100%;
 }
 
 #lColor:focus #dropdownColorL,
@@ -285,7 +290,6 @@ input[type="text"] {
 
 
 .charCombo {
-  width: auto;
   max-width: 141px;
   height: 30px;
   outline: none;
@@ -307,7 +311,6 @@ input[type="text"] {
 }
 
 .charList {
-  float: left;
   border-top-left-radius: 3px;
   border-bottom-left-radius: 3px;
 }
@@ -342,7 +345,6 @@ input[type="text"] {
   display: flex;
   align-items: center;
   color: var(--text2);
-  float: left;
   font-family: 'Roboto-Medium';
 }
 .scoreBox:hover {
@@ -372,7 +374,6 @@ input[type="text"] {
   border-radius: 3px;
   border: 1px solid var(--bg4);
   transition: border-color 100ms;
-  float: left;
   color: var(--text2);
   display: flex;
   align-items: center;
@@ -403,7 +404,7 @@ input[type="text"] {
 
 
 #sideSep {
-  width: 2%;
+  width: 20px;
   height: 100%;
 }
 
@@ -424,6 +425,9 @@ input[type="text"] {
   height: 15%;
   background-color: var(--bg4);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 #clearButton:hover {
   filter: brightness(1.3);
@@ -434,16 +438,19 @@ input[type="text"] {
   width: 12px;
   fill: #b6b6b6;
   opacity: 0;
-  transform: scale(1.5, 1.5);
+  transform: scale(1.5);
   transition: opacity 200ms, transform 200ms;
+}
+#swapIcon {
+  opacity: .5;
 }
 #swapButton:hover #swapIcon {
   opacity: 1;
-  transform: scale(2, 2);
+  transform: scale(2);
 }
 #clearButton:hover #clearIcon {
   opacity: 1;
-  transform: scale(2, 2);
+  transform: scale(2);
 }
 
 
@@ -473,13 +480,14 @@ input[type="text"] {
   border-color: var(--bg4);
   display: flex;
   align-items: center;
-  padding-right: 10px;
+  padding: 0px 10px;
 }
 
 #bestOf {
-  width: 100%;
   display: flex;
   justify-content: center;
+  flex-shrink: 0;
+  padding-right: 10px;
 }
 
 .bestOfBox {
@@ -490,7 +498,6 @@ input[type="text"] {
   border-radius: 3px;
   border: 1px solid var(--focused);
   transition: border-color 100ms;
-  float: left;
 }
 
 .bestOfBox:hover {
@@ -518,13 +525,13 @@ input[type="text"] {
 #gamemode {
   background-color: var(--bg4);
   height: 30px;
-  width: 140px;
+  width: 42px;
   margin-left: 6px;
   box-sizing: border-box;
   border-radius: 3px;
   border: 1px solid var(--focused);
   transition: border-color 100ms;
-  float: left;
+  flex-shrink: 0;
 }
 #gamemode:hover {
   border-color: var(--selected);
@@ -664,19 +671,14 @@ input[type="text"] {
 }
 
 
-/* bracket section */
-#bracket {
-  width: calc(100% / 3);
-  height: 200px;
-}
-
-
 /* settings section */
 #settings {
-  width: calc(100% / 3);
+  position: absolute;
+  width: 100%;
   height: 100%;
   background-color: var(--bg5);
   z-index: 2;
+  transform: translateX(100%);
 }
 
 #settingsTitle {
@@ -699,8 +701,6 @@ input[type="text"] {
   padding: 2px 0px 2px 10px;
   display: flex;
   outline: none;
-
-  /* background-color: violet; */
 }
 .settingBox:hover {
   background-color: var(--bg2);
@@ -726,9 +726,8 @@ input[type="text"] {
 /* clickable area that gets enabled when moving the viewport */
 #goBack {
   position: absolute;
-  width: calc(100% / 3);
+  width: 100%;
   height: 100%;
-  left: calc(100% / 3);
   z-index: 100;
   display: none;
 }
