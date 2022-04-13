@@ -252,7 +252,7 @@ input[type="text"] {
 }
 
 .pColorRect {
-  border-radius: 100%;
+  border-radius: 3px;
   height: 14px;
   width: 14px;
 }
@@ -280,7 +280,7 @@ input[type="text"] {
   width: 11px;
   height: 11px;
   margin: 6px 5px;
-  border-radius: 100%;
+  border-radius: 3px;
 }
 
 #lColor:focus #dropdownColorL,
@@ -681,24 +681,30 @@ input[type="text"] {
   transform: translateX(100%);
 }
 
-#settingsTitle {
-  width: 40%;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: "Roboto-Medium";
-  border-bottom-style: solid;
-  border-color: var(--bg4);
-}
 
 #actualSettings {
   width: 40%;
-  padding-top: 5px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.settingsTitle {
+  width: 100%;
+  color: var(--text2);
+  text-transform: uppercase;
+  text-align: center;
+  font-family: "Roboto-Medium";
+  border-bottom: solid 1px var(--bg4);
+  padding: 5px 0px;
+  margin-bottom: 4px;
+}
+.settingsTitle:not(:first-child) {
+  border-top: solid 3px var(--bg4);
+  margin-top: 10px;
 }
 
 .settingBox {
-  padding: 2px 0px 2px 10px;
+  padding: 2px 0px 2px 5px;
   display: flex;
   outline: none;
 }
@@ -708,18 +714,34 @@ input[type="text"] {
 
 .settingsCheck {
   outline: none;
+  margin-right: 4px;
 }
 
 .settingsText {
   width: 100%;
 }
 
+#settingsButtonSection {
+  display: flex;
+  justify-content: center;
+  margin: 5px 0px;
+}
 #copyMatch {
-  width: 92%;
-  margin: 10px;
+  padding: 2px 5px;
   box-sizing: border-box;
   font-size: 14px;
   font-family: "Roboto-Medium";
+  background: none;
+  border: solid 2px var(--focused);
+  border-radius: 5px;
+  color: var(--text2);
+  outline: none;
+}
+#copyMatch:hover {
+  filter: brightness(1.4);
+}
+#copyMatch:active {
+  filter: brightness(.8);
 }
 
 
