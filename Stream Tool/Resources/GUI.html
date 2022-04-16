@@ -33,7 +33,6 @@
                   <input type="text" id="p1Tag" class="textInput mousetrap tagInput" tabindex="2" placeholder="Tag" title="Insert the tag/team/sponsor here" spellcheck="false" contenteditable="true">
                   <div class="pFinderPosition" id="pFinderBox1">
                     <input type="text" id="p1Name" class="textInput mousetrap nameInput" tabindex="2" placeholder="Player 1" title="Insert P1's name here" spellcheck="false">
-                    <div class="playerFinder" id="pFinder1"></div>
                   </div>
 
                 </div>
@@ -64,7 +63,6 @@
                   <input type="text" id="p3Tag" class="textInput mousetrap tagInput" tabindex="3" placeholder="Tag" title="Insert the tag/team/sponsor here" spellcheck="false" contenteditable="true">
                   <div class="pFinderPosition" id="pFinderBox3">
                     <input type="text" id="p3Name" class="textInput mousetrap nameInput" tabindex="3" placeholder="Player 3" title="Insert P3's name here" spellcheck="false">
-                    <div class="playerFinder" id="pFinder3"></div>
                   </div>
 
                 </div>
@@ -118,8 +116,6 @@
                   <input type="text" id="p2Tag" class="textInput mousetrap tagInput" tabindex="2" placeholder="Tag" title="Insert the tag/team/sponsor here." spellcheck="false">
                   <div class="pFinderPosition" id="pFinderBox2">
                     <input type="text" id="p2Name" class="textInput mousetrap nameInput" tabindex="2" placeholder="Player 2" title="Insert P2's name here." spellcheck="false">
-                    <div class="playerFinder" id="pFinder2">
-                    </div>
                   </div>
                 </div>
                 
@@ -150,7 +146,6 @@
                   <input type="text" id="p4Tag" class="textInput mousetrap tagInput" tabindex="3" placeholder="Tag" title="Insert the tag/team/sponsor here" spellcheck="false" contenteditable="true">
                   <div class="pFinderPosition" id="pFinderBox4">
                     <input type="text" id="p4Name" class="textInput mousetrap nameInput" tabindex="3" placeholder="Player 4" title="Insert P4's name here" spellcheck="false">
-                    <div class="playerFinder" id="pFinder4"></div>
                   </div>
 
                 </div>
@@ -281,55 +276,61 @@
 
         <div id="actualSettings">
 
-          <div class="settingsTitle">Scoreboard Settings</div>
+          <div id="settingsTitleTop">SETTINGS</div>
 
-          <div class="settingBox" title="Plays an intro on 'RoA Scoreboard.html' whenever the file loads.">
-            <input type="checkbox" id="allowIntro" class="settingsCheck" tabindex="-1">
-            <label for="allowIntro" class="settingsText">Allow Intro</span>
-          </div>
+          <div id="settingsList">
 
-          <div class="settingBox" title="Uses alternative art for workshop characters
+            <div class="settingsTitle">Scoreboard</div>
+
+            <div class="settingBox" title="Plays an intro on 'RoA Scoreboard.html' whenever the file loads.">
+              <input type="checkbox" id="allowIntro" class="settingsCheck" tabindex="-1">
+              <label for="allowIntro" class="settingsText">Allow Intro</span>
+            </div>
+  
+            <div class="settingBox" title="Uses alternative art for workshop characters
 that have one on 'RoA Scoreboard.html'.">
-            <input type="checkbox" id="forceAlt" class="settingsCheck" tabindex="-1">
-            <label for="forceAlt" id="mmText" class="settingsText">Use 'Alt' skins</span>
-          </div>
-
-          <div class="settingsTitle">VS Screen Settings</div>
-
-          <div class="settingBox" title="Forces HD renders to appear on the VS screen,
+              <input type="checkbox" id="forceAlt" class="settingsCheck" tabindex="-1">
+              <label for="forceAlt" id="mmText" class="settingsText">Use 'Alt' skins</span>
+            </div>
+  
+            <div class="settingsTitle">VS Screen</div>
+  
+            <div class="settingBox" title="Forces HD renders to appear on the VS screen,
 while keeping the regular renders for the scoreboard.">
-            <input type="checkbox" id="forceHD" class="settingsCheck" tabindex="-1">
-            <label for="forceHD" class="settingsText">Always use HD renders</span>
-          </div>
-
-          <div class="settingBox" title="Will just show regular HD renders in the
+              <input type="checkbox" id="forceHD" class="settingsCheck" tabindex="-1">
+              <label for="forceHD" class="settingsText">Always use HD renders</span>
+            </div>
+  
+            <div class="settingBox" title="Will just show regular HD renders in the
 VS Screen even when LoA skins are selected.">
-            <input type="checkbox" id="noLoAHD" class="settingsCheck" disabled tabindex="-1">
-            <label for="noLoAHD" class="settingsText">No LoA HD renders</span>
-          </div>
-
-          <div class="settingsTitle">General Settings</div>
-
-          <div class="settingBox" title="Changes the character list to the workshop one.">
-            <input type="checkbox" id="workshopToggle" class="settingsCheck" tabindex="-1">
-            <label for="workshopToggle" class="settingsText">Use Workshop characters</span>
-          </div>
-          
-          <div class="settingBox" title="Forces the [W]/[L] buttons to appear on the interface.
+              <input type="checkbox" id="noLoAHD" class="settingsCheck" disabled tabindex="-1">
+              <label for="noLoAHD" class="settingsText">No LoA HD renders</span>
+            </div>
+  
+            <div class="settingsTitle">General Settings</div>
+  
+            <div class="settingBox" title="Changes the character list to the workshop one.">
+              <input type="checkbox" id="workshopToggle" class="settingsCheck" tabindex="-1">
+              <label for="workshopToggle" class="settingsText">Use Workshop characters</span>
+            </div>
+            
+            <div class="settingBox" title="Forces the [W]/[L] buttons to appear on the interface.
 They will always appear when typing 'Grand' in the round box.">
-            <input type="checkbox" id="forceWLToggle" class="settingsCheck" tabindex="-1">
-            <label for="forceWLToggle" class="settingsText">Force [W] / [L]</span>
-          </div>
+              <input type="checkbox" id="forceWLToggle" class="settingsCheck" tabindex="-1">
+              <label for="forceWLToggle" class="settingsText">Force [W] / [L]</span>
+            </div>
+  
+            <div class="settingBox" title="Prevents other windows to be displayed on top of this one.">
+              <input type="checkbox" id="alwaysOnTop" class="settingsCheck" tabindex="-1">
+              <label for="alwaysOnTop" class="settingsText">Window always on top</span>
+            </div>
+  
+            <div id="settingsButtonSection">
+              <button id="copyMatch" tabindex="-1" title='"Tournament Name - Round - Player1 (Character1) VS Player2 (Character2)"'>
+                Match info to clipboard
+              </button>
+            </div>
 
-          <div class="settingBox" title="Prevents other windows to be displayed on top of this one.">
-            <input type="checkbox" id="alwaysOnTop" class="settingsCheck" tabindex="-1">
-            <label for="alwaysOnTop" class="settingsText">Window always on top</span>
-          </div>
-
-          <div id="settingsButtonSection">
-            <button id="copyMatch" tabindex="-1" title='"Tournament Name - Round - Player1 (Character1) VS Player2 (Character2)"'>
-              Match info to clipboard
-            </button>
           </div>
 
         </div>        
@@ -338,6 +339,10 @@ They will always appear when typing 'Grand' in the round box.">
       <div id="goBack"></div>
 
     </div>
+
+    <!-- stuff that will get moved around -->
+
+    <div id="playerFinder"></div>
     
   </body>
 </html>

@@ -44,10 +44,9 @@ function pushArrayInOrder(array, string1, string2 = "") {
         array.push(document.getElementById(string1+(i+1)+string2));
     }
 }
-const pNameInps = [], pTagInps = [], pFinders = [], charLists = [], skinLists = [];
+const pNameInps = [], pTagInps = [], charLists = [], skinLists = [];
 pushArrayInOrder(pNameInps, "p", "Name");
 pushArrayInOrder(pTagInps, "p", "Tag");
-pushArrayInOrder(pFinders, "pFinder");
 pushArrayInOrder(charLists, "p", "Char");
 pushArrayInOrder(skinLists, "p", "Skin");
 
@@ -81,6 +80,8 @@ const forceHDCheck = document.getElementById('forceHD');
 const noLoAHDCheck = document.getElementById('noLoAHD');
 const forceWL = document.getElementById('forceWLToggle');
 const forceAlt = document.getElementById("forceAlt");
+
+const pFinder = document.getElementById("playerFinder");
 
 
 init();
@@ -158,15 +159,24 @@ function init() {
     p2L.addEventListener("click", setWLP2);
 
 
+    // prepare the player finder (player presets)
+    // if the mouse is hovering a player preset, let us know
+    pFinder.addEventListener("mouseenter", () => { inPF = true });
+    pFinder.addEventListener("mouseleave", () => { inPF = false });
+
     //for each player input field
     for (let i = 0; i < maxPlayers; i++) {
 
-        //prepare the player finder (player presets)
-        preparePF(i+1);
+        //hide the player presets menu if text input loses focus
+        pNameInps[i].addEventListener("focusout", () => {
+            if (!inPF) { //but not if the mouse is hovering a player preset
+                pFinder.style.display = "none";
+            }
+        });
 
         //check if theres a player preset every time we type or click in the player box
-        pNameInps[i].addEventListener("input", checkPlayerPreset);
-        pNameInps[i].addEventListener("focusin", checkPlayerPreset);
+        pNameInps[i].addEventListener("input", () => {checkPlayerPreset(i)});
+        pNameInps[i].addEventListener("focusin", () => {checkPlayerPreset(i)});
 
         //resize the container if it overflows
         pNameInps[i].addEventListener("input", resizeInput);
@@ -206,12 +216,10 @@ function init() {
     //enter
     Mousetrap.bind('enter', () => {
 
-        if (isPresetOpen()) {
-            //if a player presets menu is open, load preset
-            for (let i = 0; i < pFinders.length; i++) {
-                if (pFinders[i].style.display == "block" && currentFocus > -1) {
-                    pFinders[i].getElementsByClassName("finderEntry")[currentFocus].click();
-                }
+        if (pFinder.style.display == "block") { // safety check so we dont update while the menu is active
+            // if the player presets menu is open, load preset
+            if (pFinder.style.display == "block" && currentFocus > -1) {
+                pFinder.getElementsByClassName("finderEntry")[currentFocus].click();
             }
         } else {
             //update scoreboard info (updates botBar color for visual feedback)
@@ -229,10 +237,8 @@ function init() {
     Mousetrap.bind('esc', () => {
         if (movedSettings) { //if settings are open, close them
             goBack();
-        } else if (isPresetOpen()) { //if a player preset is open, close it
-            for (let i = 0; i < pFinders.length; i++) {
-                pFinders[i].style.display = "none";
-            }
+        } else if (pFinder.style.display == "block") { // if the player finder is open, close it
+            pFinder.style.display = "none";
         } else {
             clearPlayers(); //by default, clear player info
         }
@@ -244,32 +250,19 @@ function init() {
 
     //up/down, to navigate the player presets menu (only when a menu is shown)
     Mousetrap.bind('down', () => {
-        for (let i = 0; i < pFinders.length; i++) {
-            if (pFinders[i].style.display == "block") {
-                currentFocus++;
-                addActive(pFinders[i].getElementsByClassName("finderEntry"));
-            }
+        if (pFinder.style.display == "block") {
+            currentFocus++;
+            addActive(pFinder.getElementsByClassName("finderEntry"));
         }
     });
     Mousetrap.bind('up', () => {
-        for (let i = 0; i < pFinders.length; i++) {
-            if (pFinders[i].style.display == "block") {
-                currentFocus--;
-                addActive(pFinders[i].getElementsByClassName("finderEntry"));
-            }
+        if (pFinder.style.display == "block") {
+            currentFocus--;
+            addActive(pFinder.getElementsByClassName("finderEntry"));
         }
     });
 }
 
-function isPresetOpen() {
-    let theBool = false;
-    for (let i = 0; i < pFinders.length; i++) {
-        if (pFinders[i].style.display == "block") {
-            theBool = true;
-        }   
-    }
-    return theBool;
-}
 
 function moveViewport() {
     if (!movedSettings) {
@@ -374,7 +367,7 @@ function charChange(list) {
     
 
     //check if the current player name has a custom skin for the character
-    checkCustomSkin(pNum);
+    checkCustomSkin(pNum-1);
 
     //change the width of the box depending on the current text
     changeListWidth(list);
@@ -643,37 +636,20 @@ function deactivateWL() {
 }
 
 
-//player presets setup
-function preparePF(pNum) {
-    const pFinderEL = pFinders[pNum-1];
-
-    //if the mouse is hovering a player preset, let us know
-    pFinderEL.addEventListener("mouseenter", () => { inPF = true });
-    pFinderEL.addEventListener("mouseleave", () => { inPF = false });
-
-    //hide the player presets menu if text input loses focus
-    pNameInps[pNum-1].addEventListener("focusout", () => {
-        if (!inPF) { //but not if the mouse is hovering a player preset
-            pFinderEL.style.display = "none";
-        }
-    });
-}
-
 //called whenever the user types something in the player name box
-function checkPlayerPreset() {
+function checkPlayerPreset(pNum) {
 
     //remove the "focus" for the player presets list
     currentFocus = -1;
 
-    //player check once again
-    const pNum = this.id.substring(1, 2);
-    const pFinderEL = pFinders[pNum-1];
+    // move the player finder under the current player input
+    pNameInps[pNum].parentElement.appendChild(pFinder);
 
     //clear the current list each time we type
-    pFinderEL.innerHTML = "";
+    pFinder.innerHTML = "";
 
     //if we typed at least 3 letters
-    if (this.value.length >= 3) {
+    if (pNameInps[pNum].value.length >= 3) {
 
         //check the files in that folder
         const files = fs.readdirSync(textPath + "/Player Info/");
@@ -683,10 +659,10 @@ function checkPlayerPreset() {
             file = file.substring(0, file.length - 5);
 
             //if the current text matches a file from that folder
-            if (file.toLocaleLowerCase().includes(this.value.toLocaleLowerCase())) {
+            if (file.toLocaleLowerCase().includes(pNameInps[pNum].value.toLocaleLowerCase())) {
 
                 //un-hides the player presets div
-                pFinderEL.style.display = "block";
+                pFinder.style.display = "block";
 
                 //go inside that file to get the player info
                 const playerInfo = getJson(textPath + "/Player Info/" + file);
@@ -696,7 +672,7 @@ function checkPlayerPreset() {
                     //this will be the div to click
                     const newDiv = document.createElement('div');
                     newDiv.className = "finderEntry";
-                    newDiv.addEventListener("click", playerPreset);
+                    newDiv.addEventListener("click", () => {playerPreset(newDiv, pNum)});
                     
                     //create the texts for the div, starting with the tag
                     const spanTag = document.createElement('span');
@@ -744,11 +720,23 @@ function checkPlayerPreset() {
                     newDiv.appendChild(charImgBox);
 
                     //and now add the div to the actual interface
-                    pFinderEL.appendChild(newDiv);
+                    pFinder.appendChild(newDiv);
+
                 });
             }
         });
     }
+
+    // if playing 2v2 and if the current player is on the right side
+    if (gamemode == 2 && pNum%2 != 0) {
+        // anchor point will be at the right side so it stays visible
+        pFinder.style.right = "0px";
+        pFinder.style.left = "";
+    } else {
+        pFinder.style.left = "0px";
+        pFinder.style.right = "";
+    }
+
 }
 
 //now the complicated "change character image" function!
@@ -791,26 +779,24 @@ async function positionChar(character, skin, charEL) {
 }
 
 //called when the user clicks on a player preset
-function playerPreset() {
+function playerPreset(el, pNum) {
 
-    //we all know what this is by now
-    const pNum = this.parentElement.id.substring(this.parentElement.id.length - 1) - 1;
-
-    pTagInps[pNum].value = this.style.getPropertyValue("--tag");
+    pTagInps[pNum].value = el.style.getPropertyValue("--tag");
     changeInputWidth(pTagInps[pNum]);
 
-    pNameInps[pNum].value = this.style.getPropertyValue("--name");
+    pNameInps[pNum].value = el.style.getPropertyValue("--name");
     changeInputWidth(pNameInps[pNum]);
 
-    changeListValue(charLists[pNum], this.style.getPropertyValue("--char"));
+    changeListValue(charLists[pNum], el.style.getPropertyValue("--char"));
     charChange(charLists[pNum]);
 
-    changeListValue(skinLists[pNum], this.style.getPropertyValue("--skin"));
+    changeListValue(skinLists[pNum], el.style.getPropertyValue("--skin"));
     skinChange(skinLists[pNum]);
 
-    checkCustomSkin(pNum+1);
+    checkCustomSkin(pNum);
 
-    pFinders[pNum].style.display = "none";
+    pFinder.style.display = "none";
+
 }
 
 
@@ -831,8 +817,6 @@ function addActive(x) {
 
 
 function checkCustomSkin(pNum) {
-
-    pNum -= 1
 
     //get the player preset list for the current text
     const playerList = getJson(textPath + "/Player Info/" + pNameInps[pNum].value);
@@ -993,10 +977,6 @@ function changeGamemode() {
         this.setAttribute('title', "Change the gamemode to Singles");
 
         //dropdown menus for the right side will now be positioned to the right
-        for (let i = 1; i < 5; i+=2) {
-            pFinders[i].style.right = "0px";
-            pFinders[i].style.left = "";
-        }
         document.getElementById("dropdownColorR").style.right = "0px";
         document.getElementById("dropdownColorR").style.left = "";
 
@@ -1053,10 +1033,9 @@ function changeGamemode() {
         this.setAttribute('title', "Change the gamemode to Doubles");
 
         //dropdown menus for the right side will now be positioned to the left
-        for (let i = 1; i < 5; i+=2) {
-            pFinders[i].style.left = "0px";
-            pFinders[i].style.right = "";
-        }
+        document.getElementById("dropdownColorR").style.right = "";
+        document.getElementById("dropdownColorR").style.left = "0px";
+
     }
 }
 
@@ -1118,8 +1097,8 @@ function swap() {
         skinChange(skinLists[i+1]);
 
         //find out if the swapped skin is a custom one
-        checkCustomSkin(i+1);
-        checkCustomSkin(i+2);
+        checkCustomSkin(i);
+        checkCustomSkin(i);
     }    
 
     //scores
