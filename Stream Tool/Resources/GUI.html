@@ -48,17 +48,31 @@
 
               <div class="row" id="row2-1">
 
-                <select id="p1Char" class="charCombo mousetrap charList" title="Everyone is here!" tabindex="-1"></select>
-                <select id="p1Skin" class="charCombo mousetrap skinList" tabindex="-1"></select>
+                <div class="cFinderPosition">
+                  <div class="selector charSelector" id="p1CharSelector" tabindex="-1">
+                    <img class="charSelectorIcon" alt="">
+                    <div class="charSelectorText"></div>
+                  </div>
+                </div>
+                <div class="cFinderPosition">
+                  <div class="selector skinSelector" id="p1SkinSelector" tabindex="-1"></div>
+                </div>
 
               </div>
 
               <div class="row" id="row3-1">
 
-                <select id="p3Char" class="charCombo mousetrap charList" title="Everyone is here!" tabindex="-1"></select>
-                <select id="p3Skin" class="charCombo mousetrap skinList" tabindex="-1"></select>
+                <div class="cFinderPosition">
+                  <div class="selector charSelector elGm2" id="p3CharSelector" tabindex="-1">
+                    <img class="charSelectorIcon" id="charSelIcon" alt="">
+                    <div class="charSelectorText"></div>
+                  </div>
+                </div>
+                <div class="cFinderPosition">
+                  <div class="selector skinSelector elGm2" id="p3SkinSelector" tabindex="-1"></div>
+                </div>
 
-                <div class="playerInfo" id="pInfo3">
+                <div class="playerInfo elGm2" id="pInfo3">
 
                   <input type="text" id="p3Tag" class="textInput mousetrap tagInput" tabindex="3" placeholder="Tag" title="Insert the tag/team/sponsor here" spellcheck="false" contenteditable="true">
                   <div class="pFinderPosition" id="pFinderBox3">
@@ -131,17 +145,31 @@
 
               <div class="row" id="row2-2">
 
-                <select id="p2Char" class="charCombo mousetrap charList" title="Everyone is here!" tabindex="-1"></select>
-                <select id="p2Skin" class="charCombo mousetrap skinList" tabindex="-1"></select>
+                <div class="cFinderPosition">
+                  <div class="selector charSelector" id="p2CharSelector" tabindex="-1">
+                    <img class="charSelectorIcon" id="charSelIcon" alt="">
+                    <div class="charSelectorText"></div>
+                  </div>
+                </div>
+                <div class="cFinderPosition">
+                  <div class="selector skinSelector" id="p2SkinSelector" tabindex="-1"></div>
+                </div>
 
               </div>
 
               <div class="row" id="row3-2">
 
-                <select id="p4Char" class="charCombo mousetrap charList" title="Everyone is here!" tabindex="-1"></select>
-                <select id="p4Skin" class="charCombo mousetrap skinList" tabindex="-1"></select>
+                <div class="cFinderPosition">
+                  <div class="selector charSelector elGm2" id="p4CharSelector" tabindex="-1">
+                    <img class="charSelectorIcon" id="charSelIcon" alt="">
+                    <div class="charSelectorText"></div>
+                  </div>
+                </div>
+                <div class="cFinderPosition">
+                  <div class="selector skinSelector elGm2" id="p4SkinSelector" tabindex="-1"></div>
+                </div>
 
-                <div class="playerInfo" id="pInfo4">
+                <div class="playerInfo elGm2" id="pInfo4">
 
                   <input type="text" id="p4Tag" class="textInput mousetrap tagInput" tabindex="3" placeholder="Tag" title="Insert the tag/team/sponsor here" spellcheck="false" contenteditable="true">
                   <div class="pFinderPosition" id="pFinderBox4">
@@ -341,8 +369,15 @@ They will always appear when typing 'Grand' in the round box.">
     </div>
 
     <!-- stuff that will get moved around -->
-
     <div id="playerFinder"></div>
+    <div id="characterFinder" class="finder">
+      <input type="text" class="listSearch" placeholder="Type to filter..." spellcheck="false" tabindex="-1">
+      <div class="searchList" id="charSearchList"></div>
+    </div>
+    <div id="skinFinder" class="finder">
+      <input type="text" class="listSearch" placeholder="Type to filter..." spellcheck="false" tabindex="-1">
+      <div class="searchList"></div>
+    </div>
     
   </body>
 </html>

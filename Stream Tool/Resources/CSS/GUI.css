@@ -150,7 +150,7 @@ input[type="text"] {
   border-radius: 0px;
 }
 
-.pFinderPosition {
+.pFinderPosition, .cFinderPosition, .sFinderPosition {
   position: relative;
 }
 #playerFinder {
@@ -163,13 +163,14 @@ input[type="text"] {
   font-size: 15px;
   max-height: 165px;
   overflow: auto;
+  width: 220px;
 }
 
 .finderEntry {
   display: flex;
   align-items: center;
-  height: 35px;
-  width: 220px;
+  height: 30px;
+  width: 100%;
   z-index: 30;
   cursor: pointer;
 }
@@ -203,8 +204,8 @@ input[type="text"] {
 }
 .pfCharImgBox {
   position: absolute;
-  height: 35px;
-  width: 220px;
+  height: 30px;
+  width: 100%;
   transform: scaleX(-1);
   overflow: hidden;
   opacity: .8;
@@ -289,48 +290,85 @@ input[type="text"] {
 }
 
 
-.charCombo {
+.selector {
   max-width: 141px;
-  height: 30px;
-  outline: none;
+  height: 32px;
   color: var(--text1);
-  background: var(--bg4);
+  background-color: var(--bg4);
   border: 1px solid var(--focused);
   transition: border-color 100ms;
-  -webkit-appearance: none;
-  padding: 5px;
+  padding: 4px;
   box-sizing: border-box;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  font-family: 'Roboto-Regular';
+  gap: 3px;
+  overflow: hidden;
 }
-
-.charCombo:hover {
+.selector:hover {
   border-color: var(--selected);
 }
-
-.charCombo:active {
+.selector:active {
   background-color: var(--bg2);
 }
 
-.charList {
+.charSelector {
   border-top-left-radius: 3px;
   border-bottom-left-radius: 3px;
 }
+.charSelectorIcon {
+  width: 22px;
+  height: 22px;
+}
 
-.skinList {
+
+.finder {
   display: none;
+  position: absolute;
+  top: 100%;
+  filter: drop-shadow(0px 0px 5px var(--bg3));
+  z-index: 3;
+  max-height: 165px;
+}
+.charSelector:focus-within .finder, .skinSelector:focus-within .finder {
+  display: block;
+}
+.listSearch {
+  outline: none;
+  border: none;
+  width: 100%;
+  background: var(--bg1);
+  color: var(--text1);
+  padding: 2px;
+  box-sizing: border-box;
+}
+.searchList {
+  background-color: var(--bg5);
+  font-size: 15px;
+  overflow: auto;
+  max-height: 140px;
+  position: relative;
+}
+
+#characterFinder, #skinFinder {
+  width: 200px;
+}
+
+.fIconImg {
+  width: 24px;
+  height: 24px;
+  padding-left: 4px;
+}
+
+
+.skinSelector {
   border-top-right-radius: 3px;
   border-bottom-right-radius: 3px;
   margin-left: -1px;
 }
-
-.charList:hover {
-  transform: scale(1); /* cheap trick to show a correct border */
-}
-
-.theEntry {
-  background-color: var(--bg2);
-}
-.playerCustom {
-  background-color: var(--bg5);
+.charSelector:hover {
+  /* transform: scale(1); */ /* cheap trick to show a correct border */
 }
 
 
@@ -398,7 +436,7 @@ input[type="text"] {
 
 
 /* elements that will show up when changing gamemode */
-#p3Char, #p4Char, #p3Skin, #p4Skin, #pInfo3, #pInfo4 {
+.elGm2 {
   display: none;
 }
 

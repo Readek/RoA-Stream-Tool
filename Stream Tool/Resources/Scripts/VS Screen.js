@@ -89,19 +89,19 @@ function errorWebsocket() {
 
 async function updateData(scInfo) {
 
-	const player = scInfo['player'];
-	const teamName = scInfo['teamName'];
+	const player = scInfo.player;
+	const teamName = scInfo.teamName;
 
-	const color = scInfo['color'];
-	const score = scInfo['score'];
+	const color = scInfo.color;
+	const score = scInfo.score;
 
-	const bestOf = scInfo['bestOf'];
-	const gamemode = scInfo['gamemode'];
+	const bestOf = scInfo.bestOf;
+	const gamemode = scInfo.gamemode;
 
-	const round = scInfo['round'];
-	const tournamentName = scInfo['tournamentName'];
+	const round = scInfo.round;
+	const tournamentName = scInfo.tournamentName;
 
-	const caster = scInfo['caster'];
+	const caster = scInfo.caster;
 	
 	twitter1 = caster[0].twitter;
 	twitch1 = caster[0].twitch;

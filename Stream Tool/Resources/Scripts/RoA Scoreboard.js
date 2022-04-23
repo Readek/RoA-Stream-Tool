@@ -85,17 +85,17 @@ function errorWebsocket() {
 
 async function updateData(scInfo) {
 
-	const player = scInfo['player'];
-	const teamName = scInfo['teamName'];
+	const player = scInfo.player;
+	const teamName = scInfo.teamName;
 
-	const color = scInfo['color'];
-	const score = scInfo['score'];
-	const wl = scInfo['wl'];
+	const color = scInfo.color;
+	const score = scInfo.score;
+	const wl = scInfo.wl;
 
-	const bestOf = scInfo['bestOf'];
-	const gamemode = scInfo['gamemode'];
+	const bestOf = scInfo.bestOf;
+	const gamemode = scInfo.gamemode;
 
-	const round = scInfo['round'];
+	const round = scInfo.round;
 
 
 	// first of all, things that will always happen on each cycle
@@ -130,7 +130,7 @@ async function updateData(scInfo) {
 	if (startup) {
 
 		//of course, we have to start with the cool intro stuff
-		if (scInfo['allowIntro']) {
+		if (scInfo.allowIntro) {
 
 			//lets see that intro
 			document.getElementById('overlayIntro').style.opacity = 1;
@@ -196,7 +196,7 @@ async function updateData(scInfo) {
 			}
 
 			document.getElementById('roundIntro').textContent = round;
-			document.getElementById('tNameIntro').textContent = scInfo['tournamentName'];
+			document.getElementById('tNameIntro').textContent = scInfo.tournamentName;
 			
 			//round, tournament and VS/GameX text fade in
 			document.querySelectorAll(".textIntro").forEach(el => {

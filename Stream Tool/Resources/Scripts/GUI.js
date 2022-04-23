@@ -1,7 +1,6 @@
 'use strict';
 
 const fs = require('fs');
-const path = require('path');
 const electron = require('electron');
 const ipc = electron.ipcRenderer;
 
@@ -28,6 +27,8 @@ let movedSettings = false;
 let inPF = false;
 let currentFocus = -1;
 
+let currentPlayer;
+
 const maxPlayers = 4; //change this if you ever want to remake this into singles only or 3v3 idk
 
 
@@ -44,11 +45,12 @@ function pushArrayInOrder(array, string1, string2 = "") {
         array.push(document.getElementById(string1+(i+1)+string2));
     }
 }
-const pNameInps = [], pTagInps = [], charLists = [], skinLists = [];
+const pNameInps = [], pTagInps = [], charSelectors = [], skinSelectors = [];
 pushArrayInOrder(pNameInps, "p", "Name");
 pushArrayInOrder(pTagInps, "p", "Tag");
-pushArrayInOrder(charLists, "p", "Char");
-pushArrayInOrder(skinLists, "p", "Skin");
+pushArrayInOrder(charSelectors, "p", "CharSelector");
+pushArrayInOrder(skinSelectors, "p", "SkinSelector");
+
 
 const charImgs = document.getElementsByClassName("charImg");
 
@@ -82,6 +84,8 @@ const forceWL = document.getElementById('forceWLToggle');
 const forceAlt = document.getElementById("forceAlt");
 
 const pFinder = document.getElementById("playerFinder");
+const charFinder = document.getElementById("characterFinder");
+const skinFinder = document.getElementById("skinFinder");
 
 
 init();
@@ -128,20 +132,19 @@ function init() {
     // we need to set the current char path
     workshopCheck.checked ? charPath = charPathWork : charPath = charPathBase;
 
-    //load the character list for all players on startup
+    //load the character list on startup
     loadCharacters();
 
     //set listeners that will trigger when character or skin changes
     for (let i = 0; i < maxPlayers; i++) {
-        charLists[i].addEventListener("change", charChangeL);
-        skinLists[i].addEventListener("change", skinChangeL);
+        charSelectors[i].addEventListener("click", () => {openCharSelector(i)});
+        skinSelectors[i].addEventListener("click", () => {openSkinSelector(i)});
+        // also set an initial character value
+        charChange("Random", i);
     }
-    //check whenever an image isnt found so we replace it with a "?"
-    for (let i = 0; i < charImgs.length; i++) {
-        charImgs[i].addEventListener("error", () => {
-            charImgs[i].setAttribute('src', charPathRandom + '/P2.png');
-        });
-    }
+    // also set listeners for the input filters of char/skin selects
+    charFinder.addEventListener("input", () => {filterFinder(charFinder)})
+    skinFinder.addEventListener("input", () => {filterFinder(skinFinder)})
     
 
     //score tick listeners, to automatically check/uncheck the other ticks
@@ -182,6 +185,7 @@ function init() {
         pNameInps[i].addEventListener("input", resizeInput);
         //also do it for tag inputs while we're at it
         pTagInps[i].addEventListener("input", resizeInput);
+
     }
     
 
@@ -294,6 +298,9 @@ function getJson(jPath) {
 //calls the main settings file and fills a combo list
 function loadCharacters() {
 
+    // first of all, clear a possible already existing list
+    charFinder.lastElementChild.innerHTML = "";
+
     // create a list with folder names on charPath
     const characterList = fs.readdirSync(charPath, { withFileTypes: true })
         .filter(dirent => dirent.isDirectory())
@@ -306,153 +313,213 @@ function loadCharacters() {
         }
     )
 
-    //for each player
-    for (let i=0; i < maxPlayers; i++) {
+    // add random to the end of the character list
+    characterList.push("Random")
 
-        //use the character list to add entries
-        addEntries(charLists[i], characterList);
+    // add entries to the character list
+    for (let i = 0; i < characterList.length; i++) {
 
-        //add random to the end of the list
-        const option = document.createElement('option');
-        option.text = "Random";
-        charLists[i].add(option);
+        // this will be the div to click
+        const newDiv = document.createElement('div');
+        newDiv.className = "finderEntry";
+        newDiv.addEventListener("click", () => {charChange(characterList[i])});
 
-        //leave it selected
-        charLists[i].selectedIndex = charLists[i].length - 1;
-
-        //update the image to random, only for the first 2 players
-        for (let i = 0; i < 2; i++) {
-            charImgChange(charImgs[i], "Random");       
-        }
-
-        //change the width to the current text
-        changeListWidth(charLists[i]);
-    }
-
-}
-
-
-//called whenever we want to change the character
-function charChange(list) {
-
-    const currentChar = list.selectedOptions[0].text; //character that has been selected
-
-    //we need to know from what player is this coming from somehow
-    const pNum = list.id.substring(1, 2); //yes this is hella dirty
-    const skinList = skinLists[pNum-1];
-
-    //load a new skin list
-    loadSkins(skinList, currentChar);
-
-    //change the character image of the interface (only for first 2 players)
-    if (pNum < 3) {
-        //check if skinlist exists first so we dont bug the code later 
-        let currentSkin;
-        if (skinList.selectedOptions[0]) {
-            currentSkin = skinList.selectedOptions[0].text;
-        }
-        charImgChange(charImgs[pNum-1], currentChar, currentSkin);
-    }
-    
-    //hide the skin dropdown if the list has 1 or less entries
-    if (gamemode == 1 && (pNum == 3 || pNum == 4)) {
-        //dont do this for players 3 and 4 if the gamemode is singles
-    } else {
-        if (skinList.options.length <= 1) {
-            skinList.style.display = "none";
+        // character icon
+        const imgIcon = document.createElement('img');
+        imgIcon.className = "fIconImg";
+        // check in case image cant be found
+        if (fs.existsSync(charPath+"/"+characterList[i]+"/Icon.png")) {
+            imgIcon.src = charPath+"/"+characterList[i]+"/Icon.png";
         } else {
-            skinList.style.display = "inline";
+            imgIcon.src = charPathRandom + '/Icon.png';
         }
+        
+        // character name
+        const spanName = document.createElement('span');
+        spanName.innerHTML = characterList[i];
+        spanName.className = "pfName";
+
+        //add them to the div we created before
+        newDiv.appendChild(imgIcon);
+        newDiv.appendChild(spanName);
+
+        //and now add the div to the actual interface
+        charFinder.lastElementChild.appendChild(newDiv);
+
     }
+
+}
+
+function openCharSelector(pNum) {
     
+    // move the dropdown menu under the current char selector
+    charSelectors[pNum].appendChild(charFinder);
 
-    //check if the current player name has a custom skin for the character
-    checkCustomSkin(pNum-1);
+    // focus the search input field and clear its contents
+    charFinder.firstElementChild.value = "";
+    charFinder.firstElementChild.focus();
 
-    //change the width of the box depending on the current text
-    changeListWidth(list);
-
-    //do the same for the skin
-    changeListWidth(skinList);
+    currentPlayer = pNum;
 
 }
-//same but for listeners
-function charChangeL() {
-    charChange(this)
-}
 
-//for when skin changes, same logic as above
-function skinChange(list) {
+// every time a character is clicked on the char list
+function charChange(character, pNum = -1) {
+    
+    // clear focus to hide character select menu
+    document.activeElement.blur()
 
-    //which player is it?
-    const pNum = list.id.substring(1, 2);
-
-    //which character is it?
-    const currentChar = charLists[pNum-1].selectedOptions[0].text;
-
-    //which skin is it?
-    let currentSkin;
-    try { //this is necessary when reading from random, wich has no skins
-        currentSkin = list.selectedOptions[0].text;
-    } catch (error) {
-        currentSkin = null;
+    if (pNum != -1) {
+        currentPlayer = pNum;
     }
 
-    //change the image with the current skin (if player 1 or 2)
-    if (pNum < 3) {
-        charImgChange(charImgs[pNum-1], currentChar, currentSkin);
+    // update character selector text
+    charSelectors[currentPlayer].children[1].innerHTML = character;
+
+    // update character selector icon (making sure it exists)
+    if (fs.existsSync(`${charPath}/${character}/Icon.png`)) {
+        charSelectors[currentPlayer].children[0].src = `${charPath}/${character}/Icon.png`;
+    } else {
+        charSelectors[currentPlayer].children[0].src = `${charPathRandom}/Icon.png`;
+
     }
 
-    //change the width of the combo box depending on the text
-    changeListWidth(list);
+    // check the first skin of the list for this character
+    const charInfo = getJson(`${charPath}/${character}/_Info`);
+    let skin;
+
+    if (charInfo) {
+
+        // set the skin variable from the skin list
+        skin = charInfo.skinList[0]
+        // change the text of the skin selector
+        skinSelectors[currentPlayer].innerHTML = skin;
+        // if there's only 1 skin, dont bother displaying skin selector
+        if (charInfo.skinList.length > 1) {
+            skinSelectors[currentPlayer].style.display = "flex"
+        } else {
+            skinSelectors[currentPlayer].style.display = "none";
+        }
+
+    } else { // if it doesnt exist, hide the skin selector
+        skinSelectors[currentPlayer].innerHTML = "";
+        skinSelectors[currentPlayer].style.display = "none";
+    }
+
+    // change the background character image (only for first 2 players)
+    if (currentPlayer < 2) {
+        charImgChange(charImgs[currentPlayer], character, skin);
+    }
 
 }
-//for listeners
-function skinChangeL() {
-    skinChange(this);
+
+function openSkinSelector(pNum) {
+
+    // clear the list
+    skinFinder.lastElementChild.innerHTML = "";
+
+    // get the character skin list for this skin selector
+    const character = charSelectors[pNum].getElementsByClassName("charSelectorText")[0].innerHTML;
+    const charInfo = getJson(`${charPath}/${character}/_Info`);
+
+    // for every skin on the skin list, add an entry
+    for (let i = 0; i < charInfo.skinList.length; i++) {
+        
+        // this will be the div to click
+        const newDiv = document.createElement('div');
+        newDiv.className = "finderEntry";
+        newDiv.addEventListener("click", () => {skinChange(character, charInfo.skinList[i], pNum)});
+        
+        // character name
+        const spanName = document.createElement('span');
+        spanName.innerHTML = charInfo.skinList[i];
+        spanName.className = "pfName";
+
+        // add them to the div we created before
+        newDiv.appendChild(spanName);
+
+        // now for the character image, this is the mask/mirror div
+        const charImgBox = document.createElement("div");
+        charImgBox.className = "pfCharImgBox";
+
+        // actual image
+        const charImg = document.createElement('img');
+        charImg.className = "pfCharImg";
+        charImg.setAttribute('src', `${charPath}/${character}/${charInfo.skinList[i]}.png`);
+        // we have to position it
+        positionChar(character, charInfo.skinList[i], charImg);
+        // and add it to the mask
+        charImgBox.appendChild(charImg);
+
+        //add it to the main div
+        newDiv.appendChild(charImgBox);
+
+        // and now add the div to the actual GUI
+        skinFinder.lastElementChild.appendChild(newDiv);
+
+    }
+
+    // move the dropdown menu under the current skin selector
+    skinSelectors[pNum].appendChild(skinFinder);
+
+    // focus the search input field and clear its contents
+    skinFinder.firstElementChild.value = "";
+    skinFinder.firstElementChild.focus();
+
+    currentPlayer = pNum;
+    
 }
+
+// every time a skin is clicked on the skin list
+function skinChange(char, skin, pNum) {
+
+    // update the text of the skin selector
+    skinSelectors[pNum].innerHTML = skin
+    
+    // change the background character image (if first 2 players)
+    if (pNum < 2) {
+        charImgChange(charImgs[pNum], char, skin);
+    }
+
+    // remove focus from the skin list so it auto hides
+    document.activeElement.blur();
+
+}
+
+
+// called whenever we type anything on the finders
+function filterFinder(finder) {
+
+    // get the current text
+    const filterValue = finder.getElementsByClassName("listSearch")[0].value;
+
+    // for every entry on the list
+    const finderEntries = finder.getElementsByClassName("searchList")[0].children;
+
+    for (let i = 0; i < finderEntries.length; i++) {
+        
+        // find the name we are looking for
+        const entryName = finderEntries[i].getElementsByClassName("pfName")[0].innerHTML;
+
+        // if the name doesnt include the filter value, hide it
+        if (entryName.toLocaleLowerCase().includes(filterValue.toLocaleLowerCase())) {
+            finderEntries[i].style.display = "flex";
+        } else {
+            finderEntries[i].style.display = "none";
+        }
+
+    }
+
+}
+
 
 //change the image path depending on the character and skin
 function charImgChange(charImg, charName, skinName) {
-    charImg.setAttribute('src', charPath + '/' + charName + '/' + skinName + '.png');
-}
-
-//will load the skin list of a given character
-function loadSkins(comboList, character) {
-    const charInfo = getJson(charPath + "/" + character + "/_Info");
-
-    clearList(comboList); //clear the past character's skin list
-    if (charInfo) { //if character doesnt have a list (for example: Random), skip this
-        addEntries(comboList, charInfo.skinList); //will add everything on the skin list
-    }
-}
-
-//will add entries to a combo box with a given array
-function addEntries(comboList, list) {
-    for (let i = 0; i < list.length; i++) {
-        const option = document.createElement('option'); //create new entry
-        option.text = list[i]; //set the text of entry
-        option.className = "theEntry";
-        comboList.add(option); //add the entry to the combo list
-    }
-}
-
-//deletes all entries of a given combo list
-function clearList(comboList) {
-    for(let i = comboList.length; i >= 0; i--) {
-        comboList.remove(i);
-    }
-}
-
-//used to change the width of a combo box depending on the current text
-function changeListWidth(list) {
-    try { //this is to fix a bug that happens when trying to read from a hidden list
-        list.style.width = getTextWidth(list.selectedOptions[0].text,
-            window.getComputedStyle(list).fontSize + " " +
-            window.getComputedStyle(list).fontFamily
-            ) + 12 + "px";
-    } catch (error) {
-        //do absolutely nothing
+    // check if the file requested exists and add a placeholder if it doesnt
+    if (fs.existsSync(`${charPath}/${charName}/${skinName}.png`)) {
+        charImg.src = `${charPath}/${charName}/${skinName}.png`;
+    } else {
+        charImg.src = `${charPathRandom}/P2.png`;
     }
 }
 
@@ -739,7 +806,7 @@ function checkPlayerPreset(pNum) {
 
 }
 
-//now the complicated "change character image" function!
+// now the complicated "position character image" function!
 async function positionChar(character, skin, charEL) {
 
     //get the character positions
@@ -787,13 +854,9 @@ function playerPreset(el, pNum) {
     pNameInps[pNum].value = el.style.getPropertyValue("--name");
     changeInputWidth(pNameInps[pNum]);
 
-    changeListValue(charLists[pNum], el.style.getPropertyValue("--char"));
-    charChange(charLists[pNum]);
+    charChange(el.style.getPropertyValue("--char"), pNum);
 
-    changeListValue(skinLists[pNum], el.style.getPropertyValue("--skin"));
-    skinChange(skinLists[pNum]);
-
-    checkCustomSkin(pNum);
+    skinChange(el.style.getPropertyValue("--char"), el.style.getPropertyValue("--skin"), pNum)
 
     pFinder.style.display = "none";
 
@@ -813,37 +876,10 @@ function addActive(x) {
 
     //add to the selected entry the active class
     x[currentFocus].classList.add("finderEntry-active");
-}
 
-
-function checkCustomSkin(pNum) {
-
-    //get the player preset list for the current text
-    const playerList = getJson(textPath + "/Player Info/" + pNameInps[pNum].value);
+    // make it scroll if it goes out of view
+    x[currentFocus].scrollIntoView(false);
     
-    if (playerList) { //safety check
-
-        playerList.characters.forEach(char => { //for each possible character
-
-            //if the current character is on the list
-            if (char.character == charLists[pNum].selectedOptions[0].text) {
-
-                //first, check if theres a custom skin already
-                if (skinLists[pNum].selectedOptions[0].className == "playerCustom") {
-                    skinLists[pNum].remove(skinLists[pNum].selectedIndex);
-                }
-
-                const option = document.createElement('option'); //create new entry
-                option.className = "playerCustom"; //set class so the background changes
-                option.text = char.skin; //set the text of entry
-                skinLists[pNum].add(option, 0); //add the entry to the beginning of the list
-                skinLists[pNum].selectedIndex = 0; //leave it selected
-                skinChange(skinLists[pNum]); //update the image
-            }
-
-        });
-
-    }
 }
 
 
@@ -948,14 +984,16 @@ function changeGamemode() {
 
             document.getElementById('row2-'+i).insertAdjacentElement("beforeend", document.getElementById('pInfo'+i));
 
-            charLists[i+1].style.display = "block";
-            if (skinLists[i+1].options.length <= 1) {
+            skinSelectors[i+1].style.display = "flex";
+            charSelectors[i+1].style.display = "flex";
+            /* if (skinLists[i+1].options.length <= 1) {
                 skinLists[i+1].style.display = "none";
             } else {
                 skinLists[i+1].style.display = "block";
-            }
+            } */
 
             document.getElementById('pInfo'+(i+2)).style.display = "flex";
+
         }
 
         //add some left margin to the name/tag inputs, add border radius, change max width
@@ -968,8 +1006,8 @@ function changeGamemode() {
             pTagInps[i].style.maxWidth = "45px"
             pNameInps[i].style.maxWidth = "94px"
             
-            charLists[i].style.maxWidth = "65px";
-            skinLists[i].style.maxWidth = "65px";
+            charSelectors[i].style.maxWidth = "65px";
+            skinSelectors[i].style.maxWidth = "65px";
         }
 
 
@@ -1004,8 +1042,8 @@ function changeGamemode() {
             charImgs[i-1].style.opacity = 1;
 
             tNameInps[i-1].style.display = "none";
-            charLists[i+1].style.display = "none";
-            skinLists[i+1].style.display = "none";
+            charSelectors[i+1].style.display = "none";
+            skinSelectors[i+1].style.display = "none";
 
             document.getElementById('pInfo'+(i+2)).style.display = "none";
 
@@ -1026,8 +1064,8 @@ function changeGamemode() {
             pTagInps[i].style.maxWidth = "70px"
             pNameInps[i].style.maxWidth = "173px"
             
-            charLists[i].style.maxWidth = "141px";
-            skinLists[i].style.maxWidth = "141px";
+            charSelectors[i].style.maxWidth = "141px";
+            skinSelectors[i].style.maxWidth = "141px";
         }
 
         this.setAttribute('title', "Change the gamemode to Doubles");
@@ -1065,40 +1103,17 @@ function swap() {
 
 
         //characters and skins
-        const tempP1Char = charLists[i].selectedOptions[0].text;
-        const tempP2Char = charLists[i+1].selectedOptions[0].text;
+        const tempP1Char = charSelectors[i].getElementsByClassName("charSelectorText")[0].innerHTML;
+        const tempP2Char = charSelectors[i+1].getElementsByClassName("charSelectorText")[0].innerHTML;
+        const tempP1Skin = skinSelectors[i].innerText;
+        const tempP2Skin = skinSelectors[i+1].innerText;
+        // update the suff
+        charChange(tempP2Char, i);
+        charChange(tempP1Char, i+1);
         
-        //we need to perform this check since the program would halt when reading from null
-        let p1RealSkin, p2RealSkin;
-        try {
-            p1RealSkin = skinLists[i].selectedOptions[0].text
-        } catch (error) {
-            p1RealSkin = "";
-        }
-        try {
-            p2RealSkin = skinLists[i+1].selectedOptions[0].text
-        } catch (error) {
-            p2RealSkin = "";
-        }
+        skinChange(tempP2Char, tempP2Skin, i);
+        skinChange(tempP1Char, tempP1Skin, i+1);
 
-        const tempP1Skin = p1RealSkin;
-        const tempP2Skin = p2RealSkin;
-
-        changeListValue(charLists[i], tempP2Char);
-        changeListValue(charLists[i+1], tempP1Char);
-        //the change event doesnt fire up on its own so we have to change the image ourselves
-        charChange(charLists[i]);
-        charChange(charLists[i+1]);
-
-        //same but for skins
-        changeListValue(skinLists[i], tempP2Skin);
-        changeListValue(skinLists[i+1], tempP1Skin);
-        skinChange(skinLists[i]);
-        skinChange(skinLists[i+1]);
-
-        //find out if the swapped skin is a custom one
-        checkCustomSkin(i);
-        checkCustomSkin(i);
     }    
 
     //scores
@@ -1142,33 +1157,17 @@ function clearPlayers() {
         changeInputWidth(pTagInps[i]);
 
         //reset characters to random
-        clearList(charLists[i]);
+        charChange("Random", i);
 
-    }
-
-    //reset the character lists
-    loadCharacters();
-
-    //dont forget to clear the skin list!
-    for (let i = 0; i < maxPlayers; i++) {
-        clearList(skinLists[i]);
-        skinLists[i].style.display = "none";
     }
 
     //clear player scores
     for (let i = 0; i < checks.length; i++) {
         checks[i].checked = false;
     }
+
 }
 
-//to force the list to use a specific entry
-function changeListValue(list, name) {
-    for (let i = 0; i < list.length; i++) {
-        if (list.options[i].text == name) {
-            list.selectedIndex = i;
-        }
-    }
-}
 
 //manually sets the player's score
 function setScore(score, tick1, tick2, tick3) {
@@ -1192,17 +1191,11 @@ function workshopToggle() {
 
     // set a new character path
     charPath = this.checked ? charPathWork : charPathBase;
-    
-    //clear current character lists
-    for (let i = 0; i < maxPlayers; i++) {
-        clearList(charLists[i])        
-    }
-    //then reload character lists
+    // reload character lists
     loadCharacters();
-    //dont forget to clear the skin lists
+    // clear current character lists
     for (let i = 0; i < maxPlayers; i++) {
-        clearList(skinLists[i])
-        skinLists[i].style.display = "none";
+        charChange("Random", i);
     }
 
     // disable or enable alt arts checkbox
@@ -1270,17 +1263,18 @@ function copyMatch() {
         if (pTagInps[0].value) {
             copiedText += pTagInps[0].value + " | ";
         }
-        copiedText += pNameInps[0].value + " (" + charLists[0].selectedOptions[0].text +") VS ";
+        copiedText += pNameInps[0].value + " (" +  charSelectors[0].getElementsByClassName("charSelectorText")[0].innerHTML +") VS ";
         if (pTagInps[1].value) {
             copiedText += pTagInps[1].value + " | ";
         }
-        copiedText += pNameInps[1].value + " (" + charLists[1].selectedOptions[0].text +")";
+        copiedText += pNameInps[1].value + " (" +  charSelectors[1].getElementsByClassName("charSelectorText")[0].innerHTML +")";
     } else { //for team matches
         copiedText += tNameInps[0].value + " VS " + tNameInps[1].value;
     }
 
     //send the string to the user's clipboard
     navigator.clipboard.writeText(copiedText);
+
 }
 
 // called whenever the used clicks on a settings checkbox
@@ -1335,14 +1329,8 @@ function writeScoreboard() {
     for (let i = 0; i < maxPlayers; i++) {
 
         // to simplify code
-        const charname = charLists[i].selectedOptions[0].text;
-        // we need to perform this check since the program would halt when reading from null
-        let charSkin;
-        try {
-            charSkin = skinLists[i].selectedOptions[0].text
-        } catch (error) {
-            charSkin = "";
-        }
+        const charname = charSelectors[i].getElementsByClassName("charSelectorText")[0].innerHTML;
+        const charSkin = skinSelectors[i].innerText;
         // get the character position data
         let charPos = getJson(`${charPath}/${charname}/_Info`);
 
@@ -1400,14 +1388,18 @@ function writeScoreboard() {
         let vsTrailImg;
         let vsBG = `${browserCharPath}/${charname}/BG.webm`;
         // for HD skins
+        let vsSkinUsed = charSkin;
         if (forceHDCheck.checked) {
             if (charSkin.includes("LoA") && !noLoAHDCheck.checked) {
                 vsCharImg = `${browserCharPath}/${charname}/LoA HD.png`;
+                vsSkinUsed = "LoA HD";
             } else {
                 vsCharImg = `${browserCharPath}/${charname}/HD.png`;
+                vsSkinUsed = "HD";
             }
             if (!fs.existsSync(vsCharImg)) {
                 vsCharImg = `${browserCharPath}/${charname}/${charSkin}.png`;
+                vsSkinUsed = charSkin;
             }
         }
         // if the file doesnt exist, send the Random image
@@ -1418,11 +1410,11 @@ function writeScoreboard() {
         }
         // get the character positions
         if (charPos && vsImgFound) {
-            if (charPos.vsScreen[charSkin]) { // if the skin has a specific position
-                vsCharPos[0] = charPos.vsScreen[charSkin].x;
-                vsCharPos[1] = charPos.vsScreen[charSkin].y;
-                vsCharPos[2] = charPos.vsScreen[charSkin].scale;
-                vsTrailImg = `${browserCharPath}/${charname}/Trails/${currentColors[i%2].name} ${charSkin}.png`;
+            if (charPos.vsScreen[vsSkinUsed]) { // if the skin has a specific position
+                vsCharPos[0] = charPos.vsScreen[vsSkinUsed].x;
+                vsCharPos[1] = charPos.vsScreen[vsSkinUsed].y;
+                vsCharPos[2] = charPos.vsScreen[vsSkinUsed].scale;
+                vsTrailImg = `${browserCharPath}/${charname}/Trails/${currentColors[i%2].name} ${vsSkinUsed}.png`;
             } else { //if not, use a default position
                 vsCharPos[0] = charPos.vsScreen.neutral.x;
                 vsCharPos[1] = charPos.vsScreen.neutral.y;
@@ -1449,7 +1441,7 @@ function writeScoreboard() {
         } else if (charSkin == "Ragnir") { // Ragnir shows the default stages in the actual game
             vsBG = 'Resources/Characters/BG.webm';
         } else if (charname == "Shovel Knight" && charSkin == "Golden") { // why not
-            vsBG = browserCharPath + charname + '/BG Golden.webm';
+            vsBG = `${browserCharPath}/${charname}/BG Golden.webm`;
         } else if (charPos) { // safety check
             if (charPos.vsScreen["background"]) { // if the character has a specific BG
                 vsBG = `${browserCharPath}/${charPos.vsScreen["background"]}/BG.webm`;
