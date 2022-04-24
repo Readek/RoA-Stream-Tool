@@ -303,6 +303,7 @@ input[type="text"] {
   display: flex;
   align-items: center;
   font-family: 'Roboto-Regular';
+  white-space: nowrap;
   gap: 3px;
   overflow: hidden;
 }

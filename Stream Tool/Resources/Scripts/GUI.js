@@ -143,8 +143,8 @@ function init() {
         charChange("Random", i);
     }
     // also set listeners for the input filters of char/skin selects
-    charFinder.addEventListener("input", () => {filterFinder(charFinder)})
-    skinFinder.addEventListener("input", () => {filterFinder(skinFinder)})
+    charFinder.addEventListener("input", () => {filterFinder(charFinder)});
+    skinFinder.addEventListener("input", () => {filterFinder(skinFinder)});
     
 
     //score tick listeners, to automatically check/uncheck the other ticks
@@ -464,7 +464,7 @@ function openSkinSelector(pNum) {
 
     // focus the search input field and clear its contents
     skinFinder.firstElementChild.value = "";
-    skinFinder.firstElementChild.focus();
+    skinFinder.firstElementChild.focus({preventScroll: true});
 
     currentPlayer = pNum;
     
@@ -949,6 +949,9 @@ function checkRound() {
 //called when clicking on the gamemode icon, cycles through singles and doubles
 function changeGamemode() {
 
+    // store 2v2 only elements
+    const dubEls = document.getElementsByClassName("elGm2");
+
     //things are about to get messy
     if (gamemode == 1) {
         
@@ -958,10 +961,6 @@ function changeGamemode() {
         gmIcon2.style.opacity = 0;
         gmIcon1.style.left = "11px"; 
         
-        //hide the background character image to reduce clutter
-        charImgs[0].style.opacity = 0;
-        charImgs[1].style.opacity = 0;
-
         //add some margin to the color buttons, change border radius
         const lColor = document.getElementById("lColor");
         lColor.style.marginLeft = "5px";
@@ -972,28 +971,23 @@ function changeGamemode() {
         rColor.style.borderTopLeftRadius = "3px";
         rColor.style.borderBottomLeftRadius = "3px";
 
+        // display all 2v2 only elements
+        for (let i = 0; i < dubEls.length; i++) {
+            dubEls[i].style.display = "flex";
+        }
+
         for (let i = 1; i < 3; i++) {
+            //hide the background character image to reduce clutter
+            charImgs[i-1].style.display = "none";
+
             document.getElementById("row1-"+i).insertAdjacentElement("afterbegin", wlButtons[i-1]);
             document.getElementById("row1-"+i).insertAdjacentElement("afterbegin", document.getElementById('scoreBox'+i));
             
             document.getElementById("scoreText"+i).style.display = "none";
 
-            tNameInps[i-1].style.display = "block";
-
             document.getElementById("row1-"+i).insertAdjacentElement("afterbegin", tNameInps[i-1]);
 
             document.getElementById('row2-'+i).insertAdjacentElement("beforeend", document.getElementById('pInfo'+i));
-
-            skinSelectors[i+1].style.display = "flex";
-            charSelectors[i+1].style.display = "flex";
-            /* if (skinLists[i+1].options.length <= 1) {
-                skinLists[i+1].style.display = "none";
-            } else {
-                skinLists[i+1].style.display = "block";
-            } */
-
-            document.getElementById('pInfo'+(i+2)).style.display = "flex";
-
         }
 
         //add some left margin to the name/tag inputs, add border radius, change max width
@@ -1009,7 +1003,6 @@ function changeGamemode() {
             charSelectors[i].style.maxWidth = "65px";
             skinSelectors[i].style.maxWidth = "65px";
         }
-
 
         //change the hover tooltip
         this.setAttribute('title', "Change the gamemode to Singles");
@@ -1035,15 +1028,16 @@ function changeGamemode() {
         const rColor = document.getElementById("rColor");
         rColor.style.marginLeft = "0px";
         rColor.style.borderTopLeftRadius = "0px";
-        rColor.style.borderBottomLeftRadius = "0px";        
+        rColor.style.borderBottomLeftRadius = "0px";
+
+        // hide all 2v2 only elements
+        for (let i = 0; i < dubEls.length; i++) {
+            dubEls[i].style.display = "none";
+        }
 
         //move everything back to normal
         for (let i = 1; i < 3; i++) {
-            charImgs[i-1].style.opacity = 1;
-
-            tNameInps[i-1].style.display = "none";
-            charSelectors[i+1].style.display = "none";
-            skinSelectors[i+1].style.display = "none";
+            charImgs[i-1].style.display = "block";
 
             document.getElementById('pInfo'+(i+2)).style.display = "none";
 
@@ -1052,7 +1046,6 @@ function changeGamemode() {
             document.getElementById("scoreText"+i).style.display = "block";
         
             document.getElementById('row1-'+i).insertAdjacentElement("afterbegin", document.getElementById('pInfo'+i));
-        
         }
 
         for (let i = 0; i < maxPlayers; i++) {
@@ -1335,27 +1328,29 @@ function writeScoreboard() {
         let charPos = getJson(`${charPath}/${charname}/_Info`);
 
         // get us the path used by the browser sources
-        let browserCharPath = "Resources/Characters";
+        let browserCharPath = "Characters";
         if (workshopCheck.checked) {
-            browserCharPath = "Resources/Characters/_Workshop";
+            browserCharPath = "Characters/_Workshop";
         }
 
         // set data for the scoreboard
-        let scCharImg = `${browserCharPath}/${charname}/${charSkin}.png`;
+        let scCharImg = `${charname}/${charSkin}.png`;
         let scCharPos = [];
         // if alt art is enabled, change the path
         if (forceAlt.checked) {
-            scCharImg = `${browserCharPath}/${charname}/Alt/${charSkin}.png`;
+            scCharImg = `${charname}/Alt/${charSkin}.png`;
             // if an alt for this character can't be found, go back to regular path
-            if (!fs.existsSync(scCharImg)) {
-                scCharImg = `${browserCharPath}/${charname}/${charSkin}.png`;
+            if (!fs.existsSync(`${__dirname}/${browserCharPath}/${scCharImg}`)) {
+                scCharImg = `${charname}/${charSkin}.png`;
             }
         }
         // if the file doesnt exist, send the Random image
         let scImgFound = true;
-        if (!fs.existsSync(scCharImg)) {
+        if (!fs.existsSync(`${__dirname}/${browserCharPath}/${scCharImg}`)) {
             scCharImg = `Resources/Characters/Random/P${(i % 2) + 1}.png`;
             scImgFound = false;
+        } else {
+            scCharImg = `Resources/${browserCharPath}/${scCharImg}`;
         }
         // get the character positions
         if (charPos && scImgFound) {
@@ -1383,30 +1378,32 @@ function writeScoreboard() {
         }
 
         // now, basically the same as above, but for the VS
-        let vsCharImg = `${browserCharPath}/${charname}/${charSkin}.png`;
+        let vsCharImg = `${charname}/${charSkin}.png`;
         let vsCharPos = [];
         let vsTrailImg;
-        let vsBG = `${browserCharPath}/${charname}/BG.webm`;
+        let vsBG = `${charname}/BG.webm`;
         // for HD skins
         let vsSkinUsed = charSkin;
         if (forceHDCheck.checked) {
             if (charSkin.includes("LoA") && !noLoAHDCheck.checked) {
-                vsCharImg = `${browserCharPath}/${charname}/LoA HD.png`;
+                vsCharImg = `${charname}/LoA HD.png`;
                 vsSkinUsed = "LoA HD";
             } else {
-                vsCharImg = `${browserCharPath}/${charname}/HD.png`;
+                vsCharImg = `${charname}/HD.png`;
                 vsSkinUsed = "HD";
             }
-            if (!fs.existsSync(vsCharImg)) {
-                vsCharImg = `${browserCharPath}/${charname}/${charSkin}.png`;
+            if (!fs.existsSync(`${__dirname}/${browserCharPath}/${vsCharImg}`)) {
+                vsCharImg = `${charname}/${charSkin}.png`;
                 vsSkinUsed = charSkin;
             }
         }
         // if the file doesnt exist, send the Random image
         let vsImgFound = true;
-        if (!fs.existsSync(vsCharImg)) {
+        if (!fs.existsSync(`${__dirname}/${browserCharPath}/${vsCharImg}`)) {
             vsCharImg = `Resources/Characters/Random/P${(i % 2) + 1}.png`;
             vsImgFound = false;
+        } else {
+            vsCharImg = `Resources/${browserCharPath}/${vsCharImg}`;
         }
         // get the character positions
         if (charPos && vsImgFound) {
@@ -1414,12 +1411,12 @@ function writeScoreboard() {
                 vsCharPos[0] = charPos.vsScreen[vsSkinUsed].x;
                 vsCharPos[1] = charPos.vsScreen[vsSkinUsed].y;
                 vsCharPos[2] = charPos.vsScreen[vsSkinUsed].scale;
-                vsTrailImg = `${browserCharPath}/${charname}/Trails/${currentColors[i%2].name} ${vsSkinUsed}.png`;
+                vsTrailImg = `Resources/${browserCharPath}/${charname}/Trails/${currentColors[i%2].name} ${vsSkinUsed}.png`;
             } else { //if not, use a default position
                 vsCharPos[0] = charPos.vsScreen.neutral.x;
                 vsCharPos[1] = charPos.vsScreen.neutral.y;
                 vsCharPos[2] = charPos.vsScreen.neutral.scale;
-                vsTrailImg = `${browserCharPath}/${charname}/Trails/${currentColors[i%2].name}.png`;
+                vsTrailImg = `Resources/${browserCharPath}/${charname}/Trails/${currentColors[i%2].name}.png`;
             }
         } else { // if there are no character positions, set positions for "Random"
             if (i % 2 == 0) {
@@ -1434,22 +1431,27 @@ function writeScoreboard() {
                 vsCharPos[1] = 0;
             }
             vsCharPos[2] = .8;
+            vsTrailImg = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=='; // 1x1 transparent pixel
         }
         // oh we are still not done here, we need to check the BG
         if (charSkin.includes("LoA")) { // show LoA background if the skin is LoA
-            vsBG = 'Resources/Characters/BG LoA.webm';
-        } else if (charSkin == "Ragnir") { // Ragnir shows the default stages in the actual game
-            vsBG = 'Resources/Characters/BG.webm';
+            vsBG = 'BG LoA.webm';
+            browserCharPath = "Characters";
+        } else if (charSkin == "Ragnir") { // Ragnir shows the default stage in the actual game
+            vsBG = 'BG.webm';
+            browserCharPath = "Characters";
         } else if (charname == "Shovel Knight" && charSkin == "Golden") { // why not
-            vsBG = `${browserCharPath}/${charname}/BG Golden.webm`;
+            vsBG = `${charname}/BG Golden.webm`;
         } else if (charPos) { // safety check
             if (charPos.vsScreen["background"]) { // if the character has a specific BG
-                vsBG = `${browserCharPath}/${charPos.vsScreen["background"]}/BG.webm`;
+                vsBG = `${charPos.vsScreen["background"]}/BG.webm`;
             }
         }
         // if it doesnt exist, use a default BG
-        if (!fs.existsSync(vsBG)) {
+        if (!fs.existsSync(`${__dirname}/${browserCharPath}/${vsBG}`)) {
             vsBG = "Resources/Characters/BG.webm";
+        } else {
+            vsBG = `Resources/${browserCharPath}/${vsBG}`;
         }
 
         // finally, add it to the main json
