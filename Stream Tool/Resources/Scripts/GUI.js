@@ -220,10 +220,18 @@ function init() {
     //enter
     Mousetrap.bind('enter', () => {
 
-        if (pFinder.style.display == "block") { // safety check so we dont update while the menu is active
-            // if the player presets menu is open, load preset
-            if (pFinder.style.display == "block" && currentFocus > -1) {
+        // if a dropdown menu is open, click on the current focus
+        if (pFinder.style.display == "block") {
+            if (currentFocus > -1) {
                 pFinder.getElementsByClassName("finderEntry")[currentFocus].click();
+            }
+        } else if (window.getComputedStyle(charFinder).getPropertyValue("display") == "block") {
+            if (currentFocus > -1) {
+                charFinder.getElementsByClassName("finderEntry")[currentFocus].click();
+            }
+        } else if (window.getComputedStyle(skinFinder).getPropertyValue("display") == "block") {
+            if (currentFocus > -1) {
+                skinFinder.getElementsByClassName("finderEntry")[currentFocus].click();
             }
         } else {
             //update scoreboard info (updates botBar color for visual feedback)
@@ -241,8 +249,11 @@ function init() {
     Mousetrap.bind('esc', () => {
         if (movedSettings) { //if settings are open, close them
             goBack();
-        } else if (pFinder.style.display == "block") { // if the player finder is open, close it
+        } else if (pFinder.style.display == "block") { // if a finder menu is open, close it
             pFinder.style.display = "none";
+        } else if (window.getComputedStyle(charFinder).getPropertyValue("display") == "block"
+        || window.getComputedStyle(skinFinder).getPropertyValue("display") == "block") {
+            document.activeElement.blur();
         } else {
             clearPlayers(); //by default, clear player info
         }
@@ -255,14 +266,20 @@ function init() {
     //up/down, to navigate the player presets menu (only when a menu is shown)
     Mousetrap.bind('down', () => {
         if (pFinder.style.display == "block") {
-            currentFocus++;
-            addActive(pFinder.getElementsByClassName("finderEntry"));
+            addActive(pFinder.getElementsByClassName("finderEntry"), true);
+        } else if (window.getComputedStyle(charFinder).getPropertyValue("display") == "block") {
+            addActive(charFinder.getElementsByClassName("finderEntry"), true);
+        } else if (window.getComputedStyle(skinFinder).getPropertyValue("display") == "block") {
+            addActive(skinFinder.getElementsByClassName("finderEntry"), true);
         }
     });
     Mousetrap.bind('up', () => {
         if (pFinder.style.display == "block") {
-            currentFocus--;
-            addActive(pFinder.getElementsByClassName("finderEntry"));
+            addActive(pFinder.getElementsByClassName("finderEntry"), false);
+        } else if (window.getComputedStyle(charFinder).getPropertyValue("display") == "block") {
+            addActive(charFinder.getElementsByClassName("finderEntry"), false);
+        } else if (window.getComputedStyle(skinFinder).getPropertyValue("display") == "block") {
+            addActive(skinFinder.getElementsByClassName("finderEntry"), false);
         }
     });
 }
@@ -355,11 +372,13 @@ function openCharSelector(pNum) {
     // move the dropdown menu under the current char selector
     charSelectors[pNum].appendChild(charFinder);
 
-    // focus the search input field and clear its contents
+    // focus the search input field and reset the list
     charFinder.firstElementChild.value = "";
     charFinder.firstElementChild.focus();
+    filterFinder(charFinder);
 
     currentPlayer = pNum;
+    currentFocus = -1;
 
 }
 
@@ -367,7 +386,10 @@ function openCharSelector(pNum) {
 function charChange(character, pNum = -1) {
     
     // clear focus to hide character select menu
-    document.activeElement.blur()
+    document.activeElement.blur();
+
+    // clear filter box
+    charFinder.firstElementChild.value = "";
 
     if (pNum != -1) {
         currentPlayer = pNum;
@@ -462,11 +484,21 @@ function openSkinSelector(pNum) {
     // move the dropdown menu under the current skin selector
     skinSelectors[pNum].appendChild(skinFinder);
 
+    // if this is the right side, change anchor point so it stays visible
+    if (pNum%2 != 0) {
+        skinFinder.style.right = "0px";
+        skinFinder.style.left = "";
+    } else {
+        skinFinder.style.left = "0px";
+        skinFinder.style.right = "";
+    }
+
     // focus the search input field and clear its contents
     skinFinder.firstElementChild.value = "";
     skinFinder.firstElementChild.focus({preventScroll: true});
 
     currentPlayer = pNum;
+    currentFocus = -1;
     
 }
 
@@ -490,6 +522,9 @@ function skinChange(char, skin, pNum) {
 // called whenever we type anything on the finders
 function filterFinder(finder) {
 
+    // we want to store the first entry starting with filter value
+    let startsWith;
+
     // get the current text
     const filterValue = finder.getElementsByClassName("listSearch")[0].value;
 
@@ -508,6 +543,21 @@ function filterFinder(finder) {
             finderEntries[i].style.display = "none";
         }
 
+        // if its starts with the value, store its position
+        if (entryName.toLocaleLowerCase().startsWith(filterValue.toLocaleLowerCase()) && !startsWith) {
+            startsWith = i;
+        }
+
+    }
+
+    currentFocus = -1;
+
+    // if no value, just remove any remaining active classes
+    if (filterValue == "") {
+        removeActiveClass(finder.getElementsByClassName("finderEntry"));
+    } else {
+        if (startsWith) currentFocus = startsWith - 1;
+        addActive(finder.getElementsByClassName("finderEntry"), true);
     }
 
 }
@@ -715,6 +765,9 @@ function checkPlayerPreset(pNum) {
     //clear the current list each time we type
     pFinder.innerHTML = "";
 
+    // check for later
+    let fileFound;
+
     //if we typed at least 3 letters
     if (pNameInps[pNum].value.length >= 3) {
 
@@ -727,6 +780,9 @@ function checkPlayerPreset(pNum) {
 
             //if the current text matches a file from that folder
             if (file.toLocaleLowerCase().includes(pNameInps[pNum].value.toLocaleLowerCase())) {
+
+                // store that we found at least one preset
+                fileFound = true;
 
                 //un-hides the player presets div
                 pFinder.style.display = "block";
@@ -792,6 +848,11 @@ function checkPlayerPreset(pNum) {
                 });
             }
         });
+    }
+
+    // if no presets were found, hide the player finder
+    if (!fileFound) {
+        pFinder.style.display = "none";
     }
 
     // if playing 2v2 and if the current player is on the right side
@@ -863,23 +924,84 @@ function playerPreset(el, pNum) {
 }
 
 
-//visual feedback to navigate the player presets menu
-function addActive(x) {
+// visual feedback to navigate menus with the keyboard
+function addActive(x, direction) {
+    
+    removeActiveClass(x);
+
+    // if true, were going up
+    if (direction) {
+
+        // increase that focus
+        currentFocus++;
+        // if end of list, cicle
+        if (currentFocus >= x.length) currentFocus = 0;
+
+        // search for the next visible entry
+        while (currentFocus <= x.length-1) {
+            if (x[currentFocus].style.display == "none") {
+                currentFocus++;
+            } else {
+                break;
+            }
+        }
+        // if we didnt find any, start from 0
+        if (currentFocus == x.length) {
+            currentFocus = 0;
+            while (currentFocus <= x.length-1) {
+                if (x[currentFocus].style.display == "none") {
+                    currentFocus++;
+                } else {
+                    break;
+                }
+            }
+        }
+        // if even then we couldnt find a visible entry, set it to invalid
+        if (currentFocus == x.length) {
+            currentFocus = -1;
+        }
+
+    } else { // same as above but inverted
+        currentFocus--;
+        if (currentFocus < 0) currentFocus = (x.length - 1);
+        while (currentFocus > -1) {
+            if (x[currentFocus].style.display == "none") {
+                currentFocus--;
+            } else {
+                break;
+            }
+        }
+        if (currentFocus == -1) {
+            currentFocus = x.length-1;
+            while (currentFocus > -1) {
+                if (x[currentFocus].style.display == "none") {
+                    currentFocus--;
+                } else {
+                    break;
+                }
+            }
+        }
+        if (currentFocus == x.length) {
+            currentFocus = -1;
+        }
+    }
+
+    // if there is a valid entry
+    if (currentFocus > -1) {
+        //add to the selected entry the active class
+        x[currentFocus].classList.add("finderEntry-active");
+        // make it scroll if it goes out of view
+        setImmediate(() => { // smooth scroll will break the focus if we dont wait a bit
+            x[currentFocus].scrollIntoView({behavior: "smooth", block: "center"});
+        });
+    }
+    
+}
+function removeActiveClass(x) {
     //clears active from all entries
     for (let i = 0; i < x.length; i++) {
         x[i].classList.remove("finderEntry-active");
     }
-
-    //if end of list, cicle
-    if (currentFocus >= x.length) currentFocus = 0;
-    if (currentFocus < 0) currentFocus = (x.length - 1);
-
-    //add to the selected entry the active class
-    x[currentFocus].classList.add("finderEntry-active");
-
-    // make it scroll if it goes out of view
-    x[currentFocus].scrollIntoView(false);
-    
 }
 
 
