@@ -4,6 +4,15 @@ const fs = require('fs');
 const electron = require('electron');
 const ipc = electron.ipcRenderer;
 
+// this is a weird way to have file svg's that can be recolored by css
+customElements.define("load-svg", class extends HTMLElement {
+    async connectedCallback(
+      shadowRoot = this.shadowRoot || this.attachShadow({mode:"open"})
+    ) {
+      shadowRoot.innerHTML = await (await fetch(this.getAttribute("src"))).text()
+    }
+})
+
 // yes we all like global variables
 const textPath = __dirname + '/Texts';
 const charPathBase = __dirname + '/Characters';
@@ -1079,9 +1088,8 @@ function changeGamemode() {
         
         gamemode = 2;
 
-        //show singles icon
-        gmIcon2.style.opacity = 0;
-        gmIcon1.style.left = "11px"; 
+        // change gamemode selector text
+        this.innerText = "1v1";
         
         //add some margin to the color buttons, change border radius
         const lColor = document.getElementById("lColor");
@@ -1137,10 +1145,8 @@ function changeGamemode() {
 
         gamemode = 1;
 
-        //show doubles icon
-        gmIcon2.style.opacity = 1;
-        gmIcon1.style.left = "4px";
-        gmIcon2.style.left = "17px";
+        // change gamemode selector text
+        this.innerText = "2v2";
 
         //remove color button margin, change border radius
         const lColor = document.getElementById("lColor");

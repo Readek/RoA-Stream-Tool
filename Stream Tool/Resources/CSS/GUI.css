@@ -571,6 +571,11 @@ input[type="text"] {
   border: 1px solid var(--focused);
   transition: border-color 100ms;
   flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--text2);
+  font-family: 'Roboto-Medium';
 }
 #gamemode:hover {
   border-color: var(--selected);
@@ -613,11 +618,11 @@ input[type="text"] {
   fill: #b6b6b6;
 }
 
-#twitterIcon {
+.twitterIcon {
   margin-right: 4px;
   margin-left: 5px;
 }
-#twitchIcon {
+.twitchIcon {
   margin-right: 4px;
   margin-left: 5px;
 }
@@ -695,9 +700,6 @@ input[type="text"] {
 #configIcon {
   width: 20px;
   height: 20px;
-}
-
-#configIcon path {
   fill: var(--text2);
 }
 
