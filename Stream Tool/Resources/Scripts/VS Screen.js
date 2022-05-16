@@ -17,6 +17,8 @@ const introDelay = .05; //all animations will get this delay when the html loads
 //max text sizes (used when resizing back)
 const playerSize = '90px';
 const tagSize = '50px';
+const playerSizeDubs = "45px";
+const tagSizeDubs = "25px";
 const teamSize = '80px';
 const roundSize = '38px';
 const tournamentSize = '28px';
@@ -155,7 +157,7 @@ async function updateData(scInfo) {
 		for (let i = 0; i < maxPlayers; i++) {
 
 			//lets start simple with the player names & tags 
-			updatePlayerName(i, player[i].name, player[i].tag);
+			updatePlayerName(i, player[i].name, player[i].tag, gamemode);
 
 			//fade in the player text
 			fadeIn(pWrapper[i], introDelay+.3);
@@ -316,7 +318,7 @@ async function updateData(scInfo) {
 				//fade out the player's text
 				fadeOut(pWrapper[i]).then( () => {
 					//now that nobody is seeing it, change the content of the texts!
-					updatePlayerName(i, player[i].name, player[i].tag);
+					updatePlayerName(i, player[i].name, player[i].tag, gamemode);
 					//and fade the texts back in
 					fadeIn(pWrapper[i], .2);
 				});
@@ -440,6 +442,9 @@ function changeGM(gm) {
 			pWrapper[i].classList.add("wrappersDoubles");
 			pWrapper[i].classList.remove("p"+(i+1)+"WSingles");
 			pWrapper[i].classList.add("p"+(i+1)+"WDub");
+			//update the text size and resize it if it overflows
+			pName[i].style.fontSize = playerSizeDubs;
+			pTag[i].style.fontSize = tagSizeDubs;
 			resizeText(pWrapper[i]);
 		}
 
@@ -638,10 +643,15 @@ function updateSocial(mainSocial, mainText, mainWrapper, otherSocial, otherWrapp
 
 
 //player text change
-function updatePlayerName(pNum, name, tag) {
-	pName[pNum].style.fontSize = playerSize; //set original text size
+function updatePlayerName(pNum, name, tag, gamemode = 1) {
+	if (gamemode == 2) {
+		pName[pNum].style.fontSize = playerSizeDubs; //set original text size
+		pTag[pNum].style.fontSize = tagSizeDubs;
+	} else {
+		pName[pNum].style.fontSize = playerSize;
+		pTag[pNum].style.fontSize = tagSize;
+	}
 	pName[pNum].textContent = name; //change the actual text
-	pTag[pNum].style.fontSize = tagSize;
 	pTag[pNum].textContent = tag;
 
 	resizeText(pWrapper[pNum]); //resize if it overflows
