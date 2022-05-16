@@ -1,5 +1,14 @@
 'use strict';
 
+// this is a weird way to have file svg's that can be recolored by css
+customElements.define("load-svg", class extends HTMLElement {
+    async connectedCallback(
+      shadowRoot = this.shadowRoot || this.attachShadow({mode:"open"})
+    ) {
+      shadowRoot.innerHTML = await (await fetch(this.getAttribute("src"))).text()
+    }
+})
+
 //animation stuff
 const fadeInTime = .4; //(seconds)
 const fadeOutTime = .3;
@@ -654,9 +663,9 @@ function updateSocialText(textEL, textToType, maxSize, wrapperEL) {
 //text resize, keeps making the text smaller until it fits
 function resizeText(textEL) {
 	const childrens = textEL.children;
-	while (textEL.scrollWidth > textEL.offsetWidth || textEL.scrollHeight > textEL.offsetHeight) {
+	while (textEL.scrollWidth > textEL.offsetWidth) {
 		if (childrens.length > 0) { //for tag+player texts
-			Array.from(childrens).forEach(function (child) {
+			Array.from(childrens).forEach((child) => {
 				child.style.fontSize = getFontSize(child);
 			});
 		} else {
@@ -664,7 +673,6 @@ function resizeText(textEL) {
 		}
 	}
 }
-
 //returns a smaller fontSize for the given element
 function getFontSize(textElement) {
 	return (parseFloat(textElement.style.fontSize.slice(0, -2)) * .90) + 'px';

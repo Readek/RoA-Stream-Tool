@@ -250,12 +250,14 @@ body {
     width: 19px;
     fill: rgb(65, 65, 65);
     transform: translate(0px, 2px);
+    display: inline-block;
 }
 .twitchIcon {
     height: 17px;
     width: 17px;
     fill: rgb(65, 65, 65);
     transform: translate(0px, 1px);
+    display: inline-block;
 }
 
 #twitter1Wrapper, #twitter2Wrapper {
