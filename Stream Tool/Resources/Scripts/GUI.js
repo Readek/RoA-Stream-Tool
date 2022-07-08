@@ -24,6 +24,7 @@ const colorList = getJson(textPath + "/Color Slots");
 let currentColors = [0, 0];
 
 let scData; // we will store data to send to the browsers here
+const pInfos = []; // player info that doesnt have exclusive inputs
 
 let currentP1WL = "Nada";
 let currentP2WL = "Nada";
@@ -45,6 +46,7 @@ const maxPlayers = 4; //change this if you ever want to remake this into singles
 const viewport = document.getElementById('viewport');
 const overlayDiv = document.getElementById('overlay');
 const goBackDiv = document.getElementById('goBack');
+const pInfoDiv = document.getElementById("pInfoDiv");
 
 const tNameInps = document.getElementsByClassName("teamName");
 
@@ -54,9 +56,8 @@ function pushArrayInOrder(array, string1, string2 = "") {
         array.push(document.getElementById(string1+(i+1)+string2));
     }
 }
-const pNameInps = [], pTagInps = [], charSelectors = [], skinSelectors = [];
+const pNameInps = [], charSelectors = [], skinSelectors = [];
 pushArrayInOrder(pNameInps, "p", "Name");
-pushArrayInOrder(pTagInps, "p", "Tag");
 pushArrayInOrder(charSelectors, "p", "CharSelector");
 pushArrayInOrder(skinSelectors, "p", "SkinSelector");
 
@@ -192,11 +193,31 @@ function init() {
 
         //resize the container if it overflows
         pNameInps[i].addEventListener("input", resizeInput);
-        //also do it for tag inputs while we're at it
-        pTagInps[i].addEventListener("input", resizeInput);
+
+        // lets add in the init of the player info objects
+        const pInfo = {
+            pronouns : "",
+            tag : "",
+            twitter : "",
+            twitch : "",
+            yt : ""
+        }
+        pInfos.push(pInfo);
 
     }
+
+    // open player info menu if clicking on the icon
+    const pInfoButts = document.getElementsByClassName("pInfoButt");
+    for (let i = 0; i < pInfoButts.length; i++) {
+        pInfoButts[i].addEventListener("click", showPlayerInfo);
+    }
     
+    // close player info with the buttons
+    document.getElementById("pInfoBackButt").addEventListener("click", hidePlayerInfo);
+    document.getElementById("pInfoApplyButt").addEventListener("click", () => {
+        applyPlayerInfo();
+        hidePlayerInfo();
+    })
 
     //set click listeners to change the "best of" status
     bo3Div.addEventListener("click", changeBestOf);
@@ -298,7 +319,8 @@ function moveViewport() {
     if (!movedSettings) {
         viewport.style.transform = "translateX(-40%)";
         overlayDiv.style.opacity = ".25";
-        goBackDiv.style.display = "block"
+        goBackDiv.style.display = "block";
+        goBackDiv.style.
         movedSettings = true;
     }
 }
@@ -816,7 +838,7 @@ function checkPlayerPreset(pNum) {
 
                     //player name
                     const spanName = document.createElement('span');
-                    spanName.innerHTML = playerInfo.name;
+                    spanName.innerHTML = file;
                     spanName.className = "pfName";
 
                     //player character
@@ -826,7 +848,7 @@ function checkPlayerPreset(pNum) {
 
                     //we will use css variables to store data to read when clicked
                     newDiv.style.setProperty("--tag", playerInfo.tag);
-                    newDiv.style.setProperty("--name", playerInfo.name);
+                    newDiv.style.setProperty("--name", file);
                     newDiv.style.setProperty("--char", char.character);
                     newDiv.style.setProperty("--skin", char.skin);
 
@@ -918,8 +940,7 @@ async function positionChar(character, skin, charEL) {
 //called when the user clicks on a player preset
 function playerPreset(el, pNum) {
 
-    pTagInps[pNum].value = el.style.getPropertyValue("--tag");
-    changeInputWidth(pTagInps[pNum]);
+    pInfos[pNum].tag = el.style.getPropertyValue("--tag");
 
     pNameInps[pNum].value = el.style.getPropertyValue("--name");
     changeInputWidth(pNameInps[pNum]);
@@ -1037,6 +1058,48 @@ function getTextWidth(text, font) {
 }
 
 
+// when a player info button is clicked
+function showPlayerInfo() {
+    
+    const pNum = this.getAttribute("player") - 1;
+
+    document.getElementById("pInfoPNum").textContent = pNum + 1;
+
+    document.getElementById("pInfoInputPronouns").value = pInfos[pNum].pronouns;
+    document.getElementById("pInfoInputTag").value = pInfos[pNum].tag;
+    document.getElementById("pInfoInputName").value = pNameInps[pNum].value;
+    document.getElementById("pInfoInputTwitter").value = pInfos[pNum].twitter;
+    document.getElementById("pInfoInputTwitch").value = pInfos[pNum].twitch;
+    document.getElementById("pInfoInputYt").value = pInfos[pNum].yt;
+
+    pInfoDiv.style.pointerEvents = "auto";
+    pInfoDiv.style.opacity = 1;
+    pInfoDiv.style.transform = "scale(1)";
+    overlayDiv.style.opacity = .25;
+
+}
+function hidePlayerInfo() {
+    pInfoDiv.style.pointerEvents = "none";
+    pInfoDiv.style.opacity = 0;
+    pInfoDiv.style.transform = "scale(1.15)";
+    overlayDiv.style.opacity = 1;
+}
+function applyPlayerInfo() {
+    
+    const pNum = document.getElementById("pInfoPNum").textContent - 1;
+
+    pInfos[pNum].pronouns = document.getElementById("pInfoInputPronouns").value;
+    pInfos[pNum].tag = document.getElementById("pInfoInputTag").value;
+    pNameInps[pNum].value = document.getElementById("pInfoInputName").value;
+    pInfos[pNum].twitter = document.getElementById("pInfoInputTwitter").value;
+    pInfos[pNum].twitch = document.getElementById("pInfoInputTwitch").value;
+    pInfos[pNum].yt = document.getElementById("pInfoInputYt").value;
+
+    changeInputWidth(pNameInps[pNum]);
+
+}
+
+
 //used when clicking on the "Best of" buttons
 function changeBestOf() {
     let theOtherBestOf; //we always gotta know
@@ -1090,16 +1153,6 @@ function changeGamemode() {
 
         // change gamemode selector text
         this.innerText = "1v1";
-        
-        //add some margin to the color buttons, change border radius
-        const lColor = document.getElementById("lColor");
-        lColor.style.marginLeft = "5px";
-        lColor.style.borderTopLeftRadius = "3px";
-        lColor.style.borderBottomLeftRadius = "3px";
-        const rColor = document.getElementById("rColor");
-        rColor.style.marginLeft = "5px";
-        rColor.style.borderTopLeftRadius = "3px";
-        rColor.style.borderBottomLeftRadius = "3px";
 
         // display all 2v2 only elements
         for (let i = 0; i < dubEls.length; i++) {
@@ -1120,18 +1173,14 @@ function changeGamemode() {
             document.getElementById('row2-'+i).insertAdjacentElement("beforeend", document.getElementById('pInfo'+i));
         }
 
-        //add some left margin to the name/tag inputs, add border radius, change max width
+        // change max width to the name inputs and char selects
         for (let i = 0; i < maxPlayers; i++) {
-            pTagInps[i].style.marginLeft = "5px";
 
-            pNameInps[i].style.borderTopRightRadius = "3px";
-            pNameInps[i].style.borderBottomRightRadius = "3px";
-
-            pTagInps[i].style.maxWidth = "45px"
             pNameInps[i].style.maxWidth = "94px"
             
-            charSelectors[i].style.maxWidth = "65px";
-            skinSelectors[i].style.maxWidth = "65px";
+            charSelectors[i].style.maxWidth = "73px";
+            skinSelectors[i].style.maxWidth = "72px";
+
         }
 
         //change the hover tooltip
@@ -1147,16 +1196,6 @@ function changeGamemode() {
 
         // change gamemode selector text
         this.innerText = "2v2";
-
-        //remove color button margin, change border radius
-        const lColor = document.getElementById("lColor");
-        lColor.style.marginLeft = "0px";
-        lColor.style.borderTopLeftRadius = "0px";
-        lColor.style.borderBottomLeftRadius = "0px";
-        const rColor = document.getElementById("rColor");
-        rColor.style.marginLeft = "0px";
-        rColor.style.borderTopLeftRadius = "0px";
-        rColor.style.borderBottomLeftRadius = "0px";
 
         // hide all 2v2 only elements
         for (let i = 0; i < dubEls.length; i++) {
@@ -1177,16 +1216,12 @@ function changeGamemode() {
         }
 
         for (let i = 0; i < maxPlayers; i++) {
-            pTagInps[i].style.marginLeft = "0px";
 
-            pNameInps[i].style.borderTopRightRadius = "0px";
-            pNameInps[i].style.borderBottomRightRadius = "0px";
-
-            pTagInps[i].style.maxWidth = "70px"
-            pNameInps[i].style.maxWidth = "173px"
+            pNameInps[i].style.maxWidth = "210px"
             
             charSelectors[i].style.maxWidth = "141px";
             skinSelectors[i].style.maxWidth = "141px";
+            
         }
 
         this.setAttribute('title', "Change the gamemode to Doubles");
@@ -1215,13 +1250,11 @@ function swap() {
         changeInputWidth(pNameInps[i]);
         changeInputWidth(pNameInps[i+1]);
 
-        //tags
-        const tagStore = pTagInps[i].value;
-        pTagInps[i].value = pTagInps[i+1].value;
-        pTagInps[i+1].value = tagStore;
-        changeInputWidth(pTagInps[i]);
-        changeInputWidth(pTagInps[i+1]);
-
+        // player info
+        const tempPInfo1 = pInfos[i];
+        const tempPInfo2 = pInfos[i+1];
+        pInfos[i] = tempPInfo2;
+        pInfos[i+1] = tempPInfo1;
 
         //characters and skins
         const tempP1Char = charSelectors[i].getElementsByClassName("charSelectorText")[0].innerHTML;
@@ -1271,11 +1304,16 @@ function clearPlayers() {
 
     for (let i = 0; i < maxPlayers; i++) {
 
-        //clear player texts and tags
+        //clear player texts
         pNameInps[i].value = "";
         changeInputWidth(pNameInps[i]);
-        pTagInps[i].value = "";
-        changeInputWidth(pTagInps[i]);
+        
+        // clear player info
+        pInfos[i].pronouns = "";
+        pInfos[i].tag = "";
+        pInfos[i].twitter = "";
+        pInfos[i].twitch = "";
+        pInfos[i].yt = "";
 
         //reset characters to random
         charChange("Random", i);
@@ -1381,12 +1419,12 @@ function copyMatch() {
 
     if (gamemode == 1) { //for singles matches
         //check if the player has a tag to add
-        if (pTagInps[0].value) {
-            copiedText += pTagInps[0].value + " | ";
+        if (pInfos[0].tag) {
+            copiedText += pInfos[0].tag + " | ";
         }
         copiedText += pNameInps[0].value + " (" +  charSelectors[0].getElementsByClassName("charSelectorText")[0].innerHTML +") VS ";
-        if (pTagInps[1].value) {
-            copiedText += pTagInps[1].value + " | ";
+        if (pInfos[1].tag) {
+            copiedText += pInfos[1].tag + " | ";
         }
         copiedText += pNameInps[1].value + " (" +  charSelectors[1].getElementsByClassName("charSelectorText")[0].innerHTML +")";
     } else { //for team matches
@@ -1584,8 +1622,12 @@ function writeScoreboard() {
 
         // finally, add it to the main json
         scoreboardJson.player.push({
+            pronouns: pInfos[i].pronouns,
+            tag: pInfos[i].tag,
             name: pNameInps[i].value,
-            tag: pTagInps[i].value,
+            twitter: pInfos[i].twitter,
+            twitch: pInfos[i].twitch,
+            yt: pInfos[i].yt,
             sc : {
                 charImg: scCharImg,
                 charPos: scCharPos

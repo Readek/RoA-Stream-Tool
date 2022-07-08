@@ -1,6 +1,9 @@
 {
-    "name": "Test",
+    "pronouns": "",
     "tag": "One",
+    "twitter": "",
+    "twitch": "",
+    "yt": "",
     "characters": [
         {
             "character": "Absa",  "skin": "Default"

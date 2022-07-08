@@ -19,6 +19,7 @@
   --bg5: #2b2b2b;
   --selected: #2ba4eb;
   --focused: #686868;
+  --iconFill: #b6b6b6;
 }
 
 *::-webkit-scrollbar {
@@ -76,6 +77,25 @@ input[type="text"] {
   border-color: var(--focused);
 }
 
+/* rip button defaults */
+button {
+  outline: none;
+  overflow: visible;
+  border: none;
+  font: inherit;
+  padding: 0;
+  background-color: none;
+  background: none;
+  color: white;
+  text-transform: inherit;
+  text-shadow: inherit;
+}
+button, [type="button"] {
+  -webkit-appearance: button;
+}
+button:hover {
+  cursor: pointer;
+}
 
 /* main viewport */
 #viewport {
@@ -122,32 +142,51 @@ input[type="text"] {
   padding: 0px 10px;
   display: flex;
   align-items: center;
+  gap: 5px;
 }
 
 
 .teamName {
   width: 100%;
   display: none;
-  margin-right: 5px;
 }
 
 .playerInfo {
   display: flex;
 }
 
-.tagInput {
-  min-width: 34px;
-  max-width: 70px;
-  width: 34px;
+.pInfoButt {
+  width: 30px;
+  background-color: var(--bg4);
+  border-radius: 3px;
   border-top-right-radius: 0px;
   border-bottom-right-radius: 0px;
+  border: 1px solid var(--bg4);
+  transition: border-color 100ms;  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.pInfoButt:hover {
+  border-color: var(--selected);
+}
+.pInfoButt:focus {
+  border-color: var(--focused);
+}
+.pInfoButtIcon {
+  width: 22px;
+  height: 22px;
+  fill: var(--iconFill);
+  display: inline-block;
+  transform: translate(1px, 0px);
 }
 
 .nameInput {
   min-width: 60px;
-  max-width: 173px;
+  max-width: 210px;
   width: 60px;
-  border-radius: 0px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
 }
 
 .pFinderPosition, .cFinderPosition, .sFinderPosition {
@@ -228,8 +267,7 @@ input[type="text"] {
   background: var(--bg4);
   cursor: pointer;
   position: relative;
-  border-top-right-radius: 3px;
-  border-bottom-right-radius: 3px;
+  border-radius: 3px;
   border: 1px solid var(--bg4);
   box-sizing: border-box;
   outline: none;
@@ -314,6 +352,10 @@ input[type="text"] {
   background-color: var(--bg2);
 }
 
+.charSelects {
+  display: flex;
+}
+
 .charSelector {
   border-top-left-radius: 3px;
   border-bottom-left-radius: 3px;
@@ -366,11 +408,13 @@ input[type="text"] {
 .skinSelector {
   border-top-right-radius: 3px;
   border-bottom-right-radius: 3px;
+  border-left: 0px solid var(--selected);;
+}
+.skinSelector:hover {
   margin-left: -1px;
+  border-left: 1px solid var(--selected);
 }
-.charSelector:hover {
-  /* transform: scale(1); */ /* cheap trick to show a correct border */
-}
+
 
 
 .scoreBox {
@@ -385,13 +429,13 @@ input[type="text"] {
   align-items: center;
   color: var(--text2);
   font-family: 'Roboto-Medium';
+  gap: 1px;
 }
 .scoreBox:hover {
   border-color: var(--selected);
 }
 
 .scoreCheck {
-  margin-left: 5px;
   width: 14px;
   height: 14px;
   outline: none;
@@ -475,10 +519,11 @@ input[type="text"] {
 .midIcon {
   height: 12px;
   width: 12px;
-  fill: #b6b6b6;
+  fill: var(--iconFill);
   opacity: 0;
   transform: scale(1.5);
   transition: opacity 200ms, transform 200ms;
+  display: inline-block;
 }
 #swapIcon {
   opacity: .5;
@@ -585,23 +630,6 @@ input[type="text"] {
   background-color: #2b2b2b;
 }
 
-.gmIcon {
-  height: 23px;
-  width: 20px;
-  fill: #b6b6b6;
-  position: absolute;
-  top: 3px;
-}
-#gmIconBox {
-  position: absolute;
-}
-#gmIcon1 {
-  left: 4px;
-}
-#gmIcon2 {
-  left: 17px;
-}
-
 
 /* caster region */
 #casterInfo {
@@ -615,7 +643,8 @@ input[type="text"] {
   width: 20px;
   margin-left: -5px;
   margin-top: 5px;
-  fill: #b6b6b6;
+  fill: var(--iconFill);
+  display: inline-block;
 }
 
 .twitterIcon {
@@ -803,6 +832,81 @@ input[type="text"] {
   filter: brightness(.8);
 }
 
+
+/* player info */
+#pInfoDiv {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--bg4);
+  z-index: 100;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(1.15);
+  transition: opacity 150ms, transform 150ms;
+}
+
+#pInfoTitle {
+  font-family: "Roboto-Medium";
+  font-size: 18px;
+  border-bottom: solid 1px var(--text2);
+  padding: 3px;
+  text-transform: uppercase;
+}
+
+#pInfoStuff {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.pInfoRow {
+  display: flex;
+  gap: 10px;
+}
+
+.pInfoEl {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg2);
+  border: 1px solid var(--focused);
+  border-radius: 3px;
+}
+
+.pInfoIconCont {
+  width: 30px;
+  display: flex;
+  justify-content: center;
+}
+.pInfoIcon {
+  width: 20px;
+  height: 20px;
+  fill: var(--iconFill);
+  display: inline-block;
+}
+.pInfoInput {
+  width: 100px;
+  border-radius: 0;
+}
+
+.pInfoBotButt {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  padding-right: 8px;
+  background-color: var(--bg2);
+  border: 1px solid var(--focused);
+  border-radius: 3px;
+  transition: border-color 100ms;  
+
+}
+.pInfoBotButt:hover {
+  border-color: var(--selected);
+}
 
 /* clickable area that gets enabled when moving the viewport */
 #goBack {
