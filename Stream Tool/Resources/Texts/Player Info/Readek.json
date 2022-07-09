@@ -1,15 +1,17 @@
 {
-    "pronouns": "",
-    "tag": "",
-    "twitter": "readeku",
-    "twitch": "Readek",
-    "yt": "Readek",
-    "characters": [
-        {
-            "character": "Maypul",  "skin": "Readek"
-        },
-        {
-            "character": "Ori and Sein",  "skin": "Readek"
-        }
-    ]
+  "pronouns": "",
+  "tag": "",
+  "twitter": "readeku",
+  "twitch": "Readek",
+  "yt": "Readek",
+  "characters": [
+    {
+      "character": "Maypul",
+      "skin": "Readek"
+    },
+    {
+      "character": "Ori and Sein",
+      "skin": "Readek"
+    }
+  ]
 }

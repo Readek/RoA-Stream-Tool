@@ -214,6 +214,11 @@ function init() {
     
     // close player info with the buttons
     document.getElementById("pInfoBackButt").addEventListener("click", hidePlayerInfo);
+    document.getElementById("pInfoSaveButt").addEventListener("click", () => {
+        applyPlayerInfo();
+        savePlayerPreset();
+        hidePlayerInfo();
+    });
     document.getElementById("pInfoApplyButt").addEventListener("click", () => {
         applyPlayerInfo();
         hidePlayerInfo();
@@ -846,11 +851,15 @@ function checkPlayerPreset(pNum) {
                     spanChar.innerHTML = char.character;
                     spanChar.className = "pfChar";
 
-                    //we will use css variables to store data to read when clicked
-                    newDiv.style.setProperty("--tag", playerInfo.tag);
-                    newDiv.style.setProperty("--name", file);
-                    newDiv.style.setProperty("--char", char.character);
-                    newDiv.style.setProperty("--skin", char.skin);
+                    //we will use atributes to store data to read when clicked
+                    newDiv.setAttribute("pronouns", playerInfo.pronouns);
+                    newDiv.setAttribute("tag", playerInfo.tag);
+                    newDiv.setAttribute("twitter", playerInfo.twitter);
+                    newDiv.setAttribute("twitch", playerInfo.twitch);
+                    newDiv.setAttribute("yt", playerInfo.yt);
+                    newDiv.setAttribute("name", file);
+                    newDiv.setAttribute("char", char.character);
+                    newDiv.setAttribute("skin", char.skin);
 
                     //add them to the div we created before
                     newDiv.appendChild(spanTag);
@@ -940,14 +949,18 @@ async function positionChar(character, skin, charEL) {
 //called when the user clicks on a player preset
 function playerPreset(el, pNum) {
 
-    pInfos[pNum].tag = el.style.getPropertyValue("--tag");
+    pInfos[pNum].pronouns = el.getAttribute("pronouns");
+    pInfos[pNum].tag = el.getAttribute("tag");
+    pInfos[pNum].twitter = el.getAttribute("twitter");
+    pInfos[pNum].twitch = el.getAttribute("twitch");
+    pInfos[pNum].yt = el.getAttribute("yt");
 
-    pNameInps[pNum].value = el.style.getPropertyValue("--name");
+    pNameInps[pNum].value = el.getAttribute("name");
     changeInputWidth(pNameInps[pNum]);
 
-    charChange(el.style.getPropertyValue("--char"), pNum);
+    charChange(el.getAttribute("char"), pNum);
 
-    skinChange(el.style.getPropertyValue("--char"), el.style.getPropertyValue("--skin"), pNum)
+    skinChange(el.getAttribute("char"), el.getAttribute("skin"), pNum);
 
     pFinder.style.display = "none";
 
@@ -1096,6 +1109,22 @@ function applyPlayerInfo() {
     pInfos[pNum].yt = document.getElementById("pInfoInputYt").value;
 
     changeInputWidth(pNameInps[pNum]);
+
+}
+
+function savePlayerPreset() {
+    
+    const pNum = document.getElementById("pInfoPNum").textContent - 1;
+
+    const preset = pInfos[pNum];
+    preset.characters = [];
+
+    preset.characters.push({
+        character: charSelectors[pNum].getElementsByClassName("charSelectorText")[0].innerHTML,
+        skin: skinSelectors[pNum].innerText
+    })
+
+    fs.writeFileSync(`${textPath}/Player Info/${document.getElementById("pInfoInputName").value}.json`, JSON.stringify(preset, null, 2));
 
 }
 
