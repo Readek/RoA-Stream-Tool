@@ -28,6 +28,7 @@ body {
     text-transform: uppercase;
     color: white;
     font-family: "Deansgate";
+    background-color: grey;
 }
 
 .absol {
@@ -132,26 +133,24 @@ body {
 }
 
 
-.wlmask {
+.topBarMask {
     overflow: hidden;
-    width: 90px;
+    width: 375px;
     height: 25px;
-}
-.wlbg {
-    top: 5px;
-}
-.wlText {
-    top: 5px;
-    width: 70px;
-    text-align: center;
-}
-#wlTextL {
-    left: 10px;
-}
-#wlTextR {
-    right: 10px;
+    transform: translateX(-1px);
 }
 
+.topBarTexts {
+    display: flex;
+    border-image: url('../Overlay/Scoreboard/WL\ BG.png') 0 7 fill / 0 7px;
+    padding: 0 10px;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+.topBarProns {
+    color: gray;
+}
 
 #overlayRound {
     opacity: 0;

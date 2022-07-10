@@ -15,7 +15,7 @@ const teamSize = "22px"
 const roundSize = "19px";
 
 //to avoid the code constantly running the same method over and over
-const pCharPrev = [], scorePrev = [], colorPrev = [], wlPrev = [];
+const pCharPrev = [], scorePrev = [], colorPrev = [], wlPrev = [], topBarMoved = [];
 let bestOfPrev, gamemodePrev;
 
 //to consider how many loops will we do
@@ -29,7 +29,7 @@ let startup = true;
 const scoreboard = document.getElementsByClassName("scoreboard");
 const teamNames = document.getElementsByClassName("teamName");
 const colorImg = document.getElementsByClassName("colors");
-const wlGroup = document.getElementsByClassName("wlGroup");
+const topBars = document.getElementsByClassName("topBarTexts");
 const wlText = document.getElementsByClassName("wlText");
 const scoreImg = document.getElementsByClassName("scoreImgs");
 const scoreAnim = document.getElementsByClassName("scoreVid");
@@ -39,7 +39,7 @@ const textRound = document.getElementById('round');
 const borderImg = document.getElementsByClassName('border');
 
 // we want the correct order, we cant use getClassName here
-const pWrapper = [], pTag = [], pName = [], charImg = [];
+const pWrapper = [], pTag = [], pName = [], pProns = [], charImg = [];
 function pushArrayInOrder(array, string) {
     for (let i = 0; i < 4; i++) {
         array.push(document.getElementById("p"+(i+1)+string));
@@ -48,6 +48,7 @@ function pushArrayInOrder(array, string) {
 pushArrayInOrder(pWrapper, "Wrapper");
 pushArrayInOrder(pTag, "Tag");
 pushArrayInOrder(pName, "Name");
+pushArrayInOrder(pProns, "Pronouns");
 pushArrayInOrder(charImg, "Character");
 
 
@@ -233,6 +234,10 @@ async function updateData(scInfo) {
 				fadeIn(pWrapper[i], introDelay+.15)
 			}
 
+			// show player pronouns if any
+			updatePronouns(i, player[i].pronouns);
+			displayTopBarElement(pProns[i]);
+
 			//set the character image for the player
 			charsLoaded.push(updateChar(player[i].sc.charImg, player[i].sc.charPos, i));
 			//the animation will be fired below, when the image finishes loading
@@ -266,7 +271,7 @@ async function updateData(scInfo) {
 			
 			//if its grands, we need to show the [W] and/or the [L] on the players
 			updateWL(wl[i], i);
-			fadeInWL(wlGroup[i], introDelay+.6);
+			displayTopBarElement(wlText[i]);
 			
 			//save for later so the animation doesn't repeat over and over
 			wlPrev[i] = wl[i];
@@ -281,6 +286,9 @@ async function updateData(scInfo) {
 			} else { //if doubles, check the team name
 				updateLogo(tLogoImg[i], teamName[i]);
 			}
+
+			// fade in the top bar
+			fadeInTopBar(topBars[i], introDelay+.6);
 			
 		}
 
@@ -335,6 +343,15 @@ async function updateData(scInfo) {
 				
 			}
 
+			// show player pronouns if any
+			if (player[i].pronouns != pProns[i].textContent) {
+				topBarMoved[i % 2] = true;
+				fadeOutTopBar(topBars[i % 2]).then( () => {
+					updatePronouns(i, player[i].pronouns);
+					displayTopBarElement(pProns[i]);
+				});
+			}
+
 			//player characters and skins
 			if (pCharPrev[i] != player[i].sc.charImg) {
 
@@ -376,13 +393,22 @@ async function updateData(scInfo) {
 			//the [W] and [L] status for grand finals
 			if (wlPrev[i] != wl[i]) {
 				//move it away!
-				fadeOutWL(wlGroup[i]).then( () => {
+				fadeOutTopBar(topBars[i]).then( () => {
 					//change the thing!
 					updateWL(wl[i], i);
-					//move it back!
-					fadeInWL(wlGroup[i])
+					displayTopBarElement(wlText[i]);
 				});
 				wlPrev[i] = wl[i];
+				topBarMoved[i] = true;
+			}
+
+			// if either W/L status or pronouns changed
+			if (topBarMoved[i]) {
+				setTimeout(() => {
+					// move it back up!
+					fadeInTopBar(topBars[i]);
+					topBarMoved[i] = false;
+				}, 500);
 			}
 
 			//score check
@@ -450,8 +476,8 @@ function changeGM(gm) {
 		pWrapper[1].style.right = "257px";
 
 		// move the [W]/[L] indicators
-		wlGroup[0].parentElement.style.left = "192px";
-		wlGroup[1].parentElement.style.left = "192px";
+		topBars[0].parentElement.style.left = "192px";
+		topBars[1].parentElement.style.left = "192px";
 
 		// move the team logos
 		tLogoImg[0].style.left = "352px";
@@ -484,8 +510,8 @@ function changeGM(gm) {
 		pWrapper[0].style.left = "38px";
 		pWrapper[1].style.right = "38px";
 
-		wlGroup[0].parentElement.style.left = "0px";
-		wlGroup[1].parentElement.style.left = "0px";
+		topBars[0].parentElement.style.left = "0px";
+		topBars[1].parentElement.style.left = "0px";
 
 		tLogoImg[0].style.left = "248px";
 		tLogoImg[0].style.top = "33px";
@@ -559,14 +585,24 @@ function updateWL(pWL, pNum) {
 	if (pWL == "W") {
 		wlText[pNum].textContent = "WINNERS";
 		wlText[pNum].style.color = "#76a276";
-		wlGroup[pNum].style.display = "block";
 	} else if (pWL == "L") {
 		wlText[pNum].textContent = "LOSERS";
 		wlText[pNum].style.color = "#a27677";
-		wlGroup[pNum].style.display = "block";
+	} else if (wlText[pNum].textContent == "WINNERS" || wlText[pNum].textContent == "LOSERS") {
+		// clear contents if there are no pronouns
+		wlText[pNum].textContent = "";
+	}
+}
+
+function updatePronouns(pNum, pronouns) {
+	pProns[pNum].textContent = pronouns;
+}
+
+function displayTopBarElement(el) {
+	if (el.textContent) {
+		el.style.display = "block";
 	} else {
-		wlText[pNum].textContent = ' ';
-		wlGroup[pNum].style.display = "none";
+		el.style.display = "none";
 	}
 }
 
@@ -630,12 +666,12 @@ function fadeInMove(itemID, delay = 0, chara, side) {
 }
 
 //movement for the [W]/[L] images
-async function fadeOutWL(wlEL) {
-	wlEL.style.animation = `wlMoveOut .4s both`;
+async function fadeOutTopBar(el) {
+	el.style.animation = `wlMoveOut .4s both`;
 	await new Promise(resolve => setTimeout(resolve, 400));
 }
-function fadeInWL(wlEL, delay = 0) {
-	wlEL.style.animation = `wlMoveIn .4s ${delay}s both`;
+function fadeInTopBar(el, delay = 0) {
+	el.style.animation = `wlMoveIn .4s ${delay}s both`;
 }
 
 

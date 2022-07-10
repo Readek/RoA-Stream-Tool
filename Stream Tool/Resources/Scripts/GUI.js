@@ -26,8 +26,8 @@ let currentColors = [0, 0];
 let scData; // we will store data to send to the browsers here
 const pInfos = []; // player info that doesnt have exclusive inputs
 
-let currentP1WL = "Nada";
-let currentP2WL = "Nada";
+let currentP1WL = "";
+let currentP2WL = "";
 let currentBestOf = "Bo5";
 
 let gamemode = 1;
@@ -778,8 +778,8 @@ function setWLP2() {
 }
 
 function deactivateWL() {
-    currentP1WL = "Nada";
-    currentP2WL = "Nada";
+    currentP1WL = "";
+    currentP2WL = "";
 
     const pWLs = document.getElementsByClassName("wlBox");
     for (let i = 0; i < pWLs.length; i++) {
