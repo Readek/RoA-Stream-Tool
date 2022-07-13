@@ -13,6 +13,9 @@ customElements.define("load-svg", class extends HTMLElement {
     }
 })
 
+// just in case we somehow go out of view
+window.onscroll = () => { window.scroll(0, 0) };
+
 // yes we all like global variables
 const textPath = __dirname + '/Texts';
 const charPathBase = __dirname + '/Characters';
@@ -1034,9 +1037,7 @@ function addActive(x, direction) {
         //add to the selected entry the active class
         x[currentFocus].classList.add("finderEntry-active");
         // make it scroll if it goes out of view
-        setImmediate(() => { // smooth scroll will break the focus if we dont wait a bit
-            x[currentFocus].scrollIntoView({behavior: "smooth", block: "center"});
-        });
+        x[currentFocus].scrollIntoView({block: "center"});
     }
     
 }
