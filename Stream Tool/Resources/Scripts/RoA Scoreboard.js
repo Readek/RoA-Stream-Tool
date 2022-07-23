@@ -476,8 +476,12 @@ function changeGM(gm) {
 		pWrapper[1].style.right = "257px";
 
 		// move the [W]/[L] indicators
-		topBars[0].parentElement.style.left = "192px";
-		topBars[1].parentElement.style.left = "192px";
+		topBars[0].parentElement.parentElement.style.width = "285px";
+		topBars[1].parentElement.parentElement.style.width = "285px";
+		topBars[0].parentElement.parentElement.style.transform = "translateX(95px)";
+		topBars[1].parentElement.parentElement.style.transform = "translateX(95px)";
+		topBars[0].parentElement.parentElement.style.justifyContent = "center";
+		topBars[1].parentElement.parentElement.style.justifyContent = "center";
 
 		// move the team logos
 		tLogoImg[0].style.left = "352px";
@@ -510,8 +514,12 @@ function changeGM(gm) {
 		pWrapper[0].style.left = "38px";
 		pWrapper[1].style.right = "38px";
 
-		topBars[0].parentElement.style.left = "0px";
-		topBars[1].parentElement.style.left = "0px";
+		topBars[0].parentElement.parentElement.style.width = "380px";
+		topBars[1].parentElement.parentElement.style.width = "380px";
+		topBars[0].parentElement.parentElement.style.transform = "";
+		topBars[1].parentElement.parentElement.style.transform = "";
+		topBars[0].parentElement.parentElement.style.justifyContent = "";
+		topBars[1].parentElement.parentElement.style.justifyContent = "";
 
 		tLogoImg[0].style.left = "248px";
 		tLogoImg[0].style.top = "33px";

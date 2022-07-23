@@ -28,6 +28,7 @@ body {
     text-transform: uppercase;
     color: white;
     font-family: "Deansgate";
+    background-color: grey;
 }
 
 .absol {
@@ -134,7 +135,8 @@ body {
 
 .topBarMask {
     overflow: hidden;
-    width: 375px;
+    display: flex;
+    width: 380px;
     height: 25px;
     transform: translateX(-1px);
 }
@@ -142,7 +144,8 @@ body {
 .topBarTexts {
     display: flex;
     border-image: url('../Overlay/Scoreboard/WL\ BG.png') 0 7 fill / 0 7px;
-    padding: 0 10px;
+    border-right: 10px solid;
+    border-left: 10px solid;
     gap: 8px;
     margin-top: 5px;
 }
