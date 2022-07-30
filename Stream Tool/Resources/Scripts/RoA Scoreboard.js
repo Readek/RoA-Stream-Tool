@@ -475,7 +475,7 @@ function changeGM(gm) {
 		pWrapper[0].style.left = "257px";
 		pWrapper[1].style.right = "257px";
 
-		// move the [W]/[L] indicators
+		// move the pronouns / [W]/[L] top bars
 		topBars[0].parentElement.parentElement.style.width = "285px";
 		topBars[1].parentElement.parentElement.style.width = "285px";
 		topBars[0].parentElement.parentElement.style.transform = "translateX(95px)";

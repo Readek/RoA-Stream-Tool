@@ -19,7 +19,7 @@ const playerSize = '90px';
 const tagSize = '50px';
 const playerSizeDubs = "45px";
 const tagSizeDubs = "25px";
-const teamSize = '80px';
+const teamSize = '72px';
 const roundSize = '38px';
 const tournamentSize = '28px';
 const casterSize = '25px';
@@ -47,6 +47,10 @@ const pWrapper = document.getElementsByClassName("wrappers");
 const pTag = document.getElementsByClassName("tag");
 const pName = document.getElementsByClassName("name");
 const teamNames = document.getElementsByClassName("teamName");
+const pInfoProns = document.getElementsByClassName("playerInfoProns");
+const pInfoTwitter = document.getElementsByClassName("playerInfoTwitter");
+const pInfoTwitch = document.getElementsByClassName("playerInfoTwitch");
+const pInfoYt = document.getElementsByClassName("playerInfoYt");
 const pChara = document.getElementsByClassName("chara");
 const pChar = document.getElementsByClassName("char");
 const pTrail = document.getElementsByClassName("trail");
@@ -161,6 +165,16 @@ async function updateData(scInfo) {
 
 			//fade in the player text
 			fadeIn(pWrapper[i], introDelay+.3);
+
+
+			// now lets update all that player info
+			updatePlayerInfo(i, player[i]);
+
+			// and gradually fade them in
+			fadeIn(pInfoProns[i].parentElement, introDelay+.6);
+			fadeIn(pInfoTwitter[i].parentElement, introDelay+.75);
+			fadeIn(pInfoTwitch[i].parentElement, introDelay+.9);
+			fadeIn(pInfoYt[i].parentElement, introDelay+1.05);
 
 
 			//change the player's character image, and position it
@@ -322,6 +336,28 @@ async function updateData(scInfo) {
 					//and fade the texts back in
 					fadeIn(pWrapper[i], .2);
 				});
+			};
+
+			// all that player info must be updated!
+			if (pInfoProns[i].textContent != player[i].pronouns ||
+				pInfoTwitter[i].textContent != player[i].twitter ||
+				pInfoTwitch[i].textContent != player[i].twitch ||
+				pInfoYt[i].textContent != player[i].yt) {
+
+				// fade all of them out, we only need to wait for one
+				fadeOut(pInfoProns[i].parentElement);
+				fadeOut(pInfoTwitter[i].parentElement);
+				fadeOut(pInfoTwitch[i].parentElement);
+				fadeOut(pInfoYt[i].parentElement).then( () => {
+					// update the texts!
+					updatePlayerInfo(i, player[i]);
+					// but woudnt it be cool if we faded all of them with progression
+					fadeIn(pInfoProns[i].parentElement, .2);
+					fadeIn(pInfoTwitter[i].parentElement, .35);
+					fadeIn(pInfoTwitch[i].parentElement, .5);
+					fadeIn(pInfoYt[i].parentElement, .65);
+				});
+				
 			}
 
 			// player character change
@@ -436,7 +472,7 @@ function changeGM(gm) {
 		document.getElementById("clipP2").classList.remove("singlesClip");
 		document.getElementById("clipP2").classList.add("dubsClip");
 		
-		//lastly, change the positions for the player texts
+		// lastly, change the positions for the player texts
 		for (let i = 0; i < 2; i++) {
 			pWrapper[i].classList.remove("wrappersSingles");
 			pWrapper[i].classList.add("wrappersDoubles");
@@ -446,7 +482,24 @@ function changeGM(gm) {
 			pName[i].style.fontSize = playerSizeDubs;
 			pTag[i].style.fontSize = tagSizeDubs;
 			resizeText(pWrapper[i]);
-		}
+		};
+
+		// player info positions
+		const pInfo1 = document.getElementById("playerInfoDivL");
+		pInfo1.classList.remove("playerInfoDiv", "playerInfoDivL");
+		pInfo1.classList.add("playerInfoDiv2", "playerInfoDivL1");
+		const pInfos1 = pInfo1.getElementsByClassName("playerInfo");
+		for (let i = 0; i < pInfos1.length; i++) {
+			pInfos1[i].classList.add("playerInfo1L");
+		};
+
+		const pInfo2 = document.getElementById("playerInfoDivR");
+		pInfo2.classList.remove("playerInfoDiv", "playerInfoDivR");
+		pInfo2.classList.add("playerInfoDiv2", "playerInfoDivR1");
+		const pInfos2 = pInfo2.getElementsByClassName("playerInfo");
+		for (let i = 0; i < pInfos2.length; i++) {
+			pInfos2[i].classList.add("playerInfo1R");
+		};
 
 	} else {
 
@@ -478,6 +531,22 @@ function changeGM(gm) {
 			pWrapper[i].classList.add("p"+(i+1)+"WSingles");
 			updatePlayerName(i, "", "", gm); //resize didnt do anything here for some reason
 		}
+
+		const pInfo1 = document.getElementById("playerInfoDivL");
+		pInfo1.classList.add("playerInfoDiv", "playerInfoDivL");
+		pInfo1.classList.remove("playerInfoDiv2", "playerInfoDivL1");
+		const pInfos1 = pInfo1.getElementsByClassName("playerInfo");
+		for (let i = 0; i < pInfos1.length; i++) {
+			pInfos1[i].classList.remove("playerInfo1L");
+		};
+
+		const pInfo2 = document.getElementById("playerInfoDivR");
+		pInfo2.classList.add("playerInfoDiv", "playerInfoDivR");
+		pInfo2.classList.remove("playerInfoDiv2", "playerInfoDivR1");
+		const pInfos2 = pInfo2.getElementsByClassName("playerInfo");
+		for (let i = 0; i < pInfos2.length; i++) {
+			pInfos2[i].classList.remove("playerInfo1R");
+		};
 		
 	}
 
@@ -516,17 +585,26 @@ function updateScore(side, pScore, pColor) {
 function updateColor(gradEL, textBGEL, color, i, gamemode) {
 
 	//change the color gradient image path depending on the color
-	gradEL.src = 'Resources/Overlay/VS Screen/Grads/' + color.name + '.png';
+	gradEL.src = `Resources/Overlay/VS Screen/Grads/${color.name}.png`;
 
 	//same but with the text background
-	textBGEL.src = 'Resources/Overlay/VS Screen/Text BGs/' + gamemode + '/' + color.name + '.png';
+	textBGEL.src = `Resources/Overlay/VS Screen/Text BGs/${gamemode}/${color.name}.png`;
 	
+	// update the root css color variable
+	const r = document.querySelector(':root');
+	if (i % 2 == 0) {
+		r.style.setProperty("--colorL", color.hex);
+	} else {
+		r.style.setProperty("--colorR", color.hex);
+	}
+
+	// if 2v2, add a background to the name wrapper
 	if (gamemode == 2) {
-		pWrapper[i].style.backgroundColor = color.hex+"ff";
-		pWrapper[i+2].style.backgroundColor = color.hex+"ff";		
+		pWrapper[i].style.backgroundColor = `${color.hex}ff`;
+		pWrapper[i+2].style.backgroundColor = `${color.hex}ff`;
 	} else {
 		pWrapper[i].style.backgroundColor = "";
-		pWrapper[i+2].style.backgroundColor = "";	
+		pWrapper[i+2].style.backgroundColor = "";
 	}
 
 }
@@ -655,6 +733,38 @@ function updatePlayerName(pNum, name, tag, gamemode = 1) {
 	pTag[pNum].textContent = tag;
 
 	resizeText(pWrapper[pNum]); //resize if it overflows
+}
+
+// player info change
+function updatePlayerInfo(pNum, pInfo) {
+	
+	pInfoProns[pNum].innerText = pInfo.pronouns;
+	pInfoTwitter[pNum].innerText = pInfo.twitter;
+	pInfoTwitch[pNum].innerText = pInfo.twitch;
+	pInfoYt[pNum].innerText = pInfo.yt;
+
+	// there must be a cleaner way to do this right?
+	if (pInfo.pronouns) {
+		pInfoProns[pNum].parentElement.style.display = "block";
+	} else {
+		pInfoProns[pNum].parentElement.style.display = "none";
+	}
+	if (pInfo.twitter) {
+		pInfoTwitter[pNum].parentElement.style.display = "block";
+	} else {
+		pInfoTwitter[pNum].parentElement.style.display = "none";
+	}
+	if (pInfo.twitch) {
+		pInfoTwitch[pNum].parentElement.style.display = "block";
+	} else {
+		pInfoTwitch[pNum].parentElement.style.display = "none";
+	}
+	if (pInfo.yt) {
+		pInfoYt[pNum].parentElement.style.display = "block";
+	} else {
+		pInfoYt[pNum].parentElement.style.display = "none";
+	}
+
 }
 
 //generic text changer
