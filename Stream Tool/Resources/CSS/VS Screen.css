@@ -150,6 +150,7 @@ body {
 
 
 .playerInfo {
+    display: none;
     text-align: center;
     font-family: "Deansgate";
     color: white;

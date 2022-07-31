@@ -22,6 +22,7 @@
         "Golden",
         "Champion",
         "Ranked",
+        "GoTE",
         "HD",
         "LoA HD"
     ],
@@ -72,22 +73,22 @@
     "gui": {
         "neutral": {
             "x": -37,
-            "y": 21,
+            "y": 18,
             "scale": 4
         },
         "LoA HD": {
             "x": 25,
-            "y": 58,
+            "y": 52,
             "scale": 4.5
         },
         "Ragnir": {
             "x": -27,
-            "y": 0,
+            "y": -3,
             "scale": 3.2
         },
         "HD": {
             "x": -37,
-            "y": 21,
+            "y": 18,
             "scale": 4
         }
     }

@@ -48,7 +48,7 @@
     "gui": {
         "neutral": {
             "x": -10,
-            "y": 30,
+            "y": 27,
             "scale": 4,
             "comment": "Also works for HD"
         }

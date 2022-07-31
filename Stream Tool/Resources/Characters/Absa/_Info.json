@@ -21,6 +21,7 @@
         "Golden",
         "Ranked",
         "Steampunk",
+        "High Roller",
         "HD",
         "LoA HD"
     ],
@@ -71,22 +72,22 @@
     "gui": {
         "neutral": {
             "x": 5,
-            "y": 38,
+            "y": 33,
             "scale": 5
         },
         "LoA": {
             "x": 10,
-            "y": 47,
+            "y": 43,
             "scale": 4.8
         },
         "LoA HD": {
             "x": 18,
-            "y": 58,
+            "y": 55,
             "scale": 5.75
         },
         "HD": {
             "x": 6,
-            "y": 45,
+            "y": 39,
             "scale": 5.5
         }
     }

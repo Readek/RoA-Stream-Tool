@@ -12,6 +12,7 @@
         "Halloween",
         "Default Custom 1",
         "Default Custom 2",
+        "Champion",
         "Abyss",
         "Early Access",
         "Ranked",
@@ -44,12 +45,12 @@
     "gui": {
         "neutral": {
             "x": -5,
-            "y": 40,
+            "y": 37,
             "scale": 4.6
         },
         "HD": {
-            "x": -5,
-            "y": 40,
+            "x": -8,
+            "y": 37,
             "scale": 4.6
         }
     }
