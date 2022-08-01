@@ -34,7 +34,6 @@ const wlText = document.getElementsByClassName("wlText");
 const scoreImg = document.getElementsByClassName("scoreImgs");
 const scoreAnim = document.getElementsByClassName("scoreVid");
 const tLogoImg = document.getElementsByClassName("tLogos");
-const overlayRound = document.getElementById("overlayRound");
 const textRound = document.getElementById('round');
 const borderImg = document.getElementsByClassName('border');
 
@@ -294,7 +293,9 @@ async function updateData(scInfo) {
 
 		//update the round text	and fade it in
 		updateText(textRound, round, roundSize);
-		fadeIn(overlayRound, introDelay);
+		if (round) { // but only if theres any text to display
+			fadeIn(textRound.parentElement, introDelay);
+		}
 
 		startup = false; //next time we run this function, it will skip all we just did
 	}
@@ -443,6 +444,12 @@ async function updateData(scInfo) {
 				updateText(textRound, round, roundSize);
 				fadeIn(textRound);
 			});
+			// if theres no text, hide everything
+			if (round && textRound.parentElement.style.opacity == 0) {
+				fadeIn(textRound.parentElement, fadeOutTime);
+			} else if (!round) {
+				fadeOut(textRound.parentElement);
+			}
 		}
 
 	}
