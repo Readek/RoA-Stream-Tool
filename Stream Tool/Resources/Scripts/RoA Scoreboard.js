@@ -114,9 +114,6 @@ async function updateData(scInfo) {
 	// things that will happen for each side
 	for (let i = 0; i < maxSides; i++) {
 
-		// if there is no team name, just display "[Color] Team"
-		if (!teamName[i]) teamName[i] = color[i].name + " Team";
-
 		// change the player background colors
 		if (colorPrev[i] != color[i].name) {
 			updateColor(colorImg[i], color[i], gamemode);

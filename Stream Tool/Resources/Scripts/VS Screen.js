@@ -135,15 +135,6 @@ async function updateData(scInfo) {
 		bestOfPrev = bestOf;
 	}
 
-	// now, things that will happen for each side
-	for (let i = 0; i < maxSides; i++) {
-
-		// if there is no team name, just display "[Color] Team"
-		if (!teamName[i]) teamName[i] = color[i].name + " Team";
-
-	}
-	
-
 	// now, things that will happen only the first time the html loads
 	if (startup) {
 

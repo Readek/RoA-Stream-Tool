@@ -271,6 +271,8 @@ function init() {
             if (currentFocus > -1) {
                 skinFinder.getElementsByClassName("finderEntry")[currentFocus].click();
             }
+        } else if (pInfoDiv.style.pointerEvents == "auto") { // if player info menu is up
+            document.getElementById("pInfoApplyButt").click();
         } else {
             //update scoreboard info (updates botBar color for visual feedback)
             writeScoreboard();
@@ -292,6 +294,8 @@ function init() {
         } else if (window.getComputedStyle(charFinder).getPropertyValue("display") == "block"
         || window.getComputedStyle(skinFinder).getPropertyValue("display") == "block") {
             document.activeElement.blur();
+        } else if (pInfoDiv.style.pointerEvents == "auto") { // if player info menu is up
+            document.getElementById("pInfoBackButt").click();
         } else {
             clearPlayers(); //by default, clear player info
         }
@@ -1079,12 +1083,21 @@ function showPlayerInfo() {
 
     document.getElementById("pInfoPNum").textContent = pNum + 1;
 
+    // display the current info for this player
     document.getElementById("pInfoInputPronouns").value = pInfos[pNum].pronouns;
     document.getElementById("pInfoInputTag").value = pInfos[pNum].tag;
     document.getElementById("pInfoInputName").value = pNameInps[pNum].value;
     document.getElementById("pInfoInputTwitter").value = pInfos[pNum].twitter;
     document.getElementById("pInfoInputTwitch").value = pInfos[pNum].twitch;
     document.getElementById("pInfoInputYt").value = pInfos[pNum].yt;
+
+    // give tab index so we can jump from input to input with the keyboard
+    document.getElementById("pInfoInputPronouns").setAttribute("tabindex", "0");
+    document.getElementById("pInfoInputTag").setAttribute("tabindex", "0");
+    document.getElementById("pInfoInputName").setAttribute("tabindex", "0");
+    document.getElementById("pInfoInputTwitter").setAttribute("tabindex", "0");
+    document.getElementById("pInfoInputTwitch").setAttribute("tabindex", "0");
+    document.getElementById("pInfoInputYt").setAttribute("tabindex", "0");
 
     pInfoDiv.style.pointerEvents = "auto";
     pInfoDiv.style.opacity = 1;
@@ -1097,6 +1110,13 @@ function hidePlayerInfo() {
     pInfoDiv.style.opacity = 0;
     pInfoDiv.style.transform = "scale(1.15)";
     overlayDiv.style.opacity = 1;
+
+    document.getElementById("pInfoInputPronouns").setAttribute("tabindex", "-1");
+    document.getElementById("pInfoInputTag").setAttribute("tabindex", "-1");
+    document.getElementById("pInfoInputName").setAttribute("tabindex", "-1");
+    document.getElementById("pInfoInputTwitter").setAttribute("tabindex", "-1");
+    document.getElementById("pInfoInputTwitch").setAttribute("tabindex", "-1");
+    document.getElementById("pInfoInputYt").setAttribute("tabindex", "-1");
 }
 function applyPlayerInfo() {
     
@@ -1677,7 +1697,11 @@ function writeScoreboard() {
         scoreboardJson.color.push({
             name: currentColors[i].name,
             hex: currentColors[i].hex
-        })
+        });
+        // if the team inputs dont have anything, display as [Color Team]
+        if (!tNameInps[i].value) {
+            scoreboardJson.teamName[i] = currentColors[i].name + " Team"
+        }
     }
 
     //do the same for the casters
