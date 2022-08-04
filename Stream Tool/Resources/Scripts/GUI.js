@@ -1710,6 +1710,7 @@ function writeScoreboard() {
             name: document.getElementById('cName'+(i+1)).value,
             twitter: document.getElementById('cTwitter'+(i+1)).value,
             twitch: document.getElementById('cTwitch'+(i+1)).value,
+            yt: document.getElementById('cYt'+(i+1)).value
         })
     }
 
@@ -1735,7 +1736,8 @@ function writeScoreboard() {
     for (let i = 0; i < casters.length; i++) {
         fs.writeFileSync(textPath + "/Simple Texts/Caster "+(i+1)+" Name.txt", document.getElementById('cName'+(i+1)).value);
         fs.writeFileSync(textPath + "/Simple Texts/Caster "+(i+1)+" Twitter.txt", document.getElementById('cTwitter'+(i+1)).value);
-        fs.writeFileSync(textPath + "/Simple Texts/Caster "+(i+1)+" Twitch.txt", document.getElementById('cTwitch'+(i+1)).value);    
+        fs.writeFileSync(textPath + "/Simple Texts/Caster "+(i+1)+" Twitch.txt", document.getElementById('cTwitch'+(i+1)).value);
+        fs.writeFileSync(textPath + "/Simple Texts/Caster "+(i+1)+" Youtube.txt", document.getElementById('cYt'+(i+1)).value);
     }
 
 }
