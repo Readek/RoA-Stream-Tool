@@ -189,7 +189,7 @@ button:hover {
   border-bottom-left-radius: 0px;
 }
 
-.pFinderPosition, .cFinderPosition, .sFinderPosition {
+.pFinderPosition, .cFinderPosition, .sFinderPosition, .castFinderPosition {
   position: relative;
 }
 #playerFinder {
@@ -646,6 +646,7 @@ button:hover {
   width: 20px;
   margin-left: -5px;
   margin-top: 5px;
+  margin-right: 3px;
   fill: var(--iconFill);
   display: inline-block;
   flex-shrink: 0;
@@ -682,9 +683,8 @@ button:hover {
   width: 32%;
 }
 
-#cName1, #cName2 {
+.cName {
   width: 100%;
-  margin-left: 3px;
 }
 
 .casterInput {
@@ -699,7 +699,7 @@ button:hover {
   border: 1px solid var(--focused);
   border-radius: 3px;
   margin-left: 6px;
-  transition: border-color 100ms;
+  transition: border-color 100ms, opacity 100ms;
   background-color: var(--bg4);
 
 }
@@ -710,9 +710,31 @@ button:hover {
 .saveCasterButt:active {
   background-color: var(--bg2);
 }
+.saveCasterButt:disabled {
+  pointer-events: none;
+  opacity: .4;
+}
+
 .saveCasterIcon {
   width: 22px;
   height: 22px;
+}
+
+#casterFinder {
+  display: none;
+  position: absolute;
+  bottom: 100%;
+  background-color: var(--bg5);
+  filter: drop-shadow(0px 0px 5px var(--bg3));
+  z-index: 3;
+  font-size: 15px;
+  max-height: 165px;
+  overflow: auto;
+  width: 175px;
+}
+
+.castFinderPosition {
+  width: 100%;
 }
 
 /* the bottom bar */

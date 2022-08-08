@@ -88,7 +88,7 @@ const bo5Div = document.getElementById("bo5Div");
 const roundInp = document.getElementById('roundName');
 const tournamentInp = document.getElementById('tournamentName');
 
-const casters = document.getElementsByClassName("caster");
+const casters = [];
 
 const workshopCheck = document.getElementById('workshopToggle');
 const forceHDCheck = document.getElementById('forceHD');
@@ -99,7 +99,87 @@ const forceAlt = document.getElementById("forceAlt");
 const pFinder = document.getElementById("playerFinder");
 const charFinder = document.getElementById("characterFinder");
 const skinFinder = document.getElementById("skinFinder");
+const cFinder = document.getElementById("casterFinder");
 
+
+// commentator class (more classes may be created in future releases maybe?)
+class Caster {
+
+    constructor(el) {
+
+        this.nameEl = el.getElementsByClassName(`cName`)[0];
+        this.twitterEl = el.getElementsByClassName(`cTwitter`)[0];
+        this.twitchEl = el.getElementsByClassName(`cTwitch`)[0];
+        this.ytEl = el.getElementsByClassName(`cYt`)[0];
+        this.saveEl = el.getElementsByClassName(`saveCasterButt`)[0];
+
+        // every time we type on name
+        this.nameEl.addEventListener("input", () => {
+
+            // check to disable or enable save button
+            if (this.getName()) {
+                this.saveEl.disabled = false;
+            } else {
+                this.saveEl.disabled = true;
+            }
+
+            // check if theres an existing caster preset
+            checkCasterPreset(this);
+
+        });
+
+        // if we click on the name text input
+        this.nameEl.addEventListener("focusin", () => {checkCasterPreset(this)});
+        // hide the presets dropdown if text input loses focus
+        this.nameEl.addEventListener("focusout", () => {
+            if (!inPF) { // but not if the mouse is hovering a preset
+                cFinder.style.display = "none";
+            }
+        });
+
+        // every time we click on the save button
+        this.saveEl.addEventListener("click", () => {
+
+            // save current info to an object
+            const preset = {
+                twitter: this.getTwitter(),
+                twitch: this.getTwitch(),
+                yt: this.getYt()
+            };
+
+            // use this object to create a json file
+            fs.writeFileSync(`${textPath}/Commentator Info/${this.getName()}.json`, JSON.stringify(preset, null, 2));
+
+        });
+
+    }
+
+    getName() {
+        return this.nameEl.value;
+    }
+    getTwitter() {
+        return this.twitterEl.value;
+    }
+    getTwitch() {
+        return this.twitchEl.value;
+    }
+    getYt() {
+        return this.ytEl.value;
+    }
+    setName(text) {
+        this.nameEl.value = text;
+    }
+    setTwitter(text) {
+        this.twitterEl.value = text;
+    }
+    setTwitch(text) {
+        this.twitchEl.value = text;
+    }
+    setYt(text) {
+        this.ytEl.value = text;
+    }
+
+}
 
 init();
 function init() {
@@ -243,6 +323,16 @@ function init() {
     document.getElementById("gamemode").addEventListener("click", changeGamemode);
 
 
+    // initialize the commentators
+    casters.push(
+        new Caster(document.getElementById("caster1")),
+        new Caster(document.getElementById("caster2")),
+    );
+    // set up the caster finders
+    cFinder.addEventListener("mouseenter", () => { inPF = true });
+    cFinder.addEventListener("mouseleave", () => { inPF = false });
+
+
     //add a listener to the swap button
     document.getElementById('swapButton').addEventListener("click", swap);
     //add a listener to the clear button
@@ -270,6 +360,10 @@ function init() {
         } else if (window.getComputedStyle(skinFinder).getPropertyValue("display") == "block") {
             if (currentFocus > -1) {
                 skinFinder.getElementsByClassName("finderEntry")[currentFocus].click();
+            }
+        } else if (window.getComputedStyle(cFinder).getPropertyValue("display") == "block") {
+            if (currentFocus > -1) {
+                cFinder.getElementsByClassName("finderEntry")[currentFocus].click();
             }
         } else if (pInfoDiv.style.pointerEvents == "auto") { // if player info menu is up
             document.getElementById("pInfoApplyButt").click();
@@ -313,6 +407,8 @@ function init() {
             addActive(charFinder.getElementsByClassName("finderEntry"), true);
         } else if (window.getComputedStyle(skinFinder).getPropertyValue("display") == "block") {
             addActive(skinFinder.getElementsByClassName("finderEntry"), true);
+        } else if (window.getComputedStyle(cFinder).getPropertyValue("display") == "block") {
+            addActive(cFinder.getElementsByClassName("finderEntry"), true);
         }
     });
     Mousetrap.bind('up', () => {
@@ -322,6 +418,8 @@ function init() {
             addActive(charFinder.getElementsByClassName("finderEntry"), false);
         } else if (window.getComputedStyle(skinFinder).getPropertyValue("display") == "block") {
             addActive(skinFinder.getElementsByClassName("finderEntry"), false);
+        } else if (window.getComputedStyle(cFinder).getPropertyValue("display") == "block") {
+            addActive(cFinder.getElementsByClassName("finderEntry"), false);
         }
     });
 }
@@ -970,6 +1068,69 @@ function playerPreset(el, pNum) {
     skinChange(el.getAttribute("char"), el.getAttribute("skin"), pNum);
 
     pFinder.style.display = "none";
+
+}
+
+
+// called whenever the user types something in a commentator name box
+function checkCasterPreset(el) {
+
+    // this is mostly copy paste from player preset code
+    currentFocus = -1;
+    el.nameEl.parentElement.appendChild(cFinder);
+    cFinder.innerHTML = "";
+    let fileFound;
+
+    if (el.getName().length >= 3) {
+
+        const files = fs.readdirSync(textPath + "/Commentator Info/");
+        files.forEach(file => {
+
+            file = file.substring(0, file.length - 5);
+
+            if (file.toLocaleLowerCase().includes(el.getName().toLocaleLowerCase())) {
+
+                fileFound = true;
+                cFinder.style.display = "block";
+
+                const casterInfo = getJson(textPath + "/Commentator Info/" + file);
+
+                const newDiv = document.createElement('div');
+                newDiv.className = "finderEntry";
+                newDiv.addEventListener("click", () => {casterPreset(newDiv, el)});
+
+                const spanName = document.createElement('span');
+                spanName.innerHTML = file;
+                spanName.className = "pfName";
+
+                newDiv.setAttribute("twitter", casterInfo.twitter);
+                newDiv.setAttribute("twitch", casterInfo.twitch);
+                newDiv.setAttribute("yt", casterInfo.yt);
+                newDiv.setAttribute("name", file);
+
+                newDiv.appendChild(spanName);
+
+                cFinder.appendChild(newDiv);
+
+            }
+        });
+    }
+
+    if (!fileFound) {
+        cFinder.style.display = "none";
+    }
+
+}
+
+//called when the user clicks on a player preset
+function casterPreset(clickDiv, caster) {
+
+    caster.setName(clickDiv.getAttribute("name"));
+    caster.setTwitter(clickDiv.getAttribute("twitter"));
+    caster.setTwitch(clickDiv.getAttribute("twitch"));
+    caster.setYt(clickDiv.getAttribute("yt"));
+
+    cFinder.style.display = "none";
 
 }
 
@@ -1707,10 +1868,10 @@ function writeScoreboard() {
     //do the same for the casters
     for (let i = 0; i < casters.length; i++) {
         scoreboardJson.caster.push({
-            name: document.getElementById('cName'+(i+1)).value,
-            twitter: document.getElementById('cTwitter'+(i+1)).value,
-            twitch: document.getElementById('cTwitch'+(i+1)).value,
-            yt: document.getElementById('cYt'+(i+1)).value
+            name: casters[i].getName(),
+            twitter: casters[i].getTwitter(),
+            twitch: casters[i].getTwitch(),
+            yt: casters[i].getYt(),
         })
     }
 
@@ -1734,10 +1895,10 @@ function writeScoreboard() {
     fs.writeFileSync(textPath + "/Simple Texts/Tournament Name.txt", tournamentInp.value);
 
     for (let i = 0; i < casters.length; i++) {
-        fs.writeFileSync(textPath + "/Simple Texts/Caster "+(i+1)+" Name.txt", document.getElementById('cName'+(i+1)).value);
-        fs.writeFileSync(textPath + "/Simple Texts/Caster "+(i+1)+" Twitter.txt", document.getElementById('cTwitter'+(i+1)).value);
-        fs.writeFileSync(textPath + "/Simple Texts/Caster "+(i+1)+" Twitch.txt", document.getElementById('cTwitch'+(i+1)).value);
-        fs.writeFileSync(textPath + "/Simple Texts/Caster "+(i+1)+" Youtube.txt", document.getElementById('cYt'+(i+1)).value);
+        fs.writeFileSync(textPath + "/Simple Texts/Caster "+(i+1)+" Name.txt", casters[i].getName());
+        fs.writeFileSync(textPath + "/Simple Texts/Caster "+(i+1)+" Twitter.txt", casters[i].getTwitter());
+        fs.writeFileSync(textPath + "/Simple Texts/Caster "+(i+1)+" Twitch.txt", casters[i].getTwitch());
+        fs.writeFileSync(textPath + "/Simple Texts/Caster "+(i+1)+" Youtube.txt", casters[i].getYt());
     }
 
 }
