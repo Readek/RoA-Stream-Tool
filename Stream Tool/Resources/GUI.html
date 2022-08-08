@@ -231,25 +231,27 @@
   
               <div class="casterGroup casterNameG">
                 <load-svg src="SVGs/Mic.svg" class="casterIcon"></load-svg>
-                <input type="text" id="cName1" class="textInput mousetrap" placeholder="Caster name" spellcheck="false">
+                <div class="castFinderPosition">
+                  <input type="text" class="cName textInput mousetrap" placeholder="Caster name" spellcheck="false">
+                </div>
               </div>
               
               <div class="casterGroup casterSocialG">
                 <load-svg src="SVGs/Twitter.svg" class="casterIcon twitterIcon"></load-svg>
-                <input type="text" id="cTwitter1" class="casterInput textInput mousetrap" placeholder="Caster Twitter" spellcheck="false">
+                <input type="text" class="cTwitter casterInput textInput mousetrap" placeholder="Caster Twitter" spellcheck="false">
               </div>
               
               <div class="casterGroup casterSocialG">
                 <load-svg src="SVGs/Twitch.svg" class="casterIcon twitchIcon"></load-svg>
-                <input type="text" id="cTwitch1" class="casterInput textInput mousetrap" placeholder="Caster Twitch" spellcheck="false">
+                <input type="text" class="cTwitch casterInput textInput mousetrap" placeholder="Caster Twitch" spellcheck="false">
               </div>
 
               <div class="casterGroup casterSocialG">
                 <load-svg src="SVGs/Youtube.svg" class="casterIcon ytIcon"></load-svg>
-                <input type="text" id="cYt1" class="casterInput textInput mousetrap" placeholder="Caster Youtube" spellcheck="false">
+                <input type="text" class="cYt casterInput textInput mousetrap" placeholder="Caster Youtube" spellcheck="false">
               </div>
 
-              <button class="saveCasterButt" tabindex="-1" title="Save current commentator info to preset">
+              <button class="saveCasterButt" tabindex="-1" disabled title="Save current commentator info to preset">
                 <div class="pInfoIconCont">
                   <load-svg src="SVGs/Save.svg" class="saveCasterIcon"></load-svg>
                 </div>
@@ -261,25 +263,27 @@
   
               <div class="casterGroup casterNameG">
                 <load-svg src="SVGs/Mic.svg" class="casterIcon"></load-svg>
-                <input type="text" id="cName2" class="textInput mousetrap" placeholder="Caster name" spellcheck="false">
+                <div class="castFinderPosition">
+                  <input type="text" class="cName textInput mousetrap" placeholder="Caster name" spellcheck="false">
+                </div>
               </div>
               
               <div class="casterGroup casterSocialG">
                 <load-svg src="SVGs/Twitter.svg" class="casterIcon twitterIcon"></load-svg>
-                <input type="text" id="cTwitter2" class="casterInput textInput mousetrap" placeholder="Caster Twitter" spellcheck="false">
+                <input type="text" class="cTwitter casterInput textInput mousetrap" placeholder="Caster Twitter" spellcheck="false">
               </div>
             
               <div class="casterGroup casterSocialG">
                 <load-svg src="SVGs/Twitch.svg" class="casterIcon twitchIcon"></load-svg>
-                <input type="text" id="cTwitch2" class="casterInput textInput mousetrap" placeholder="Caster Twitch" spellcheck="false">
+                <input type="text" class="cTwitch casterInput textInput mousetrap" placeholder="Caster Twitch" spellcheck="false">
               </div>
 
               <div class="casterGroup casterSocialG">
                 <load-svg src="SVGs/Youtube.svg" class="casterIcon ytIcon"></load-svg>
-                <input type="text" id="cYt2" class="casterInput textInput mousetrap" placeholder="Caster Youtube" spellcheck="false">
+                <input type="text" class="cYt casterInput textInput mousetrap" placeholder="Caster Youtube" spellcheck="false">
               </div>
 
-              <button class="saveCasterButt" tabindex="-1" title="Save current commentator info to preset">
+              <button class="saveCasterButt" tabindex="-1" disabled title="Save current commentator info to preset">
                 <div class="pInfoIconCont">
                   <load-svg src="SVGs/Save.svg" class="saveCasterIcon"></load-svg>
                 </div>
@@ -477,6 +481,7 @@ They will always appear when typing 'Grand' in the round box.">
       <input type="text" class="listSearch mousetrap" placeholder="Type to filter..." spellcheck="false" tabindex="-1">
       <div class="searchList"></div>
     </div>
+    <div id="casterFinder"></div>
     
   </body>
 </html>
