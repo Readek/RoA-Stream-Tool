@@ -7,5 +7,7 @@
   "forceHD": false,
   "noLoAHD": false,
   "forceWL": false,
-  "alwaysOnTop": false
+  "alwaysOnTop": false,
+  "invertScore": false,
+  "scoreAutoUpdate": false
 }

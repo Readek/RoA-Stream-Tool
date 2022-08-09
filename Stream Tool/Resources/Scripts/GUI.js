@@ -67,14 +67,7 @@ pushArrayInOrder(skinSelectors, "p", "SkinSelector");
 
 const charImgs = document.getElementsByClassName("charImg");
 
-const p1Win1 = document.getElementById('winP1-1');
-const p1Win2 = document.getElementById('winP1-2');
-const p1Win3 = document.getElementById('winP1-3');
-const p2Win1 = document.getElementById('winP2-1');
-const p2Win2 = document.getElementById('winP2-2');
-const p2Win3 = document.getElementById('winP2-3');
-
-const checks = document.getElementsByClassName("scoreCheck");
+const scores = [];
 
 const wlButtons = document.getElementsByClassName("wlButtons");
 const p1W = document.getElementById('p1W');
@@ -94,6 +87,8 @@ const workshopCheck = document.getElementById('workshopToggle');
 const forceHDCheck = document.getElementById('forceHD');
 const noLoAHDCheck = document.getElementById('noLoAHD');
 const forceWL = document.getElementById('forceWLToggle');
+const scoreAutoUpdateCheck = document.getElementById("scoreAutoUpdate");
+const invertScoreCheck = document.getElementById("invertScore");
 const forceAlt = document.getElementById("forceAlt");
 
 const pFinder = document.getElementById("playerFinder");
@@ -102,7 +97,7 @@ const skinFinder = document.getElementById("skinFinder");
 const cFinder = document.getElementById("casterFinder");
 
 
-// commentator class (more classes may be created in future releases maybe?)
+// commentator class
 class Caster {
 
     constructor(el) {
@@ -181,6 +176,70 @@ class Caster {
 
 }
 
+// yes also a class for score because classes are cool
+class Score {
+
+    constructor(el) {
+
+        this.scoreEls = el.getElementsByClassName("scoreCheck");
+
+        // set the score whenever we click on a score checkbox
+        for (let i = 0; i < this.scoreEls.length; i++) {
+            this.scoreEls[i].addEventListener("click", () => {
+
+                // if the checkbox we clicked is already checked, uncheck it
+                if (this.scoreEls[i].checked) {
+                    this.setScore(i+1);
+                } else {
+                    this.setScore(i);
+                }
+
+            });            
+        };
+
+    }
+
+    getScore() {
+
+        let result = 0;
+
+        // if a score tick is checked, add +1 to the result variable
+        for (let i = 0; i < this.scoreEls.length; i++) {
+            if (this.scoreEls[i].checked) {
+                result++;
+            }            
+        }
+
+        return result;
+
+    }
+
+    setScore(score) {
+
+        // check ticks below and equal to score, uncheck ticks above score
+        for (let i = 0; i < this.scoreEls.length; i++) {
+            if (score > i) {
+                this.scoreEls[i].checked = true;
+            } else {
+                this.scoreEls[i].checked = false;
+            }            
+        }
+
+    }
+
+    // called whenever we change to Bo3/Bo5 mode
+    hideScoresBo5() {
+        this.scoreEls[2].style.display = "none";
+    }
+    showScoresBo5() {
+        this.scoreEls[2].style.display = "block";
+    }
+
+
+}
+
+// (more classes may be created in future releases maybe?)
+
 init();
 function init() {
 
@@ -201,6 +260,8 @@ function init() {
     forceHDCheck.addEventListener("click", HDtoggle);
     noLoAHDCheck.addEventListener("click", saveGUISettings);
     forceWL.addEventListener("click", forceWLtoggle);
+    scoreAutoUpdateCheck.addEventListener("click", saveGUISettings);
+    invertScoreCheck.addEventListener("click", saveGUISettings);
     document.getElementById("alwaysOnTop").addEventListener("click", alwaysOnTop);
     document.getElementById("copyMatch").addEventListener("click", copyMatch);
     
@@ -215,6 +276,8 @@ function init() {
     if (guiSettings.forceHD) {forceHDCheck.checked = true};
     if (guiSettings.noLoAHD) {noLoAHDCheck.checked = true; noLoAHDCheck.disabled = false};
     if (guiSettings.forceWL) {forceWL.click()};
+    if (guiSettings.scoreAutoUpdate) {scoreAutoUpdateCheck.checked = true};
+    if (guiSettings.invertScore) {invertScoreCheck.checked = true};
     if (guiSettings.alwaysOnTop) {document.getElementById("alwaysOnTop").click()};
 
 
@@ -238,15 +301,14 @@ function init() {
     // also set listeners for the input filters of char/skin selects
     charFinder.addEventListener("input", () => {filterFinder(charFinder)});
     skinFinder.addEventListener("input", () => {filterFinder(skinFinder)});
-    
 
-    //score tick listeners, to automatically check/uncheck the other ticks
-    p1Win1.addEventListener("click", changeScoreTicks1);
-    p2Win1.addEventListener("click", changeScoreTicks1);
-    p1Win2.addEventListener("click", changeScoreTicks2);
-    p2Win2.addEventListener("click", changeScoreTicks2);
-    p1Win3.addEventListener("click", changeScoreTicks3);
-    p2Win3.addEventListener("click", changeScoreTicks3);
+
+    // initialize that score class
+    scores.push(
+        new Score(document.getElementById("scoreBox1")),
+        new Score(document.getElementById("scoreBox2")),
+    );
+
 
     //set click listeners for the [W] and [L] buttons
     p1W.addEventListener("click", setWLP1);
@@ -396,8 +458,14 @@ function init() {
     });
 
     //F1 or F2 to give players a score tick
-    Mousetrap.bind('f1', () => { giveWinP1() });
-    Mousetrap.bind('f2', () => { giveWinP2() });
+    Mousetrap.bind('f1', () => {
+        giveWin(0)
+        if (scoreAutoUpdateCheck.checked) {writeScoreboard()};
+    });
+    Mousetrap.bind('f2', () => {
+        giveWin(1)
+        if (scoreAutoUpdateCheck.checked) {writeScoreboard()};
+    });
 
     //up/down, to navigate the player presets menu (only when a menu is shown)
     Mousetrap.bind('down', () => {
@@ -787,67 +855,15 @@ function updateColor() {
 }
 
 
-//whenever clicking on the first score tick
-function changeScoreTicks1() {
-    const pNum = this == p1Win1 ? 1 : 2;
-
-    //deactivate wins 2 and 3
-    document.getElementById('winP'+pNum+'-2').checked = false;
-    document.getElementById('winP'+pNum+'-3').checked = false;
-}
-//whenever clicking on the second score tick
-function changeScoreTicks2() {
-    const pNum = this == p1Win2 ? 1 : 2;
-
-    //deactivate win 3, activate win 1
-    document.getElementById('winP'+pNum+'-1').checked = true;
-    document.getElementById('winP'+pNum+'-3').checked = false;
-}
-//something something the third score tick
-function changeScoreTicks3() {
-    const pNum = this == p1Win3 ? 1 : 2;
-
-    //activate wins 1 and 2
-    document.getElementById('winP'+pNum+'-1').checked = true;
-    document.getElementById('winP'+pNum+'-2').checked = true;
-}
-
-//returns how much score does a player have
-function checkScore(tick1, tick2, tick3) {
-    let totalScore = 0;
-
-    if (tick1.checked) {
-        totalScore++;
-    }
-    if (tick2.checked) {
-        totalScore++;
-    }
-    if (tick3.checked) {
-        totalScore++;
+// score hotkeys function
+function giveWin(num) {
+    
+    if (invertScoreCheck.checked) {
+        scores[num].setScore(scores[num].getScore()-1);
+    } else {
+        scores[num].setScore(scores[num].getScore()+1);
     }
 
-    return totalScore;
-}
-
-//gives a victory to player 1 
-function giveWinP1() {
-    if (p1Win2.checked) {
-        p1Win3.checked = true;
-    } else if (p1Win1.checked) {
-        p1Win2.checked = true;
-    } else if (!p1Win1.checked) {
-        p1Win1.checked = true;
-    }
-}
-//same with P2
-function giveWinP2() {
-    if (p2Win2.checked) {
-        p2Win3.checked = true;
-    } else if (p2Win1.checked) {
-        p2Win2.checked = true;
-    } else if (!p2Win1.checked) {
-        p2Win1.checked = true;
-    }
 }
 
 
@@ -1317,13 +1333,13 @@ function changeBestOf() {
     if (this == bo5Div) {
         currentBestOf = "Bo5";
         theOtherBestOf = bo3Div;
-        p1Win3.style.display = "block";
-        p2Win3.style.display = "block";
+        scores[0].showScoresBo5();
+        scores[1].showScoresBo5();
     } else {
         currentBestOf = "Bo3";
         theOtherBestOf = bo5Div;
-        p1Win3.style.display = "none";
-        p2Win3.style.display = "none";
+        scores[0].hideScoresBo5();
+        scores[1].hideScoresBo5();
     }
 
     //change the color and background of the buttons
@@ -1482,10 +1498,10 @@ function swap() {
     }    
 
     //scores
-    const tempP1Score = checkScore(p1Win1, p1Win2, p1Win3);
-    const tempP2Score = checkScore(p2Win1, p2Win2, p2Win3);
-    setScore(tempP2Score, p1Win1, p1Win2, p1Win3);
-    setScore(tempP1Score, p2Win1, p2Win2, p2Win3);
+    const tempP1Score = scores[0].getScore();
+    const tempP2Score = scores[1].getScore();
+    scores[0].setScore(tempP2Score);
+    scores[1].setScore(tempP1Score)
 
     //W/K, only if they are visible
     if (p1W.style.display = "flex") {
@@ -1532,27 +1548,10 @@ function clearPlayers() {
     }
 
     //clear player scores
-    for (let i = 0; i < checks.length; i++) {
-        checks[i].checked = false;
+    for (let i = 0; i < scores.length; i++) {
+        scores[i].setScore(0);
     }
 
-}
-
-
-//manually sets the player's score
-function setScore(score, tick1, tick2, tick3) {
-    tick1.checked = false;
-    tick2.checked = false;
-    tick3.checked = false;
-    if (score > 0) {
-        tick1.checked = true;
-        if (score > 1) {
-            tick2.checked = true;
-            if (score > 2) {
-                tick3.checked = true;
-            }
-        }
-    }
 }
 
 
@@ -1660,6 +1659,8 @@ function saveGUISettings() {
     guiSettings.forceHD = forceHDCheck.checked;
     guiSettings.noLoAHD = noLoAHDCheck.checked;
     guiSettings.forceWL = forceWL.checked;
+    guiSettings.scoreAutoUpdate = scoreAutoUpdateCheck.checked;
+    guiSettings.invertScore = invertScoreCheck.checked;
     guiSettings.alwaysOnTop = document.getElementById("alwaysOnTop").checked;
 
     // save the file
@@ -1680,8 +1681,8 @@ function writeScoreboard() {
         ],
         color: [],
         score: [
-            checkScore(p1Win1, p1Win2, p1Win3),
-            checkScore(p2Win1, p2Win2, p2Win3)
+            scores[0].getScore(),
+            scores[1].getScore()
         ],
         wl: [
             currentP1WL,
@@ -1888,8 +1889,8 @@ function writeScoreboard() {
     fs.writeFileSync(textPath + "/Simple Texts/Team 1.txt", tNameInps[0].value);
     fs.writeFileSync(textPath + "/Simple Texts/Team 2.txt", tNameInps[1].value);
 
-    fs.writeFileSync(textPath + "/Simple Texts/Score L.txt", checkScore(p1Win1, p1Win2, p1Win3).toString());
-    fs.writeFileSync(textPath + "/Simple Texts/Score R.txt", checkScore(p2Win1, p2Win2, p2Win3).toString());
+    fs.writeFileSync(textPath + "/Simple Texts/Score L.txt", scores[0].getScore().toString());
+    fs.writeFileSync(textPath + "/Simple Texts/Score R.txt", scores[1].getScore().toString());
 
     fs.writeFileSync(textPath + "/Simple Texts/Round.txt", roundInp.value);
     fs.writeFileSync(textPath + "/Simple Texts/Tournament Name.txt", tournamentInp.value);
