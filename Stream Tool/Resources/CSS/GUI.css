@@ -969,3 +969,32 @@ button:hover {
   z-index: 100;
   display: none;
 }
+
+/* notification area */
+#notifDiv {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+#notifText {
+  padding: 5px;
+  background-color: var(--bg4);
+  border: 2px solid var(--focused);
+  border-radius: 5px;
+}
+
+@keyframes notifAnim {
+  0% {
+    opacity: 0px;
+    border-color: var(--selected);
+  }
+  10% {opacity: 1}
+  20% {border-color: var(--focused);}
+  75% {opacity: 1;}
+  100% {opacity: 0;}
+}

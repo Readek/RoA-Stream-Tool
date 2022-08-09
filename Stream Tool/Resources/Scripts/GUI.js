@@ -96,6 +96,8 @@ const charFinder = document.getElementById("characterFinder");
 const skinFinder = document.getElementById("skinFinder");
 const cFinder = document.getElementById("casterFinder");
 
+const notifSpan = document.getElementById("notifText");
+
 
 // commentator class
 class Caster {
@@ -145,6 +147,7 @@ class Caster {
             // use this object to create a json file
             fs.writeFileSync(`${textPath}/Commentator Info/${this.getName()}.json`, JSON.stringify(preset, null, 2));
 
+            displayNotif("Commentator preset has been saved");
         });
 
     }
@@ -1324,6 +1327,8 @@ function savePlayerPreset() {
 
     fs.writeFileSync(`${textPath}/Player Info/${document.getElementById("pInfoInputName").value}.json`, JSON.stringify(preset, null, 2));
 
+    displayNotif("Player preset has been saved");
+
 }
 
 
@@ -1903,6 +1908,20 @@ function writeScoreboard() {
     }
 
 }
+
+
+// whenever we need to display some info text to the user
+function displayNotif(text) {
+    
+    notifSpan.innerHTML = text;
+
+    notifSpan.style.animation = "";
+    setTimeout(() => {
+        notifSpan.style.animation = "notifAnim 2.5s both";
+    });
+
+}
+
 
 // when a new browser connects
 ipc.on('requestData', () => {
