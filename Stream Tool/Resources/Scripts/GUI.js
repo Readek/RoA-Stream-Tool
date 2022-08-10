@@ -1325,6 +1325,16 @@ function savePlayerPreset() {
         skin: skinSelectors[pNum].innerText
     })
 
+    // if a player preset for this player exists, add already existing characters
+    if (fs.existsSync(`${textPath}/Player Info/${document.getElementById("pInfoInputName").value}.json`)) {
+        
+        const existingPreset = getJson(`${textPath}/Player Info/${document.getElementById("pInfoInputName").value}`);
+        for (let i = 0; i < existingPreset.characters.length; i++) {
+            preset.characters.push(existingPreset.characters[i]);
+        }
+
+    }
+
     fs.writeFileSync(`${textPath}/Player Info/${document.getElementById("pInfoInputName").value}.json`, JSON.stringify(preset, null, 2));
 
     displayNotif("Player preset has been saved");
