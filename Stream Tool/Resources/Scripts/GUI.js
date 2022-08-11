@@ -557,8 +557,8 @@ function loadCharacters() {
         const imgIcon = document.createElement('img');
         imgIcon.className = "fIconImg";
         // check in case image cant be found
-        if (fs.existsSync(charPath+"/"+characterList[i]+"/Icon.png")) {
-            imgIcon.src = charPath+"/"+characterList[i]+"/Icon.png";
+        if (fs.existsSync(charPath+"/"+characterList[i]+"/Icons/Default.png")) {
+            imgIcon.src = charPath+"/"+characterList[i]+"/Icons/Default.png";
         } else {
             imgIcon.src = charPathRandom + '/Icon.png';
         }
@@ -611,11 +611,10 @@ function charChange(character, pNum = -1) {
     charSelectors[currentPlayer].children[1].innerHTML = character;
 
     // update character selector icon (making sure it exists)
-    if (fs.existsSync(`${charPath}/${character}/Icon.png`)) {
-        charSelectors[currentPlayer].children[0].src = `${charPath}/${character}/Icon.png`;
+    if (fs.existsSync(`${charPath}/${character}/Icons/Default.png`)) {
+        charSelectors[currentPlayer].children[0].src = `${charPath}/${character}/Icons/Default.png`;
     } else {
         charSelectors[currentPlayer].children[0].src = `${charPathRandom}/Icon.png`;
-
     }
 
     // check the first skin of the list for this character
@@ -727,6 +726,15 @@ function skinChange(char, skin, pNum) {
 
     // remove focus from the skin list so it auto hides
     document.activeElement.blur();
+
+    // check if an icon for this skin exists
+    if (fs.existsSync(`${charPath}/${char}/Icons/${skin}.png`)) {
+        charSelectors[currentPlayer].children[0].src = `${charPath}/${char}/Icons/${skin}.png`;
+    } else if (fs.existsSync(`${charPath}/${char}/Icons/Default.png`)) {
+        charSelectors[currentPlayer].children[0].src = `${charPath}/${char}/Icons/Default.png`;
+    } else {
+        charSelectors[currentPlayer].children[0].src = `${charPathRandom}/Icon.png`;
+    }
 
 }
 
