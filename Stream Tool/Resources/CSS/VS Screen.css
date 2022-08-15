@@ -372,7 +372,15 @@ body {
     color: rgb(65, 65, 65);
     line-height: 26px;
     white-space: nowrap;
+    opacity: 0;
 }
+.socialBoxL {
+    left: 765px;
+}
+.socialBoxR {
+    right: 765px;
+}
+
 .twitterIcon {
     height: 19px;
     width: 19px;
@@ -387,19 +395,12 @@ body {
     transform: translate(0px, 1px);
     display: inline-block;
 }
-
-#twitter1Wrapper, #twitter2Wrapper {
-    opacity: 0;
-}
-#twitch1Wrapper, #twitch2Wrapper {
-    opacity: 0;
-}
-
-#twitter1Wrapper, #twitch1Wrapper {
-    left: 765px;
-}
-#twitter2Wrapper, #twitch2Wrapper {
-    right: 765px;
+.ytIcon {
+    height: 19px;
+    width: 19px;
+    fill: rgb(65, 65, 65);
+    transform: translate(2px, 1px);
+    display: inline-block;
 }
 
 

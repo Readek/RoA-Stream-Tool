@@ -156,13 +156,25 @@ class Caster {
         return this.nameEl.value;
     }
     getTwitter() {
-        return this.twitterEl.value;
+        if (this.twitterEl.value == "") {
+            return "-";
+        } else {
+            return this.twitterEl.value;
+        }
     }
     getTwitch() {
-        return this.twitchEl.value;
+        if (this.twitchEl.value == "") {
+            return "-";
+        } else {
+            return this.twitchEl.value;
+        }
     }
     getYt() {
-        return this.ytEl.value;
+        if (this.ytEl.value == "") {
+            return "-";
+        } else {
+            return this.ytEl.value;
+        }
     }
     setName(text) {
         this.nameEl.value = text;
