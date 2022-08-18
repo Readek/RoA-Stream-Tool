@@ -443,6 +443,26 @@ body {
     left: 862px;
 }
 
+#scoreNumerical {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    gap: 12px;
+    top: 182px;
+}
+.scoreNum {
+    width: 50%;
+    height: 66px;
+    font-size: 48px;
+    font-family: "LemonMilk";
+    width: 60px;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: translateY(24px);
+}
 
 #connErrorDiv {
     display: none;

@@ -57,6 +57,7 @@ const pChar = document.getElementsByClassName("char");
 const pTrail = document.getElementsByClassName("trail");
 const pBG = document.getElementsByClassName("bgVid");
 const scoreImg = document.getElementsByClassName("scoreTick");
+const scoreNums = document.getElementsByClassName("scoreNum");
 const colorBG = document.getElementsByClassName("colorBG");
 const textBG = document.getElementsByClassName("textBG");
 const scoreOverlay = document.getElementById("scores");
@@ -363,7 +364,7 @@ async function updateData(scInfo) {
 				//if the scores for both sides are 0, hide the thing
 				if (score[0] == 0 && score[1] == 0) {
 					fadeOut(scoreOverlay);
-				} else {
+				} else if (window.getComputedStyle(scoreOverlay).getPropertyValue("opacity") == 0) {
 					fadeIn(scoreOverlay);
 				}
 
@@ -605,6 +606,9 @@ function changeGM(gm) {
 //score change, pretty simple
 function updateScore(side, pScore, pColor) {
 
+	// update the numerical score in case we are showing it
+	updateText(scoreNums[side], pScore, "48px");
+
 	//if this is the right side, change the number
 	if (side == 1) {
 		side = 3;
@@ -627,6 +631,7 @@ function updateScore(side, pScore, pColor) {
 		scoreImg[side+1].style.fill = pColor.hex;
 		scoreImg[side+2].style.fill = pColor.hex;
 	}
+
 }
 
 
@@ -656,6 +661,10 @@ function updateColor(gradEL, textBGEL, color, i, gamemode) {
 		pWrapper[i+2].style.backgroundColor = "";
 	}
 
+	// change the text shadows for the numerical scores
+	scoreNums[i].style.webkitTextStroke = "1px " + color.hex;
+	scoreNums[i].style.textShadow = "0px 0px 3px " + color.hex;
+
 }
 
 
@@ -668,16 +677,25 @@ function updateBG(vidEL, vidSrc) {
 
 // to hide some score ticks and change score border
 function updateBo(bestOf) {
+
+	const scoreTicks = document.getElementById("scoreTicks");
+	const scoreNumerical = document.getElementById("scoreNumerical");
+
 	if (bestOf == 5) {
+		scoreTicks.style.display = "block";
+		scoreNumerical.style.display = "none";
 		scoreImg[2].style.opacity = 1;
 		scoreImg[5].style.opacity = 1;
 		scoreBorder.src = "Resources/Overlay/VS Screen/Score Border Bo5.png";
 	} else if (bestOf == 3) {
+		scoreTicks.style.display = "block";
+		scoreNumerical.style.display = "none";
 		scoreImg[2].style.opacity = 0;
 		scoreImg[5].style.opacity = 0;
 		scoreBorder.src = "Resources/Overlay/VS Screen/Score Border Bo3.png";
 	} else if (bestOf == "X") {
-		
+		scoreTicks.style.display = "none";
+		scoreNumerical.style.display = "flex";		
 	}
 }
 
