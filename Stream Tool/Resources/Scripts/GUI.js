@@ -31,7 +31,7 @@ const pInfos = []; // player info that doesnt have exclusive inputs
 
 let currentP1WL = "";
 let currentP2WL = "";
-let currentBestOf = "Bo5";
+let currentBestOf = 5;
 
 let gamemode = 1;
 
@@ -74,9 +74,6 @@ const p1W = document.getElementById('p1W');
 const p1L = document.getElementById('p1L');
 const p2W = document.getElementById('p2W');
 const p2L = document.getElementById('p2L');
-
-const bo3Div = document.getElementById("bo3Div");
-const bo5Div = document.getElementById("bo5Div");
 
 const roundInp = document.getElementById('roundName');
 const tournamentInp = document.getElementById('tournamentName');
@@ -185,6 +182,7 @@ class Score {
     constructor(el) {
 
         this.scoreEls = el.getElementsByClassName("scoreCheck");
+        this.scoreNumEl = el.getElementsByClassName("scoreCheckN")[0];
 
         // set the score whenever we click on a score checkbox
         for (let i = 0; i < this.scoreEls.length; i++) {
@@ -204,39 +202,69 @@ class Score {
 
     getScore() {
 
-        let result = 0;
+        if (currentBestOf != "X") { // if score ticks are visible
 
-        // if a score tick is checked, add +1 to the result variable
-        for (let i = 0; i < this.scoreEls.length; i++) {
-            if (this.scoreEls[i].checked) {
-                result++;
-            }            
+            let result = 0;
+
+            // if a score tick is checked, add +1 to the result variable
+            for (let i = 0; i < this.scoreEls.length; i++) {
+                if (this.scoreEls[i].checked) {
+                    result++;
+                }            
+            }
+    
+            return result;
+
+        } else { // if we are using actual numbers
+
+            return Number(this.scoreNumEl.value);
+            
         }
 
-        return result;
+
 
     }
 
     setScore(score) {
 
+        // just for safety, dont let it drop to negative numbers
+        let actualScore;
+        if (score <= 0) {
+            actualScore = 0;
+        } else {
+            actualScore = score;
+        }
+
         // check ticks below and equal to score, uncheck ticks above score
         for (let i = 0; i < this.scoreEls.length; i++) {
-            if (score > i) {
+            if (actualScore > i) {
                 this.scoreEls[i].checked = true;
             } else {
                 this.scoreEls[i].checked = false;
             }            
         }
 
+        this.scoreNumEl.value = actualScore;
+
     }
 
-    // called whenever we change to Bo3/Bo5 mode
-    hideScoresBo5() {
+    // called whenever we change the "best of" mode
+    showBo5() {
+        for (let i = 0; i < this.scoreEls.length; i++) {
+            this.scoreEls[i].style.display = "block";            
+        }
+        this.scoreNumEl.style.display = "none";
+    }
+    showBo3() {
         this.scoreEls[2].style.display = "none";
     }
-    showScoresBo5() {
-        this.scoreEls[2].style.display = "block";
+    showBoX() {
+        for (let i = 0; i < this.scoreEls.length; i++) {
+            this.scoreEls[i].style.display = "none";            
+        }
+        this.scoreNumEl.style.display = "block";
     }
+    
 
 
 }
@@ -372,15 +400,12 @@ function init() {
         hidePlayerInfo();
     })
 
-    //set click listeners to change the "best of" status
-    bo3Div.addEventListener("click", changeBestOf);
-    bo5Div.addEventListener("click", changeBestOf);
-    //set initial value
-    bo3Div.style.color = "var(--text2)";
-    bo5Div.style.backgroundImage = "linear-gradient(to top, #575757, #00000000)";
+
+    // set click listeners to change the "best of" status
+    document.getElementById("bestOf").addEventListener("click", changeBestOf);
 
 
-    //check if the round is grand finals
+    // check if the round is grand finals whenever we type on round input
     roundInp.addEventListener("input", checkRound);
 
 
@@ -1350,26 +1375,44 @@ function savePlayerPreset() {
 }
 
 
-//used when clicking on the "Best of" buttons
+// called when clicking on the "Best of" button
 function changeBestOf() {
-    let theOtherBestOf; //we always gotta know
-    if (this == bo5Div) {
-        currentBestOf = "Bo5";
-        theOtherBestOf = bo3Div;
-        scores[0].showScoresBo5();
-        scores[1].showScoresBo5();
-    } else {
-        currentBestOf = "Bo3";
-        theOtherBestOf = bo5Div;
-        scores[0].hideScoresBo5();
-        scores[1].hideScoresBo5();
+
+    if (currentBestOf == 5) {
+
+        currentBestOf = 3;
+
+        // change the visual text
+        this.innerHTML = "Best of 3";
+        this.title = "Click to change the scoring to Best of X";
+
+        // hide the last score tick from the score ticks
+        scores[0].showBo3();
+        scores[1].showBo3();
+
+    } else if (currentBestOf == 3) {
+
+        currentBestOf = "X";
+
+        this.innerHTML = "Best of X";
+        this.title = "Click to change the scoring to Best of 5";
+
+        scores[0].showBoX();
+        scores[1].showBoX();
+        
+
+    } else if (currentBestOf == "X") {
+
+        currentBestOf = 5;
+
+        this.innerHTML = "Best of 5";
+        this.title = "Click to change the scoring to Best of 3";
+
+        scores[0].showBo5();
+        scores[1].showBo5();
+
     }
 
-    //change the color and background of the buttons
-    this.style.color = "var(--text1)";
-    this.style.backgroundImage = "linear-gradient(to top, #575757, #00000000)";
-    theOtherBestOf.style.color = "var(--text2)";
-    theOtherBestOf.style.backgroundImage = "var(--bg4)";
 }
 
 
@@ -1402,7 +1445,7 @@ function changeGamemode() {
         gamemode = 2;
 
         // change gamemode selector text
-        this.innerText = "1v1";
+        this.innerText = "2v2";
 
         // display all 2v2 only elements
         for (let i = 0; i < dubEls.length; i++) {
@@ -1445,7 +1488,7 @@ function changeGamemode() {
         gamemode = 1;
 
         // change gamemode selector text
-        this.innerText = "2v2";
+        this.innerText = "1v1";
 
         // hide all 2v2 only elements
         for (let i = 0; i < dubEls.length; i++) {

@@ -553,7 +553,7 @@ async function updateScore(pScore, bestOf, pColor, pNum, gamemode, playAnim) {
 		scoreAnim[pNum].play();
 	} 
 	// change the score image with the new values
-	scoreImg[pNum].src = `Resources/Overlay/Scoreboard/Score/${gamemode}/${bestOf} ${pScore}.png`;
+	scoreImg[pNum].src = `Resources/Overlay/Scoreboard/Score/${gamemode}/Bo${bestOf} ${pScore}.png`;
 
 }
 
@@ -563,7 +563,7 @@ function updateColor(colorEL, pColor, gamemode) {
 
 function updateBorder(bestOf, gamemode) {
 	for (let i = 0; i < borderImg.length; i++) {
-		borderImg[i].src = `Resources/Overlay/Scoreboard/Borders/Border ${gamemode} ${bestOf}.png`;
+		borderImg[i].src = `Resources/Overlay/Scoreboard/Borders/Border ${gamemode} Bo${bestOf}.png`;
 	}
 	bestOfPrev = bestOf
 }

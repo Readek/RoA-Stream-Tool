@@ -610,14 +610,16 @@ function updateBG(vidEL, vidSrc) {
 
 // to hide some score ticks and change score border
 function updateBo(bestOf) {
-	if (bestOf == "Bo5") {
+	if (bestOf == 5) {
 		scoreImg[2].style.opacity = 1;
 		scoreImg[5].style.opacity = 1;
 		scoreBorder.src = "Resources/Overlay/VS Screen/Score Border Bo5.png";
-	} else {
+	} else if (bestOf == 3) {
 		scoreImg[2].style.opacity = 0;
 		scoreImg[5].style.opacity = 0;
 		scoreBorder.src = "Resources/Overlay/VS Screen/Score Border Bo3.png";
+	} else if (bestOf == "X") {
+		
 	}
 }
 

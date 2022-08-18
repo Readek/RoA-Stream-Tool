@@ -431,16 +431,35 @@ button:hover {
   align-items: center;
   color: var(--text2);
   font-family: 'Roboto-Medium';
-  gap: 1px;
+  gap: 8px;
 }
 .scoreBox:hover {
   border-color: var(--selected);
+}
+
+#scoreText1, #scoreText2 {
+  margin-right: -2px;
 }
 
 .scoreCheck {
   width: 14px;
   height: 14px;
   outline: none;
+  margin: 0;
+}
+
+.scoreCheckN {
+  display: none;
+  width: 36px;
+  height: 18px;
+  outline: none;
+  border: 1px solid var(--bg4);
+  border-radius: 3px;
+  background-color: var(--bg2);
+  color: var(--text1);
+  font-family: 'Roboto-Medium';
+  font-size: 16px;
+  padding-left: 3px;
 }
 
 .wlButtons {
@@ -569,42 +588,32 @@ button:hover {
   gap: 8px;
 }
 
-#bestOf {
-  display: flex;
-  justify-content: center;
-  flex-shrink: 0;
-}
 
-.bestOfBox {
+#bestOf {
   background-color: var(--bg4);
+  width: 80px;
   height: 30px;
-  padding: 5px;
+  padding: 0px 6px;
   box-sizing: border-box;
   border-radius: 3px;
   border: 1px solid var(--focused);
   transition: border-color 100ms;
-}
-
-.bestOfBox:hover {
-  border-color: var(--selected);
-  transform: scale(1); /* cheap trick to show a correct border */
-}
-
-#bo3Div {
-  border-top-right-radius: 0px;
-  border-bottom-right-radius: 0px;
-}
-#bo5Div {
-  border-top-left-radius: 0px;
-  border-bottom-left-radius: 0px;
-  margin-left: -1px;
-}
-
-#rtInfo {
+  flex-shrink: 0;
   display: flex;
-  gap: 4px;
-  width: 100%;
+  justify-content: center;
+  align-items: center;
+  color: var(--text2);
+  font-family: 'Roboto-Medium';
 }
+#bestOf:hover {
+  border-color: var(--selected);
+  cursor: pointer;
+}
+#bestOf:active {
+  background-color: var(--bg2);
+}
+
+
 #roundName, #tournamentName {
   width: 100%;
   text-align: center;
