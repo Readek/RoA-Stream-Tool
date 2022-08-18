@@ -23,17 +23,18 @@ const teamSize = '72px';
 const roundSize = '38px';
 const tournamentSize = '28px';
 const casterSize = '25px';
-const twitterSize = '20px';
+const cSocialSize = '20px';
 
 //to avoid the code constantly running the same method over and over
 const pCharPrev = [], pBgPrev = [], scorePrev = [], colorPrev = [];
 let bestOfPrev, gamemodePrev;
 
-//variables for the twitter/twitch constant change
-let socialInt1, socialInt2;
-let twitter1, twitch1, twitter2, twitch2;
-let socialSwitch = true; //true = twitter, false = twitch
-const socialInterval = 7000;
+// groups of classes
+const casters = [];
+
+// variables for the commentator social info constant change
+let sTurn = 0;
+const socialInterval = 7000; // time in miliseconds for each change
 
 //to consider how many loops will we do
 let maxPlayers = 2; //will change when doubles comes
@@ -62,11 +63,98 @@ const scoreOverlay = document.getElementById("scores");
 const scoreBorder = document.getElementById("scoreBorder");
 const roundEL = document.getElementById("round");
 const tournamentEL = document.getElementById("tournament");
-const casterEL = document.getElementsByClassName("caster");
-const twitterEL = document.getElementsByClassName("twitter");
-const twitterWrEL = document.getElementsByClassName("twitterWrapper");
-const twitchEL = document.getElementsByClassName("twitch");
-const twitchWrEL = document.getElementsByClassName("twitchWrapper");
+
+
+// commentator class (more classes may be crated on future releases maybe?)
+class Caster {
+
+	constructor(num, data) {
+
+		this.cName = document.getElementById("caster"+num);
+		this.cTwitter = document.getElementById("twitter"+num);
+		this.cTwitch = document.getElementById("twitch"+num);
+		this.cYt = document.getElementById("yt"+num);
+
+		// set all the texts on startup
+		this.setName(data.name);
+		this.setTwitter(data.twitter);
+		this.setTwitch(data.twitch);
+		this.setYt(data.yt);
+
+	}
+
+	getName() {
+		return this.cName.innerHTML;
+	}
+	getTwitter() {
+		return this.cTwitter.innerHTML;
+	}
+	getTwitch() {
+		return this.cTwitch.innerHTML;
+	}
+	getYt() {
+		return this.cYt.innerHTML;
+	}
+	
+	setName(text) {
+		updateText(this.cName, text, casterSize);
+	}
+	setTwitter(text) {
+		updateSocialText(this.cTwitter, text, cSocialSize, this.cTwitter.parentElement);
+	}
+	setTwitch(text) {
+		updateSocialText(this.cTwitch, text, cSocialSize, this.cTwitch.parentElement);
+	}
+	setYt(text) {
+		updateSocialText(this.cYt, text, cSocialSize, this.cYt.parentElement);
+	}
+
+	update(data) {
+
+		// caster name is simple enough
+		if (this.getName() != data.name) {
+			fadeOut(this.cName).then( () => {
+				this.setName(data.name);
+				fadeIn(this.cName, .2);
+			});
+		}
+
+		// but for the rest
+		if (this.getTwitter() != data.twitter) {
+			// only animate the change if its visible
+			if (window.getComputedStyle(this.cTwitter.parentElement).getPropertyValue("opacity") == 1) {
+				fadeOut(this.cTwitter.parentElement).then( () => {
+					this.setTwitter(data.twitter);
+					fadeIn(this.cTwitter.parentElement, .2);
+				});
+			} else {
+				this.setTwitter(data.twitter);
+			}
+		}
+		if (this.getTwitch() != data.twitch) {
+			if (window.getComputedStyle(this.cTwitch.parentElement).getPropertyValue("opacity") == 1) {
+				fadeOut(this.cTwitch.parentElement).then( () => {
+					this.setTwitch(data.twitch);
+					fadeIn(this.cTwitch.parentElement, .2);
+				});
+			} else {
+				this.setTwitch(data.twitch);
+			}
+		}
+		if (this.getYt() != data.yt) {
+			if (window.getComputedStyle(this.cYt.parentElement).getPropertyValue("opacity") == 1) {
+				fadeOut(this.cYt.parentElement).then( () => {
+					this.setYt(data.yt);
+					fadeIn(this.cYt.parentElement, .2);
+				});
+			} else {
+				this.setYt(data.yt);
+			}
+		}
+
+	}
+
+}
 
 
 // first we will start by connecting with the GUI with a websocket
@@ -117,11 +205,6 @@ async function updateData(scInfo) {
 	const tournamentName = scInfo.tournamentName;
 
 	const caster = scInfo.caster;
-	
-	twitter1 = caster[0].twitter;
-	twitch1 = caster[0].twitch;
-	twitter2 = caster[1].twitter;
-	twitch2 = caster[1].twitch;
 
 
 	// first of all, things that will always happen on each cycle
@@ -222,31 +305,21 @@ async function updateData(scInfo) {
 
 
 		//set the caster info
-		for (let i = 0; i < casterEL.length; i++) {
-			updateText(casterEL[i], caster[i].name, casterSize);
-			updateSocialText(twitterEL[i], caster[i].twitter, twitterSize, twitterWrEL[i]);
-			updateSocialText(twitchEL[i], caster[i].twitch, twitterSize, twitchWrEL[i]);
-		
-			//setup twitter/twitch change
-			socialChange1(twitterWrEL[i], twitchWrEL[i]);
+		for (let i = 0; i < caster.length; i++) {
+
+			// add all casters found to the array, all info will initialize there
+			casters.push(new Caster(i+1, caster[i]));
+
 		}
 
-		//set an interval to keep changing the names
-		socialInt1 = setInterval( () => {
-			socialChange1(twitterWrEL[0], twitchWrEL[0]);
-		}, socialInterval);
-		socialInt2 = setInterval( () => {
-			socialChange2(twitterWrEL[1], twitchWrEL[1]);
-		}, socialInterval);
-
-		//keep changing this boolean for the previous intervals
+		// random number so we start with a random social tag each time
+		sTurn = Math.floor(Math.random() * (3 - 1 + 1) ) + 1;
+		// set an interval to keep changing the commentator social info
 		setInterval(() => {
-			if (socialSwitch) { //true = twitter, false = twitch
-				socialSwitch = false;
-			} else {
-				socialSwitch = true;
-			}
+			fadeOutSocials();
 		}, socialInterval);
+		// fade in the first batch
+		fadeInSocials();
 
 
 		startup = false; //next time we run this function, it will skip all we just did
@@ -406,25 +479,10 @@ async function updateData(scInfo) {
 
 
 		//update caster info
-		for (let i = 0; i < casterEL.length; i++) {
+		for (let i = 0; i < caster.length; i++) {
 			
-			//caster names
-			if (casterEL[i].textContent != caster[i].name){
-				fadeOut(casterEL[i]).then( () => {
-					updateText(casterEL[i], caster[i].name, casterSize);
-					fadeIn(casterEL[i], .2);
-				});
-			}
-
-			//caster twitters
-			if (twitterEL[i].textContent != caster[i].twitter){
-				updateSocial(caster[i].twitter, twitterEL[i], twitterWrEL[i], caster[i].twitch, twitchWrEL[i]);
-			}
-
-			//caster twitchers
-			if (twitchEL[i].textContent != caster[i].twitch){
-				updateSocial(caster[i].twitch, twitchEL[i], twitchWrEL[i], caster[i].twitter, twitterWrEL[i]);
-			}
+			// with the magic of javascript classes, we will just do this:
+			casters[i].update(caster[i]);
 
 		}
 	}
@@ -624,92 +682,137 @@ function updateBo(bestOf) {
 }
 
 
-//the logic behind the twitter/twitch constant change
-function socialChange1(twitterWrapperEL, twitchWrapperEL) {
+// the logic bechind the commentator social info constant change
+function fadeOutSocials() {
 
-	if (startup) {
-
-		//if first time, set initial opacities so we can read them later
-		if (!twitter1 && !twitch1) { //if all blank
-			twitterWrapperEL.style.opacity = 0;
-			twitchWrapperEL.style.opacity = 0;
-		} else if (!twitter1 && !!twitch1) { //if twitter blank
-			twitterWrapperEL.style.opacity = 0;
-			twitchWrapperEL.style.opacity = 1;
-		} else {
-			twitterWrapperEL.style.opacity = 1;
-			twitchWrapperEL.style.opacity = 0;
-		}
+	if (sTurn == 0) { // if there were no available texts on last check
 		
+		// simply fade in
+		sTurn++;
+		fadeInSocials();
 
-	} else if (!!twitter1 && !!twitch1) {
+	} else {
 
-		if (socialSwitch) {
-			fadeOut(twitterWrapperEL).then( () => {
-				fadeIn(twitchWrapperEL);
-			});
-		} else {
-			fadeOut(twitchWrapperEL).then( () => {
-				fadeIn(twitterWrapperEL);
-			});
+		let theresText; // to know if theres... text
+
+		// for all the current casters stored
+		for (let i = 0; i < casters.length; i++) {
+			
+			if (sTurn != 1) { // twitter turn
+				if (casters[i].getTwitter() != "-") {
+					theresText = true;
+				}
+			}
+			if (sTurn != 2) { // twitch turn
+				if (casters[i].getTwitch() != "-") {
+					theresText = true;
+				}
+			}
+			if (sTurn != 3) { // youtube turn
+				if (casters[i].getYt() != "-") {
+					theresText = true;
+				}
+			}
+			
+		}
+
+		// if theres any text to show, its time to fade it in
+		if (theresText) {
+			
+			for (let i = 0; i < casters.length; i++) {
+				if (sTurn == 1) {
+					fadeOut(casters[i].cTwitter.parentElement);
+				} else if (sTurn == 2) {
+					fadeOut(casters[i].cTwitch.parentElement);
+				} else if (sTurn == 3) {
+					fadeOut(casters[i].cYt.parentElement);
+				}
+			}
+
+			// wait for the animations to finish
+			setTimeout(() => {
+				sTurn++;
+				if (sTurn == 4) {sTurn = 1}
+				fadeInSocials();
+			}, fadeOutTime*1000);
+
 		}
 
 	}
+	
 }
-//i didnt know how to make it a single function im sorry ;_;
-function socialChange2(twitterWrapperEL, twitchWrapperEL) {
+function fadeInSocials(repeated) {
+	
+	if (sTurn == 1) { // twitter turn
 
-	if (startup) {
+		let theresText;
+		
+		// check all existing commentators
+		for (let i = 0; i < casters.length; i++) {
 
-		if (!twitter2 && !twitch2) {
-			twitterWrapperEL.style.opacity = 0;
-			twitchWrapperEL.style.opacity = 0;
-		} else if (!twitter2 && !!twitch2) {
-			twitterWrapperEL.style.opacity = 0;
-			twitchWrapperEL.style.opacity = 1;
+			// if a commentator has text, set the flag
+			if (casters[i].getTwitter() != "-") {
+				theresText = true;
+			}
+			
+		}
+
+		// if text was found on at least one caster
+		if (theresText) {
+			// fade in all caster twitter info
+			for (let i = 0; i < casters.length; i++) {
+				fadeIn(casters[i].cTwitter.parentElement);
+			}
+			return; // dont activate the rest of the function
 		} else {
-			twitterWrapperEL.style.opacity = 1;
-			twitchWrapperEL.style.opacity = 0;
+			sTurn++;
 		}
 
-	} else if (!!twitter2 && !!twitch2) {
-
-		if (socialSwitch) {
-			fadeOut(twitterWrapperEL).then( () => {
-				fadeIn(twitchWrapperEL);
-			});
+	}
+	if (sTurn == 2) { // twitch turn
+		// same as before
+		let theresText;
+		for (let i = 0; i < casters.length; i++) {
+			if (casters[i].getTwitch() != "-") {
+				theresText = true;
+			}
+		}
+		if (theresText) {
+			for (let i = 0; i < casters.length; i++) {
+				fadeIn(casters[i].cTwitch.parentElement);
+			}
+			return;
 		} else {
-			fadeOut(twitchWrapperEL).then( () => {
-				fadeIn(twitterWrapperEL);
-			});
+			sTurn++;
 		}
-
 	}
-}
-//function to decide when to change to what
-function updateSocial(mainSocial, mainText, mainWrapper, otherSocial, otherWrapper) {
-	//check if this is for twitch or twitter
-	let localSwitch = socialSwitch;
-	if (mainText == twitchEL[0] || mainText == twitchEL[1]) {
-		localSwitch = !localSwitch;
-	}
-	//check if this is their turn so we fade out the other one
-	if (localSwitch) {
-		fadeOut(otherWrapper)
-	}
-
-	//now do the classics
-	fadeOut(mainWrapper).then( () => {
-		updateSocialText(mainText, mainSocial, twitterSize, mainWrapper);
-		//check if its twitter's turn to show up
-		if (otherSocial == "" && mainSocial != "") {
-			fadeIn(mainWrapper, .2);
-		} else if (localSwitch && mainSocial != "") {
-			fadeIn(mainWrapper, .2);
-		} else if (otherSocial != "") {
-			fadeIn(otherWrapper, .2);
+	if (sTurn == 3) { // youtube turn
+		let theresText;
+		for (let i = 0; i < casters.length; i++) {
+			if (casters[i].getYt() != "-") {
+				theresText = true;
+			}
 		}
-	});
+		if (theresText) {
+			for (let i = 0; i < casters.length; i++) {
+				fadeIn(casters[i].cYt.parentElement);
+			}
+			return;
+		} else {
+			sTurn++;
+		}
+	}
+
+	// if nothing had text, set it to 1
+	sTurn = 1;
+
+	// if this is the first time, do another round
+	if (!repeated) {
+		fadeInSocials(true);
+	} else {
+		sTurn = 0;
+	}
+
 }
 
 
