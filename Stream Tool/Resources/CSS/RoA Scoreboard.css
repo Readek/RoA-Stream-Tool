@@ -132,6 +132,19 @@ body {
 }
 
 
+.scoreNum {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 34px;
+    height: 44px;
+    top: 27px;
+    left: -12px;
+    color: black;
+    font-family: "LemonMilk";
+}
+
+
 .topBarMask {
     overflow: hidden;
     display: flex;

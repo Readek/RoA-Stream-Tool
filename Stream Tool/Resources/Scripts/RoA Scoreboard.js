@@ -11,7 +11,8 @@ const nameSize = "24px";
 const tagSize = "17px";
 const nameSizeDubs = "22px";
 const tagSizeDubs = "15px";
-const teamSize = "22px"
+const teamSize = "22px";
+let numSize = "36px"
 const roundSize = "19px";
 
 //to avoid the code constantly running the same method over and over
@@ -32,6 +33,7 @@ const colorImg = document.getElementsByClassName("colors");
 const topBars = document.getElementsByClassName("topBarTexts");
 const wlText = document.getElementsByClassName("wlText");
 const scoreImg = document.getElementsByClassName("scoreImgs");
+const scoreNums = document.getElementsByClassName("scoreNum");
 const scoreAnim = document.getElementsByClassName("scoreVid");
 const tLogoImg = document.getElementsByClassName("tLogos");
 const textRound = document.getElementById('round');
@@ -116,7 +118,7 @@ async function updateData(scInfo) {
 
 		// change the player background colors
 		if (colorPrev[i] != color[i].name) {
-			updateColor(colorImg[i], color[i], gamemode);
+			updateColor(colorImg[i], color[i], gamemode, scoreNums[i]);
 			colorPrev[i] = color[i].name;
 		}
 
@@ -306,7 +308,7 @@ async function updateData(scInfo) {
 			// we need to update some things
 			updateBorder(bestOf, gamemode);
 			for (let i = 0; i < maxSides; i++) {
-				updateColor(colorImg[i], color[i], gamemode);
+				updateColor(colorImg[i], color[i], gamemode, scoreNums[i]);
 				updateScore(score[i], bestOf, color[i], i, gamemode, false);
 			}
 			gamemodePrev = gamemode;
@@ -493,6 +495,13 @@ function changeGM(gm) {
 		tLogoImg[1].style.right = "352px";
 		tLogoImg[1].style.top = "65px";
 
+		// move the score numbers
+		scoreNums[0].style.left = "225px";
+		scoreNums[1].style.left = "225px";
+		scoreNums[0].style.top = "23px";
+		scoreNums[1].style.top = "23px";
+		numSize = "30px";
+
 		//show all hidden elements
 		const dubELs = document.getElementsByClassName("dubEL");
 		for (let i = 0; i < dubELs.length; i++) {
@@ -530,6 +539,12 @@ function changeGM(gm) {
 		tLogoImg[1].style.right = "248px";
 		tLogoImg[1].style.top = "33px";
 
+		scoreNums[0].style.left = "-12px";
+		scoreNums[1].style.left = "-12px";
+		scoreNums[0].style.top = "27px";
+		scoreNums[1].style.top = "27px";
+		numSize = "36px";
+
 		const dubELs = document.getElementsByClassName("dubEL");
 		for (let i = 0; i < dubELs.length; i++) {
 			dubELs[i].style.display = "none";
@@ -554,16 +569,33 @@ async function updateScore(pScore, bestOf, pColor, pNum, gamemode, playAnim) {
 	} 
 	// change the score image with the new values
 	scoreImg[pNum].src = `Resources/Overlay/Scoreboard/Score/${gamemode}/Bo${bestOf} ${pScore}.png`;
+	// update that score number in case we are using those
+	updateText(scoreNums[pNum], pScore, numSize);
 
 }
 
-function updateColor(colorEL, pColor, gamemode) {
+function updateColor(colorEL, pColor, gamemode, scoreNum) {
 	colorEL.src = `Resources/Overlay/Scoreboard/Colors/${gamemode}/${pColor.name}.png`;
+
+	// change the text shadows for the numerical scores
+	scoreNum.style.webkitTextStroke = "1px " + pColor.hex;
+	scoreNum.style.textShadow = "0px 0px 2px " + pColor.hex;
 }
 
 function updateBorder(bestOf, gamemode) {
 	for (let i = 0; i < borderImg.length; i++) {
 		borderImg[i].src = `Resources/Overlay/Scoreboard/Borders/Border ${gamemode} Bo${bestOf}.png`;
+		if (bestOf == "X") {
+			scoreNums[i].style.display = "flex";
+			
+		} else {
+			scoreNums[i].style.display = "none";
+		}
+		if (bestOf == "X" && gamemode == 1) {
+			borderImg[i].style.transform = "translateX(-26px)";
+		} else {
+			borderImg[i].style.transform = "translateX(0px)";
+		}
 	}
 	bestOfPrev = bestOf
 }
