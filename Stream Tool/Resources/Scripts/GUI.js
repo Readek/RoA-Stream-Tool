@@ -900,6 +900,20 @@ function updateColor() {
 
     //remove focus from the menu so it hides on click
     this.parentElement.parentElement.blur();
+
+}
+function updateColorManual(color, pNum) {
+
+    const side = (pNum % 2) ? "r" : "l";
+
+    const colorRectangle = document.getElementById(side+"ColorRect");
+    const colorGrad = document.getElementById(side+"Side");
+    
+    currentColors[pNum] = color;
+
+    colorRectangle.style.backgroundColor = color.hex;
+    colorGrad.style.backgroundImage = "linear-gradient(to bottom left, "+color.hex+"50, #00000000, #00000000)";
+
 }
 
 
@@ -1771,7 +1785,10 @@ function writeScoreboard() {
         round: roundInp.value,
         tournamentName: tournamentInp.value,
         caster: [],
-        allowIntro: document.getElementById('allowIntro').checked
+        allowIntro: document.getElementById('allowIntro').checked,
+        // this is just for remote updating
+        forceHD: forceHDCheck.checked,
+        noLoAHD: noLoAHDCheck.checked
     };
 
     //add the player's info to the player section of the json
@@ -1920,14 +1937,17 @@ function writeScoreboard() {
             yt: pInfos[i].yt,
             sc : {
                 charImg: scCharImg,
-                charPos: scCharPos
+                charPos: scCharPos,
             },
             vs : {
                 charImg: vsCharImg,
                 charPos: vsCharPos,
                 trailImg: vsTrailImg,
                 bgVid: vsBG,
-            }
+            },
+            // these are just for remote updating
+            char: charname,
+            skin: charSkin
         })
     }
 
@@ -2004,3 +2024,85 @@ ipc.on('requestData', () => {
 function sendData() {
     ipc.send('sendData', scData);
 }
+
+// when we get data remotely, update GUI
+ipc.on('remoteGuiData', (event, data) => {
+
+    // parse that json so we get an object we can read
+    const newJson = JSON.parse(data);
+
+    // set the gamemode and scoremode
+    if (newJson.gamemode == 1) {
+        gamemode = 2;
+    } else {
+        gamemode = 1;
+    }
+    document.getElementById("gamemode").click();
+
+    if (newJson.bestOf == 5) {
+        currentBestOf = "X"
+    } else if (newJson.bestOf == 3) {
+        currentBestOf = 5
+    } else {
+        currentBestOf = 3
+    }
+    document.getElementById("bestOf").click();
+   
+    for (let i = 0; i < newJson.player.length; i++) {
+
+        // player info
+        pNameInps[i].value = newJson.player[i].name;
+        pInfos[i].pronouns = newJson.player[i].pronouns;
+        pInfos[i].tag = newJson.player[i].tag;
+        pInfos[i].twitter = newJson.player[i].twitter;
+        pInfos[i].twitch = newJson.player[i].twitch;
+        pInfos[i].yt = newJson.player[i].yt;
+
+        // player character and skin
+        charChange(newJson.player[i].char, i);
+        skinChange(newJson.player[i].char, newJson.player[i].skin, i);
+
+    };
+
+
+    for (let i = 0; i < 2; i++) {
+        
+        // stuff for each side
+        scores[i].setScore(newJson.score[i]);
+        tNameInps[i].value = newJson.teamName[i];
+        updateColorManual(newJson.color[i], i);
+        
+    }
+
+    roundInp.value = newJson.round;
+    roundInp.value = newJson.tournamentName;
+
+    for (let i = 0; i < newJson.caster.length; i++) {
+        casters[i].setName(newJson.caster[i].name);
+        casters[i].setTwitter(newJson.caster[i].twitter);
+        casters[i].setTwitch(newJson.caster[i].twitch);
+        casters[i].setYt(newJson.caster[i].yt);
+    }
+
+    // and finally, settings
+    if (newJson.allowIntro) {
+        document.getElementById("allowIntro").checked = true;
+    } else {
+        document.getElementById("allowIntro").checked = false;
+    }
+    if (newJson.forceHD) {
+        forceHDCheck.checked = true;
+    } else {
+        forceHDCheck.checked = false;
+    }
+    if (newJson.noLoAHD) {
+        noLoAHDCheck.checked = true;
+    } else {
+        noLoAHDCheck.checked = false;
+    }
+
+    // write it down
+    writeScoreboard();
+    displayNotif("GUI was remotely updated");
+
+});

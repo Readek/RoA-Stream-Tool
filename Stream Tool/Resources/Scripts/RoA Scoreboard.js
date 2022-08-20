@@ -593,8 +593,12 @@ function updateBorder(bestOf, gamemode) {
 		}
 		if (bestOf == "X" && gamemode == 1) {
 			borderImg[i].style.transform = "translateX(-26px)";
+			topBars[i].parentElement.parentElement.style.transform = "translateX(-26px)";
 		} else {
 			borderImg[i].style.transform = "translateX(0px)";
+			if (gamemode == 1) {
+				topBars[i].parentElement.parentElement.style.transform = "translateX(0px)";
+			}
 		}
 	}
 	bestOfPrev = bestOf

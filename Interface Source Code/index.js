@@ -5,7 +5,13 @@ const WebSocket = require('ws')
 
 
 // start a web socket server on boot
-const server = new WebSocket.Server({ port: 8080 });
+let wsPort = 8080;
+try {
+    wsPort = JSON.parse(fs.readFileSync(resourcesPath + "/Texts/GUI Settings.json")).webSocketsPort;
+} catch (e) {
+    
+}
+const server = new WebSocket.Server({ port: wsPort });
 let sockets = [];
 
 function createWindow() {
@@ -97,6 +103,11 @@ function createWindow() {
         socket.on('close', function() {
             sockets = sockets.filter(s => s !== socket)
         });
+
+        // in case we get data externally, pass it to the GUI
+        socket.on("message", data => {
+            win.webContents.send('remoteGuiData', `${data}`)
+        })
     
     });
     

@@ -9,5 +9,6 @@
   "forceWL": false,
   "alwaysOnTop": false,
   "invertScore": false,
-  "scoreAutoUpdate": false
+  "scoreAutoUpdate": false,
+  "webSocketPort": 8080
 }
