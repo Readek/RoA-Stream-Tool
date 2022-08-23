@@ -2078,7 +2078,7 @@ ipc.on('remoteGuiData', (event, data) => {
     }
 
     roundInp.value = newJson.round;
-    roundInp.value = newJson.tournamentName;
+    tournamentInp.value = newJson.tournamentName;
 
     for (let i = 0; i < newJson.caster.length; i++) {
         casters[i].setName(newJson.caster[i].name);
