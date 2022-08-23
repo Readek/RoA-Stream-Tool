@@ -1388,8 +1388,11 @@ function savePlayerPreset() {
     if (fs.existsSync(`${textPath}/Player Info/${document.getElementById("pInfoInputName").value}.json`)) {
         
         const existingPreset = getJson(`${textPath}/Player Info/${document.getElementById("pInfoInputName").value}`);
+        // add existing characters to the new json, but not if the character is the same
         for (let i = 0; i < existingPreset.characters.length; i++) {
-            preset.characters.push(existingPreset.characters[i]);
+            if (existingPreset.characters[i].character != charSelectors[pNum].getElementsByClassName("charSelectorText")[0].innerHTML) {
+                preset.characters.push(existingPreset.characters[i]);
+            }
         }
 
     }
