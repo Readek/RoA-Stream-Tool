@@ -10,5 +10,6 @@
   "alwaysOnTop": false,
   "invertScore": false,
   "scoreAutoUpdate": false,
+  "remoteUpdatePort": 1111,
   "webSocketPort": 8080
 }

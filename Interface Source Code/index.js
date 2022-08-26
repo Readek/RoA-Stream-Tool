@@ -2,44 +2,84 @@ const { app, BrowserWindow, ipcMain } = require('electron')
 const fs = require('fs')
 const path = require('path')
 const WebSocket = require('ws')
+const http = require('http');
+
+
+// define the main folder
+let resourcesPath;
+if (process.platform == "win32") { // if on Windows
+    resourcesPath = path.resolve(process.env.PORTABLE_EXECUTABLE_DIR, 'Resources')
+} else { // if on Linux
+    resourcesPath = path.resolve('.', 'Resources')
+}
+// if using npm/yarn start
+/* resourcesPath = path.resolve('..', 'Stream Tool', 'Resources') */
+
+// get some settings from our save
+let httpPort, wsPort, guiWidth, guiHeight, failed;
+try {
+    const guiSettings = JSON.parse(fs.readFileSync(resourcesPath + "/Texts/GUI Settings.json"))
+    httpPort = guiSettings.remoteUpdatePort
+    wsPort = guiSettings.webSocketPort
+    guiWidth = guiSettings.guiWidth
+    guiHeight = guiSettings.guiHeight
+    if (process.platform == "win32") {
+        guiHeight = guiHeight + 29 // windows why cant you be normal
+    }
+
+} catch (e) { // if the settings file cant be found
+    console.log("GUI Settings.json could not be found!!");
+    failed = true
+    httpPort = 7070;
+    wsPort = 8080;
+    guiWidth = 600
+    guiHeight = 300
+}
+
+
+// start an http server on boot for remote update
+http.createServer((request, response) => {
+    if (request.method === "GET") {
+        let fname;
+        if (request.url == "/") { // main remote update page
+            fname = resourcesPath + "/Remote Update.html";
+        } else { // every other request will just send the file
+            fname = resourcesPath + request.url;
+        }
+        try {
+            fname = fname.replaceAll("%20", " ");
+            fs.readFile(fname, (err, data) => {
+                if (err) {
+                    response.writeHead(404);
+                    response.end();
+                } else {
+                    if (fname.endsWith(".html")) {
+                        response.writeHead(200, {'Content-Type': 'text/html'})
+                    } else if (fname.endsWith(".js")) {
+                        response.writeHead(200, {'Content-Type': 'text/javascript'})
+                    } else if (fname.endsWith(".css")) {
+                        response.writeHead(200, {'Content-Type': 'text/css'})
+                    } else {
+                        response.writeHead(200, {'Content-Type': 'text'})
+                    }
+                    response.write(data)
+                    response.end();
+                }
+            });
+        } catch (e) {
+            response.writeHead(404);
+            response.end();
+        }
+    }
+}).listen(httpPort)
 
 
 // start a web socket server on boot
-let wsPort = 8080;
-try {
-    wsPort = JSON.parse(fs.readFileSync(resourcesPath + "/Texts/GUI Settings.json")).webSocketsPort;
-} catch (e) {
-    
-}
 const server = new WebSocket.Server({ port: wsPort });
 let sockets = [];
 
+
 function createWindow() {
-
-    let resourcesPath, guiWidth, guiHeight, failed;
-
-    try {
-
-        if (process.platform == "win32") { // if on Windows
-            resourcesPath = path.resolve(process.env.PORTABLE_EXECUTABLE_DIR, 'Resources')
-        } else { // if on Linux
-            resourcesPath = path.resolve('.', 'Resources')
-        }
-        // if using npm/yarn start
-        /* resourcesPath = path.resolve('..', 'Stream Tool', 'Resources') */
-        
-        const guiSettings = JSON.parse(fs.readFileSync(resourcesPath + "/Texts/GUI Settings.json"))
-        guiWidth = guiSettings.guiWidth
-        guiHeight = guiSettings.guiHeight
-        if (process.platform == "win32") {
-            guiHeight = guiHeight + 29 // windows why cant you be normal
-        }
-
-    } catch (e) { // if the settings file cant be found
-        failed = true
-        guiWidth = 600
-        guiHeight = 300
-    }
 
     const win = new BrowserWindow({
 

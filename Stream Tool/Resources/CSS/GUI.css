@@ -37,6 +37,7 @@ html, body {
   padding: 0;
   margin: 0;
   height: 100%;
+  overflow-y: hidden;
 }
 
 body {
@@ -816,7 +817,7 @@ button:hover {
 
 
 #actualSettings {
-  width: 40%;
+  width: 240px;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -1009,4 +1010,46 @@ button:hover {
   20% {border-color: var(--focused);}
   75% {opacity: 1;}
   100% {opacity: 0;}
+}
+
+
+@media (max-width: 590px) {
+
+  #playerRegion {
+    flex-direction: column;
+  }
+
+
+  .side {
+    height: 50%;
+  }
+
+  #sideSep {
+    width: 100%;
+    height: 20px;
+    display: flex;
+  }
+
+  #swapButton {
+    width: 90%;
+    height: 100%;
+  }
+  #clearButton {
+    width: 10%;
+    height: 100%;
+  }
+
+  #swapIcon {
+    transform: rotate(90deg);
+  }
+  #swapButton:hover #swapIcon{
+    opacity: 1;
+    transform: scale(2) rotate(90deg);
+  }
+
+
+  .pInfoRow {
+    flex-direction: column;
+  }
+
 }
