@@ -1040,11 +1040,19 @@ button:hover {
   }
 
   #swapIcon {
-    transform: rotate(90deg);
+    transform: rotate(90deg) scale(1.5);
   }
   #swapButton:hover #swapIcon{
     opacity: 1;
-    transform: scale(2) rotate(90deg);
+    transform: scale(2.5) rotate(90deg);
+  }
+
+
+  #botBar {
+    height: 40px;
+  }
+  #settingsRegion {
+    width: 50px;
   }
 
 
