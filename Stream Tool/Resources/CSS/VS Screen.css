@@ -95,7 +95,6 @@ body {
 .playerInfoDivL1 {
     top: 130px;
     left: 42px;
-    transform-origin: top left;
     align-items: flex-start;
 }
 .playerInfo1L {
@@ -111,11 +110,11 @@ body {
 .playerInfoDivR1 {
     top: 130px;
     right: 42px;
-    transform-origin: top right;
     align-items: flex-end;
 }
 .playerInfo1R {
     transform: rotate(3.3deg);
+    transform-origin: top right;
 }
 
 .playerInfoDiv2 {
@@ -130,21 +129,21 @@ body {
     bottom: 130px;
     left: 42px;
     flex-direction: column-reverse;
-    transform-origin: top left;
     align-items: flex-start;
 }
 .playerInfo2L {
     transform: rotate(3.3deg);
+    transform-origin: bottom left;
 }
 #playerInfoDivR2 {
     bottom: 130px;
     right: 42px;
     flex-direction: column-reverse;
-    transform-origin: top right;
     align-items: flex-end;
 }
 .playerInfo2R {
     transform: rotate(-3.3deg);
+    transform-origin: bottom right;
 }
 
 
