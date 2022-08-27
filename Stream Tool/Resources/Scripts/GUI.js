@@ -1790,9 +1790,11 @@ function writeScoreboard() {
         caster: [],
         allowIntro: document.getElementById('allowIntro').checked,
         // this is just for remote updating
+        altSkin: forceAlt.checked,
         forceHD: forceHDCheck.checked,
         noLoAHD: noLoAHDCheck.checked,
-        workshop: workshopCheck.checked
+        workshop: workshopCheck.checked,
+        forceWL: forceWL.checked
     };
 
     //add the player's info to the player section of the json
@@ -2067,6 +2069,11 @@ ipc.on('remoteGuiData', (event, data) => {
             workshopCheck.checked = false;
         }
     }
+    if (newJson.altSkin) {
+        forceAlt.checked = true;
+    } else {
+        forceAlt.checked = false;
+    }
     if (newJson.allowIntro) {
         document.getElementById("allowIntro").checked = true;
     } else {
@@ -2081,6 +2088,20 @@ ipc.on('remoteGuiData', (event, data) => {
         noLoAHDCheck.checked = true;
     } else {
         noLoAHDCheck.checked = false;
+    }
+    if (newJson.forceWL != forceWL.checked) {
+        if (newJson.forceWL) {
+            forceWL.checked = true;
+        } else {
+            forceWL.checked = false;
+        }
+        forceWLtoggle();
+    } else {
+        if (newJson.forceWL) {
+            forceWL.checked = true;
+        } else {
+            forceWL.checked = false;
+        }
     }
    
     for (let i = 0; i < newJson.player.length; i++) {
@@ -2109,14 +2130,19 @@ ipc.on('remoteGuiData', (event, data) => {
         
     }
 
+    if (newJson.wl[0] == "W") {p1W.click()};
+    if (newJson.wl[0] == "L") {p1L.click()};
+    if (newJson.wl[1] == "W") {p2W.click()};
+    if (newJson.wl[1] == "L") {p2L.click()};
+
     roundInp.value = newJson.round;
     tournamentInp.value = newJson.tournamentName;
 
     for (let i = 0; i < newJson.caster.length; i++) {
         casters[i].setName(newJson.caster[i].name);
-        casters[i].setTwitter(newJson.caster[i].twitter);
-        casters[i].setTwitch(newJson.caster[i].twitch);
-        casters[i].setYt(newJson.caster[i].yt);
+        casters[i].setTwitter(newJson.caster[i].twitter == "-" ? "" : newJson.caster[i].twitter);
+        casters[i].setTwitch(newJson.caster[i].twitch == "-" ? "" : newJson.caster[i].twitch);
+        casters[i].setYt(newJson.caster[i].yt == "-" ? "" : newJson.caster[i].yt);
     }
 
     // write it down
