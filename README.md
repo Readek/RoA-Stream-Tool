@@ -15,12 +15,14 @@ So you want to do a Rivals of Aether stream, huh? Well, today is your lucky day,
 
 ## Features
 - [Easy and fast setup](https://gfycat.com/rectangulartintedabyssiniangroundhornbill) using a browser source. Drag and drop!
-- [Handy interface](https://gfycat.com/thirstyripeeyra) to quickly change everything you need, like player names, characters, scores, round, casters...
-- Customizable [Player Presets](https://gfycat.com/melodicwearybuzzard) to setup your match in no time!
-- Every single skin the game has to offer is supported (more than 300 different skins!), including HD renders. **Workshop** characters are also supported!
+- [Handy interface](https://gfycat.com/thirstyripeeyra) to quickly change everything you need, like player names, pronouns, characters, scores, round, casters...
+ - With customizable [Player Presets](https://gfycat.com/distanthairyaurochs) to setup your match in no time! Caster presets are now also supported!
+- Every single character and skin the game has to offer is supported (more than 300 different skins!), including HD renders.
+ - **Workshop** characters are also supported!
 - Now with [2v2 support](https://gfycat.com/brokenbravehumpbackwhale)!
 - [Dynamic, optional intro](https://gfycat.com/revolvingsmarteuropeanpolecat) to be played when changing to the game scene.
 - A "[VS Screen](https://gfycat.com/peacefulelatedblowfish)" to be displayed when waiting for the next game.
+- A [Remote GUI](https://gfycat.com/complexexaltedchupacabra) that can be accessed by any device within the local network, including mobile devices!
 - Easy to customize! Add your own skins, workshop characters, custom overlays or even dive into the code if you're brave enough!
 
 ---
@@ -62,6 +64,10 @@ Yes, the instructions above are enough, but we can do better. **All of this is o
 - Also, you may want to set a hotkey to transition to the game scene so you can press enter ingame to start the replay and press the transition key at the same time. The transition is timed to do so.
 
 Also, you may find the "3 2 1" of the game's intro a bit distracting when combined with the scoreboard intro. [These](https://drive.google.com/open?id=1NEDii3B50eHT_goADzn6t3_O8Uvok0Gs) are the sprites to remove them (using the [Modding Tool](https://github.com/jam1garner/gm_data_win/releases/latest)).
+
+### Remote GUI
+
+The Stream Tool GUI can be controlled remotely by any device within the local network where the GUI is running, and yes, this includes mobile devices! Please take a look at the [wiki](https://github.com/Readek/RoA-Stream-Tool/wiki/8.-Remote-GUI) for instructions.
 
 ---
 
