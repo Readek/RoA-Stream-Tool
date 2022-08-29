@@ -15,10 +15,10 @@ So you want to do a Rivals of Aether stream, huh? Well, today is your lucky day,
 
 ## Features
 - [Easy and fast setup](https://gfycat.com/rectangulartintedabyssiniangroundhornbill) using a browser source. Drag and drop!
-- [Handy interface](https://gfycat.com/thirstyripeeyra) to quickly change everything you need, like player names, pronouns, characters, scores, round, casters...
- - With customizable [Player Presets](https://gfycat.com/distanthairyaurochs) to setup your match in no time! Caster presets are now also supported!
+- [Handy interface](https://gfycat.com/distanthairyaurochs) to quickly change everything you need, like player names, pronouns, characters, scores, round, casters...
+  - With customizable [Player Presets](https://gfycat.com/melodicwearybuzzard) to setup your match in no time! Caster presets are now also supported!
 - Every single character and skin the game has to offer is supported (more than 300 different skins!), including HD renders.
- - **Workshop** characters are also supported!
+  - **Workshop** characters are also supported!
 - Now with [2v2 support](https://gfycat.com/brokenbravehumpbackwhale)!
 - [Dynamic, optional intro](https://gfycat.com/revolvingsmarteuropeanpolecat) to be played when changing to the game scene.
 - A "[VS Screen](https://gfycat.com/peacefulelatedblowfish)" to be displayed when waiting for the next game.
