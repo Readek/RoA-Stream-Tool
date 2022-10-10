@@ -1,0 +1,131 @@
+@font-face {
+    font-family: "RegularText";
+    src: url(../Fonts/DeansgateCondensed-Bold.ttf);
+}
+
+@font-face {
+    font-family: "TagText";
+    src: url(../Fonts/Roboto-Regular.ttf);
+}
+
+@font-face {
+    font-family: "RoundTitle";
+    src: url(../Fonts/LEMONMILK-MediumItalic.otf);
+}
+
+body {
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    background: transparent;
+    padding: 0px;
+    margin: 0px;
+    text-transform: uppercase;
+    font-family: "RegularText";
+}
+
+#content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 100px;
+    filter: drop-shadow(0px 0px 15px black);
+}
+
+
+.row {
+    display: flex;
+    width: 90%;
+    justify-content: space-around;
+    align-items: center;
+}
+
+
+.round {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+}
+
+.roundTitle {
+    font-size: 46px;
+    font-family: "RoundTitle";
+    font-weight: bold;
+    color: black;
+    -webkit-text-stroke: 2px white;
+}
+
+
+.encounter {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.encounterRow {
+    display: flex;
+}
+
+
+.playerDiv {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: 240px;
+    height: 52px;
+    border-left: 35px solid;
+    border-right: 35px solid;
+    border-image: url('../Overlay/Bracket/Border\ Black.png') 0 35 fill / 0 35px;
+    flex-shrink: 0;
+}
+
+.playerIcon {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    display: none;
+}
+.playerWrapper {
+    width: 89%;
+    white-space: nowrap;
+    line-height: 20px;
+}
+.playerTag {
+    font-size: 16px;
+    white-space: nowrap;
+}
+.playerName {
+    font-size: 28px;
+    white-space: nowrap;
+}
+
+.score {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 26px;
+    color: black;
+    border-left: 35px solid;
+    border-right: 35px solid;
+    border-image: url('../Overlay/Bracket/Border\ White.png') 0 35 fill / 0 35px;
+    margin-left: -35px;
+    min-width: 18px;
+}
+
+
+/* Animations! */
+
+@keyframes fadeOut {
+    from {opacity: 1}
+    to {opacity: 0}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0}
+    to {opacity: 1}
+}
