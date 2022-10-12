@@ -167,7 +167,11 @@ function startWebsocket() {
 	webSocket.onopen = () => { // if it connects successfully
 		// everything will update everytime we get data from the server (the GUI)
 		webSocket.onmessage = function (event) {
-			updateData(JSON.parse(event.data))
+			const message = JSON.parse(event.data);
+			// only update if the message is about game data
+			if (message.id = "gameData") {
+				updateData(message);
+			}
 		}
 		// hide error message in case it was up
 		document.getElementById('connErrorDiv').style.display = 'none';

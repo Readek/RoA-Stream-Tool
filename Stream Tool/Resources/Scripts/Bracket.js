@@ -25,13 +25,13 @@ class BracketPlayer {
     update() {
 
         // text update
-        if (this.nameEl.innerHTML != bracketData[this.round][this.pos].player ||
+        if (this.nameEl.innerHTML != bracketData[this.round][this.pos].name ||
             this.tagEl.innerHTML != bracketData[this.round][this.pos].tag) {
 
             fadeOut(this.nameEl.parentElement).then( () => {
 
 				this.nameEl.style.fontSize = playerSize;
-                this.nameEl.innerHTML = bracketData[this.round][this.pos].player;
+                this.nameEl.innerHTML = bracketData[this.round][this.pos].name;
                 this.tagEl.style.fontSize = tagSize;
                 this.tagEl.innerHTML = bracketData[this.round][this.pos].tag;
 
@@ -41,7 +41,7 @@ class BracketPlayer {
                     this.tagEl.parentElement.style.transform = "translate(3px, 0px)";
                 } else {
                     this.tagEl.style.display = "block";
-                    this.tagEl.parentElement.style.transform = "translate(3px, -4px)";
+                    this.tagEl.parentElement.style.transform = "translate(3px, -3px)";
                 }
 
                 resizeText(this.nameEl.parentElement);
@@ -117,11 +117,48 @@ playerData.push(
 )
 
 
+// first we will start by connecting with the GUI with a websocket
+startWebsocket();
+function startWebsocket() {
+
+	// change this to the IP of where the GUI is being used for remote control
+	const webSocket = new WebSocket("ws://localhost:8080");
+	webSocket.onopen = () => { // if it connects successfully
+		// everything will update everytime we get data from the server (the GUI)
+		webSocket.onmessage = function (event) {
+			const message = JSON.parse(event.data);
+			// only update if the message is about bracket data
+			if (message.id == "bracketData") {
+				updateData(message);
+			}
+		}
+		// hide error message in case it was up
+		document.getElementById('connErrorDiv').style.display = 'none';
+	}
+
+	// if the GUI closes, wait for it to reopen
+	webSocket.onclose = () => {errorWebsocket()}
+	// if connection fails for any reason
+	webSocket.onerror = () => {errorWebsocket()}
+
+}
+function errorWebsocket() {
+
+	// show error message
+	document.getElementById('connErrorDiv').style.display = 'flex';
+	// we will attempt to reconect every 5 seconds
+	setTimeout(() => {
+		startWebsocket();
+	}, 5000);
+
+}
+
+
 // main loop
-async function updateData() {
+async function updateData(data) {
 
     // actual update
-	bracketData = await getInfo();
+	bracketData = data;
     for (let i = 0; i < playerData.length; i++) {
         playerData[i].update();
     }
@@ -137,24 +174,6 @@ async function updateData() {
         document.getElementById("TrueFinals").style.display = "none";
     }
     
-}
-updateData();
-setInterval( () => { updateData() }, 1000); // update interval
-
-
-// searches for the main json file
-function getInfo() {
-	return new Promise(function (resolve) {
-		const oReq = new XMLHttpRequest();
-		oReq.addEventListener("load", reqListener);
-		oReq.open("GET", 'Resources/Texts/Bracket.json');
-		oReq.send();
-
-		//will trigger when file loads
-		function reqListener () {
-			resolve(JSON.parse(oReq.responseText))
-		}
-	})
 }
 
 
@@ -175,6 +194,7 @@ function resizeText(textEL) {
 function getFontSize(textElement) {
 	return (parseFloat(textElement.style.fontSize.slice(0, -2)) * .90) + 'px';
 }
+
 
 // animations
 async function fadeOut(itemID, dur = fadeOutTime) {

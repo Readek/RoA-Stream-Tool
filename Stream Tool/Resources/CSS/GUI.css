@@ -779,12 +779,11 @@ button:hover {
 #updateRegion:hover {
   background-color: var(--bg3);
 }
-
 #updateRegion:active{
   background-color: var(--bg5);
 }
 
-#settingsRegion {
+#botBarBracket, #settingsRegion {
   width: 32px;
   background-color: var(--bg3)
 }
@@ -795,11 +794,11 @@ button:hover {
   fill: var(--text2);
 }
 
-#settingsRegion:hover {
+#botBarBracket:hover, #settingsRegion:hover {
   background-color: var(--bg1);
 }
 
-#settingsRegion:active{
+#botBarBracket:active, #settingsRegion:active{
   background-color: var(--bg5);
 }
 
@@ -896,7 +895,29 @@ button:hover {
 }
 
 
-/* player info */
+/* Bracket section */
+#bracket {
+  width: 100%;
+  height: 100%;
+  transform: translateX(-100%);
+}
+
+.bInput {
+  width: 100px;
+}
+
+
+/* clickable area that gets enabled when moving the viewport */
+#goBack {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  display: none;
+}
+
+
+/* player info menu that appears on top of viewport */
 #pInfoDiv {
   width: 100%;
   height: 100%;
@@ -910,6 +931,8 @@ button:hover {
   pointer-events: none;
   transform: scale(1.15);
   transition: opacity 150ms, transform 150ms;
+  position: absolute;
+  top: 0px;
 }
 
 #pInfoTitle {
@@ -971,18 +994,11 @@ button:hover {
   border-color: var(--selected);
 }
 
-/* clickable area that gets enabled when moving the viewport */
-#goBack {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  z-index: 100;
-  display: none;
-}
 
 /* notification area */
 #notifDiv {
   position: absolute;
+  top: 0px;
   width: 100%;
   height: 100%;
   z-index: 100;

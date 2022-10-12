@@ -243,7 +243,9 @@ async function init() {
 
     //first, add listeners for the bottom bar buttons
     document.getElementById('updateRegion').addEventListener("click", () => {writeScoreboard()});
-    document.getElementById('settingsRegion').addEventListener("click", moveViewport);
+    document.getElementById('settingsRegion').addEventListener("click", () => {moveViewport("settings")});
+    document.getElementById('botBarBracket').addEventListener("click", () => {moveViewport("bracket")});
+
 
     //if the viewport is moved, click anywhere on the center to go back
     document.getElementById('goBack').addEventListener("click", goBack);
@@ -435,21 +437,23 @@ async function init() {
 }
 
 
-function moveViewport() {
-    if (!movedSettings) {
+function moveViewport(where) {
+
+    overlayDiv.style.opacity = ".25";
+
+    if (where == "settings") {
         viewport.style.transform = "translateX(-240px)";
-        overlayDiv.style.opacity = ".25";
         goBackDiv.style.display = "block";
-        goBackDiv.style.
-        movedSettings = true;
+    } else {
+        viewport.style.transform = "translateX(100%)";
     }
+        
 }
 
 function goBack() {
     viewport.style.transform = "translateX(0)";
     overlayDiv.style.opacity = "1";
     goBackDiv.style.display = "none";
-    movedSettings = false;
 }
 
 
@@ -1396,7 +1400,8 @@ function writeScoreboard(send = true) {
         forceHD: forceHDCheck.checked,
         noLoAHD: noLoAHDCheck.checked,
         workshop: workshopCheck.checked,
-        forceWL: forceWL.checked
+        forceWL: forceWL.checked,
+        id: "gameData"
     };
 
     //add the player's info to the player section of the json
