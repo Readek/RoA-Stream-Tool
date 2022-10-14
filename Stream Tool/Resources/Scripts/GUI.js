@@ -669,7 +669,7 @@ function charChange(character, pNum = -1) {
     if (charInfo) {
 
         // set the skin variable from the skin list
-        skin = charInfo.skinList[0]
+        skin = charInfo.skinList[0].name
         // change the text of the skin selector
         skinSelectors[currentPlayer].innerHTML = skin;
         // if there's only 1 skin, dont bother displaying skin selector
@@ -710,7 +710,7 @@ function openSkinSelector(pNum) {
         
         // character name
         const spanName = document.createElement('span');
-        spanName.innerHTML = charInfo.skinList[i];
+        spanName.innerHTML = charInfo.skinList[i].name;
         spanName.className = "pfName";
 
         // add them to the div we created before
@@ -723,9 +723,9 @@ function openSkinSelector(pNum) {
         // actual image
         const charImg = document.createElement('img');
         charImg.className = "pfCharImg";
-        charImg.setAttribute('src', `${charPath}/${character}/${charInfo.skinList[i]}.png`);
+        charImg.setAttribute('src', `${charPath}/${character}/${charInfo.skinList[i].name}.png`);
         // we have to position it
-        positionChar(charInfo.skinList[i], charImg, charInfo);
+        positionChar(charInfo.skinList[i].name, charImg, charInfo);
         // and add it to the mask
         charImgBox.appendChild(charImg);
 
@@ -759,24 +759,29 @@ function openSkinSelector(pNum) {
 }
 
 // every time a skin is clicked on the skin list
-function skinChange(char, skin, pNum) {
+async function skinChange(char, skin, pNum) {
 
     // update the text of the skin selector
-    skinSelectors[pNum].innerHTML = skin
+    skinSelectors[pNum].innerHTML = skin.name
     
     // change the background character image (if first 2 players)
     if (pNum < 2) {
-        charImgChange(charImgs[pNum], char, skin);
+        charImgChange(charImgs[pNum], char, skin.name);
     }
 
     // remove focus from the skin list so it auto hides
     document.activeElement.blur();
 
     // check if an icon for this skin exists
-    if (fs.existsSync(`${charPath}/${char}/Icons/${skin}.png`)) {
-        charSelectors[currentPlayer].children[0].src = `${charPath}/${char}/Icons/${skin}.png`;
+    if (fs.existsSync(`${charPath}/${char}/Icons/${skin.name}.png`)) {
+        charSelectors[currentPlayer].children[0].src = `${charPath}/${char}/Icons/${skin.name}.png`;
     } else if (fs.existsSync(`${charPath}/${char}/Icons/Default.png`)) {
-        charSelectors[currentPlayer].children[0].src = `${charPath}/${char}/Icons/Default.png`;
+        if (skin.hex) {
+            const skinSrc = await getRoARecolor(char, `${charPath}/${char}/Icons/Default.png`, skin.hex, skin.ea, skin.alpha);
+            charSelectors[currentPlayer].children[0].src = skinSrc;
+        } else {
+            charSelectors[currentPlayer].children[0].src = `${charPath}/${char}/Icons/Default.png`;
+        }
     } else {
         charSelectors[currentPlayer].children[0].src = `${charPathRandom}/Icon.png`;
     }

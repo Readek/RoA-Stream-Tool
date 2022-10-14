@@ -1,21 +1,21 @@
 {
     "skinList": [
-        "Default",
-        "Blue",
-        "Red",
-        "Green",
-        "Grey",
-        "Purple",
-        "Halloween",
-        "Christmas",
-        "Valentines",
-        "Summer",
-        "Default Custom 1",
-        "Default Custom 2",
-        "Abyss",
-        "Early Access",
-        "Ranked",
-        "HD"
+        {"name": "Default"},
+        {"name": "Blue", "hex": "4194-D4BE-E0FF-0C3C-5EB8-DFE1-E685-196C-C7D0-165B-8F71"},
+        {"name": "Red", "hex": "DC5B-5BC8-C8C8-3C3C-3CC8-C8C8-A102-13D4-3434-A400-0019"},
+        {"name": "Green", "hex": "91E3-5B2F-8765-5C6F-56DC-71FF-FCFC-FC91-E35B-6EAC-454A"},
+        {"name": "Grey", "hex": "B4B4-B4E4-C8C8-8B4F-2883-8588-CDCE-D14D-4D4D-2E2E-2EBB"},
+        {"name": "Purple", "hex": "E0AE-EB96-A3A4-6F5E-A677-3291-FF35-35F7-E6F6-C8B2-D02D"},
+        {"name": "Halloween", "hex": "7DE2-690C-4B65-4FBD-139E-BFD1-EEEE-EE53-8D62-4363-4B03"},
+        {"name": "Christmas", "hex": "D4EE-F37C-CEFF-7CCE-FFFF-2D34-FFE4-32FF-FFFF-FEFF-FFD4"},
+        {"name": "Valentines", "hex": "FFA9-F8E6-49AF-FF6F-96EF-2D34-FFFF-FFFF-DEED-FCB4-E84A"},
+        {"name": "Summer", "hex": "17CD-FFFF-FFE4-EF61-432D-BDEF-4E3C-FFFF-C14B-D182-3D78"},
+        {"name": "Default Custom 1", "hex": "DEB5-00FF-D096-FFD0-96F3-2F1F-E2AA-2E76-5441-6E3B-2094"},
+        {"name": "Default Custom 2", "hex": "FFC5-2643-BD47-43BD-47CF-9C00-FFCE-CEFF-8C0D-E139-01FF"},
+        {"name": "Abyss", "hex": "A6AC-D6A6-ACD6-5654-92DC-71FF-913B-CE4F-3D5E-3827-46DB"},
+        {"name": "Early Access", "hex": "D3E2-9AA7-BA4A-537A-3E23-4331-A7BA-4AD3-E29A-D3E2-9A69", "ea": true},
+        {"name": "Ranked", "hex": "EBDE-7BE9-E9E8-FF9E-27CD-70DE-7E00-7EFF-F88F-F8D1-6174"},
+        {"name": "HD"}
     ],
     "scoreboard": {
         "neutral": {
