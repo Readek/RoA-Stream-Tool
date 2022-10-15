@@ -55,13 +55,20 @@ class BracketPlayer {
         if (this.scoreEl.innerHTML !== bracketData[this.round][this.pos].score) {
 
             this.scoreEl.innerHTML = bracketData[this.round][this.pos].score;
-            // if more or less score than the other player
+
+            // makes our code cleaner
             const rivalEncounter = this.pos % 2 ? this.pos-1 : this.pos+1;
-            if (this.scoreEl.innerHTML > bracketData[this.round][rivalEncounter].score) {
-                this.nameEl.parentElement.style.color = "#90ffb1";
-                this.charEl.style.filter = "grayscale(0)"
-            } else if (this.scoreEl.innerHTML == bracketData[this.round][rivalEncounter].score) {
+            const homeScore = this.scoreEl.innerHTML;
+            const awayScore = bracketData[this.round][rivalEncounter].score;
+
+            // if more or less score than the other player
+            console.log(homeScore);
+            if (homeScore == awayScore) {
                 this.nameEl.parentElement.style.color = "white";
+                this.charEl.style.filter = "grayscale(0)"
+            } else if (Number.isFinite(Number(homeScore)) &&
+            (homeScore > awayScore || !Number.isFinite(Number(awayScore)))) {
+                this.nameEl.parentElement.style.color = "#90ffb1";
                 this.charEl.style.filter = "grayscale(0)"
             } else {
                 this.nameEl.parentElement.style.color = "#ffa3a3";

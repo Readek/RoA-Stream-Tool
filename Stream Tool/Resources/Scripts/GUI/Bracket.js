@@ -6,47 +6,19 @@ const bEncountersDiv = document.getElementById('bracketEncounters');
 let bracketData = {
     "WinnersSemis" : [
         {
-            "name" : "Readek",
-            "tag" : "Flame",
-            "character" : "Maypul/Icons/Default",
-            "score" : 2
-        },
-        {
-            "name" : "Kerus",
-            "tag" : "Ember",
-            "character" : "Mollo/Icons/Default",
-            "score" : 3
-        },
-        {
-            "name" : "Frikinin",
+            "name" : "-",
             "tag" : "",
-            "character" : "Kragg/Icons/Default",
-            "score" : 3
+            "character" : "None",
+            "score" : "-"
         },
         {
-            "name" : "Fireicey",
-            "tag" : "Set",
-            "character" : "Zetterburn/Icons/Default",
-            "score" : 0
-        }
-    ],
-    "WinnersFinals" : [
-        {
-            "name" : "Kerus",
-            "tag" : "Ember",
-            "character" : "Mollo/Icons/Default",
-            "score" : 2
-        },
-        {
-            "name" : "Frikinin",
+            "name" : "-",
             "tag" : "",
-            "character" : "Kragg/Icons/Default",
-            "score" : 3
-        }
-    ],
-    "GrandFinals" : [
+            "character" : "None",
+            "score" : "-"
+        },
         {
-            "name" : "Frikinin",
+            "name" : "-",
             "tag" : "",
             "character" : "None",
             "score" : "-"
@@ -58,9 +30,37 @@ let bracketData = {
             "score" : "-"
         }
     ],
-    "TrueFinals" : [
+    "WinnersFinals" : [
+        {
+            "name" : "-",
+            "tag" : "",
+            "character" : "None",
+            "score" : "-"
+        },
+        {
+            "name" : "-",
+            "tag" : "",
+            "character" : "None",
+            "score" : "-"
+        }
+    ],
+    "GrandFinals" : [
         {
             "name" : "",
+            "tag" : "",
+            "character" : "None",
+            "score" : "-"
+        },
+        {
+            "name" : "",
+            "tag" : "",
+            "character" : "None",
+            "score" : "-"
+        }
+    ],
+    "TrueFinals" : [
+        {
+            "name" : "-",
             "tag" : "",
             "character" : "None",
             "score" : "-"
@@ -74,51 +74,51 @@ let bracketData = {
     ],
     "LosersTop8" : [
         {
-            "name" : "Shayd",
+            "name" : "-",
             "tag" : "",
-            "character" : "Elliana/Icons/Default",
-            "score" : 1
-        },
-        {
-            "name" : "Caldozo",
-            "tag" : "",
-            "character" : "Forsburn/Icons/Default",
-            "score" : 3
-        },
-        {
-            "name" : "Age",
-            "tag" : "",
-            "character" : "Orcane/Icons/Default",
-            "score" : 3
-        },
-        {
-            "name" : "Boss Hog",
-            "tag" : "",
-            "character" : "Sylvanos/Icons/Default",
-            "score" : 0
-        }
-    ],
-    "LosersQuarters" : [
-        {
-            "name" : "Readek",
-            "tag" : "Flame",
-            "character" : "Maypul/Icons/Default",
-            "score" : 2
-        },
-        {
-            "name" : "Caldozo",
-            "tag" : "",
-            "character" : "Forsburn/Icons/Default",
-            "score" : 3
-        },
-        {
-            "name" : "Fireicey",
-            "tag" : "Set",
             "character" : "None",
             "score" : "-"
         },
         {
-            "name" : "Age",
+            "name" : "-",
+            "tag" : "",
+            "character" : "None",
+            "score" : "-"
+        },
+        {
+            "name" : "-",
+            "tag" : "",
+            "character" : "None",
+            "score" : "-"
+        },
+        {
+            "name" : "-",
+            "tag" : "",
+            "character" : "None",
+            "score" : "-"
+        }
+    ],
+    "LosersQuarters" : [
+        {
+            "name" : "-",
+            "tag" : "",
+            "character" : "None",
+            "score" : "-"
+        },
+        {
+            "name" : "-",
+            "tag" : "",
+            "character" : "None",
+            "score" : "-"
+        },
+        {
+            "name" : "-",
+            "tag" : "",
+            "character" : "None",
+            "score" : "-"
+        },
+        {
+            "name" : "-",
             "tag" : "",
             "character" : "None",
             "score" : "-"
@@ -126,7 +126,7 @@ let bracketData = {
     ],
     "LosersSemis" : [
         {
-            "name" : "Caldozo",
+            "name" : "-",
             "tag" : "",
             "character" : "None",
             "score" : "-"
@@ -197,7 +197,6 @@ function createEncounters() {
         const scoreInp = document.createElement('input');
         scoreInp.classList = "bScoreInp bInput";
         scoreInp.setAttribute("placeholder", "Score");
-        scoreInp.setAttribute("type", "number");
 
         // add it all up
         newEnc.appendChild(nameInp);
@@ -221,12 +220,7 @@ function updateBracket() {
         // get that data
         const newName = bEncountersDiv.getElementsByClassName("bNameInp")[i].value;
         const newTag = bEncountersDiv.getElementsByClassName("bTagInp")[i].value;
-        
-        // if score is 0, just present it as "-"
-        let newScore = bEncountersDiv.getElementsByClassName("bScoreInp")[i].value;
-        if (newScore == 0) {
-            newScore = "-";
-        }
+        const newScore = bEncountersDiv.getElementsByClassName("bScoreInp")[i].value;
 
         // check if the character icon file exists
         let newChar = "None";
