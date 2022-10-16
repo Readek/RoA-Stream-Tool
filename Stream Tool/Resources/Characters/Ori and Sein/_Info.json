@@ -1,6 +1,6 @@
 {
     "skinList": [
-        {"name": "Default", "hex": "F8F5-FCF8-F5FC-0000-005D-CBF1-FFC8-21A4"},
+        {"name": "Default", "hex": "F8F5-FCF8-F5FC-0000-005D-CBF1-FFC8-21A4", "force": true},
         {"name": "Cyan", "hex": "C3E9-F8C3-E9F8-0000-009D-51D5-5C7D-C45B"},
         {"name": "Red", "hex": "EFCA-CAEF-CACA-0000-00FF-DC72-F77D-7DF5"},
         {"name": "Green", "hex": "DAF9-E2DA-F9E2-0000-00F7-9385-4A9B-5B47"},

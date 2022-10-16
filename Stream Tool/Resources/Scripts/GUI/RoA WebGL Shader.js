@@ -406,15 +406,7 @@ const recolorCharData = {
       54, 40, 60, 1,      // Sein
       54, 40, 40, 1,      // Energy
       /* 0, 0, 0, 1       // CSS Highlight */
-    ],
-    actualColor : [ // used by the Default skin
-      248, 245, 252, 1,   // Body 1
-      248, 245, 252, 1,   // Body 2
-      0, 0, 0, 1,         // Eyes
-      93, 203, 241, 1,    // Sein
-      255, 200, 33, 1,    // Energy
-      /* 36, 208, 255, 1  // CSS Highlight (every palette will use this slot) */
-    ],
+    ]
   },
   "Shovel Knight" : {
     ogColor : [
@@ -510,15 +502,6 @@ const recolorCharData = {
       10.8, 6, 50, 1,      // Pants
       5.04, 5, 0, 1,       // Shine
       9.72, 75, 40, 1,     // Eyes
-    ],
-    actualColor : [ // used by the Default skin
-      236, 141, 202, 1,   // Right Crystal
-      236, 141, 202, 1,   // Left Crystal
-      184, 128, 83, 1,    // Body
-      228, 133, 116, 1,   // Tail
-      247, 243, 249, 1,   // Pants
-      255, 249, 249, 1,   // Shine
-      54, 123, 141, 1,    // Eyes
     ]
   }
 }

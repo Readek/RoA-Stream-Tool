@@ -773,7 +773,7 @@ async function skinChange(char, skin, pNum) {
     document.activeElement.blur();
 
     // check if an icon for this skin exists
-    if (fs.existsSync(`${charPath}/${char}/Icons/${skin.name}.png`)) {
+    if (fs.existsSync(`${charPath}/${char}/Icons/${skin.name}.png`) && !skin.force) {
         charSelectors[currentPlayer].children[0].src = `${charPath}/${char}/Icons/${skin.name}.png`;
     } else if (fs.existsSync(`${charPath}/${char}/Icons/Default.png`)) {
         if (skin.hex) {
@@ -1153,7 +1153,7 @@ function playerPreset(el, pNum) {
 
     charChange(el.getAttribute("char"), pNum);
 
-    skinChange(el.getAttribute("char"), el.getAttribute("skin"), pNum);
+    skinChange(el.getAttribute("char"), {name: el.getAttribute("skin")} , pNum);
 
     pFinder.style.display = "none";
 
@@ -1597,8 +1597,8 @@ function swap() {
         charChange(tempP2Char, i);
         charChange(tempP1Char, i+1);
         
-        skinChange(tempP2Char, tempP2Skin, i);
-        skinChange(tempP1Char, tempP1Skin, i+1);
+        skinChange(tempP2Char, {name: tempP2Skin}, i);
+        skinChange(tempP1Char, {name: tempP1Skin}, i+1);
 
     }    
 
@@ -2128,7 +2128,7 @@ ipc.on('remoteGuiData', (event, data) => {
 
         // player character and skin
         charChange(newJson.player[i].char, i);
-        skinChange(newJson.player[i].char, newJson.player[i].skin, i);
+        skinChange(newJson.player[i].char, {name: newJson.player[i].skin}, i);
 
     };
 
