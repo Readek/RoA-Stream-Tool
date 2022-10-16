@@ -17,7 +17,7 @@
         {"name": "Abyss", "hex": "A6AC-D64F-3D5E-4E17-8D92-3BCE-DC71-FF4E"},
         {"name": "Early Access", "hex": "537A-3ED3-E29A-D3E2-9AA7-BA4A-537A-3EFB", "ea": true},
         {"name": "Tuxedo"},
-        {"name": "Golden", "hex": "FFF7-CAFF-DD1E-FFDD-1EFF-DD1E-FEFF-0533"},
+        {"name": "Golden", "hex": "FFF7-CAFF-DD1E-FFDD-1EFF-DD1E-FEFF-0533", "golden": true},
         {"name": "Infamous", "hex": "37EA-FF33-3741-5653-AAD4-45FE-00FF-A8D6"},
         {"name": "Ranked", "hex": "E4E4-F079-7AC3-FFCC-00FF-8700-F2FD-FFE9"},
         {"name": "HD"},

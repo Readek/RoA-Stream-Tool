@@ -17,7 +17,7 @@
         {"name": "Abyss", "hex": "4F3D-5EA6-ACD6-DC71-FF92-3BCE-4E17-8DD8"},
         {"name": "Early Access", "hex": "537A-3ED3-E29A-D3E2-9AA7-BA4A-537A-3EFB", "ea": true},
         {"name": "Shine", "hex": "DCCB-69E5-E1AF-A0FF-FF22-A5E7-FFF9-F940"},
-        {"name": "Golden", "hex": "F1CC-3FF0-D94F-FFFF-FFFD-FFFC-FFF8-C46F"},
+        {"name": "Golden", "hex": "F1CC-3FF0-D94F-FFFF-FFFD-FFFC-FFF8-C46F", "golden": true},
         {"name": "LoA"},
         {"name": "Ranked", "hex": "FFCC-00F9-E1BE-FFD8-3DE4-E4F0-0000-00B2"},
         {"name": "Steampunk", "hex": "5252-52E4-923F-30D9-A312-9477-0257-552E"},

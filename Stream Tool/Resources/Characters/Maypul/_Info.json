@@ -19,7 +19,7 @@
         {"name": "Abyss", "hex": "5654-92A6-ACD6-DC71-FF4F-3D5E-4F3D-5E6B"},
         {"name": "Early Access", "hex": "5378-3ED3-E29A-A7BA-4A53-7A40-D3E2-9AEB", "ea": true},
         {"name": "Ragnir"},
-        {"name": "Golden", "hex": "FFDC-1EFF-FFFF-FFDC-1EFF-DC1E-FFE6-1E04"},
+        {"name": "Golden", "hex": "FFDC-1EFF-FFFF-FFDC-1EFF-DC1E-FFE6-1E04", "golden": true},
         {"name": "Champion", "hex": "5252-52D0-DFDE-B2FF-D03F-3F46-C9C9-DC5D", "alpha": [1,0.5,1,1,1]},
         {"name": "Ranked", "hex": "FFCC-00E4-E4F0-E4E4-F000-0117-FFBA-279A"},
         {"name": "GoTE", "hex": "F16F-2EFD-D11D-FDBC-1D3A-3A3A-F75A-2661"},

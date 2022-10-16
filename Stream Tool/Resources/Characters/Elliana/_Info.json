@@ -22,7 +22,7 @@
         {"name": "On The Edge", "hex": "3A3A-3AFF-C531-FFFF-61FF-7C00-D0CB-AF3A-3A3A-C400"},
         {"name": "Champion", "hex": "3F3F-46D0-DFDE-D0DF-DEB2-FFD0-B2FF-D052-5252-9F00", "alpha": [1,0.5,0.5,1,1,1]},
         {"name": "Ranked", "hex": "FFCC-00E4-E4F0-FFD8-3DE4-E4F0-BE57-23E0-500F-F200"},
-        {"name": "Golden", "hex": "FFDD-1EFF-FCD6-FCFA-F89F-7217-B389-0FFF-DD1E-3C00"},
+        {"name": "Golden", "hex": "FFDD-1EFF-FCD6-FCFA-F89F-7217-B389-0FFF-DD1E-3C00", "golden": true},
         {"name": "HD"},
         {"name": "LoA HD"}
     ],

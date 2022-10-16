@@ -18,7 +18,7 @@
         {"name": "Early Access", "hex": "A7BA-4A53-7A3E-D3E2-9AD3-E29A-D3E2-9AA7", "ea": true},
         {"name": "Bradshaw"},
         {"name": "Collegiate", "hex": "324D-BBFF-CA07-F7FC-FFC0-DAFF-FFCA-07DD"},
-        {"name": "Golden", "hex": "FFDD-1EFC-D535-FCFC-FCFF-F7CA-FFF2-AB4D"},
+        {"name": "Golden", "hex": "FFDD-1EFC-D535-FCFC-FCFF-F7CA-FFF2-AB4D", "golden": true},
         {"name": "Ranked", "hex": "E4E4-F0FF-CC00-FF87-00F9-E1BE-FFD8-3D1E"},
         {"name": "HD"},
         {"name": "LoA HD"},

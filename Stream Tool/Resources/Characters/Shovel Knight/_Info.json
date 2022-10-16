@@ -12,7 +12,7 @@
         {"name": "Summer", "hex": "FFF6-8C59-CCE9-4592-72FF-A628-3800"},
         {"name": "Default Custom 1", "hex": "DE6C-2561-3131-B466-3B46-1B00-5800"},
         {"name": "Default Custom 2", "hex": "FFFF-FF61-83A5-BDAA-D52C-1B4E-E800"},
-        {"name": "Golden", "hex": "FCD5-3575-5C00-FCFC-FCFF-FFFE-BA00"},
+        {"name": "Golden", "hex": "FCD5-3575-5C00-FCFC-FCFF-FFFE-BA00", "golden": true},
         {"name": "Infamous", "hex": "00FF-A856-53AA-D445-FE37-EAFF-5500"},
         {"name": "Abyss", "hex": "5654-924F-3D5E-DC71-FFA6-ACD6-F400"},
         {"name": "Early Access", "hex": "537A-3ED3-E29A-D3E2-9AA7-BA4A-8200", "ea": true},

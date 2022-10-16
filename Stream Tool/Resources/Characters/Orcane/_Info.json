@@ -12,7 +12,7 @@
         {"name": "Summer", "hex": "59CC-E9FF-F68C-9800"},
         {"name": "Default Custom 1", "hex": "FFFF-FF2E-2E2E-5400"},
         {"name": "Default Custom 2", "hex": "EC6C-77F0-C3BF-B200"},
-        {"name": "Golden", "hex": "ECC9-21EC-C921-C800"},
+        {"name": "Golden", "hex": "ECC9-21EC-C921-C800", "golden": true},
         {"name": "Summit", "hex": "3A3B-53DA-193C-1400"},
         {"name": "Abyss", "hex": "4F3D-5EA6-ACD6-9300"},
         {"name": "Early Access", "hex": "537A-3ED3-E29A-DD00", "ea": true},

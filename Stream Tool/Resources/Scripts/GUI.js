@@ -777,7 +777,7 @@ async function skinChange(char, skin, pNum) {
         charSelectors[currentPlayer].children[0].src = `${charPath}/${char}/Icons/${skin.name}.png`;
     } else if (fs.existsSync(`${charPath}/${char}/Icons/Default.png`)) {
         if (skin.hex) {
-            const skinSrc = await getRoARecolor(char, `${charPath}/${char}/Icons/Default.png`, skin.hex, skin.ea, skin.alpha);
+            const skinSrc = await getRoARecolor(char, `${charPath}/${char}/Icons/Default.png`, skin.hex, skin.ea, skin.alpha, skin.golden);
             charSelectors[currentPlayer].children[0].src = skinSrc;
         } else {
             charSelectors[currentPlayer].children[0].src = `${charPath}/${char}/Icons/Default.png`;

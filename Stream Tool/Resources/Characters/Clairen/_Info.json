@@ -22,7 +22,7 @@
         {"name": "Infamous", "hex": "5653-AA33-3741-37EA-FFF6-FFFF-D445-FED4-45FE-00FF-A8B9"},
         {"name": "Champion", "hex": "413E-3752-5252-B2FF-D0D0-DFDE-B2FF-D0D0-DFDE-7FFF-B168", "alpha": [1,1,1,0.5,1,0.5,1]},
         {"name": "Ranked", "hex": "FFCC-00FF-8700-E4E4-F079-7AC3-F3FC-FFBE-5723-FFD8-3D9D"},
-        {"name": "Golden", "hex": "FCFC-FC75-5C00-FFDD-1EFC-D535-FFDD-1EA9-A9A9-FFDD-1E5B"},
+        {"name": "Golden", "hex": "FCFC-FC75-5C00-FFDD-1EFC-D535-FFDD-1EA9-A9A9-FFDD-1E5B", "golden": true},
         {"name": "Heat Wave", "hex": "302F-238F-1212-1E0A-A3A4-6D39-CDB8-39C5-0000-FFD7-5A78"},
         {"name": "HD"},
         {"name": "LoA HD"},
