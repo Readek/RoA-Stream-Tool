@@ -503,7 +503,17 @@ const recolorCharData = {
       5.04, 5, 0, 1,       // Shine
       9.72, 75, 40, 1,     // Eyes
     ]
-  }
+  },
+  "Trail" : { // will pick up all colors of an image
+    ogColor : [
+      127, 127, 127, 1,
+      0,0,0,0
+    ],
+    colorRange : [
+      360, 100, 100, 1,
+      0,0,0,0
+    ]
+  },
 }
 
 
@@ -864,6 +874,16 @@ function hex2rgb(hex) {
 }
 
 // and finally, what we will use from the outside
+/**
+ * Takes an image, then returns it in a different color with the provided color code
+ * @param {String} charName - The name of the character to recolor
+ * @param {String} imgSrc - The source image to be recolored
+ * @param {String} code - The skin color code to be used
+ * @param {Boolean} blend - Makes the image have "Early Access" shading
+ * @param {Array} alpha - Set the transparency for each part (for example: [1, 0.75, 0.5, 1])
+ * @param {Boolean} golden - Adds golden shading to the character's black pixels
+ * @returns {String} Image data to be used in a .src atribute
+ */
 async function getRoARecolor(charName, imgSrc, code, blend, alpha, golden) {
 
   const recolorCanvas = document.createElement("canvas");

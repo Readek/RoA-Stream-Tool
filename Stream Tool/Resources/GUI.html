@@ -7,7 +7,7 @@
   <script src="Scripts/GUI/mousetrap.min.js" defer></script>
   <script src="Scripts/GUI.js" defer></script>
   <script src="Scripts/GUI/Bracket.js" defer></script>
-  <script src="Scripts/GUI/RoA WebGL Shader.js" defer></script>
+  <script src="Scripts/GUI/RoA WebGL Shader.js"></script>
 </head>
   
 <body>
@@ -413,7 +413,7 @@ They will always appear when typing 'Grand' in the round box.">
 <!-- stuff that will get overlayed on the entire screen -->
 <div id="pInfoDiv">
 
-  <div id="pInfoTitle">Editing player info for player <span id="pInfoPNum"></span></div>
+  <div class="pInfoTitle">Editing player info for player <span id="pInfoPNum"></span></div>
 
   <div id="pInfoStuff">
 
@@ -506,6 +506,25 @@ They will always appear when typing 'Grand' in the round box.">
 
   </div>
 
+</div>
+
+<div id="customSkinDiv">
+  <div class="pInfoTitle">Set your custom <span id="customSkinCharSpan"></span> skin code</div>
+  <input type="text" class="textInput mousetrap pInfoInput" id="customSkinInput" placeholder="0000-0000-0000-0000-0000-0000...." spellcheck="false">
+  <div class="pInfoRow">
+    <button class="pInfoBotButt" id="customSkinBackButt">
+      <div class="pInfoIconCont">
+        <load-svg src="SVGs/Close.svg" class="pInfoIcon"></load-svg>
+      </div>
+      <span>Go back</span>
+    </button>
+    <button class="pInfoBotButt" id="customSkinApplyButt">
+      <div class="pInfoIconCont">
+        <load-svg src="SVGs/Check.svg" class="pInfoIcon"></load-svg>
+      </div>
+      <span>Apply</span>
+    </button>
+  </div>
 </div>
 
 <div id="notifDiv">

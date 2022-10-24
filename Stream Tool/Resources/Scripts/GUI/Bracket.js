@@ -46,13 +46,13 @@ let bracketData = {
     ],
     "GrandFinals" : [
         {
-            "name" : "",
+            "name" : "-",
             "tag" : "",
             "character" : "None",
             "score" : "-"
         },
         {
-            "name" : "",
+            "name" : "-",
             "tag" : "",
             "character" : "None",
             "score" : "-"
@@ -60,7 +60,7 @@ let bracketData = {
     ],
     "TrueFinals" : [
         {
-            "name" : "-",
+            "name" : "",
             "tag" : "",
             "character" : "None",
             "score" : "-"

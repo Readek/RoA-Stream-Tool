@@ -4,7 +4,7 @@
   "allowIntro": false,
   "workshop": false,
   "forceAlt": false,
-  "forceHD": false,
+  "forceHD": true,
   "noLoAHD": false,
   "forceWL": false,
   "alwaysOnTop": false,

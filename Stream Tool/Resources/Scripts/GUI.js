@@ -51,20 +51,11 @@ const viewport = document.getElementById('viewport');
 const overlayDiv = document.getElementById('overlay');
 const goBackDiv = document.getElementById('goBack');
 const pInfoDiv = document.getElementById("pInfoDiv");
+const customSkinDiv = document.getElementById("customSkinDiv");
 
 const tNameInps = document.getElementsByClassName("teamName");
 
-//we want the correct order, we cant use getClassName here
-function pushArrayInOrder(array, string1, string2 = "") {
-    for (let i = 0; i < maxPlayers; i++) {
-        array.push(document.getElementById(string1+(i+1)+string2));
-    }
-}
-const pNameInps = [], charSelectors = [], skinSelectors = [];
-pushArrayInOrder(pNameInps, "p", "Name");
-pushArrayInOrder(charSelectors, "p", "CharSelector");
-pushArrayInOrder(skinSelectors, "p", "SkinSelector");
-
+const players = [];
 
 const charImgs = document.getElementsByClassName("charImg");
 
@@ -95,6 +86,256 @@ const skinFinder = document.getElementById("skinFinder");
 const cFinder = document.getElementById("casterFinder");
 
 const notifSpan = document.getElementById("notifText");
+
+
+// player class!
+class Player {
+
+    constructor(id) {
+
+        this.pNum = id;
+        this.nameInp = document.getElementById(`p${id}Name`);
+        this.charSel = document.getElementById(`p${id}CharSelector`);
+        this.skinSel = document.getElementById(`p${id}SkinSelector`);
+        
+        this.tag = "";
+        this.pronouns = "";
+        this.twitter = "";
+        this.twitch = "";
+        this.yt = "";
+
+        this.char = "";
+        this.skin = "";
+        this.vsSkin = "";
+        this.charInfo;
+        this.iconSrc = "";
+        this.scSrc = "";
+        this.scBrowserSrc = "";
+        this.vsSrc = "";
+        this.vsBrowserSrc = "";
+
+        this.randomImg = (this.pNum-1)%2 ? "P2" : "P1";
+
+
+        // hide the player presets menu if text input loses focus
+        this.nameInp.addEventListener("focusout", () => {
+            if (!inPF) { //but not if the mouse is hovering a player preset
+                pFinder.style.display = "none";
+            }
+        });
+
+        //check if theres a player preset every time we type or click in the player box
+        this.nameInp.addEventListener("input", () => {checkPlayerPreset(id-1)});
+        this.nameInp.addEventListener("focusin", () => {checkPlayerPreset(id-1)});
+
+        //resize the container if it overflows
+        this.nameInp.addEventListener("input", resizeInput);
+
+
+        // set listeners that will trigger when character or skin changes
+        this.charSel.addEventListener("click", (e) => {openCharSelector(id-1)});
+        this.skinSel.addEventListener("click", (e) => {
+            if (e.target.id != "") {
+                openSkinSelector(id-1);
+            }
+        });
+        // also set an initial character value
+        this.charChange("Random", id-1);
+
+    }
+
+    getName() {
+        return this.nameInp.value;
+    }
+    setName(name) {
+        this.nameInp.value = name;
+    }
+
+    async charChange(character) {
+
+        this.char = character;
+
+        // update character selector text
+        this.charSel.children[1].innerHTML = character;
+
+        // set the skin list for this character
+        this.charInfo = getJson(`${charPath}/${character}/_Info`);
+
+        // if the character doesnt exist, write in a placeholder
+        if (this.charInfo === null) {
+            this.charInfo = {
+                skinList : [{name: "Default"}],
+                gui : []
+            }
+        }
+
+        // set the skin variable from the skin list
+        this.skin = this.charInfo.skinList[0];
+
+        // if there's only 1 skin, dont bother displaying skin selector
+        if (this.charInfo.skinList.length > 1) {
+            this.skinSel.style.display = "flex";
+        } else {
+            this.skinSel.style.display = "none";
+        }
+
+        this.skinChange(this.skin);
+
+    }
+
+    async skinChange(skin) {
+
+        // remove focus from the skin list so it auto hides
+        document.activeElement.blur();
+
+        this.skin = skin;
+        this.vsSkin = skin;
+
+        // update the text of the skin selector
+        this.skinSel.innerHTML = skin.name;
+
+        // check if an icon for this skin exists, recolor if not
+        this.iconSrc = await this.getRecolorImage(this.char, skin, "Icons/", "Icon");
+        this.charSel.children[0].src = this.iconSrc;
+
+        // get us that scoreboard image
+        this.scSrc = await this.getRecolorImage(this.char, skin, "Skins/", this.randomImg);
+        this.scBrowserSrc = this.getBrowserSrc(this.char, skin, "Skins/", this.randomImg);
+
+        // if we want HD skins, get us those for the VS screen
+        if (forceHDCheck.checked) {
+            if (skin.name.includes("LoA") && !noLoAHDCheck.checked) {
+                this.vsSrc = await this.getRecolorImage(this.char, {name: "LoA HD"}, "Skins/", this.randomImg);
+                this.vsBrowserSrc = this.getBrowserSrc(this.char, {name: "LoA HD"}, "Skins/", this.randomImg);
+                this.vsSkin = {name: "LoA HD"};
+            } else {
+                this.vsSrc = await this.getRecolorImage(this.char, {name: "HD"}, "Skins/", this.randomImg);
+                this.vsBrowserSrc = this.getBrowserSrc(this.char, {name: "HD"}, "Skins/", this.randomImg);
+                this.vsSkin = {name: "HD"};
+            }
+        } else {
+            this.vsSrc = this.scSrc;
+            this.vsBrowserSrc = this.scBrowserSrc;
+            this.vsSkin = skin;
+        }
+
+        // change the background character image (if first 2 players)
+        if (this.pNum-1 < 2) {
+            charImgChange(charImgs[this.pNum-1], this.scSrc);
+        }
+
+        // set up a trail for the vs screen
+        this.trailSrc = await this.getTrailImage(this.char, this.vsSkin.name, currentColors[(this.pNum-1)%2].hex.substring(1)+"-FFFFFF");
+
+    }
+
+    async fillSkinList() {
+
+        const skinImgs = [];
+
+        // for every skin on the skin list, add an entry
+        for (let i = 0; i < this.charInfo.skinList.length; i++) {
+            
+            // this will be the div to click
+            const newDiv = document.createElement('div');
+            newDiv.className = "finderEntry";
+            newDiv.addEventListener("click", () => {this.skinChange(this.charInfo.skinList[i])});
+            
+            // character name
+            const spanName = document.createElement('span');
+            spanName.innerHTML = this.charInfo.skinList[i].name;
+            spanName.className = "pfName";
+
+            // add them to the div we created before
+            newDiv.appendChild(spanName);
+
+            // now for the character image, this is the mask/mirror div
+            const charImgBox = document.createElement("div");
+            charImgBox.className = "pfCharImgBox";
+
+            // actual image
+            const charImg = document.createElement('img');
+            charImg.className = "pfCharImg";
+            skinImgs.push(charImg);
+            
+            // we have to position it
+            positionChar(this.charInfo.skinList[i].name, charImg, {gui: this.charInfo.gui});
+            // and add it to the mask
+            charImgBox.appendChild(charImg);
+
+            //add it to the main div
+            newDiv.appendChild(charImgBox);
+
+            // and now add the div to the actual GUI
+            skinFinder.lastElementChild.appendChild(newDiv);
+
+        }
+
+        // now add a final entry for custom skins
+        const newDiv = document.createElement('div');
+        newDiv.className = "finderEntry";
+        newDiv.addEventListener("click", () => {showCustomSkin(this.pNum)});
+        const spanName = document.createElement('span');
+        spanName.innerHTML = "Custom Skin";
+        spanName.className = "pfName";
+        spanName.style.color = "lightsalmon"
+        newDiv.appendChild(spanName);
+        skinFinder.lastElementChild.appendChild(newDiv);
+
+        // add them images to each entry and recolor them if needed
+        for (let i = 0; i < skinImgs.length; i++) {
+            const finalSrc = await this.getRecolorImage(this.char, this.charInfo.skinList[i], "Skins/", "P2");
+            skinImgs[i].setAttribute('src', finalSrc);
+        }
+
+    }
+
+    // checks if the image for that skin exists, recolors Default if not
+    async getRecolorImage(char, skin, extraPath, failPath) {
+        if (fs.existsSync(`${charPath}/${char}/${extraPath}${skin.name}.png`) && !skin.force) {
+            return `${charPath}/${char}/${extraPath}${skin.name}.png`;
+        } else if (fs.existsSync(`${charPath}/${char}/${extraPath}Default.png`)) {
+            if (skin.hex) {
+                return await getRoARecolor(char, `${charPath}/${char}/${extraPath}Default.png`, skin.hex, skin.ea, skin.alpha, skin.golden);
+            } else {
+                return `${charPath}/${char}/${extraPath}Default.png`;
+            }
+        } else {
+            return `${charPathRandom}/${failPath}.png`;
+        }
+    }
+
+    async getTrailImage(char, skin, color) {
+        if (fs.existsSync(`${charPath}/${char}/Skins/${skin}.png`)) {
+            return await getRoARecolor("Trail", `${charPath}/${char}/Skins/${skin}.png`, color, true)
+        } else if (fs.existsSync(`${charPath}/${char}/Skins/Default.png`)) {
+            return await getRoARecolor("Trail", `${charPath}/${char}/Skins/Default.png`, color, true)
+        } else {
+            // 1x1 transparent pixel
+            return 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
+        }
+    }
+
+    getBrowserSrc(char, skin, extraPath, failPath) {
+        let browserCharPath = "Resources/Characters";
+        if (workshopCheck.checked) {
+            browserCharPath = "Resources/Characters/_Workshop";
+        }
+        
+        if (fs.existsSync(`${charPath}/${char}/${extraPath}${skin.name}.png`) && !skin.force) {
+            return browserCharPath + `/${char}/${extraPath}${skin.name}.png`;
+        } else if (fs.existsSync(`${charPath}/${char}/${extraPath}Default.png`)) {
+            if (skin.hex) {
+                return null;
+            } else {
+                return browserCharPath + `/${char}/${extraPath}Default.png`;
+            }
+        } else {
+            return `Resources/Characters/Random/${failPath}.png`;;
+        }
+    }
+
+}
 
 
 // commentator class
@@ -337,16 +578,15 @@ function init() {
     //load the character list on startup
     loadCharacters();
 
-    //set listeners that will trigger when character or skin changes
-    for (let i = 0; i < maxPlayers; i++) {
-        charSelectors[i].addEventListener("click", () => {openCharSelector(i)});
-        skinSelectors[i].addEventListener("click", () => {openSkinSelector(i)});
-        // also set an initial character value
-        charChange("Random", i);
-    }
-    // also set listeners for the input filters of char/skin selects
+    // set listeners for the input filters of char/skin selects
     charFinder.addEventListener("input", () => {filterFinder(charFinder)});
     skinFinder.addEventListener("input", () => {filterFinder(skinFinder)});
+
+
+    // initialize our player class
+    for (let i = 0; i < maxPlayers; i++) {
+        players.push(new Player(i+1));
+    }
 
 
     // initialize that score class
@@ -368,34 +608,6 @@ function init() {
     pFinder.addEventListener("mouseenter", () => { inPF = true });
     pFinder.addEventListener("mouseleave", () => { inPF = false });
 
-    //for each player input field
-    for (let i = 0; i < maxPlayers; i++) {
-
-        //hide the player presets menu if text input loses focus
-        pNameInps[i].addEventListener("focusout", () => {
-            if (!inPF) { //but not if the mouse is hovering a player preset
-                pFinder.style.display = "none";
-            }
-        });
-
-        //check if theres a player preset every time we type or click in the player box
-        pNameInps[i].addEventListener("input", () => {checkPlayerPreset(i)});
-        pNameInps[i].addEventListener("focusin", () => {checkPlayerPreset(i)});
-
-        //resize the container if it overflows
-        pNameInps[i].addEventListener("input", resizeInput);
-
-        // lets add in the init of the player info objects
-        const pInfo = {
-            pronouns : "",
-            tag : "",
-            twitter : "",
-            twitch : "",
-            yt : ""
-        }
-        pInfos.push(pInfo);
-
-    }
 
     // open player info menu if clicking on the icon
     const pInfoButts = document.getElementsByClassName("pInfoButt");
@@ -414,6 +626,11 @@ function init() {
         applyPlayerInfo();
         hidePlayerInfo();
     })
+
+
+    // set listeners for the custom skins menu
+    document.getElementById("customSkinBackButt").addEventListener("click", hideCustomSkin);
+    document.getElementById("customSkinApplyButt").addEventListener("click", () => {customChange()});
 
 
     // set click listeners to change the "best of" status
@@ -567,7 +784,7 @@ function getJson(jPath) {
 
 
 //calls the main settings file and fills a combo list
-function loadCharacters() {
+async function loadCharacters() {
 
     // first of all, clear a possible already existing list
     charFinder.lastElementChild.innerHTML = "";
@@ -599,7 +816,9 @@ function loadCharacters() {
         const imgIcon = document.createElement('img');
         imgIcon.className = "fIconImg";
         // check in case image cant be found
-        if (fs.existsSync(charPath+"/"+characterList[i]+"/Icons/Default.png")) {
+        if (characterList[i] == "Ori and Sein") {
+            imgIcon.src = await getRoARecolor("Ori and Sein", `${charPath}/Ori and Sein/Icons/Default.png`, "F8F5-FCF8-F5FC-0000-005D-CBF1-FFC8-21A4");
+        } else if (fs.existsSync(charPath+"/"+characterList[i]+"/Icons/Default.png")) {
             imgIcon.src = charPath+"/"+characterList[i]+"/Icons/Default.png";
         } else {
             imgIcon.src = charPathRandom + '/Icon.png';
@@ -627,7 +846,7 @@ function loadCharacters() {
 function openCharSelector(pNum) {
     
     // move the dropdown menu under the current char selector
-    charSelectors[pNum].appendChild(charFinder);
+    players[pNum].charSel.appendChild(charFinder);
 
     // focus the search input field and reset the list
     charFinder.firstElementChild.value = "";
@@ -652,42 +871,8 @@ function charChange(character, pNum = -1) {
         currentPlayer = pNum;
     }
 
-    // update character selector text
-    charSelectors[currentPlayer].children[1].innerHTML = character;
-
-    // update character selector icon (making sure it exists)
-    if (fs.existsSync(`${charPath}/${character}/Icons/Default.png`)) {
-        charSelectors[currentPlayer].children[0].src = `${charPath}/${character}/Icons/Default.png`;
-    } else {
-        charSelectors[currentPlayer].children[0].src = `${charPathRandom}/Icon.png`;
-    }
-
-    // check the first skin of the list for this character
-    const charInfo = getJson(`${charPath}/${character}/_Info`);
-    let skin;
-
-    if (charInfo) {
-
-        // set the skin variable from the skin list
-        skin = charInfo.skinList[0].name
-        // change the text of the skin selector
-        skinSelectors[currentPlayer].innerHTML = skin;
-        // if there's only 1 skin, dont bother displaying skin selector
-        if (charInfo.skinList.length > 1) {
-            skinSelectors[currentPlayer].style.display = "flex"
-        } else {
-            skinSelectors[currentPlayer].style.display = "none";
-        }
-
-    } else { // if it doesnt exist, hide the skin selector
-        skinSelectors[currentPlayer].innerHTML = "";
-        skinSelectors[currentPlayer].style.display = "none";
-    }
-
-    // change the background character image (only for first 2 players)
-    if (currentPlayer < 2) {
-        charImgChange(charImgs[currentPlayer], character, skin);
-    }
+    // our player class will take things from here
+    players[currentPlayer].charChange(character);
 
 }
 
@@ -696,49 +881,11 @@ function openSkinSelector(pNum) {
     // clear the list
     skinFinder.lastElementChild.innerHTML = "";
 
-    // get the character skin list for this skin selector
-    const character = charSelectors[pNum].getElementsByClassName("charSelectorText")[0].innerHTML;
-    const charInfo = getJson(`${charPath}/${character}/_Info`);
-
-    // for every skin on the skin list, add an entry
-    for (let i = 0; i < charInfo.skinList.length; i++) {
-        
-        // this will be the div to click
-        const newDiv = document.createElement('div');
-        newDiv.className = "finderEntry";
-        newDiv.addEventListener("click", () => {skinChange(character, charInfo.skinList[i], pNum)});
-        
-        // character name
-        const spanName = document.createElement('span');
-        spanName.innerHTML = charInfo.skinList[i].name;
-        spanName.className = "pfName";
-
-        // add them to the div we created before
-        newDiv.appendChild(spanName);
-
-        // now for the character image, this is the mask/mirror div
-        const charImgBox = document.createElement("div");
-        charImgBox.className = "pfCharImgBox";
-
-        // actual image
-        const charImg = document.createElement('img');
-        charImg.className = "pfCharImg";
-        charImg.setAttribute('src', `${charPath}/${character}/${charInfo.skinList[i].name}.png`);
-        // we have to position it
-        positionChar(charInfo.skinList[i].name, charImg, charInfo);
-        // and add it to the mask
-        charImgBox.appendChild(charImg);
-
-        //add it to the main div
-        newDiv.appendChild(charImgBox);
-
-        // and now add the div to the actual GUI
-        skinFinder.lastElementChild.appendChild(newDiv);
-
-    }
+    // now populate it
+    players[pNum].fillSkinList();
 
     // move the dropdown menu under the current skin selector
-    skinSelectors[pNum].appendChild(skinFinder);
+    players[pNum].skinSel.appendChild(skinFinder);
 
     // if this is the right side, change anchor point so it stays visible
     if (pNum%2 != 0 && window.innerWidth > 600) {
@@ -758,34 +905,39 @@ function openSkinSelector(pNum) {
     
 }
 
-// every time a skin is clicked on the skin list
-async function skinChange(char, skin, pNum) {
+// for those times the skin list just isnt enough
+function customChange(hex) {
 
-    // update the text of the skin selector
-    skinSelectors[pNum].innerHTML = skin.name
-    
-    // change the background character image (if first 2 players)
-    if (pNum < 2) {
-        charImgChange(charImgs[pNum], char, skin.name);
+    let skinHex = document.getElementById("customSkinInput").value;
+    if (hex) {
+        skinHex = hex;
     }
+    const skin = {
+        name: "Custom",
+        hex: skinHex
+    };
+    players[currentPlayer].skinChange(skin);
+    hideCustomSkin();
 
-    // remove focus from the skin list so it auto hides
-    document.activeElement.blur();
+}
 
-    // check if an icon for this skin exists
-    if (fs.existsSync(`${charPath}/${char}/Icons/${skin.name}.png`) && !skin.force) {
-        charSelectors[currentPlayer].children[0].src = `${charPath}/${char}/Icons/${skin.name}.png`;
-    } else if (fs.existsSync(`${charPath}/${char}/Icons/Default.png`)) {
-        if (skin.hex) {
-            const skinSrc = await getRoARecolor(char, `${charPath}/${char}/Icons/Default.png`, skin.hex, skin.ea, skin.alpha, skin.golden);
-            charSelectors[currentPlayer].children[0].src = skinSrc;
-        } else {
-            charSelectors[currentPlayer].children[0].src = `${charPath}/${char}/Icons/Default.png`;
-        }
-    } else {
-        charSelectors[currentPlayer].children[0].src = `${charPathRandom}/Icon.png`;
-    }
+// whenever the user clicks on the "Custom Skin" skin entry
+function showCustomSkin(pNum) {
 
+    document.getElementById("customSkinCharSpan").textContent = players[pNum-1].char;
+    document.getElementById("customSkinInput").value = "";
+
+    customSkinDiv.style.pointerEvents = "auto";
+    customSkinDiv.style.opacity = 1;
+    customSkinDiv.style.transform = "scale(1)";
+    overlayDiv.style.opacity = .25;
+
+}
+function hideCustomSkin() {
+    customSkinDiv.style.pointerEvents = "none";
+    customSkinDiv.style.opacity = 0;
+    customSkinDiv.style.transform = "scale(1.15)";
+    overlayDiv.style.opacity = 1;
 }
 
 
@@ -834,13 +986,8 @@ function filterFinder(finder) {
 
 
 //change the image path depending on the character and skin
-function charImgChange(charImg, charName, skinName) {
-    // check if the file requested exists and add a placeholder if it doesnt
-    if (fs.existsSync(`${charPath}/${charName}/${skinName}.png`)) {
-        charImg.src = `${charPath}/${charName}/${skinName}.png`;
-    } else {
-        charImg.src = `${charPathRandom}/P2.png`;
-    }
+function charImgChange(charImg, src) {
+    charImg.src = src;
 }
 
 
@@ -986,22 +1133,23 @@ function deactivateWL() {
 
 
 //called whenever the user types something in the player name box
-function checkPlayerPreset(pNum) {
+async function checkPlayerPreset(pNum) {
 
     //remove the "focus" for the player presets list
     currentFocus = -1;
 
     // move the player finder under the current player input
-    pNameInps[pNum].parentElement.appendChild(pFinder);
+    players[pNum].nameInp.parentElement.appendChild(pFinder);
 
     //clear the current list each time we type
     pFinder.innerHTML = "";
 
     // check for later
     let fileFound;
+    const skinImgs = [];
 
     //if we typed at least 3 letters
-    if (pNameInps[pNum].value.length >= 3) {
+    if (players[pNum].getName().length >= 3) {
 
         //check the files in that folder
         const files = fs.readdirSync(textPath + "/Player Info/");
@@ -1011,7 +1159,7 @@ function checkPlayerPreset(pNum) {
             file = file.substring(0, file.length - 5);
 
             //if the current text matches a file from that folder
-            if (file.toLocaleLowerCase().includes(pNameInps[pNum].value.toLocaleLowerCase())) {
+            if (file.toLocaleLowerCase().includes(players[pNum].getName().toLocaleLowerCase())) {
 
                 // store that we found at least one preset
                 fileFound = true;
@@ -1056,6 +1204,7 @@ function checkPlayerPreset(pNum) {
                     newDiv.setAttribute("name", file);
                     newDiv.setAttribute("char", char.character);
                     newDiv.setAttribute("skin", char.skin);
+                    newDiv.setAttribute("hex", char.hex);
 
                     //add them to the div we created before
                     newDiv.appendChild(spanTag);
@@ -1069,9 +1218,17 @@ function checkPlayerPreset(pNum) {
                     //actual image
                     const charImg = document.createElement('img');
                     charImg.className = "pfCharImg";
-                    charImg.setAttribute('src', charPath+'/'+char.character+'/'+char.skin+'.png');
+                    const charJson = getJson(charPath + "/" + char.character + "/_Info");
+                    // we will store this for later
+                    skinImgs.push({
+                        el : charImg,
+                        charJson : charJson,
+                        char : char.character,
+                        skin : char.skin,
+                        hex : char.hex
+                    });
                     //we have to position it
-                    positionChar(char.skin, charImg, getJson(charPath + "/" + char.character + "/_Info"));
+                    positionChar(char.skin, charImg, charJson);
                     //and add it to the mask
                     charImgBox.appendChild(charImg);
 
@@ -1084,6 +1241,32 @@ function checkPlayerPreset(pNum) {
                 });
             }
         });
+    }
+
+    // now lets add those images to each entry
+    for (let i = 0; i < skinImgs.length; i++) {
+        let skin;
+        if (skinImgs[i].charJson) {
+            if (skinImgs[i].skin == "Custom") {
+                skin = {name: "Custom", hex: skinImgs[i].hex}
+            } else {
+                for (let j = 0; j < skinImgs[i].charJson.skinList.length; j++) {
+                    if (skinImgs[i].charJson.skinList[j].name == skinImgs[i].skin) {
+                        skin = skinImgs[i].charJson.skinList[j];
+                    }
+                }
+            }
+        } else {
+            skin = {name: skinImgs[i].skin}
+        }
+        
+        const finalSrc = await players[0].getRecolorImage(
+            skinImgs[i].char,
+            skin,
+            "Skins/",
+            "P2"
+        );
+        skinImgs[i].el.setAttribute('src', finalSrc);
     }
 
     // if no presets were found, hide the player finder
@@ -1104,20 +1287,20 @@ function checkPlayerPreset(pNum) {
 }
 
 // now the complicated "position character image" function!
-async function positionChar(skin, charEL, charInfo) {
+async function positionChar(skin, charEL, pos) {
 	
 	//               x, y, scale
 	const charPos = [0, 0, 1];
 	//now, check if the character and skin exist in the database down there
-	if (charInfo) {
-		if (charInfo.gui[skin]) { //if the skin has a specific position
-			charPos[0] = charInfo.gui[skin].x;
-			charPos[1] = charInfo.gui[skin].y;
-			charPos[2] = charInfo.gui[skin].scale;
+	if (pos) {
+		if (pos.gui[skin]) { //if the skin has a specific position
+			charPos[0] = pos.gui[skin].x;
+			charPos[1] = pos.gui[skin].y;
+			charPos[2] = pos.gui[skin].scale;
 		} else { //if none of the above, use a default position
-			charPos[0] = charInfo.gui.neutral.x;
-			charPos[1] = charInfo.gui.neutral.y;
-			charPos[2] = charInfo.gui.neutral.scale;
+			charPos[0] = pos.gui.neutral.x;
+			charPos[1] = pos.gui.neutral.y;
+			charPos[2] = pos.gui.neutral.scale;
 		}
 	} else { //if the character isnt on the database, set positions for the "?" image
 		charPos[0] = 0;
@@ -1142,18 +1325,27 @@ async function positionChar(skin, charEL, charInfo) {
 //called when the user clicks on a player preset
 function playerPreset(el, pNum) {
 
-    pInfos[pNum].pronouns = el.getAttribute("pronouns");
-    pInfos[pNum].tag = el.getAttribute("tag");
-    pInfos[pNum].twitter = el.getAttribute("twitter");
-    pInfos[pNum].twitch = el.getAttribute("twitch");
-    pInfos[pNum].yt = el.getAttribute("yt");
+    players[pNum].pronouns = el.getAttribute("pronouns");
+    players[pNum].tag = el.getAttribute("tag");
+    players[pNum].twitter = el.getAttribute("twitter");
+    players[pNum].twitch = el.getAttribute("twitch");
+    players[pNum].yt = el.getAttribute("yt");
 
-    pNameInps[pNum].value = el.getAttribute("name");
-    changeInputWidth(pNameInps[pNum]);
+    players[pNum].setName(el.getAttribute("name"));
+    changeInputWidth(players[pNum].nameInp);
+
 
     charChange(el.getAttribute("char"), pNum);
 
-    skinChange(el.getAttribute("char"), {name: el.getAttribute("skin")} , pNum);
+    if (el.getAttribute("skin") == "Custom") {
+        customChange(el.getAttribute("hex"));
+    } else {
+        for (let i = 0; i < players[pNum].charInfo.skinList.length; i++) {
+            if (players[pNum].charInfo.skinList[i].name == el.getAttribute("skin")) {
+                players[pNum].skinChange(players[pNum].charInfo.skinList[i]);
+            }
+        }
+    }
 
     pFinder.style.display = "none";
 
@@ -1329,16 +1521,17 @@ function getTextWidth(text, font) {
 function showPlayerInfo() {
     
     const pNum = this.getAttribute("player") - 1;
+    currentPlayer = pNum;
 
     document.getElementById("pInfoPNum").textContent = pNum + 1;
 
     // display the current info for this player
-    document.getElementById("pInfoInputPronouns").value = pInfos[pNum].pronouns;
-    document.getElementById("pInfoInputTag").value = pInfos[pNum].tag;
-    document.getElementById("pInfoInputName").value = pNameInps[pNum].value;
-    document.getElementById("pInfoInputTwitter").value = pInfos[pNum].twitter;
-    document.getElementById("pInfoInputTwitch").value = pInfos[pNum].twitch;
-    document.getElementById("pInfoInputYt").value = pInfos[pNum].yt;
+    document.getElementById("pInfoInputPronouns").value = players[pNum].pronouns;
+    document.getElementById("pInfoInputTag").value = players[pNum].tag;
+    document.getElementById("pInfoInputName").value = players[pNum].nameInp.value;
+    document.getElementById("pInfoInputTwitter").value = players[pNum].twitter;
+    document.getElementById("pInfoInputTwitch").value = players[pNum].twitch;
+    document.getElementById("pInfoInputYt").value = players[pNum].yt;
 
     // give tab index so we can jump from input to input with the keyboard
     document.getElementById("pInfoInputPronouns").setAttribute("tabindex", "0");
@@ -1371,28 +1564,38 @@ function applyPlayerInfo() {
     
     const pNum = document.getElementById("pInfoPNum").textContent - 1;
 
-    pInfos[pNum].pronouns = document.getElementById("pInfoInputPronouns").value;
-    pInfos[pNum].tag = document.getElementById("pInfoInputTag").value;
-    pNameInps[pNum].value = document.getElementById("pInfoInputName").value;
-    pInfos[pNum].twitter = document.getElementById("pInfoInputTwitter").value;
-    pInfos[pNum].twitch = document.getElementById("pInfoInputTwitch").value;
-    pInfos[pNum].yt = document.getElementById("pInfoInputYt").value;
+    players[pNum].pronouns = document.getElementById("pInfoInputPronouns").value;
+    players[pNum].tag = document.getElementById("pInfoInputTag").value;
+    players[pNum].nameInp.value = document.getElementById("pInfoInputName").value;
+    players[pNum].twitter = document.getElementById("pInfoInputTwitter").value;
+    players[pNum].twitch = document.getElementById("pInfoInputTwitch").value;
+    players[pNum].yt = document.getElementById("pInfoInputYt").value;
 
-    changeInputWidth(pNameInps[pNum]);
+    changeInputWidth(players[pNum].nameInp);
 
 }
 
-function savePlayerPreset() {
+function savePlayerPreset() { // TODO rework
     
-    const pNum = document.getElementById("pInfoPNum").textContent - 1;
+    const pNum = currentPlayer;
 
-    const preset = pInfos[pNum];
-    preset.characters = [];
+    const preset = {
+        name: players[pNum].getName(),
+        tag: players[pNum].tag,
+        pronouns: players[pNum].pronouns,
+        twitter: players[pNum].twitter,
+        twitch: players[pNum].twitch,
+        yt: players[pNum].yt,
+        characters : []
 
+    }
     preset.characters.push({
-        character: charSelectors[pNum].getElementsByClassName("charSelectorText")[0].innerHTML,
-        skin: skinSelectors[pNum].innerText
-    })
+        character: players[pNum].char,
+        skin: players[pNum].skin.name
+    });
+    if (players[pNum].skin.name == "Custom") {
+        preset.characters[0].hex = players[pNum].skin.hex;
+    }
 
     // if a player preset for this player exists, add already existing characters
     if (fs.existsSync(`${textPath}/Player Info/${document.getElementById("pInfoInputName").value}.json`)) {
@@ -1400,7 +1603,7 @@ function savePlayerPreset() {
         const existingPreset = getJson(`${textPath}/Player Info/${document.getElementById("pInfoInputName").value}`);
         // add existing characters to the new json, but not if the character is the same
         for (let i = 0; i < existingPreset.characters.length; i++) {
-            if (existingPreset.characters[i].character != charSelectors[pNum].getElementsByClassName("charSelectorText")[0].innerHTML) {
+            if (existingPreset.characters[i].character != players[pNum].char) {
                 preset.characters.push(existingPreset.characters[i]);
             }
         }
@@ -1508,10 +1711,10 @@ function changeGamemode() {
         // change max width to the name inputs and char selects
         for (let i = 0; i < maxPlayers; i++) {
 
-            pNameInps[i].style.maxWidth = "94px"
+            players[i].nameInp.style.maxWidth = "94px"
             
-            charSelectors[i].style.maxWidth = "73px";
-            skinSelectors[i].style.maxWidth = "72px";
+            players[i].charSel.style.maxWidth = "73px";
+            players[i].skinSel.style.maxWidth = "72px";
 
         }
 
@@ -1549,10 +1752,10 @@ function changeGamemode() {
 
         for (let i = 0; i < maxPlayers; i++) {
 
-            pNameInps[i].style.maxWidth = "210px"
+            players[i].nameInp.style.maxWidth = "210px"
             
-            charSelectors[i].style.maxWidth = "141px";
-            skinSelectors[i].style.maxWidth = "141px";
+            players[i].charSel.style.maxWidth = "141px";
+            players[i].skinSel.style.maxWidth = "141px";
             
         }
 
@@ -1566,7 +1769,7 @@ function changeGamemode() {
 }
 
 
-function swap() {
+function swap() { // TODO rework
 
     //team name
     const teamStore = tNameInps[0].value;
@@ -1576,11 +1779,11 @@ function swap() {
     for (let i = 0; i < maxPlayers; i+=2) {
 
         //names
-        const nameStore = pNameInps[i].value;
-        pNameInps[i].value = pNameInps[i+1].value;
-        pNameInps[i+1].value = nameStore;
-        changeInputWidth(pNameInps[i]);
-        changeInputWidth(pNameInps[i+1]);
+        const nameStore = players[i].getName();
+        players[i].setName(players[i+1].getName());
+        players[i+1].setName(nameStore);
+        changeInputWidth(players[i].nameInp);
+        changeInputWidth(players[i+1].nameInp);
 
         // player info
         const tempPInfo1 = pInfos[i];
@@ -1589,16 +1792,16 @@ function swap() {
         pInfos[i+1] = tempPInfo1;
 
         //characters and skins
-        const tempP1Char = charSelectors[i].getElementsByClassName("charSelectorText")[0].innerHTML;
-        const tempP2Char = charSelectors[i+1].getElementsByClassName("charSelectorText")[0].innerHTML;
-        const tempP1Skin = skinSelectors[i].innerText;
-        const tempP2Skin = skinSelectors[i+1].innerText;
+        const tempP1Char = players[i].char;
+        const tempP2Char = players[i+1].char;
+        const tempP1Skin = players[i].skin;
+        const tempP2Skin = players[i+1].skin;
         // update the suff
         charChange(tempP2Char, i);
         charChange(tempP1Char, i+1);
         
-        skinChange(tempP2Char, {name: tempP2Skin}, i);
-        skinChange(tempP1Char, {name: tempP1Skin}, i+1);
+        players[i].skinChange(tempP2Skin);
+        players[i+1].skinChange(tempP1Skin);
 
     }    
 
@@ -1637,15 +1840,15 @@ function clearPlayers() {
     for (let i = 0; i < maxPlayers; i++) {
 
         //clear player texts
-        pNameInps[i].value = "";
-        changeInputWidth(pNameInps[i]);
+        players[i].setName("");
+        changeInputWidth(players[i].nameInp);
         
         // clear player info
-        pInfos[i].pronouns = "";
-        pInfos[i].tag = "";
-        pInfos[i].twitter = "";
-        pInfos[i].twitch = "";
-        pInfos[i].yt = "";
+        players[i].pronouns = "";
+        players[i].tag = "";
+        players[i].twitter = "";
+        players[i].twitch = "";
+        players[i].yt = "";
 
         //reset characters to random
         charChange("Random", i);
@@ -1734,14 +1937,14 @@ function copyMatch() {
 
     if (gamemode == 1) { //for singles matches
         //check if the player has a tag to add
-        if (pInfos[0].tag) {
-            copiedText += pInfos[0].tag + " | ";
+        if (players[0].tag) {
+            copiedText += players[0].tag + " | ";
         }
-        copiedText += pNameInps[0].value + " (" +  charSelectors[0].getElementsByClassName("charSelectorText")[0].innerHTML +") VS ";
-        if (pInfos[1].tag) {
-            copiedText += pInfos[1].tag + " | ";
+        copiedText += players[0].getName() + " (" + players[0].char +") VS ";
+        if (players[1].tag) {
+            copiedText += players[1].tag + " | ";
         }
-        copiedText += pNameInps[1].value + " (" +  charSelectors[1].getElementsByClassName("charSelectorText")[0].innerHTML +")";
+        copiedText += players[1].getName() + " (" +  players[1].char +")";
     } else { //for team matches
         copiedText += tNameInps[0].value + " VS " + tNameInps[1].value;
     }
@@ -1812,10 +2015,11 @@ function writeScoreboard() {
     for (let i = 0; i < maxPlayers; i++) {
 
         // to simplify code
-        const charname = charSelectors[i].getElementsByClassName("charSelectorText")[0].innerHTML;
-        const charSkin = skinSelectors[i].innerText;
+        const charName = players[i].char;
+        const charSkin = players[i].skin.name;
+        const charVSSkin = players[i].vsSkin.name;
         // get the character position data
-        let charPos = getJson(`${charPath}/${charname}/_Info`);
+        let charPos = players[i].charInfo;
 
         // get us the path used by the browser sources
         let browserCharPath = "Characters";
@@ -1824,26 +2028,9 @@ function writeScoreboard() {
         }
 
         // set data for the scoreboard
-        let scCharImg = `${charname}/${charSkin}.png`;
-        let scCharPos = [];
-        // if alt art is enabled, change the path
-        if (forceAlt.checked) {
-            scCharImg = `${charname}/Alt/${charSkin}.png`;
-            // if an alt for this character can't be found, go back to regular path
-            if (!fs.existsSync(`${__dirname}/${browserCharPath}/${scCharImg}`)) {
-                scCharImg = `${charname}/${charSkin}.png`;
-            }
-        }
-        // if the file doesnt exist, send the Random image
-        let scImgFound = true;
-        if (!fs.existsSync(`${__dirname}/${browserCharPath}/${scCharImg}`)) {
-            scCharImg = `Resources/Characters/Random/P${(i % 2) + 1}.png`;
-            scImgFound = false;
-        } else {
-            scCharImg = `Resources/${browserCharPath}/${scCharImg}`;
-        }
         // get the character positions
-        if (charPos && scImgFound) {
+        let scCharPos = [];
+        if (charPos.scoreboard) {
             if (charPos.scoreboard[charSkin]) { // if the skin has a specific position
                 scCharPos[0] = charPos.scoreboard[charSkin].x;
                 scCharPos[1] = charPos.scoreboard[charSkin].y;
@@ -1868,45 +2055,19 @@ function writeScoreboard() {
         }
 
         // now, basically the same as above, but for the VS
-        let vsCharImg = `${charname}/${charSkin}.png`;
         let vsCharPos = [];
-        let vsTrailImg;
-        let vsBG = `${charname}/BG.webm`;
-        // for HD skins
-        let vsSkinUsed = charSkin;
-        if (forceHDCheck.checked) {
-            if (charSkin.includes("LoA") && !noLoAHDCheck.checked) {
-                vsCharImg = `${charname}/LoA HD.png`;
-                vsSkinUsed = "LoA HD";
-            } else {
-                vsCharImg = `${charname}/HD.png`;
-                vsSkinUsed = "HD";
-            }
-            if (!fs.existsSync(`${__dirname}/${browserCharPath}/${vsCharImg}`)) {
-                vsCharImg = `${charname}/${charSkin}.png`;
-                vsSkinUsed = charSkin;
-            }
-        }
-        // if the file doesnt exist, send the Random image
-        let vsImgFound = true;
-        if (!fs.existsSync(`${__dirname}/${browserCharPath}/${vsCharImg}`)) {
-            vsCharImg = `Resources/Characters/Random/P${(i % 2) + 1}.png`;
-            vsImgFound = false;
-        } else {
-            vsCharImg = `Resources/${browserCharPath}/${vsCharImg}`;
-        }
+        let vsTrailImg = players[i].trailSrc;
+        let vsBG = `${charName}/BG.webm`;
         // get the character positions
-        if (charPos && vsImgFound) {
-            if (charPos.vsScreen[vsSkinUsed]) { // if the skin has a specific position
-                vsCharPos[0] = charPos.vsScreen[vsSkinUsed].x;
-                vsCharPos[1] = charPos.vsScreen[vsSkinUsed].y;
-                vsCharPos[2] = charPos.vsScreen[vsSkinUsed].scale;
-                vsTrailImg = `Resources/${browserCharPath}/${charname}/Trails/${currentColors[i%2].name} ${vsSkinUsed}.png`;
+        if (charPos.vsScreen) {
+            if (charPos.vsScreen[charVSSkin]) { // if the skin has a specific position
+                vsCharPos[0] = charPos.vsScreen[charVSSkin].x;
+                vsCharPos[1] = charPos.vsScreen[charVSSkin].y;
+                vsCharPos[2] = charPos.vsScreen[charVSSkin].scale;
             } else { //if not, use a default position
                 vsCharPos[0] = charPos.vsScreen.neutral.x;
                 vsCharPos[1] = charPos.vsScreen.neutral.y;
                 vsCharPos[2] = charPos.vsScreen.neutral.scale;
-                vsTrailImg = `Resources/${browserCharPath}/${charname}/Trails/${currentColors[i%2].name}.png`;
             }
         } else { // if there are no character positions, set positions for "Random"
             if (i % 2 == 0) {
@@ -1921,18 +2082,17 @@ function writeScoreboard() {
                 vsCharPos[1] = 0;
             }
             vsCharPos[2] = .8;
-            vsTrailImg = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=='; // 1x1 transparent pixel
         }
         // oh we are still not done here, we need to check the BG
-        if (charSkin.includes("LoA")) { // show LoA background if the skin is LoA
+        if (charVSSkin.includes("LoA")) { // show LoA background if the skin is LoA
             vsBG = 'BG LoA.webm';
             browserCharPath = "Characters";
-        } else if (charSkin == "Ragnir") { // Ragnir shows the default stage in the actual game
+        } else if (charVSSkin == "Ragnir") { // Ragnir shows the default stage in the actual game
             vsBG = 'BG.webm';
             browserCharPath = "Characters";
-        } else if (charname == "Shovel Knight" && charSkin == "Golden") { // why not
-            vsBG = `${charname}/BG Golden.webm`;
-        } else if (charPos) { // safety check
+        } else if (charName == "Shovel Knight" && charVSSkin == "Golden") { // why not
+            vsBG = `${charName}/BG Golden.webm`;
+        } else if (charPos.vsScreen) { // safety check
             if (charPos.vsScreen["background"]) { // if the character has a specific BG
                 vsBG = `${charPos.vsScreen["background"]}/BG.webm`;
             }
@@ -1946,24 +2106,24 @@ function writeScoreboard() {
 
         // finally, add it to the main json
         scoreboardJson.player.push({
-            pronouns: pInfos[i].pronouns,
-            tag: pInfos[i].tag,
-            name: pNameInps[i].value,
-            twitter: pInfos[i].twitter,
-            twitch: pInfos[i].twitch,
-            yt: pInfos[i].yt,
+            pronouns: players[i].pronouns,
+            tag: players[i].tag,
+            name: players[i].getName(),
+            twitter: players[i].twitter,
+            twitch: players[i].twitch,
+            yt: players[i].yt,
             sc : {
-                charImg: scCharImg,
+                charImg: players[i].scBrowserSrc || players[i].scSrc,
                 charPos: scCharPos,
             },
             vs : {
-                charImg: vsCharImg,
+                charImg: players[i].vsBrowserSrc || players[i].vsSrc,
                 charPos: vsCharPos,
                 trailImg: vsTrailImg,
                 bgVid: vsBG,
             },
             // these are just for remote updating
-            char: charname,
+            char: charName,
             skin: charSkin
         })
     }
@@ -1998,7 +2158,7 @@ function writeScoreboard() {
 
     //simple .txt files
     for (let i = 0; i < maxPlayers; i++) {
-        fs.writeFileSync(textPath + "/Simple Texts/Player "+(i+1)+".txt", pNameInps[i].value);        
+        fs.writeFileSync(textPath + "/Simple Texts/Player "+(i+1)+".txt", players[i].getName());        
     }
 
     fs.writeFileSync(textPath + "/Simple Texts/Team 1.txt", tNameInps[0].value);
@@ -2119,16 +2279,16 @@ ipc.on('remoteGuiData', (event, data) => {
     for (let i = 0; i < newJson.player.length; i++) {
 
         // player info
-        pNameInps[i].value = newJson.player[i].name;
-        pInfos[i].pronouns = newJson.player[i].pronouns;
-        pInfos[i].tag = newJson.player[i].tag;
-        pInfos[i].twitter = newJson.player[i].twitter;
-        pInfos[i].twitch = newJson.player[i].twitch;
-        pInfos[i].yt = newJson.player[i].yt;
+        players[i].getName() = newJson.player[i].name;
+        players[i].pronouns = newJson.player[i].pronouns;
+        players[i].tag = newJson.player[i].tag;
+        players[i].twitter = newJson.player[i].twitter;
+        players[i].twitch = newJson.player[i].twitch;
+        players[i].yt = newJson.player[i].yt;
 
         // player character and skin
         charChange(newJson.player[i].char, i);
-        skinChange(newJson.player[i].char, {name: newJson.player[i].skin}, i);
+        players[i].skinChange({name: newJson.player[i].skin});
 
     };
 
