@@ -129,15 +129,11 @@ startWebsocket();
 function startWebsocket() {
 
 	// change this to the IP of where the GUI is being used for remote control
-	const webSocket = new WebSocket("ws://localhost:8080");
+	const webSocket = new WebSocket("ws://localhost:8080?id=bracket");
 	webSocket.onopen = () => { // if it connects successfully
 		// everything will update everytime we get data from the server (the GUI)
 		webSocket.onmessage = function (event) {
-			const message = JSON.parse(event.data);
-			// only update if the message is about bracket data
-			if (message.id == "bracketData") {
-				updateData(message);
-			}
+            updateData(JSON.parse(event.data));
 		}
 		// hide error message in case it was up
 		document.getElementById('connErrorDiv').style.display = 'none';

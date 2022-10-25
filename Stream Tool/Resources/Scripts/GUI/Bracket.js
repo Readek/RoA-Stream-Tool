@@ -152,7 +152,7 @@ let bracketData = {
             "score" : "-"
         }
     ],
-    id : "bracketData"
+    id : "bracket"
 }
 
 

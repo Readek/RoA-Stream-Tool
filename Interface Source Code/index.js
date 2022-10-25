@@ -131,17 +131,18 @@ function createWindow() {
         }
     })
 
-    server.on('connection', (socket) => {
+    server.on('connection', (socket, req) => {
+
 
         // add this new connection to the array to keep track of them
-        sockets.push(socket)
+        sockets.push({ws: socket, id: req.url.substring(5)})
     
         // when a new client connects, send current data
         win.webContents.send('requestData')
     
         // when a socket closes, or disconnects, remove it from the array.
         socket.on('close', function() {
-            sockets = sockets.filter(s => s !== socket)
+            sockets = sockets.filter(s => s.ws !== socket)
         });
 
         // in case we get data externally, pass it to the GUI
@@ -157,7 +158,9 @@ function createWindow() {
 // when the GUI is ready to send data to browsers
 ipcMain.on('sendData', (event, data) => {
     sockets.forEach(socket => {
-        socket.send(data)
+        if (JSON.parse(data).id == socket.id) {
+            socket.ws.send(data)
+        }
     })
 })
 
