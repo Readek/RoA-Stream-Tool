@@ -1,11 +1,17 @@
 {
     "skinList": [
         {"name": "Default"},
-        {"name": "Blue"},
-        {"name": "Red"},
-        {"name": "Green"},
-        {"name": "Grey"},
-        {"name": "Yellow"}
+        {"name": "Blue", "hex": "9D9F-FFE4"},
+        {"name": "Red", "hex": "FF4B-4BAA"},
+        {"name": "Green", "hex": "78FF-783A"},
+        {"name": "Grey", "hex": "B4B4-B428"},
+        {"name": "Yellow", "hex": "EBF8-454A"}
+    ],
+    "ogColor" : [
+        255, 255, 255, 1
+    ],
+    "colorRange" : [
+        4, 10, 41, 1
     ],
     "scoreboard": {
         "neutral": {
