@@ -1,11 +1,11 @@
 {
     "skinList": [
-        "Default",
-        "Blue",
-        "Red",
-        "Green",
-        "Grey",
-        "Yellow"
+        {"name": "Default"},
+        {"name": "Blue"},
+        {"name": "Red"},
+        {"name": "Green"},
+        {"name": "Grey"},
+        {"name": "Yellow"}
     ],
     "scoreboard": {
         "neutral": {
