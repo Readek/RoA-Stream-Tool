@@ -1,12 +1,12 @@
 {
     "skinList": [
-        {"name": "Default"},
+        {"name": "Default", "hex": "3B49-87CD-F7F7-1500", "force": true},
         {"name": "Cyan", "hex": "1BAA-A8FA-FFFF-C800"},
         {"name": "Red", "hex": "CE30-30FF-DAA1-6E00"},
         {"name": "Green", "hex": "237A-35F8-FF86-9700"},
         {"name": "Grey", "hex": "393A-3CFF-FFFF-8800"},
         {"name": "Purple", "hex": "6937-73FF-EF37-B700"},
-        {"name": "Halloween", "hex": "CAFF-EACA-FFEA-7F00", "alpha": [0.7,0.7]},
+        {"name": "Halloween", "hex": "CAFF-EACA-FFEA-7F00", "alpha": [0.7,0.7,1,1]},
         {"name": "Christmas", "hex": "DE48-486D-C253-7200"},
         {"name": "Valentines", "hex": "FF84-C1FF-ECF7-C000"},
         {"name": "Summer", "hex": "59CC-E9FF-F68C-9800"},
@@ -17,11 +17,23 @@
         {"name": "Abyss", "hex": "4F3D-5EA6-ACD6-9300"},
         {"name": "Early Access", "hex": "537A-3ED3-E29A-DD00", "ea": true},
         {"name": "Pool Party", "hex": "FFF6-E7FF-F6E7-FC00"},
-        {"name": "Champion", "hex": "3F3F-46D0-DFDE-E800", "alpha": [1,0.5]},
+        {"name": "Champion", "hex": "3F3F-46D0-DFDE-E800", "alpha": [1,0.5,1,1]},
         {"name": "Steampunk", "hex": "A25D-3430-DAA5-C200"},
         {"name": "Ranked", "hex": "FFCC-00E4-E4F0-F700"},
         {"name": "HD"},
         {"name": "LoA HD"}
+    ],
+    "ogColor" : [
+        59, 73, 135, 1,
+        205, 247, 247, 1,
+        0, 255, 0, 1,
+        255, 255, 0, 1
+    ],
+    "colorRange" : [
+        18, 30, 40, 1,
+        22, 30, 65, 1,
+        2, 0, 0, 0,
+        2, 0, 0, 0
     ],
     "scoreboard": {
         "neutral": {

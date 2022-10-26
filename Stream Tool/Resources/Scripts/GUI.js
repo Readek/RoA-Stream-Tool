@@ -195,11 +195,25 @@ class Player {
         this.skinSel.innerHTML = skin.name;
 
         // check if an icon for this skin exists, recolor if not
-        this.iconSrc = await this.getRecolorImage(this.char, skin, "Icons/", "Icon");
+        this.iconSrc = await this.getRecolorImage(
+            this.char,
+            skin,
+            this.charInfo.ogColor,
+            this.charInfo.colorRange,
+            "Icons/",
+            "Icon"
+        );
         this.charSel.children[0].src = this.iconSrc;
 
         // get us that scoreboard image
-        this.scSrc = await this.getRecolorImage(this.char, skin, "Skins/", this.randomImg);
+        this.scSrc = await this.getRecolorImage(
+            this.char,
+            skin,
+            this.charInfo.ogColor,
+            this.charInfo.colorRange,
+            "Skins/",
+            this.randomImg
+        );
         this.scBrowserSrc = this.getBrowserSrc(this.char, skin, "Skins/", this.randomImg);
 
         // if we want HD skins, get us those for the VS screen
@@ -284,19 +298,35 @@ class Player {
 
         // add them images to each entry and recolor them if needed
         for (let i = 0; i < skinImgs.length; i++) {
-            const finalSrc = await this.getRecolorImage(this.char, this.charInfo.skinList[i], "Skins/", "P2");
+            const finalSrc = await this.getRecolorImage(
+                this.char,
+                this.charInfo.skinList[i],
+                this.charInfo.ogColor,
+                this.charInfo.colorRange,
+                "Skins/",
+                "P2"
+            );
             skinImgs[i].setAttribute('src', finalSrc);
         }
 
     }
 
     // checks if the image for that skin exists, recolors Default if not
-    async getRecolorImage(char, skin, extraPath, failPath) {
+    async getRecolorImage(char, skin, colIn, colRan, extraPath, failPath) {
         if (fs.existsSync(`${charPath}/${char}/${extraPath}${skin.name}.png`) && !skin.force) {
             return `${charPath}/${char}/${extraPath}${skin.name}.png`;
         } else if (fs.existsSync(`${charPath}/${char}/${extraPath}Default.png`)) {
             if (skin.hex) {
-                return await getRoARecolor(char, `${charPath}/${char}/${extraPath}Default.png`, skin.hex, skin.ea, skin.alpha, skin.golden);
+                return await getRoARecolor(
+                    char,
+                    `${charPath}/${char}/${extraPath}Default.png`,
+                    colIn,
+                    colRan,
+                    skin.hex,
+                    skin.ea,
+                    skin.alpha,
+                    skin.golden
+                );
             } else {
                 return `${charPath}/${char}/${extraPath}Default.png`;
             }
@@ -307,9 +337,23 @@ class Player {
 
     async getTrailImage(char, skin, color) {
         if (fs.existsSync(`${charPath}/${char}/Skins/${skin}.png`)) {
-            return await getRoARecolor("Trail", `${charPath}/${char}/Skins/${skin}.png`, color, true)
+            return await getRoARecolor(
+                "Trail",
+                `${charPath}/${char}/Skins/${skin}.png`,
+                [127, 127, 127, 1, 0,0,0,0], // any color would do
+                [360, 100, 100, 1, 0,0,0,0], // range picks up all colors
+                color,
+                true // with blend true, only 1 color will be applied to everything
+            )
         } else if (fs.existsSync(`${charPath}/${char}/Skins/Default.png`)) {
-            return await getRoARecolor("Trail", `${charPath}/${char}/Skins/Default.png`, color, true)
+            return await getRoARecolor(
+                "Trail",
+                `${charPath}/${char}/Skins/Default.png`,
+                [127, 127, 127, 1, 0,0,0,0],
+                [360, 100, 100, 1, 0,0,0,0],
+                color,
+                true
+            )
         } else {
             // 1x1 transparent pixel
             return 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
@@ -575,8 +619,6 @@ function init() {
     // we need to set the current char path
     workshopCheck.checked ? charPath = charPathWork : charPath = charPathBase;
 
-    //load the character list on startup
-    loadCharacters();
 
     // set listeners for the input filters of char/skin selects
     charFinder.addEventListener("input", () => {filterFinder(charFinder)});
@@ -587,6 +629,10 @@ function init() {
     for (let i = 0; i < maxPlayers; i++) {
         players.push(new Player(i+1));
     }
+
+    
+    // initialize the character list
+    loadCharacters();
 
 
     // initialize that score class
@@ -807,6 +853,9 @@ async function loadCharacters() {
     // add entries to the character list
     for (let i = 0; i < characterList.length; i++) {
 
+        // get us the charInfo for this character
+        const charInfo = getJson(`${charPath}/${characterList[i]}/_Info`);
+
         // this will be the div to click
         const newDiv = document.createElement('div');
         newDiv.className = "finderEntry";
@@ -815,14 +864,22 @@ async function loadCharacters() {
         // character icon
         const imgIcon = document.createElement('img');
         imgIcon.className = "fIconImg";
-        // check in case image cant be found
-        if (characterList[i] == "Ori and Sein") {
-            imgIcon.src = await getRoARecolor("Ori and Sein", `${charPath}/Ori and Sein/Icons/Default.png`, "F8F5-FCF8-F5FC-0000-005D-CBF1-FFC8-21A4");
-        } else if (fs.existsSync(charPath+"/"+characterList[i]+"/Icons/Default.png")) {
-            imgIcon.src = charPath+"/"+characterList[i]+"/Icons/Default.png";
-        } else {
-            imgIcon.src = charPathRandom + '/Icon.png';
+        // check if the character exists
+        let skin = {name: "Default"}, ogColor, colorRange;
+        if (charInfo) {
+            skin = charInfo.skinList[0];
+            ogColor = charInfo.ogColor;
+            colorRange = charInfo.colorRange;
         }
+        // this will get us the true default icon for any character
+        imgIcon.src = await players[0].getRecolorImage(
+            characterList[i],
+            skin,
+            ogColor,
+            colorRange,
+            "Icons/",
+            "Icon"
+        );
         
         // character name
         const spanName = document.createElement('span');
@@ -1260,9 +1317,17 @@ async function checkPlayerPreset(pNum) {
             skin = {name: skinImgs[i].skin}
         }
         
+        let finalColIn = null;
+        let finalColRan = null;
+        if (skinImgs[i].charJson) {
+            finalColIn = skinImgs[i].charJson.ogColor;
+            finalColRan = skinImgs[i].charJson.colorRange;
+        }
         const finalSrc = await players[0].getRecolorImage(
             skinImgs[i].char,
             skin,
+            finalColIn,
+            finalColRan,
             "Skins/",
             "P2"
         );
