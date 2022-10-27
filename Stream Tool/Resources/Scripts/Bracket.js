@@ -13,6 +13,8 @@ class BracketPlayer {
 
         this.round = round;
         this.pos = pos;
+        this.char;
+        this.skin;
 
         // assign the html elements to variables
         this.nameEl = document.getElementById(round).getElementsByClassName("playerName")[pos];
@@ -78,17 +80,20 @@ class BracketPlayer {
         }
 
         // character update
-        if (!this.charEl.src.includes(bracketData[this.round][this.pos].character)) {
+        if (this.char != bracketData[this.round][this.pos].character &&
+        this.skin != bracketData[this.round][this.pos].skin) {
             fadeOut(this.charEl).then( () => {
-                this.charEl.src = `Resources/Characters/${bracketData[this.round][this.pos].character}.png`;
+                this.charEl.src = bracketData[this.round][this.pos].iconSrc;
                 // hide character icon if none
-                if (bracketData[this.round][this.pos].character == "None") {
+                if (!bracketData[this.round][this.pos].iconSrc) {
                     this.charEl.style.display = "none";
                 } else {
                     this.charEl.style.display = "block";
                 }
                 fadeIn(this.charEl);
             });
+            this.char = bracketData[this.round][this.pos].character;
+            this.skin = bracketData[this.round][this.pos].skin;
         }
         
 
@@ -167,7 +172,7 @@ async function updateData(data) {
     }
 
     // if true finals players exist, show true finals round
-    if (playerData[8].nameEl.innerText || playerData[9].nameEl.innerText) {
+    if (playerData[8].nameEl.innerText != "-" || playerData[9].nameEl.innerText != "-") {
         if (window.getComputedStyle(document.getElementById("TrueFinals")).getPropertyValue("display") == "none") {
             document.getElementById("TrueFinals").style.display = "flex";
             resizeText(playerData[8].nameEl);

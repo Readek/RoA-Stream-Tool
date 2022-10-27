@@ -39,6 +39,7 @@ let gamemode = 1;
 let movedSettings = false;
 
 let inPF = false;
+let inBracket = false;
 let currentFocus = -1;
 
 let currentPlayer;
@@ -133,7 +134,7 @@ class Player {
 
 
         // set listeners that will trigger when character or skin changes
-        this.charSel.addEventListener("click", (e) => {openCharSelector(id-1)});
+        this.charSel.addEventListener("click", (e) => {openCharSelector(this.charSel, id-1)});
         this.skinSel.addEventListener("click", (e) => {
             if (e.target.id != "") {
                 openSkinSelector(id-1);
@@ -575,7 +576,10 @@ function init() {
     //first, add listeners for the bottom bar buttons
     document.getElementById('updateRegion').addEventListener("click", writeScoreboard);
     document.getElementById('settingsRegion').addEventListener("click", () => {moveViewport("settings")});
-    document.getElementById('botBarBracket').addEventListener("click", () => {moveViewport("bracket")});
+    document.getElementById('botBarBracket').addEventListener("click", () => {
+        inBracket = true;
+        moveViewport("bracket");
+    });
 
 
     //if the viewport is moved, click anywhere on the center to go back
@@ -900,10 +904,10 @@ async function loadCharacters() {
 
 }
 
-function openCharSelector(pNum) {
+function openCharSelector(charSel, pNum) {
     
     // move the dropdown menu under the current char selector
-    players[pNum].charSel.appendChild(charFinder);
+    charSel.appendChild(charFinder);
 
     // focus the search input field and reset the list
     charFinder.firstElementChild.value = "";
@@ -929,7 +933,11 @@ function charChange(character, pNum = -1) {
     }
 
     // our player class will take things from here
-    players[currentPlayer].charChange(character);
+    if (inBracket) {
+        bracketPlayers[currentPlayer].charChange(character);
+    } else {
+        players[currentPlayer].charChange(character);
+    }
 
 }
 
@@ -939,13 +947,21 @@ function openSkinSelector(pNum) {
     skinFinder.lastElementChild.innerHTML = "";
 
     // now populate it
-    players[pNum].fillSkinList();
+    if (inBracket) {
+        bracketPlayers[pNum].fillSkinList();
+    } else {
+        players[pNum].fillSkinList();
+    }
 
     // move the dropdown menu under the current skin selector
-    players[pNum].skinSel.appendChild(skinFinder);
+    if (inBracket) {
+        bracketPlayers[pNum].skinSel.appendChild(skinFinder);
+    } else {
+        players[pNum].skinSel.appendChild(skinFinder);
+    }
 
     // if this is the right side, change anchor point so it stays visible
-    if (pNum%2 != 0 && window.innerWidth > 600) {
+    if (pNum%2 != 0 && window.innerWidth > 600 && !inBracket) {
         skinFinder.style.right = "0px";
         skinFinder.style.left = "";
     } else {

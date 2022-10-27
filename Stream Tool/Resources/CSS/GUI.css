@@ -191,6 +191,7 @@ button:hover {
 
 .pFinderPosition, .cFinderPosition, .sFinderPosition, .castFinderPosition {
   position: relative;
+  display: flex;
 }
 #playerFinder {
   display: none;
@@ -908,8 +909,58 @@ button:hover {
   background-color: var(--bg5);
 }
 
+
+#bracketTitle {
+  font-family: "Roboto-Medium";
+  font-size: 18px;
+  border-bottom: solid 1px var(--text2);
+  padding: 3px;
+  text-transform: uppercase;
+}
+
+#bracketRoundSelect {
+  outline: none;
+  height: 25px;
+  color: var(--text1);
+  background: var(--bg4);
+  border: 1px solid var(--focused);
+  transition: border-color 100ms;
+  padding: 0px 5px;
+  box-sizing: border-box;
+  border-radius: 5px;
+}
+#bracketRoundSelect:hover {
+  border-color: var(--selected);
+}
+#bracketRoundSelect:active {
+  background-color: var(--bg2);
+}
+
+
+#bracketEncounters {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+.bEncounter {
+  display: flex;
+  gap: 5px;
+}
+
+
 .bInput {
   width: 100px;
+  border-radius: 5px;
+}
+.bTagInp, .bScoreInp {
+  width: 50px;
+}
+
+
+#bBotButts {
+  display: flex;
+  gap: 10px;
 }
 
 
