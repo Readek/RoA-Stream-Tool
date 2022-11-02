@@ -24,23 +24,21 @@ const charPathWork = __dirname + '/Characters/_Workshop';
 const charPathRandom = __dirname + '/Characters/Random';
 let charPath;
 
-const colorList = getJson(textPath + "/Color Slots");
+let colorList;
 let currentColors = [0, 0];
 
 let scData; // we will store data to send to the browsers here
-const pInfos = []; // player info that doesnt have exclusive inputs
 
-let currentP1WL = "";
-let currentP2WL = "";
+let currentP1WL = "", currentP2WL = "";
 let currentBestOf = 5;
 
 let gamemode = 1;
 
-let movedSettings = false;
-
+let inSettings = false;
 let inPF = false;
 let inBracket = false;
 let currentFocus = -1;
+let presName; // to break playerpreset cycle
 
 let currentPlayer;
 
@@ -134,14 +132,10 @@ class Player {
 
 
         // set listeners that will trigger when character or skin changes
-        this.charSel.addEventListener("click", (e) => {openCharSelector(this.charSel, id-1)});
-        this.skinSel.addEventListener("click", (e) => {
-            if (e.target.id != "") {
-                openSkinSelector(id-1);
-            }
-        });
+        this.charSel.addEventListener("click", () => {openCharSelector(this.charSel, id-1)});
+        this.skinSel.addEventListener("click", () => {openSkinSelector(id-1)});
         // also set an initial character value
-        this.charChange("Random", id-1);
+        this.charChange("Random");
 
     }
 
@@ -152,7 +146,7 @@ class Player {
         this.nameInp.value = name;
     }
 
-    async charChange(character) {
+    async charChange(character, notDefault) {
 
         this.char = character;
 
@@ -180,7 +174,10 @@ class Player {
             this.skinSel.style.display = "none";
         }
 
-        this.skinChange(this.skin);
+        // if we are changing both char and skin, dont show default skin
+        if (!notDefault) {
+            this.skinChange(this.skin);
+        }
 
     }
 
@@ -236,7 +233,7 @@ class Player {
 
         // change the background character image (if first 2 players)
         if (this.pNum-1 < 2) {
-            charImgChange(charImgs[this.pNum-1], this.scSrc);
+            charImgs[this.pNum-1].src = this.scSrc;
         }
 
         // set up a trail for the vs screen
@@ -299,6 +296,12 @@ class Player {
 
         // add them images to each entry and recolor them if needed
         for (let i = 0; i < skinImgs.length; i++) {
+
+            // if the skin list isnt being shown, break the cycle
+            if (window.getComputedStyle(skinFinder).getPropertyValue("display") == "none") {
+                break;
+            }
+            // add the final image
             const finalSrc = await this.getRecolorImage(
                 this.char,
                 this.charInfo.skinList[i],
@@ -308,6 +311,7 @@ class Player {
                 "P2"
             );
             skinImgs[i].setAttribute('src', finalSrc);
+            
         }
 
     }
@@ -576,10 +580,7 @@ function init() {
     //first, add listeners for the bottom bar buttons
     document.getElementById('updateRegion').addEventListener("click", writeScoreboard);
     document.getElementById('settingsRegion').addEventListener("click", () => {moveViewport("settings")});
-    document.getElementById('botBarBracket').addEventListener("click", () => {
-        inBracket = true;
-        moveViewport("bracket");
-    });
+    document.getElementById('botBarBracket').addEventListener("click", () => {moveViewport("bracket")});
 
 
     //if the viewport is moved, click anywhere on the center to go back
@@ -753,7 +754,7 @@ function init() {
 
     //esc to clear player info
     Mousetrap.bind('esc', () => {
-        if (movedSettings) { //if settings are open, close them
+        if (inSettings || inBracket) { //if settings are open, close them
             goBack();
         } else if (pFinder.style.display == "block") { // if a finder menu is open, close it
             pFinder.style.display = "none";
@@ -810,8 +811,10 @@ function moveViewport(where) {
     if (where == "settings") {
         viewport.style.transform = "translateX(-240px)";
         goBackDiv.style.display = "block";
+        inSettings = true;
     } else {
         viewport.style.transform = "translateX(100%)";
+        inBracket = true;
     }
         
 }
@@ -820,6 +823,8 @@ function goBack() {
     viewport.style.transform = "translateX(0)";
     overlayDiv.style.opacity = "1";
     goBackDiv.style.display = "none";
+    inSettings = false;
+    inBracket = false;
 }
 
 
@@ -920,7 +925,7 @@ function openCharSelector(charSel, pNum) {
 }
 
 // every time a character is clicked on the char list
-function charChange(character, pNum = -1) {
+function charChange(character, pNum = -1, notDefault) {
     
     // clear focus to hide character select menu
     document.activeElement.blur();
@@ -934,24 +939,14 @@ function charChange(character, pNum = -1) {
 
     // our player class will take things from here
     if (inBracket) {
-        bracketPlayers[currentPlayer].charChange(character);
+        bracketPlayers[currentPlayer].charChange(character, notDefault);
     } else {
-        players[currentPlayer].charChange(character);
+        players[currentPlayer].charChange(character, notDefault);
     }
 
 }
 
 function openSkinSelector(pNum) {
-
-    // clear the list
-    skinFinder.lastElementChild.innerHTML = "";
-
-    // now populate it
-    if (inBracket) {
-        bracketPlayers[pNum].fillSkinList();
-    } else {
-        players[pNum].fillSkinList();
-    }
 
     // move the dropdown menu under the current skin selector
     if (inBracket) {
@@ -960,21 +955,36 @@ function openSkinSelector(pNum) {
         players[pNum].skinSel.appendChild(skinFinder);
     }
 
-    // if this is the right side, change anchor point so it stays visible
-    if (pNum%2 != 0 && window.innerWidth > 600 && !inBracket) {
-        skinFinder.style.right = "0px";
-        skinFinder.style.left = "";
-    } else {
-        skinFinder.style.left = "0px";
-        skinFinder.style.right = "";
+    // only do this if skin list is being shown
+    if (window.getComputedStyle(skinFinder).getPropertyValue("display") == "block") {
+        
+        // clear the list
+        skinFinder.lastElementChild.innerHTML = "";
+
+        // now populate it
+        if (inBracket) {
+            bracketPlayers[pNum].fillSkinList();
+        } else {
+            players[pNum].fillSkinList();
+        }
+
+        // if this is the right side, change anchor point so it stays visible
+        if (pNum%2 != 0 && window.innerWidth > 600 && !inBracket) {
+            skinFinder.style.right = "0px";
+            skinFinder.style.left = "";
+        } else {
+            skinFinder.style.left = "0px";
+            skinFinder.style.right = "";
+        }
+
+        // focus the search input field and clear its contents
+        skinFinder.firstElementChild.value = "";
+        skinFinder.firstElementChild.focus({preventScroll: true});
+
+        currentPlayer = pNum;
+        currentFocus = -1;
+
     }
-
-    // focus the search input field and clear its contents
-    skinFinder.firstElementChild.value = "";
-    skinFinder.firstElementChild.focus({preventScroll: true});
-
-    currentPlayer = pNum;
-    currentFocus = -1;
     
 }
 
@@ -1058,14 +1068,10 @@ function filterFinder(finder) {
 }
 
 
-//change the image path depending on the character and skin
-function charImgChange(charImg, src) {
-    charImg.src = src;
-}
-
-
 //will load the color list to a color slot combo box
 function loadColors() {
+
+    colorList = getJson(textPath + "/Color Slots");
 
     //for each color on the list, add them to the color dropdown
     for (let i = 0; i < colorList.length; i++) {
@@ -1221,6 +1227,8 @@ async function checkPlayerPreset(pNum) {
     let fileFound;
     const skinImgs = [];
 
+    let currentPresName;
+
     //if we typed at least 3 letters
     if (players[pNum].getName().length >= 3) {
 
@@ -1311,13 +1319,39 @@ async function checkPlayerPreset(pNum) {
                     //and now add the div to the actual interface
                     pFinder.appendChild(newDiv);
 
+                    // we need this to know which cycle we're in
+                    presName = players[pNum].getName();
+
                 });
             }
         });
     }
 
+    // if no presets were found, hide the player finder
+    if (!fileFound) {
+        pFinder.style.display = "none";
+    }
+
+    // if playing 2v2 and if the current player is on the right side
+    if (gamemode == 2 && pNum%2 != 0) {
+        // anchor point will be at the right side so it stays visible
+        pFinder.style.right = "0px";
+        pFinder.style.left = "";
+    } else {
+        pFinder.style.left = "0px";
+        pFinder.style.right = "";
+    }
+
     // now lets add those images to each entry
+    currentPresName = presName;
     for (let i = 0; i < skinImgs.length; i++) {
+
+        // if the list isnt being shown, break the cycle
+        if (presName != currentPresName ||
+        window.getComputedStyle(pFinder).getPropertyValue("display") == "none") {
+            break;
+        }
+
         let skin;
         if (skinImgs[i].charJson) {
             if (skinImgs[i].skin == "Custom") {
@@ -1348,21 +1382,7 @@ async function checkPlayerPreset(pNum) {
             "P2"
         );
         skinImgs[i].el.setAttribute('src', finalSrc);
-    }
 
-    // if no presets were found, hide the player finder
-    if (!fileFound) {
-        pFinder.style.display = "none";
-    }
-
-    // if playing 2v2 and if the current player is on the right side
-    if (gamemode == 2 && pNum%2 != 0) {
-        // anchor point will be at the right side so it stays visible
-        pFinder.style.right = "0px";
-        pFinder.style.left = "";
-    } else {
-        pFinder.style.left = "0px";
-        pFinder.style.right = "";
     }
 
 }
@@ -1416,7 +1436,7 @@ function playerPreset(el, pNum) {
     changeInputWidth(players[pNum].nameInp);
 
 
-    charChange(el.getAttribute("char"), pNum);
+    charChange(el.getAttribute("char"), pNum, true);
 
     if (el.getAttribute("skin") == "Custom") {
         customChange(el.getAttribute("hex"));
@@ -1656,7 +1676,7 @@ function applyPlayerInfo() {
 
 }
 
-function savePlayerPreset() { // TODO rework
+function savePlayerPreset() {
     
     const pNum = currentPlayer;
 
@@ -1850,7 +1870,7 @@ function changeGamemode() {
 }
 
 
-function swap() { // TODO rework
+function swap() {
 
     //team name
     const teamStore = tNameInps[0].value;
@@ -1867,48 +1887,49 @@ function swap() { // TODO rework
         changeInputWidth(players[i+1].nameInp);
 
         // player info
-        const tempPInfo1 = pInfos[i];
-        const tempPInfo2 = pInfos[i+1];
-        pInfos[i] = tempPInfo2;
-        pInfos[i+1] = tempPInfo1;
+        swapVariables(players[i].tag, players[i+1].tag);
+        swapVariables(players[i].pronouns, players[i+1].pronouns);
+        swapVariables(players[i].twitter, players[i+1].twitter);
+        swapVariables(players[i].twitch, players[i+1].twitch);
+        swapVariables(players[i].yt, players[i+1].yt);
 
         //characters and skins
         const tempP1Char = players[i].char;
         const tempP2Char = players[i+1].char;
         const tempP1Skin = players[i].skin;
         const tempP2Skin = players[i+1].skin;
-        // update the suff
-        charChange(tempP2Char, i);
-        charChange(tempP1Char, i+1);
-        
+        // update the stuff
+        charChange(tempP2Char, i, true);
+        charChange(tempP1Char, i+1, true);
         players[i].skinChange(tempP2Skin);
         players[i+1].skinChange(tempP1Skin);
 
     }    
 
     //scores
-    const tempP1Score = scores[0].getScore();
-    const tempP2Score = scores[1].getScore();
-    scores[0].setScore(tempP2Score);
-    scores[1].setScore(tempP1Score)
+    const scoreStore = scores[0].getScore();
+    scores[0].setScore(scores[1].getScore());
+    scores[1].setScore(scoreStore);
 
-    //W/K, only if they are visible
-    if (p1W.style.display = "flex") {
-        const previousP1WL = currentP1WL;
-        const previousP2WL = currentP2WL;
+    // [W]/[L] swap
+    const previousP1WL = currentP1WL;
+    const previousP2WL = currentP2WL;
 
-        if (previousP2WL == "W") {
-            p1W.click();
-        } else if (previousP2WL == "L") {
-            p1L.click();
-        }
-
-        if (previousP1WL == "W") {
-            p2W.click();
-        } else if (previousP1WL == "L") {
-            p2L.click();
-        }
+    if (previousP2WL == "W") {
+        p1W.click();
+    } else if (previousP2WL == "L") {
+        p1L.click();
     }
+    if (previousP1WL == "W") {
+        p2W.click();
+    } else if (previousP1WL == "L") {
+        p2L.click();
+    }
+
+}
+// just so code looks a bit more clean
+function swapVariables(var1, var2) {
+    [var1, var2] = [var2, var1];
 }
 
 function clearPlayers() {
@@ -2368,7 +2389,7 @@ ipc.on('remoteGuiData', (event, data) => {
         players[i].yt = newJson.player[i].yt;
 
         // player character and skin
-        charChange(newJson.player[i].char, i);
+        charChange(newJson.player[i].char, i, true);
         players[i].skinChange({name: newJson.player[i].skin});
 
     };

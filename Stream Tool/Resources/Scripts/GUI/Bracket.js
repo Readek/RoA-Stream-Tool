@@ -116,7 +116,7 @@ class BracketPlayer {
 
     }
 
-    async charChange(character) {
+    async charChange(character, notDefault) {
 
         if (character == "-" || character == "Random") {
             character = "None"
@@ -147,7 +147,10 @@ class BracketPlayer {
             this.skinSel.style.display = "none";
         }
 
-        this.skinChange(this.skin);
+        // if we are changing both char and skin, dont show default skin
+        if (!notDefault) {
+            this.skinChange(this.skin);
+        }
 
     }
 
@@ -230,6 +233,9 @@ class BracketPlayer {
 
         // add them images to each entry and recolor them if needed
         for (let i = 0; i < skinImgs.length; i++) {
+            if (window.getComputedStyle(skinFinder).getPropertyValue("display") == "none") {
+                break;
+            }
             const finalSrc = await this.getRecolorImage(
                 this.char,
                 this.charInfo.skinList[i],
