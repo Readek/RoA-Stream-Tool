@@ -84,7 +84,7 @@ class BracketPlayer {
 
         // actual character button
         const charSelectorDiv = document.createElement('div');
-        charSelectorDiv.className = "selector charSelector";
+        charSelectorDiv.className = "selector charSelector bCharSelector";
         charSelectorDiv.setAttribute("tabindex", "-1");
         this.charSel = charSelectorDiv;
         cFinderPositionDiv.appendChild(charSelectorDiv);
@@ -107,7 +107,7 @@ class BracketPlayer {
 
         // actual skin button
         const skinSelectorDiv = document.createElement('div');
-        skinSelectorDiv.className = "selector skinSelector";
+        skinSelectorDiv.className = "selector skinSelector bSkinSelector";
         skinSelectorDiv.setAttribute("tabindex", "-1");
         this.skinSel = skinSelectorDiv;
         cFinderPositionDiv.appendChild(skinSelectorDiv);
@@ -303,6 +303,8 @@ document.getElementById('bracketGoBack').addEventListener("click", () => {
     goBack();
 });
 document.getElementById('bracketUpdate').addEventListener("click", updateBracket);
+// force change event for initial creation of encounters
+bRoundSelect.dispatchEvent(new Event('change'));
 
 
 /** Creates encounter divs for the bracket section when changing round */
@@ -345,7 +347,6 @@ function createEncounters() {
         newEnc.appendChild(tagInp);
         newEnc.appendChild(nameInp);
         newEnc.appendChild(scoreInp);
-        bEncountersDiv.appendChild(newEnc);
 
         // set the current bracket data
         bracketPlayers[i].setName(bracketData[this.value][i].name);
@@ -353,7 +354,52 @@ function createEncounters() {
         bracketPlayers[i].setScore(bracketData[this.value][i].score);
         bracketPlayers[i].charChange(bracketData[this.value][i].character);
         bracketPlayers[i].skinChange(bracketData[this.value][i].skin);
+
+        if (i%2 == 0) {
+
+            // create a new bracket group
+            const groupDiv = document.createElement('div');
+            groupDiv.classList = "bEncounterGroup";
+            bEncountersDiv.appendChild(groupDiv);
+
+            // create that pair container
+            const pairDiv = document.createElement('div');
+            pairDiv.classList = "bEncounterPair";
+            groupDiv.appendChild(pairDiv);
+
+            // add the encounter
+            pairDiv.appendChild(newEnc);
+
+            // also add the copy from game button
+            const copyFromButt = document.createElement('button');
+            copyFromButt.classList = "bCopyGameButt";
+            copyFromButt.innerHTML = '<div class="pInfoIconCont"><load-svg src="SVGs/Arrow.svg" class="pInfoIcon"></load-svg></div>'
+            copyFromButt.setAttribute("title", "Copy values from current game data");
+            copyFromButt.setAttribute("num", i);
+            copyFromButt.addEventListener("click", copyFromGameToBracket);
+            groupDiv.appendChild(copyFromButt);
+
+        } else {
+            // if everything already exists, just append the encounter
+            document.getElementsByClassName("bEncounterPair")[Math.floor(i/2)].appendChild(newEnc);
+        }
         
+    }
+
+}
+
+
+/** Pastes the current game data to the clicked bracket encounter */
+function copyFromGameToBracket() {
+    
+    const num = Number(this.getAttribute("num"));
+
+    for (let i = 0; i < 2; i++) {
+        bracketPlayers[num+i].setName(players[i].getName());
+        bracketPlayers[num+i].setTag(players[i].tag);
+        bracketPlayers[num+i].setScore(scores[i].getScore());
+        charChange(players[i].char, num+i, true);
+        bracketPlayers[num+i].skinChange(players[i].skin);
     }
 
 }

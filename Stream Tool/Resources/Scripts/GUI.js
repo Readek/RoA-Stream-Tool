@@ -922,6 +922,18 @@ function openCharSelector(charSel, pNum) {
     currentPlayer = pNum;
     currentFocus = -1;
 
+    // if in bracket view, invert anchor point so it stays visible
+    if (inBracket && pNum > 1 && bracketPlayers.length > 2) {
+        charFinder.style.top = "auto";
+        charFinder.style.bottom = "100%";
+    } else if (inBracket && pNum > 0 && bracketPlayers.length <= 2) {
+        charFinder.style.top = "auto";
+        charFinder.style.bottom = "100%";
+    } else {
+        charFinder.style.top = "100%";
+        charFinder.style.bottom = "auto";
+    }
+
 }
 
 // every time a character is clicked on the char list
@@ -975,6 +987,17 @@ function openSkinSelector(pNum) {
         } else {
             skinFinder.style.left = "0px";
             skinFinder.style.right = "";
+        }
+        // if in bracket view, invert anchor point so it stays visible
+        if (inBracket && pNum > 1 && bracketPlayers.length > 2) {
+            skinFinder.style.top = "auto";
+            skinFinder.style.bottom = "100%";
+        } else if (inBracket && pNum > 0 && bracketPlayers.length <= 2) {
+            skinFinder.style.top = "auto";
+            skinFinder.style.bottom = "100%";
+        } else {
+            skinFinder.style.top = "100%";
+            skinFinder.style.bottom = "auto";
         }
 
         // focus the search input field and clear its contents

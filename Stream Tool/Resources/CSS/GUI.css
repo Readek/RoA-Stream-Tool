@@ -367,6 +367,13 @@ button:hover {
   object-fit: contain;
 }
 
+.bCharSelector {
+  width: 70px;
+}
+.bSkinSelector {
+  width: 50px;
+}
+
 
 .finder {
   display: none;
@@ -941,16 +948,43 @@ button:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 8px;
+  transform: translateX(19px);
+}
+.bEncounterGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bEncounterPair {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 5px;
 }
-.bEncounter {
+.bEncounter { 
   display: flex;
+  align-items: center;
   gap: 5px;
+}
+.bCopyGameButt {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  background-color: var(--bg2);
+  border: 1px solid var(--focused);
+  border-radius: 100%;
+  transition: border-color 100ms;
+  transform: rotate(90deg);
+}
+.bCopyGameButt:hover {
+  border-color: var(--selected);
 }
 
 
 .bInput {
-  width: 100px;
+  width: 90px;
   border-radius: 5px;
 }
 .bTagInp, .bScoreInp {
@@ -1152,7 +1186,7 @@ button:hover {
   #botBar {
     height: 40px;
   }
-  #settingsRegion {
+  #settingsRegion, #botBarBracket {
     width: 50px;
   }
 
