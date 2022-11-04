@@ -234,6 +234,9 @@ class Player {
         // change the background character image (if first 2 players)
         if (this.pNum-1 < 2) {
             charImgs[this.pNum-1].src = this.scSrc;
+            if (this.char == "Random" && this.pNum == 1) {
+                charImgs[this.pNum-1].src = `${charPathRandom}/P2.png`;
+            }
         }
 
         // set up a trail for the vs screen
@@ -1022,7 +1025,11 @@ function customChange(hex) {
         name: "Custom",
         hex: skinHex
     };
-    players[currentPlayer].skinChange(skin);
+    if (inBracket) {
+        bracketPlayers[currentPlayer].skinChange(skin);
+    } else {
+        players[currentPlayer].skinChange(skin);
+    }
     hideCustomSkin();
 
 }
@@ -1240,8 +1247,17 @@ async function checkPlayerPreset(pNum) {
     //remove the "focus" for the player presets list
     currentFocus = -1;
 
+    let curPlayer;
+    // determine the current player class
+    if (inBracket) {
+        curPlayer = bracketPlayers[pNum];
+    } else {
+        curPlayer = players[pNum];
+    }
+
     // move the player finder under the current player input
-    players[pNum].nameInp.parentElement.appendChild(pFinder);
+    curPlayer.nameInp.parentElement.appendChild(pFinder);
+
 
     //clear the current list each time we type
     pFinder.innerHTML = "";
@@ -1253,7 +1269,7 @@ async function checkPlayerPreset(pNum) {
     let currentPresName;
 
     //if we typed at least 3 letters
-    if (players[pNum].getName().length >= 3) {
+    if (curPlayer.getName().length >= 3) {
 
         //check the files in that folder
         const files = fs.readdirSync(textPath + "/Player Info/");
@@ -1263,7 +1279,7 @@ async function checkPlayerPreset(pNum) {
             file = file.substring(0, file.length - 5);
 
             //if the current text matches a file from that folder
-            if (file.toLocaleLowerCase().includes(players[pNum].getName().toLocaleLowerCase())) {
+            if (file.toLocaleLowerCase().includes(curPlayer.getName().toLocaleLowerCase())) {
 
                 // store that we found at least one preset
                 fileFound = true;
@@ -1343,7 +1359,7 @@ async function checkPlayerPreset(pNum) {
                     pFinder.appendChild(newDiv);
 
                     // we need this to know which cycle we're in
-                    presName = players[pNum].getName();
+                    presName = curPlayer.getName();
 
                 });
             }
@@ -1449,14 +1465,25 @@ async function positionChar(skin, charEL, pos) {
 //called when the user clicks on a player preset
 function playerPreset(el, pNum) {
 
-    players[pNum].pronouns = el.getAttribute("pronouns");
-    players[pNum].tag = el.getAttribute("tag");
-    players[pNum].twitter = el.getAttribute("twitter");
-    players[pNum].twitch = el.getAttribute("twitch");
-    players[pNum].yt = el.getAttribute("yt");
+    let curPlayer;
+    if (inBracket) {
+        curPlayer = bracketPlayers[pNum];
+    } else {
+        curPlayer = players[pNum];
+    }
 
-    players[pNum].setName(el.getAttribute("name"));
-    changeInputWidth(players[pNum].nameInp);
+    curPlayer.pronouns = el.getAttribute("pronouns");
+    curPlayer.twitter = el.getAttribute("twitter");
+    curPlayer.twitch = el.getAttribute("twitch");
+    curPlayer.yt = el.getAttribute("yt");
+
+    curPlayer.setName(el.getAttribute("name"));
+    if (!inBracket) {
+        curPlayer.tag = el.getAttribute("tag");
+        changeInputWidth(curPlayer.nameInp);
+    } else {
+        curPlayer.setTag(el.getAttribute("tag"));
+    }
 
 
     charChange(el.getAttribute("char"), pNum, true);
@@ -1464,9 +1491,9 @@ function playerPreset(el, pNum) {
     if (el.getAttribute("skin") == "Custom") {
         customChange(el.getAttribute("hex"));
     } else {
-        for (let i = 0; i < players[pNum].charInfo.skinList.length; i++) {
-            if (players[pNum].charInfo.skinList[i].name == el.getAttribute("skin")) {
-                players[pNum].skinChange(players[pNum].charInfo.skinList[i]);
+        for (let i = 0; i < curPlayer.charInfo.skinList.length; i++) {
+            if (curPlayer.charInfo.skinList[i].name == el.getAttribute("skin")) {
+                curPlayer.skinChange(curPlayer.charInfo.skinList[i]);
             }
         }
     }

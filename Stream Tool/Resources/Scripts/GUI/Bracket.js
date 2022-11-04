@@ -45,10 +45,8 @@ class BracketPlayer {
         this.scoreInp;
 
         // set listeners that will trigger when character or skin changes
-        this.charSel.addEventListener("click", (e) => {openCharSelector(this.charSel, id)});
-        this.skinSel.addEventListener("click", (e) => {
-                openSkinSelector(id);
-        });
+        this.charSel.addEventListener("click", () => {openCharSelector(this.charSel, id)});
+        this.skinSel.addEventListener("click", () => {openSkinSelector(id)});
 
     }
 
@@ -110,7 +108,7 @@ class BracketPlayer {
         skinSelectorDiv.className = "selector skinSelector bSkinSelector";
         skinSelectorDiv.setAttribute("tabindex", "-1");
         this.skinSel = skinSelectorDiv;
-        cFinderPositionDiv.appendChild(skinSelectorDiv);
+        cFinderPositionSkinDiv.appendChild(skinSelectorDiv);
 
         return charDiv;
 
@@ -292,6 +290,19 @@ class BracketPlayer {
         }
     }
 
+    setPresetListeners() {
+        // hide the player presets menu if text input loses focus
+        this.nameInp.addEventListener("focusout", () => {
+            if (!inPF) { //but not if the mouse is hovering a player preset
+                pFinder.style.display = "none";
+            }
+        });
+
+        //check if theres a player preset every time we type or click in the player box
+        this.nameInp.addEventListener("input", () => {checkPlayerPreset(this.pNum)});
+        this.nameInp.addEventListener("focusin", () => {checkPlayerPreset(this.pNum)});
+    }
+
 }
 
 let bracketPlayers = [];
@@ -331,10 +342,13 @@ function createEncounters() {
         bracketPlayers[i].tagInp = tagInp;
 
         // player name
+        const pFinderPos = document.createElement('div');
+        pFinderPos.classList = "pFinderPosition";
         const nameInp = document.createElement('input');
         nameInp.classList = "bNameInp bInput textInput";
         nameInp.setAttribute("placeholder", "Player Name");
         bracketPlayers[i].nameInp = nameInp;
+        pFinderPos.appendChild(nameInp);
 
         // score
         const scoreInp = document.createElement('input');
@@ -345,7 +359,7 @@ function createEncounters() {
         // add it all up
         newEnc.appendChild(charSelect);
         newEnc.appendChild(tagInp);
-        newEnc.appendChild(nameInp);
+        newEnc.appendChild(pFinderPos);
         newEnc.appendChild(scoreInp);
 
         // set the current bracket data
@@ -354,6 +368,7 @@ function createEncounters() {
         bracketPlayers[i].setScore(bracketData[this.value][i].score);
         bracketPlayers[i].charChange(bracketData[this.value][i].character);
         bracketPlayers[i].skinChange(bracketData[this.value][i].skin);
+        bracketPlayers[i].setPresetListeners();
 
         if (i%2 == 0) {
 

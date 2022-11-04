@@ -370,9 +370,6 @@ button:hover {
 .bCharSelector {
   width: 70px;
 }
-.bSkinSelector {
-  width: 50px;
-}
 
 
 .finder {
@@ -425,6 +422,14 @@ button:hover {
   border-left: 1px solid var(--selected);
 }
 
+.bSkinSelector {
+  width: 50px;
+}
+.bSkinSelector:hover {
+  width: 51px;
+  margin-left: -1px;
+  border-left: 1px solid var(--selected);
+}
 
 
 .scoreBox {
