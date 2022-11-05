@@ -7,7 +7,7 @@ const bEncountersDiv = document.getElementById('bracketEncounters');
 const blankPlayerData = {
     name: "-",
     tag: "",
-    character: "-",
+    character: "None",
     skin: "-",
     iconSrc: "",
     score: "-"
@@ -424,16 +424,16 @@ function copyFromGameToBracket() {
 function updateBracket() {
     
     // for each encounter currently shown
-    for (let i = 0; i < bEncountersDiv.childElementCount; i++) {
+    for (let i = 0; i < bracketPlayers.length; i++) {
 
         // modify local bracket object with current data
         bracketData[bRoundSelect.value][i] = {
-            name : bracketPlayers[i].getName(),
+            name : bracketPlayers[i].getName() || "-",
             tag: bracketPlayers[i].getTag(),
             character: bracketPlayers[i].char,
             skin: bracketPlayers[i].skin,
             iconSrc: bracketPlayers[i].iconBrowserSrc || bracketPlayers[i].iconSrc,
-            score: bracketPlayers[i].getScore()
+            score: bracketPlayers[i].getScore() || "-"
         }
      
     }

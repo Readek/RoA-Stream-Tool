@@ -10,7 +10,7 @@
 
 @font-face {
     font-family: "RoundTitle";
-    src: url(../Fonts/LEMONMILK-MediumItalic.otf);
+    src: url(../Fonts/LEMONMILK-BoldItalic.otf);
 }
 
 body {
@@ -52,11 +52,11 @@ body {
 }
 
 .roundTitle {
-    font-size: 46px;
+    font-size: 44px;
     font-family: "RoundTitle";
-    font-weight: bold;
     color: black;
     -webkit-text-stroke: 2px white;
+    transform: scaleX(.96);
 }
 
 

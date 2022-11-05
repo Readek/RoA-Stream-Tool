@@ -64,7 +64,6 @@ class BracketPlayer {
             const awayScore = bracketData[this.round][rivalEncounter].score;
 
             // if more or less score than the other player
-            console.log(homeScore);
             if (homeScore == awayScore) {
                 this.nameEl.parentElement.style.color = "white";
                 this.charEl.style.filter = "grayscale(0)"
@@ -85,7 +84,7 @@ class BracketPlayer {
             fadeOut(this.charEl).then( () => {
                 this.charEl.src = bracketData[this.round][this.pos].iconSrc;
                 // hide character icon if none
-                if (!bracketData[this.round][this.pos].iconSrc) {
+                if (bracketData[this.round][this.pos].character == "None") {
                     this.charEl.style.display = "none";
                 } else {
                     this.charEl.style.display = "block";
