@@ -240,7 +240,7 @@ class Player {
         }
 
         // set up a trail for the vs screen
-        this.trailSrc = await this.getTrailImage(this.char, this.vsSkin.name, currentColors[(this.pNum-1)%2].hex.substring(1)+"-FFFFFF");
+        this.setTrailImage();
 
     }
 
@@ -366,6 +366,12 @@ class Player {
             // 1x1 transparent pixel
             return 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
         }
+    }
+
+    async setTrailImage() {
+        // we add "FFFFFF" to the color to avoid shader issues when using only 1 color
+        const color = currentColors[(this.pNum-1)%2].hex.substring(1)+"FFFFFF";
+        this.trailSrc = await this.getTrailImage(this.char, this.vsSkin.name, color);
     }
 
     getBrowserSrc(char, skin, extraPath, failPath) {
@@ -743,6 +749,8 @@ function init() {
             }
         } else if (pInfoDiv.style.pointerEvents == "auto") { // if player info menu is up
             document.getElementById("pInfoApplyButt").click();
+        } else if (inBracket) {
+            updateBracket();
         } else {
             //update scoreboard info (updates botBar color for visual feedback)
             writeScoreboard();
@@ -1037,6 +1045,8 @@ function customChange(hex) {
 // whenever the user clicks on the "Custom Skin" skin entry
 function showCustomSkin(pNum) {
 
+    document.getElementById("customSkinInput").focus();
+
     document.getElementById("customSkinCharSpan").textContent = players[pNum-1].char;
     document.getElementById("customSkinInput").value = "";
 
@@ -1164,6 +1174,15 @@ function updateColor() {
             //then change both the color rectangle and the background gradient
             colorRectangle.style.backgroundColor = colorList[i].hex;
             colorGrad.style.backgroundImage = "linear-gradient(to bottom left, "+colorList[i].hex+"50, #00000000, #00000000)";
+        }
+    }
+
+    // generate new trails for existing characters
+    for (let i = 0; i < players.length; i+=2) {
+        if (side == "l") {
+            players[i].setTrailImage();
+        } else {
+            players[i+1].setTrailImage();
         }
     }
 

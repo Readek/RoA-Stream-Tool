@@ -24,6 +24,8 @@ let bracketData = {
     id : "bracket"
 }
 
+let previousRound;
+
 
 class BracketPlayer {
 
@@ -321,6 +323,11 @@ bRoundSelect.dispatchEvent(new Event('change'));
 /** Creates encounter divs for the bracket section when changing round */
 function createEncounters() {
 
+    // first of all, save current contents to object
+    if (bracketPlayers[0]) { // not on the first run
+        updateLocalBracket(true);
+    }
+
     bEncountersDiv.innerHTML = "";
     bracketPlayers = [];
     
@@ -337,22 +344,24 @@ function createEncounters() {
 
         // player tag
         const tagInp = document.createElement('input');
-        tagInp.classList = "bTagInp bInput textInput";
+        tagInp.classList = "bTagInp bInput textInput mousetrap";
         tagInp.setAttribute("placeholder", "Tag");
+        tagInp.setAttribute("spellcheck", "false");
         bracketPlayers[i].tagInp = tagInp;
 
         // player name
         const pFinderPos = document.createElement('div');
         pFinderPos.classList = "pFinderPosition";
         const nameInp = document.createElement('input');
-        nameInp.classList = "bNameInp bInput textInput";
+        nameInp.classList = "bNameInp bInput textInput mousetrap";
         nameInp.setAttribute("placeholder", "Player Name");
+        nameInp.setAttribute("spellcheck", "false");
         bracketPlayers[i].nameInp = nameInp;
         pFinderPos.appendChild(nameInp);
 
         // score
         const scoreInp = document.createElement('input');
-        scoreInp.classList = "bScoreInp bInput textInput";
+        scoreInp.classList = "bScoreInp bInput textInput mousetrap";
         scoreInp.setAttribute("placeholder", "Score");
         bracketPlayers[i].scoreInp = scoreInp;
 
@@ -401,6 +410,8 @@ function createEncounters() {
         
     }
 
+    previousRound = bRoundSelect.value;
+
 }
 
 
@@ -423,11 +434,27 @@ function copyFromGameToBracket() {
 /** Updates the bracket with current data, then sends it */
 function updateBracket() {
     
+    // save the current info
+    updateLocalBracket();
+
+    // time to send it away
+    sendBracket();
+    displayNotif("Bracket has been updated");
+
+}
+
+/**
+ * Updates the local bracket object without sending it to clients
+ * @param {Boolean} previous - To update as previous round data
+*/
+function updateLocalBracket(previous) {
+
+    const roundToUpdate = previous ? previousRound : bRoundSelect.value;
+
     // for each encounter currently shown
     for (let i = 0; i < bracketPlayers.length; i++) {
-
         // modify local bracket object with current data
-        bracketData[bRoundSelect.value][i] = {
+        bracketData[roundToUpdate][i] = {
             name : bracketPlayers[i].getName() || "-",
             tag: bracketPlayers[i].getTag(),
             character: bracketPlayers[i].char,
@@ -435,12 +462,7 @@ function updateBracket() {
             iconSrc: bracketPlayers[i].iconBrowserSrc || bracketPlayers[i].iconSrc,
             score: bracketPlayers[i].getScore() || "-"
         }
-     
     }
-
-    // time to send it away
-    sendBracket();
-    displayNotif("Bracket has been updated");
 
 }
 
