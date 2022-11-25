@@ -1956,11 +1956,11 @@ function swap() {
         changeInputWidth(players[i+1].nameInp);
 
         // player info
-        swapVariables(players[i].tag, players[i+1].tag);
-        swapVariables(players[i].pronouns, players[i+1].pronouns);
-        swapVariables(players[i].twitter, players[i+1].twitter);
-        swapVariables(players[i].twitch, players[i+1].twitch);
-        swapVariables(players[i].yt, players[i+1].yt);
+        [players[i].tag, players[i+1].tag] = [players[i+1].tag, players[i].tag];
+        [players[i].pronouns, players[i+1].pronouns] = [players[i+1].pronouns, players[i].pronouns];
+        [players[i].twitter, players[i+1].twitter] = [players[i+1].twitter, players[i].twitter];
+        [players[i].twitch, players[i+1].twitch] = [players[i+1].twitch, players[i].twitch];
+        [players[i].yt, players[i+1].yt] = [players[i+1].yt, players[i].yt]
 
         //characters and skins
         const tempP1Char = players[i].char;
@@ -1995,10 +1995,6 @@ function swap() {
         p2L.click();
     }
 
-}
-// just so code looks a bit more clean
-function swapVariables(var1, var2) {
-    [var1, var2] = [var2, var1];
 }
 
 function clearPlayers() {
