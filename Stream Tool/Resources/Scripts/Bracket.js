@@ -1,7 +1,7 @@
 'use strict';
 
 let bracketData;
-const playerData = [];
+let playerData = [];
 const playerSize = '28px';
 const tagSize = '16px';
 const fadeOutTime = .3
@@ -28,73 +28,92 @@ class BracketPlayer {
 
         // text update
         if (this.nameEl.innerHTML != bracketData[this.round][this.pos].name ||
-            this.tagEl.innerHTML != bracketData[this.round][this.pos].tag) {
-
-            fadeOut(this.nameEl.parentElement).then( () => {
-
-				this.nameEl.style.fontSize = playerSize;
-                this.nameEl.innerHTML = bracketData[this.round][this.pos].name;
-                this.tagEl.style.fontSize = tagSize;
-                this.tagEl.innerHTML = bracketData[this.round][this.pos].tag;
-
-                // remove tag from flow if not visible
-                if (this.tagEl.innerHTML == "") {
-                    this.tagEl.style.display = "none";
-                    this.tagEl.parentElement.style.transform = "translate(3px, 0px)";
-                } else {
-                    this.tagEl.style.display = "block";
-                    this.tagEl.parentElement.style.transform = "translate(3px, -3px)";
-                }
-
-                resizeText(this.nameEl.parentElement);
-				fadeIn(this.nameEl.parentElement);
-
-			});
-
+        this.tagEl.innerHTML != bracketData[this.round][this.pos].tag) {
+            this.updateName();
         }
 
         // score update
         if (this.scoreEl.innerHTML !== bracketData[this.round][this.pos].score) {
-
-            this.scoreEl.innerHTML = bracketData[this.round][this.pos].score;
-
-            // makes our code cleaner
-            const rivalEncounter = this.pos % 2 ? this.pos-1 : this.pos+1;
-            const homeScore = this.scoreEl.innerHTML;
-            const awayScore = bracketData[this.round][rivalEncounter].score;
-
-            // if more or less score than the other player
-            if (homeScore == awayScore) {
-                this.nameEl.parentElement.style.color = "white";
-                this.charEl.style.filter = "grayscale(0)"
-            } else if (Number.isFinite(Number(homeScore)) &&
-            (homeScore > awayScore || !Number.isFinite(Number(awayScore)))) {
-                this.nameEl.parentElement.style.color = "#90ffb1";
-                this.charEl.style.filter = "grayscale(0)"
-            } else {
-                this.nameEl.parentElement.style.color = "#ffa3a3";
-                this.charEl.style.filter = "grayscale(1)"
-            }
-
+            this.updateScore();
         }
 
         // character update
         if (this.char != bracketData[this.round][this.pos].character &&
         this.skin != bracketData[this.round][this.pos].skin) {
-            fadeOut(this.charEl).then( () => {
-                this.charEl.src = bracketData[this.round][this.pos].iconSrc;
-                // hide character icon if none
-                if (bracketData[this.round][this.pos].character == "None") {
-                    this.charEl.style.display = "none";
-                } else {
-                    this.charEl.style.display = "block";
-                }
-                fadeIn(this.charEl);
-            });
-            this.char = bracketData[this.round][this.pos].character;
-            this.skin = bracketData[this.round][this.pos].skin;
+            this.updateChar();
         }
         
+    }
+
+    updateName() {
+        
+        fadeOut(this.nameEl.parentElement).then( () => {
+
+            this.nameEl.style.fontSize = playerSize;
+            this.nameEl.innerHTML = bracketData[this.round][this.pos].name;
+            this.tagEl.style.fontSize = tagSize;
+            this.tagEl.innerHTML = bracketData[this.round][this.pos].tag;
+
+            // remove tag from flow if not visible
+            if (this.tagEl.innerHTML == "") {
+                this.tagEl.style.display = "none";
+                this.tagEl.parentElement.style.transform = "translate(3px, 0px)";
+            } else {
+                this.tagEl.style.display = "block";
+                this.tagEl.parentElement.style.transform = "translate(3px, -3px)";
+            }
+
+            resizeText(this.nameEl.parentElement);
+            fadeIn(this.nameEl.parentElement);
+
+        });
+
+    }
+
+    updateScore() {
+
+        this.scoreEl.innerHTML = bracketData[this.round][this.pos].score;
+        this.updateScoreColor();
+
+        // this will activate text recolor for the other player
+        const rivalEncounter = this.pos % 2 ? this.pos-1 : this.pos+1;
+        playerData[this.round][rivalEncounter].updateScoreColor();
+
+    }
+    updateScoreColor() {
+        // makes our code cleaner
+        const rivalEncounter = this.pos % 2 ? this.pos-1 : this.pos+1;
+        const homeScore = this.scoreEl.innerHTML;
+        const awayScore = bracketData[this.round][rivalEncounter].score;
+
+        // if more or less score than the other player
+        if (homeScore == awayScore) {
+            this.nameEl.parentElement.style.color = "white";
+            this.charEl.style.filter = "grayscale(0)"
+        } else if (Number.isFinite(Number(homeScore)) &&
+        (homeScore > awayScore || !Number.isFinite(Number(awayScore)))) {
+            this.nameEl.parentElement.style.color = "#90ffb1";
+            this.charEl.style.filter = "grayscale(0)"
+        } else {
+            this.nameEl.parentElement.style.color = "#ffa3a3";
+            this.charEl.style.filter = "grayscale(1)"
+        }
+    }
+
+    updateChar() {
+
+        fadeOut(this.charEl).then( () => {
+            this.charEl.src = bracketData[this.round][this.pos].iconSrc;
+            // hide character icon if none
+            if (bracketData[this.round][this.pos].character == "None") {
+                this.charEl.style.display = "none";
+            } else {
+                this.charEl.style.display = "block";
+            }
+            fadeIn(this.charEl);
+        });
+        this.char = bracketData[this.round][this.pos].character;
+        this.skin = bracketData[this.round][this.pos].skin;
 
     }
 
@@ -102,30 +121,30 @@ class BracketPlayer {
 
 
 // and here is where we add all the player references
-playerData.push(
-    new BracketPlayer("WinnersSemis", 0),
-    new BracketPlayer("WinnersSemis", 1),
-    new BracketPlayer("WinnersSemis", 2),
-    new BracketPlayer("WinnersSemis", 3),
-    new BracketPlayer("WinnersFinals", 0),
-    new BracketPlayer("WinnersFinals", 1),
-    new BracketPlayer("GrandFinals", 0),
-    new BracketPlayer("GrandFinals", 1),
-    new BracketPlayer("TrueFinals", 0),
-    new BracketPlayer("TrueFinals", 1),
-    new BracketPlayer("LosersTop8", 0),
-    new BracketPlayer("LosersTop8", 1),
-    new BracketPlayer("LosersTop8", 2),
-    new BracketPlayer("LosersTop8", 3),
-    new BracketPlayer("LosersQuarters", 0),
-    new BracketPlayer("LosersQuarters", 1),
-    new BracketPlayer("LosersQuarters", 2),
-    new BracketPlayer("LosersQuarters", 3),
-    new BracketPlayer("LosersSemis", 0),
-    new BracketPlayer("LosersSemis", 1),
-    new BracketPlayer("LosersFinals", 0),
-    new BracketPlayer("LosersFinals", 1)
-)
+playerData = {
+    "WinnersSemis": [],
+    "WinnersFinals" : [],
+    "GrandFinals": [],
+    "TrueFinals": [],
+    "LosersTop8": [],
+    "LosersQuarters": [],
+    "LosersSemis": [],
+    "LosersFinals": [],
+}
+addBracketPlayer("WinnersSemis", 4);
+addBracketPlayer("WinnersFinals", 2);
+addBracketPlayer("GrandFinals", 2);
+addBracketPlayer("TrueFinals", 2);
+addBracketPlayer("LosersTop8", 4);
+addBracketPlayer("LosersQuarters", 4);
+addBracketPlayer("LosersSemis", 2);
+addBracketPlayer("LosersFinals", 2);
+function addBracketPlayer(round, times) {
+    for (let i = 0; i < times; i++) {
+        playerData[round].push(new BracketPlayer(round, i));
+    }
+}
+
 
 
 // first we will start by connecting with the GUI with a websocket
@@ -166,12 +185,12 @@ async function updateData(data) {
 
     // actual update
 	bracketData = data;
-    for (let i = 0; i < playerData.length; i++) {
-        playerData[i].update();
+    for (const i of iteratePlayerData()) {
+        i.update();
     }
 
     // if true finals players exist, show true finals round
-    if (playerData[8].nameEl.innerText != "-" || playerData[9].nameEl.innerText != "-") {
+    if (bracketData["TrueFinals"][0].name != "-" || bracketData["TrueFinals"][1].name != "-") {
         if (window.getComputedStyle(document.getElementById("TrueFinals")).getPropertyValue("display") == "none") {
             document.getElementById("TrueFinals").style.display = "flex";
             resizeText(playerData[8].nameEl);
@@ -181,6 +200,13 @@ async function updateData(data) {
         document.getElementById("TrueFinals").style.display = "none";
     }
     
+}
+function* iteratePlayerData() {
+    for(let key of Object.entries(playerData)) {
+        for(let obj of key[1]) {
+            yield obj;
+        }
+    }
 }
 
 

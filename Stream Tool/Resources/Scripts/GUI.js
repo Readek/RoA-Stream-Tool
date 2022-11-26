@@ -330,10 +330,7 @@ class Player {
                     `${charPath}/${char}/${extraPath}Default.png`,
                     colIn,
                     colRan,
-                    skin.hex,
-                    skin.ea,
-                    skin.alpha,
-                    skin.golden
+                    skin
                 );
             } else {
                 return `${charPath}/${char}/${extraPath}Default.png`;
@@ -350,8 +347,7 @@ class Player {
                 `${charPath}/${char}/Skins/${skin}.png`,
                 [127, 127, 127, 1, 0,0,0,0], // any color would do
                 [360, 100, 100, 1, 0,0,0,0], // range picks up all colors
-                color,
-                true // with blend true, only 1 color will be applied to everything
+                {hex : color, ea : true}, // with blend true, only 1 color will be applied to everything
             )
         } else if (fs.existsSync(`${charPath}/${char}/Skins/Default.png`)) {
             return await getRoARecolor(
@@ -359,8 +355,7 @@ class Player {
                 `${charPath}/${char}/Skins/Default.png`,
                 [127, 127, 127, 1, 0,0,0,0],
                 [360, 100, 100, 1, 0,0,0,0],
-                color,
-                true
+                {hex : color, ea : true},
             )
         } else {
             // 1x1 transparent pixel
@@ -1047,7 +1042,12 @@ function showCustomSkin(pNum) {
 
     document.getElementById("customSkinInput").focus();
 
-    document.getElementById("customSkinCharSpan").textContent = players[pNum-1].char;
+    if (inBracket) {
+        document.getElementById("customSkinCharSpan").textContent = bracketPlayers[pNum].char;
+    } else {
+        document.getElementById("customSkinCharSpan").textContent = players[pNum-1].char;
+    }
+
     document.getElementById("customSkinInput").value = "";
 
     customSkinDiv.style.pointerEvents = "auto";
@@ -2082,6 +2082,11 @@ function HDtoggle() {
         noLoAHDCheck.disabled = false;
     } else {
         noLoAHDCheck.disabled = true;
+    }
+
+    // to update character images
+    for (let i = 0; i < players.length; i++) {
+        players[i].skinChange(players[i].skin);
     }
 
     // save current checkbox value to the settings file

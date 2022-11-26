@@ -260,10 +260,7 @@ class BracketPlayer {
                     `${charPath}/${char}/${extraPath}Default.png`,
                     colIn,
                     colRan,
-                    skin.hex,
-                    skin.ea,
-                    skin.alpha,
-                    skin.golden
+                    skin
                 );
             } else {
                 return `${charPath}/${char}/${extraPath}Default.png`;
