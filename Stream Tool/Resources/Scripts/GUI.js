@@ -8,8 +8,10 @@ import { getJson } from './GUI/Utils.mjs';
 import * as glob from './GUI/Globals.mjs';
 import { viewport } from './GUI/Viewport.mjs';
 import { charFinder } from './GUI/Finder/Char Finder.mjs';
+import { skinFinder } from './GUI/Finder/Skin Finder.mjs';
 import { getRecolorImage, getTrailImage } from './GUI/GetImage.mjs';
 import { addActive, removeActiveClass } from './GUI/Finder/Finder Key Nav.mjs';
+import { players } from './GUI/Players.mjs';
 
 // this is a weird way to have file svg's that can be recolored by css
 customElements.define("load-svg", class extends HTMLElement {
@@ -49,8 +51,6 @@ const customSkinDiv = document.getElementById("customSkinDiv");
 
 const tNameInps = document.getElementsByClassName("teamName");
 
-const players = [];
-
 const charImgs = document.getElementsByClassName("charImg");
 
 const scores = [];
@@ -74,7 +74,6 @@ const invertScoreCheck = document.getElementById("invertScore");
 const forceAlt = document.getElementById("forceAlt");
 
 const pFinder = document.getElementById("playerFinder");
-const skinFinder = document.getElementById("skinFinder");
 const cFinder = document.getElementById("casterFinder");
 
 const notifSpan = document.getElementById("notifText");
@@ -126,7 +125,10 @@ class Player {
 
         // set listeners that will trigger when character or skin changes
         this.charSel.addEventListener("click", () => {charFinder.open(this.charSel, id-1)});
-        this.skinSel.addEventListener("click", () => {openSkinSelector(id-1)});
+        this.skinSel.addEventListener("click", () => {
+            skinFinder.open(this.skinSel, id-1);
+            this.fillSkinList();
+        });
         // also set an initial character value
         this.charChange("Random");
 
@@ -241,6 +243,9 @@ class Player {
 
         const skinImgs = [];
 
+        // clear the list
+        skinFinder.clearList();
+
         // for every skin on the skin list, add an entry
         for (let i = 0; i < this.charInfo.skinList.length; i++) {
             
@@ -275,7 +280,7 @@ class Player {
             newDiv.appendChild(charImgBox);
 
             // and now add the div to the actual GUI
-            skinFinder.lastElementChild.appendChild(newDiv);
+            skinFinder.addEntry(newDiv);
 
         }
 
@@ -288,13 +293,13 @@ class Player {
         spanName.className = "pfName";
         spanName.style.color = "lightsalmon"
         newDiv.appendChild(spanName);
-        skinFinder.lastElementChild.appendChild(newDiv);
+        skinFinder.addEntry(newDiv);
 
         // add them images to each entry and recolor them if needed
         for (let i = 0; i < skinImgs.length; i++) {
 
             // if the skin list isnt being shown, break the cycle
-            if (window.getComputedStyle(skinFinder).getPropertyValue("display") == "none") {
+            if (!skinFinder.isVisible()) {
                 break;
             }
             // add the final image
@@ -577,10 +582,6 @@ function init() {
     glob.wsCheck.checked ? glob.path.char = charPathWork : glob.path.char = charPathBase;
 
 
-    // set listeners for the input filters of char/skin selects
-    skinFinder.addEventListener("input", () => {filterFinder(skinFinder)});
-
-
     // initialize our player class
     for (let i = 0; i < maxPlayers; i++) {
         players.push(new Player(i+1));
@@ -677,13 +678,13 @@ function init() {
             if (glob.current.focus > -1) {
                 pFinder.getElementsByClassName("finderEntry")[glob.current.focus].click();
             }
-        } else if (charFinder.getDisplayValue() == "block") {
+        } else if (charFinder.isVisible()) {
             if (glob.current.focus > -1) {
                 charFinder.getFinderEntries()[glob.current.focus].click();
             }
-        } else if (window.getComputedStyle(skinFinder).getPropertyValue("display") == "block") {
+        } else if (skinFinder.isVisible()) {
             if (glob.current.focus > -1) {
-                skinFinder.getElementsByClassName("finderEntry")[glob.current.focus].click();
+                skinFinder.getFinderEntries()[glob.current.focus].click();
             }
         } else if (window.getComputedStyle(cFinder).getPropertyValue("display") == "block") {
             if (glob.current.focus > -1) {
@@ -711,8 +712,7 @@ function init() {
             viewport.toCenter();
         } else if (pFinder.style.display == "block") { // if a finder menu is open, close it
             pFinder.style.display = "none";
-        } else if (charFinder.getDisplayValue() == "block"
-        || window.getComputedStyle(skinFinder).getPropertyValue("display") == "block") {
+        } else if (charFinder.isVisible() || skinFinder.isVisible()) {
             document.activeElement.blur();
         } else if (pInfoDiv.style.pointerEvents == "auto") { // if player info menu is up
             document.getElementById("pInfoBackButt").click();
@@ -735,9 +735,9 @@ function init() {
     Mousetrap.bind('down', () => {
         if (pFinder.style.display == "block") {
             addActive(pFinder.getElementsByClassName("finderEntry"), true);
-        } else if (charFinder.getDisplayValue() == "block") {
+        } else if (charFinder.isVisible()) {
             addActive(charFinder.getFinderEntries(), true);
-        } else if (window.getComputedStyle(skinFinder).getPropertyValue("display") == "block") {
+        } else if (skinFinder.isVisible()) {
             addActive(skinFinder.getElementsByClassName("finderEntry"), true);
         } else if (window.getComputedStyle(cFinder).getPropertyValue("display") == "block") {
             addActive(cFinder.getElementsByClassName("finderEntry"), true);
@@ -746,91 +746,16 @@ function init() {
     Mousetrap.bind('up', () => {
         if (pFinder.style.display == "block") {
             addActive(pFinder.getElementsByClassName("finderEntry"), false);
-        } else if (charFinder.getDisplayValue() == "block") {
+        } else if (charFinder.isVisible()) {
             addActive(charFinder.getFinderEntries(), false);
         } else if (window.getComputedStyle(skinFinder).getPropertyValue("display") == "block") {
-            addActive(skinFinder.getElementsByClassName("finderEntry"), false);
+            addActive(skinFinder.getFinderEntries(), false);
         } else if (window.getComputedStyle(cFinder).getPropertyValue("display") == "block") {
             addActive(cFinder.getElementsByClassName("finderEntry"), false);
         }
     });
 }
 
-
-// every time a character is clicked on the char list
-function charChange(character, pNum = -1, notDefault) {
-    
-    // clear focus to hide character select menu
-    document.activeElement.blur();
-
-    // clear filter box
-    charFinder.firstElementChild.value = "";
-
-    if (pNum != -1) {
-        glob.current.player = pNum;
-    }
-
-    // our player class will take things from here
-    if (glob.inside.bracket) {
-        bracketPlayers[glob.current.player].charChange(character, notDefault);
-    } else {
-        players[glob.current.player].charChange(character, notDefault);
-    }
-
-}
-
-function openSkinSelector(pNum) {
-
-    // move the dropdown menu under the current skin selector
-    if (glob.inside.bracket) {
-        bracketPlayers[pNum].skinSel.appendChild(skinFinder);
-    } else {
-        players[pNum].skinSel.appendChild(skinFinder);
-    }
-
-    // only do this if skin list is being shown
-    if (window.getComputedStyle(skinFinder).getPropertyValue("display") == "block") {
-        
-        // clear the list
-        skinFinder.lastElementChild.innerHTML = "";
-
-        // now populate it
-        if (glob.inside.bracket) {
-            bracketPlayers[pNum].fillSkinList();
-        } else {
-            players[pNum].fillSkinList();
-        }
-
-        // if this is the right side, change anchor point so it stays visible
-        if (pNum%2 != 0 && window.innerWidth > 600 && !glob.inside.bracket) {
-            skinFinder.style.right = "0px";
-            skinFinder.style.left = "";
-        } else {
-            skinFinder.style.left = "0px";
-            skinFinder.style.right = "";
-        }
-        // if in bracket view, invert anchor point so it stays visible
-        if (glob.inside.bracket && pNum > 1 && bracketPlayers.length > 2) {
-            skinFinder.style.top = "auto";
-            skinFinder.style.bottom = "100%";
-        } else if (glob.inside.bracket && pNum > 0 && bracketPlayers.length <= 2) {
-            skinFinder.style.top = "auto";
-            skinFinder.style.bottom = "100%";
-        } else {
-            skinFinder.style.top = "100%";
-            skinFinder.style.bottom = "auto";
-        }
-
-        // focus the search input field and clear its contents
-        skinFinder.firstElementChild.value = "";
-        skinFinder.firstElementChild.focus({preventScroll: true});
-
-        glob.current.player = pNum;
-        glob.current.focus = -1;
-
-    }
-    
-}
 
 // for those times the skin list just isnt enough
 function customChange(hex) {
@@ -1276,7 +1201,7 @@ function playerPreset(el, pNum) {
     }
 
 
-    charChange(el.getAttribute("char"), pNum, true);
+    players[pNum].charChange(el.getAttribute("char"), true);
 
     if (el.getAttribute("skin") == "Custom") {
         customChange(el.getAttribute("hex"));
@@ -1660,8 +1585,8 @@ function swap() {
         const tempP1Skin = players[i].skin;
         const tempP2Skin = players[i+1].skin;
         // update the stuff
-        charChange(tempP2Char, i, true);
-        charChange(tempP1Char, i+1, true);
+        players[i].charChange(tempP2Char, true);
+        players[i+1].charChange(tempP1Char, true);
         players[i].skinChange(tempP2Skin);
         players[i+1].skinChange(tempP1Skin);
 
@@ -1710,7 +1635,7 @@ function clearPlayers() {
         players[i].yt = "";
 
         //reset characters to random
-        charChange("Random", i);
+        players[i].charChange("Random");
 
     }
 
@@ -1731,7 +1656,7 @@ function workshopToggle() {
     charFinder.loadCharacters();
     // clear current character lists
     for (let i = 0; i < maxPlayers; i++) {
-        charChange("Random", i);
+        players[i].charChange("Random");
     }
 
     // disable or enable alt arts checkbox
@@ -2151,7 +2076,7 @@ ipc.on('remoteGuiData', (event, data) => {
         players[i].yt = newJson.player[i].yt;
 
         // player character and skin
-        charChange(newJson.player[i].char, i, true);
+        players[i].charChange(newJson.player[i].char, true);
         players[i].skinChange({name: newJson.player[i].skin});
 
     };

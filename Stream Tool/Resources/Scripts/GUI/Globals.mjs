@@ -16,5 +16,3 @@ export const inside = {
     settings : false,
     bracket : false
 };
-
-// we need this one 

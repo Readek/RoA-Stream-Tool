@@ -28,20 +28,20 @@ export async function getRecolorImage(char, skin, colIn, colRan, imgType, failPa
 
     if (fs.existsSync(`${glob.path.char}/${char}/${imgType}/${skin.name}.png`) && !skin.force) {
 
-        return `${glob.path.char}/${char}/${imgType}${skin.name}.png`;
+        return `${glob.path.char}/${char}/${imgType}/${skin.name}.png`;
 
-    } else if (fs.existsSync(`${glob.path.char}/${char}/${imgType}Default.png`)) {
+    } else if (fs.existsSync(`${glob.path.char}/${char}/${imgType}/Default.png`)) {
 
         if (skin.hex) {
             return getRoARecolor(
                 char,
-                `${glob.path.char}/${char}/${imgType}Default.png`,
+                `${glob.path.char}/${char}/${imgType}/Default.png`,
                 colIn,
                 colRan,
                 skin
             );
         } else {
-            return `${glob.path.char}/${char}/${imgType}Default.png`;
+            return `${glob.path.char}/${char}/${imgType}/Default.png`;
         }
 
     } else {

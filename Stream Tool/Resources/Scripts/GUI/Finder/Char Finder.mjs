@@ -2,24 +2,20 @@ const fs = require('fs');
 import * as glob from '../Globals.mjs';
 import { getJson } from '../Utils.mjs';
 import { getRecolorImage } from '../GetImage.mjs';
-import { filterFinder } from './Filter Finder.mjs';
+import { players } from '../Players.mjs';
+import { Finder } from './Finder.mjs';
 
-class CharFinder {
-
-    #finderEl = document.getElementById("characterFinder");
+class CharFinder extends Finder {
 
     constructor() {
-
-        // filter the finder list as we type
-        this.#finderEl.addEventListener("input", () => {filterFinder(this.#finderEl)});
-    
+        super(document.getElementById("characterFinder"));
     }
 
     /** Fills the character list with each folder on the Characters folder */
     loadCharacters() {
 
         // first of all, clear a possible already existing list
-        this.#finderEl.lastElementChild.innerHTML = "";
+        this._finderEl.lastElementChild.innerHTML = "";
 
         // create a list with folder names on charPath
         const characterList = fs.readdirSync(glob.path.char, { withFileTypes: true })
@@ -79,47 +75,12 @@ class CharFinder {
             newDiv.appendChild(spanName);
 
             //and now add the div to the actual interface
-            this.#finderEl.lastElementChild.appendChild(newDiv);
+            this.addEntry(newDiv);
 
         }
 
         // this is just so Remote Update has a character list
         fs.writeFileSync(`${glob.path.text}/Character List.json`, JSON.stringify(characterList, null, 2));
-
-    }
-
-    /** Opens the character finder below the clicked player selector */
-    open(charSel, pNum) {
-
-        // move the dropdown menu under the current char selector
-        charSel.appendChild(this.#finderEl);
-
-        // focus the search input field and reset the list
-        this.#finderEl.firstElementChild.value = "";
-        this.#finderEl.firstElementChild.focus();
-        filterFinder(this.#finderEl);
-
-        // set up some global variables for other functions
-        glob.current.player = pNum;
-        glob.current.focus = -1;
-
-        // reset the dropdown position
-        this.#finderEl.style.top = "100%";
-        this.#finderEl.style.left = "0";
-
-        // get some data to calculate if it goes offscreen
-        const finderPos = this.#finderEl.getBoundingClientRect();
-        const selectPos = this.#finderEl.parentElement.getBoundingClientRect();
-
-        // vertical check
-        if (selectPos.bottom + finderPos.height > window.innerHeight) {
-            this.#finderEl.style.top = `calc(100% + ${window.innerHeight - finderPos.bottom - 10}px)`;
-            this.#finderEl.style.left = "100%";
-        }
-        // horizontal check
-        /* if (selectPos.right + finderPos.width > window.innerWidth) {
-            this.#finderEl.style.left = `calc(100% + ${window.innerWidth + finderPos.right + 5}px)`;
-        } */
 
     }
 
@@ -129,32 +90,15 @@ class CharFinder {
         document.activeElement.blur();
 
         // clear filter box
-        this.#finderEl.firstElementChild.value = "";
+        this._finderEl.firstElementChild.value = "";
 
         // our player class will take things from here
         if (glob.inside.bracket) {
-            bracketPlayers[glob.current.player].charChange(charName);
+            /* bracketPlayers[glob.current.player].charChange(charName); */
         } else {
             players[glob.current.player].charChange(charName);
         }
 
-    }
-
-    /**
-     * Scans for all current entries, then returns them
-     * @returns { HTMLCollectionOf}
-    */
-    getFinderEntries() {
-        return this.#finderEl.getElementsByClassName("finderEntry");
-
-    }
-
-    /**
-     * Checks for the current finder's display status
-     * @returns {String} - Current display css value
-     */
-    getDisplayValue() {
-        return window.getComputedStyle(this.#finderEl).getPropertyValue("display");
     }
 
 }
