@@ -1,5 +1,3 @@
-"use strict";
-
 // this script was made out of examples that can be found at https://webgl2fundamentals.org
 
 const vertexShaderSource = `#version 300 es
@@ -198,9 +196,7 @@ class RoaRecolor {
         }
       }
     } else {
-      for (let i = 0; i < this.colorIn.length; i++) {
-        this.blend.push(1);
-      }
+      this.blend = Array(this.colorIn.length).fill(1);
     }
 
     // if this is a golden skin, black pixels are altered
@@ -354,96 +350,37 @@ class RoaRecolor {
 
   }
 
-  // its finally time to recolor the image
-  recolor(colorOut) {
-    // if no code is sent, use the original colors
-    return render(this.charImg, colorOut ? colorOut : this.colorIn);
-  }
-
   // to hot-change retro shading
-  changeBlend(oneOrZero) {
+  changeBlend() {
+    this.blend = Array(this.colorIn.length).fill(0);
+    this.charImg.gl.uniform4fv(this.charImg.blendLoc, this.blend);
+  }
+
+  // this will be called on each paint
+  recolor(colorOut) {
+
+    // if no code is sent, use the original colors
+    const finalOut = colorOut ? colorOut : this.colorIn;
+
+    // get what we loaded on startup
     const gl = this.charImg.gl;
-    this.blend = [];
-    for (let i = 0; i < this.colorIn.length; i++) {
-      if (oneOrZero) {
-        this.blend.push(1);
-      } else {
-        this.blend.push(0);
-      }        
-    }
-    gl.uniform4fv(this.charImg.blendLoc, this.blend);
+    
+    // Pass in the uniform to the shader
+    gl.uniform4fv(this.charImg.colorOutLoc, div255(finalOut));
+
+    // Draw the rectangle.
+    const primitiveType = gl.TRIANGLES;
+    const count = 6;
+    gl.drawArrays(primitiveType, this.charImg.offset, count);
+
+    // to take an image out of a gl canvas, you need to capture it before
+    // the main thread has finished, so it can only be done here
+    return this.charImg.canvas.toDataURL();
+
   }
   
 }
 
-// this will be called on each paint
-function render(glCan, colorOut) {
-
-  // get what we loaded on startup
-  const canvas = glCan.canvas;
-  const gl = glCan.gl;
-  const colorOutLoc = glCan.colorOutLoc;
-  const offset = glCan.offset;
-  
-  // Pass in the uniform to the shader
-  gl.uniform4fv(colorOutLoc, div255(colorOut));
-
-  // Draw the rectangle.
-  const primitiveType = gl.TRIANGLES;
-  const count = 6;
-  gl.drawArrays(primitiveType, offset, count);
-
-
-  // to take an image out of a gl canvas, you need to capture it before
-  // the main thread has finished, so it can only be done here
-  return canvas.toDataURL();
-
-}
-
-// shaders need the rbga values on a [0~1] range
-function div255(array) {
-  const newArray = [];
-  for (let i = 1; i < array.length + 1; i++) {
-    if (i % 4 != 0) {
-      newArray[i-1] = array[i-1]/255;
-    } else {
-      newArray[i-1] = array[i-1];
-    }
-  }
-  return newArray;
-}
-// same for hsva
-function divHSV(array) {
-  const newArray = [];
-  let count = 0;
-  for (let i = 0; i < array.length; i++) {
-    count++;
-    if (count == 1) {
-      newArray[i] = array[i]/360;
-    } else if (count == 2 || count == 3) {
-      newArray[i] = array[i]/100;
-    } else {
-      newArray[i] = array[i];
-      count = 0;
-    }
-  }
-  return newArray;
-}
-
-function setRectangle(gl, x, y, width, height) {
-  const x1 = x;
-  const x2 = x + width;
-  const y1 = y;
-  const y2 = y + height;
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-     x1, y1,
-     x2, y1,
-     x1, y2,
-     x1, y2,
-     x2, y1,
-     x2, y2,
-  ]), gl.STATIC_DRAW);
-}
 
 /**
   * Creates and compiles a shader.
@@ -503,6 +440,61 @@ function createProgram(gl, vertexShader, fragmentShader) {
   return program;
 };
 
+function setRectangle(gl, x, y, width, height) {
+  const x1 = x;
+  const x2 = x + width;
+  const y1 = y;
+  const y2 = y + height;
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+     x1, y1,
+     x2, y1,
+     x1, y2,
+     x1, y2,
+     x2, y1,
+     x2, y2,
+  ]), gl.STATIC_DRAW);
+}
+
+
+
+// shaders need the rbga values on a [0~1] range
+function div255(array) {
+  const newArray = [];
+  for (let i = 1; i < array.length + 1; i++) {
+    if (i % 4 != 0) {
+      newArray[i-1] = array[i-1]/255;
+    } else {
+      newArray[i-1] = array[i-1];
+    }
+  }
+  return newArray;
+}
+// same for hsva
+function divHSV(array) {
+  const newArray = [];
+  let count = 0;
+  for (let i = 0; i < array.length; i++) {
+    count++;
+    if (count == 1) {
+      newArray[i] = array[i]/360;
+    } else if (count == 2 || count == 3) {
+      newArray[i] = array[i]/100;
+    } else {
+      newArray[i] = array[i];
+      count = 0;
+    }
+  }
+  return newArray;
+}
+/** Convers a hex code into an rgb array */
+function hex2rgb(hex) {
+  const rgb = [];
+  const bigint = parseInt(hex, 16);
+  rgb[0] = (bigint >> 16) & 255;
+  rgb[1] = (bigint >> 8) & 255;
+  rgb[2] = bigint & 255;
+  return rgb;
+}
 
 function hexDecode(hex) {
 
@@ -518,18 +510,21 @@ function hexDecode(hex) {
       const newArr = hex2rgb(charHex[i]);
       charRGB.push(newArr[0], newArr[1], newArr[2], 1); //r, g, b, a
   }
+
+  // removes the extra rgb generated by the end of the code
+  charRGB.splice(charRGB.length-4);
+  
   return charRGB;
 
 }
-function hex2rgb(hex) {
-  const rgb = [];
-  const bigint = parseInt(hex, 16);
-  rgb[0] = (bigint >> 16) & 255;
-  rgb[1] = (bigint >> 8) & 255;
-  rgb[2] = bigint & 255;
-  return rgb;
-}
 
+/**
+ * @typedef {Object} Skin
+ * @property {String} code - The skin color code to be used
+ * @property {Boolean} blend - Makes the image have "Early Access" shading
+ * @property {Array} alpha - Set the transparency for each part (for example: [1, 0.75, 0.5, 1])
+ * @property {Boolean} golden - Adds golden shading to the character's black pixels
+*/
 // and finally, what we will use from the outside
 /**
  * Takes an image, then returns it in a different color with the provided color code
@@ -537,20 +532,13 @@ function hex2rgb(hex) {
  * @param {String} imgSrc - The source image to be recolored
  * @param {Array} colIn - The original image colors to be recolored
  * @param {Array} colRan - The color range for color variations
- * @param {Object} skin - Skin data
- * @param {String} code - The skin color code to be used
- * @param {Boolean} blend - Makes the image have "Early Access" shading
- * @param {Array} alpha - Set the transparency for each part (for example: [1, 0.75, 0.5, 1])
- * @param {Boolean} golden - Adds golden shading to the character's black pixels
+ * @param {Skin} skin - Skin data
  * @returns {String} Image data to be used in a .src atribute
- */
- async function getRoARecolor(charName, imgSrc, colIn, colRan, skin) {
+*/
+export async function getRoARecolor(charName, imgSrc, colIn, colRan, skin) {
 
   const recolorCanvas = document.createElement("canvas");
   const recolorRgb = hexDecode(skin.hex);
-
-  // removes the extra rgb generated by the end of the code
-  recolorRgb.splice(recolorRgb.length-4);
 
   if (charName == "Orcane") { // orcane has green and yellow hidden parts
     for (let i = 0; i < 8; i++) {
@@ -569,7 +557,7 @@ function hex2rgb(hex) {
   // additional stuff
   await roaRecolor.addImage(recolorCanvas, imgSrc);
   if (skin.ea) {
-    roaRecolor.changeBlend(0);
+    roaRecolor.changeBlend();
   }
   if (skin.alpha) {
     for (let i = 0; i < recolorRgb.length; i++) {

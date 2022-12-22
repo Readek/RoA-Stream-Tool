@@ -5,9 +5,8 @@
   <title>RoA Stream Tool v9 [GIT]</title>
   <link rel="stylesheet" href="CSS/GUI.css">
   <script src="Scripts/GUI/mousetrap.min.js" defer></script>
-  <script src="Scripts/GUI.js" defer></script>
-  <script src="Scripts/GUI/Bracket.js" defer></script>
-  <script src="Scripts/GUI/RoA WebGL Shader.js"></script>
+  <script src="Scripts/GUI.js" type="module"></script>
+  <script src="Scripts/GUI/Bracket.mjs" type="module" defer></script>
 </head>
   
 <body>
@@ -546,7 +545,7 @@ They will always appear when typing 'Grand' in the round box.">
 
 <!-- stuff that will get moved around -->
 <div id="playerFinder"></div>
-<div id="characterFinder" class="finder">
+<div id="characterFinder" class="finder" tabindex="-1">
   <input type="text" class="listSearch mousetrap" placeholder="Type to filter..." spellcheck="false" tabindex="-1">
   <div class="searchList" id="charSearchList"></div>
 </div>

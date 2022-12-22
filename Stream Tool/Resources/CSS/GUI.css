@@ -376,6 +376,7 @@ button:hover {
   display: none;
   position: absolute;
   top: 100%;
+  left: 0;
   filter: drop-shadow(0px 0px 5px var(--bg3));
   z-index: 3;
   max-height: 165px;

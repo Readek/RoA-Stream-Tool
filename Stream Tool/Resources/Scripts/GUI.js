@@ -1,9 +1,14 @@
-'use strict';
-
 // import electron stuff
 const fs = require('fs');
 const electron = require('electron');
 const ipc = electron.ipcRenderer;
+
+// import local stuff
+import { getJson } from './GUI/Utils.mjs';
+import * as glob from './GUI/Globals.mjs';
+import { viewport } from './GUI/Viewport.mjs';
+import { charFinder } from './GUI/CharFinder.mjs';
+import { getRecolorImage, getTrailImage } from './GUI/GetImage.mjs';
 
 // this is a weird way to have file svg's that can be recolored by css
 customElements.define("load-svg", class extends HTMLElement {
@@ -18,11 +23,8 @@ customElements.define("load-svg", class extends HTMLElement {
 window.onscroll = () => { window.scroll(0, 0) };
 
 // yes we all like global variables
-const textPath = __dirname + '/Texts';
 const charPathBase = __dirname + '/Characters';
 const charPathWork = __dirname + '/Characters/_Workshop';
-const charPathRandom = __dirname + '/Characters/Random';
-let charPath;
 
 let colorList;
 let currentColors = [0, 0];
@@ -34,21 +36,13 @@ let currentBestOf = 5;
 
 let gamemode = 1;
 
-let inSettings = false;
 let inPF = false;
-let inBracket = false;
-let currentFocus = -1;
 let presName; // to break playerpreset cycle
-
-let currentPlayer;
 
 const maxPlayers = 4; //change this if you ever want to remake this into singles only or 3v3 idk
 
 
 //preload  e v e r y t h i n g
-const viewport = document.getElementById('viewport');
-const overlayDiv = document.getElementById('overlay');
-const goBackDiv = document.getElementById('goBack');
 const pInfoDiv = document.getElementById("pInfoDiv");
 const customSkinDiv = document.getElementById("customSkinDiv");
 
@@ -71,7 +65,6 @@ const tournamentInp = document.getElementById('tournamentName');
 
 const casters = [];
 
-const workshopCheck = document.getElementById('workshopToggle');
 const forceHDCheck = document.getElementById('forceHD');
 const noLoAHDCheck = document.getElementById('noLoAHD');
 const forceWL = document.getElementById('forceWLToggle');
@@ -80,7 +73,6 @@ const invertScoreCheck = document.getElementById("invertScore");
 const forceAlt = document.getElementById("forceAlt");
 
 const pFinder = document.getElementById("playerFinder");
-const charFinder = document.getElementById("characterFinder");
 const skinFinder = document.getElementById("skinFinder");
 const cFinder = document.getElementById("casterFinder");
 
@@ -132,7 +124,7 @@ class Player {
 
 
         // set listeners that will trigger when character or skin changes
-        this.charSel.addEventListener("click", () => {openCharSelector(this.charSel, id-1)});
+        this.charSel.addEventListener("click", () => {charFinder.open(this.charSel, id-1)});
         this.skinSel.addEventListener("click", () => {openSkinSelector(id-1)});
         // also set an initial character value
         this.charChange("Random");
@@ -154,7 +146,7 @@ class Player {
         this.charSel.children[1].innerHTML = character;
 
         // set the skin list for this character
-        this.charInfo = getJson(`${charPath}/${character}/_Info`);
+        this.charInfo = getJson(`${glob.path.char}/${character}/_Info`);
 
         // if the character doesnt exist, write in a placeholder
         if (this.charInfo === null) {
@@ -193,7 +185,7 @@ class Player {
         this.skinSel.innerHTML = skin.name;
 
         // check if an icon for this skin exists, recolor if not
-        this.iconSrc = await this.getRecolorImage(
+        this.iconSrc = await getRecolorImage(
             this.char,
             skin,
             this.charInfo.ogColor,
@@ -204,7 +196,7 @@ class Player {
         this.charSel.children[0].src = this.iconSrc;
 
         // get us that scoreboard image
-        this.scSrc = await this.getRecolorImage(
+        this.scSrc = await getRecolorImage(
             this.char,
             skin,
             this.charInfo.ogColor,
@@ -217,11 +209,11 @@ class Player {
         // if we want HD skins, get us those for the VS screen
         if (forceHDCheck.checked) {
             if (skin.name.includes("LoA") && !noLoAHDCheck.checked) {
-                this.vsSrc = await this.getRecolorImage(this.char, {name: "LoA HD"}, "Skins/", this.randomImg);
+                this.vsSrc = await getRecolorImage(this.char, {name: "LoA HD"}, "Skins/", this.randomImg);
                 this.vsBrowserSrc = this.getBrowserSrc(this.char, {name: "LoA HD"}, "Skins/", this.randomImg);
                 this.vsSkin = {name: "LoA HD"};
             } else {
-                this.vsSrc = await this.getRecolorImage(this.char, {name: "HD"}, "Skins/", this.randomImg);
+                this.vsSrc = await getRecolorImage(this.char, {name: "HD"}, "Skins/", this.randomImg);
                 this.vsBrowserSrc = this.getBrowserSrc(this.char, {name: "HD"}, "Skins/", this.randomImg);
                 this.vsSkin = {name: "HD"};
             }
@@ -235,7 +227,7 @@ class Player {
         if (this.pNum-1 < 2) {
             charImgs[this.pNum-1].src = this.scSrc;
             if (this.char == "Random" && this.pNum == 1) {
-                charImgs[this.pNum-1].src = `${charPathRandom}/P2.png`;
+                charImgs[this.pNum-1].src = `${glob.path.charRandom}/P2.png`;
             }
         }
 
@@ -305,7 +297,7 @@ class Player {
                 break;
             }
             // add the final image
-            const finalSrc = await this.getRecolorImage(
+            const finalSrc = await getRecolorImage(
                 this.char,
                 this.charInfo.skinList[i],
                 this.charInfo.ogColor,
@@ -319,65 +311,20 @@ class Player {
 
     }
 
-    // checks if the image for that skin exists, recolors Default if not
-    async getRecolorImage(char, skin, colIn, colRan, extraPath, failPath) {
-        if (fs.existsSync(`${charPath}/${char}/${extraPath}${skin.name}.png`) && !skin.force) {
-            return `${charPath}/${char}/${extraPath}${skin.name}.png`;
-        } else if (fs.existsSync(`${charPath}/${char}/${extraPath}Default.png`)) {
-            if (skin.hex) {
-                return await getRoARecolor(
-                    char,
-                    `${charPath}/${char}/${extraPath}Default.png`,
-                    colIn,
-                    colRan,
-                    skin
-                );
-            } else {
-                return `${charPath}/${char}/${extraPath}Default.png`;
-            }
-        } else {
-            return `${charPathRandom}/${failPath}.png`;
-        }
-    }
-
-    async getTrailImage(char, skin, color) {
-        if (fs.existsSync(`${charPath}/${char}/Skins/${skin}.png`)) {
-            return await getRoARecolor(
-                "Trail",
-                `${charPath}/${char}/Skins/${skin}.png`,
-                [127, 127, 127, 1, 0,0,0,0], // any color would do
-                [360, 100, 100, 1, 0,0,0,0], // range picks up all colors
-                {hex : color, ea : true}, // with blend true, only 1 color will be applied to everything
-            )
-        } else if (fs.existsSync(`${charPath}/${char}/Skins/Default.png`)) {
-            return await getRoARecolor(
-                "Trail",
-                `${charPath}/${char}/Skins/Default.png`,
-                [127, 127, 127, 1, 0,0,0,0],
-                [360, 100, 100, 1, 0,0,0,0],
-                {hex : color, ea : true},
-            )
-        } else {
-            // 1x1 transparent pixel
-            return 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
-        }
-    }
-
     async setTrailImage() {
-        // we add "FFFFFF" to the color to avoid shader issues when using only 1 color
-        const color = currentColors[(this.pNum-1)%2].hex.substring(1)+"FFFFFF";
-        this.trailSrc = await this.getTrailImage(this.char, this.vsSkin.name, color);
+        const color = currentColors[(this.pNum-1)%2].hex.substring(1);
+        this.trailSrc = await getTrailImage(this.char, this.vsSkin.name, color);
     }
 
     getBrowserSrc(char, skin, extraPath, failPath) {
         let browserCharPath = "Resources/Characters";
-        if (workshopCheck.checked) {
+        if (glob.wsCheck.checked) {
             browserCharPath = "Resources/Characters/_Workshop";
         }
         
-        if (fs.existsSync(`${charPath}/${char}/${extraPath}${skin.name}.png`) && !skin.force) {
+        if (fs.existsSync(`${glob.path.char}/${char}/${extraPath}${skin.name}.png`) && !skin.force) {
             return browserCharPath + `/${char}/${extraPath}${skin.name}.png`;
-        } else if (fs.existsSync(`${charPath}/${char}/${extraPath}Default.png`)) {
+        } else if (fs.existsSync(`${glob.path.char}/${char}/${extraPath}Default.png`)) {
             if (skin.hex) {
                 return null;
             } else {
@@ -437,7 +384,7 @@ class Caster {
             };
 
             // use this object to create a json file
-            fs.writeFileSync(`${textPath}/Commentator Info/${this.getName()}.json`, JSON.stringify(preset, null, 2));
+            fs.writeFileSync(`${glob.path.text}/Commentator Info/${this.getName()}.json`, JSON.stringify(preset, null, 2));
 
             displayNotif("Commentator preset has been saved");
         });
@@ -583,19 +530,19 @@ function init() {
 
     //first, add listeners for the bottom bar buttons
     document.getElementById('updateRegion').addEventListener("click", writeScoreboard);
-    document.getElementById('settingsRegion').addEventListener("click", () => {moveViewport("settings")});
-    document.getElementById('botBarBracket').addEventListener("click", () => {moveViewport("bracket")});
+    document.getElementById('settingsRegion').addEventListener("click", () => {viewport.toSettings()});
+    document.getElementById('botBarBracket').addEventListener("click", () => {viewport.toBracket()});
 
 
     //if the viewport is moved, click anywhere on the center to go back
-    document.getElementById('goBack').addEventListener("click", goBack);
+    document.getElementById('goBack').addEventListener("click", () => {viewport.toCenter()});
 
 
     /* SETTINGS */
 
     //set listeners for the settings checkboxes
     document.getElementById("allowIntro").addEventListener("click", saveGUISettings);
-    workshopCheck.addEventListener("click", workshopToggle);
+    glob.wsCheck.addEventListener("click", workshopToggle);
     forceAlt.addEventListener("click", saveGUISettings);
     forceHDCheck.addEventListener("click", HDtoggle);
     noLoAHDCheck.addEventListener("click", saveGUISettings);
@@ -606,9 +553,9 @@ function init() {
     document.getElementById("copyMatch").addEventListener("click", copyMatch);
     
     // load GUI settings
-    const guiSettings = JSON.parse(fs.readFileSync(textPath + "/GUI Settings.json", "utf-8"));
+    const guiSettings = JSON.parse(fs.readFileSync(glob.path.text + "/GUI Settings.json", "utf-8"));
     if (guiSettings.allowIntro) {document.getElementById("allowIntro").checked = true};
-    if (guiSettings.workshop) {workshopCheck.checked = true} else {
+    if (guiSettings.workshop) {glob.wsCheck.checked = true} else {
         // disable alt arts checkbox
         forceAlt.disabled = true;
     };
@@ -626,11 +573,11 @@ function init() {
 
 
     // we need to set the current char path
-    workshopCheck.checked ? charPath = charPathWork : charPath = charPathBase;
+    glob.wsCheck.checked ? glob.path.char = charPathWork : glob.path.char = charPathBase;
 
 
     // set listeners for the input filters of char/skin selects
-    charFinder.addEventListener("input", () => {filterFinder(charFinder)});
+    /* charFinder.addEventListener("input", () => {filterFinder(charFinder)}); */
     skinFinder.addEventListener("input", () => {filterFinder(skinFinder)});
 
 
@@ -641,7 +588,7 @@ function init() {
 
     
     // initialize the character list
-    loadCharacters();
+    charFinder.loadCharacters();
 
 
     // initialize that score class
@@ -727,24 +674,24 @@ function init() {
 
         // if a dropdown menu is open, click on the current focus
         if (pFinder.style.display == "block") {
-            if (currentFocus > -1) {
-                pFinder.getElementsByClassName("finderEntry")[currentFocus].click();
+            if (glob.current.focus > -1) {
+                pFinder.getElementsByClassName("finderEntry")[glob.current.focus].click();
             }
         } else if (window.getComputedStyle(charFinder).getPropertyValue("display") == "block") {
-            if (currentFocus > -1) {
-                charFinder.getElementsByClassName("finderEntry")[currentFocus].click();
+            if (glob.current.focus > -1) {
+                charFinder.getElementsByClassName("finderEntry")[glob.current.focus].click();
             }
         } else if (window.getComputedStyle(skinFinder).getPropertyValue("display") == "block") {
-            if (currentFocus > -1) {
-                skinFinder.getElementsByClassName("finderEntry")[currentFocus].click();
+            if (glob.current.focus > -1) {
+                skinFinder.getElementsByClassName("finderEntry")[glob.current.focus].click();
             }
         } else if (window.getComputedStyle(cFinder).getPropertyValue("display") == "block") {
-            if (currentFocus > -1) {
-                cFinder.getElementsByClassName("finderEntry")[currentFocus].click();
+            if (glob.current.focus > -1) {
+                cFinder.getElementsByClassName("finderEntry")[glob.current.focus].click();
             }
         } else if (pInfoDiv.style.pointerEvents == "auto") { // if player info menu is up
             document.getElementById("pInfoApplyButt").click();
-        } else if (inBracket) {
+        } else if (glob.inside.bracket) {
             updateBracket();
         } else {
             //update scoreboard info (updates botBar color for visual feedback)
@@ -760,8 +707,8 @@ function init() {
 
     //esc to clear player info
     Mousetrap.bind('esc', () => {
-        if (inSettings || inBracket) { //if settings are open, close them
-            goBack();
+        if (glob.inside.settings || glob.inside.bracket) { //if settings are open, close them
+            viewport.toCenter();
         } else if (pFinder.style.display == "block") { // if a finder menu is open, close it
             pFinder.style.display = "none";
         } else if (window.getComputedStyle(charFinder).getPropertyValue("display") == "block"
@@ -810,138 +757,6 @@ function init() {
 }
 
 
-function moveViewport(where) {
-
-    overlayDiv.style.opacity = ".25";
-
-    if (where == "settings") {
-        viewport.style.transform = "translateX(-240px)";
-        goBackDiv.style.display = "block";
-        inSettings = true;
-    } else {
-        viewport.style.transform = "translateX(100%)";
-        inBracket = true;
-    }
-        
-}
-
-function goBack() {
-    viewport.style.transform = "translateX(0)";
-    overlayDiv.style.opacity = "1";
-    goBackDiv.style.display = "none";
-    inSettings = false;
-    inBracket = false;
-}
-
-
-//called whenever we need to read a json file
-function getJson(jPath) {
-    try {
-        return JSON.parse(fs.readFileSync(jPath + ".json"));
-    } catch (error) {
-        return null;
-    }
-}
-
-
-//calls the main settings file and fills a combo list
-async function loadCharacters() {
-
-    // first of all, clear a possible already existing list
-    charFinder.lastElementChild.innerHTML = "";
-
-    // create a list with folder names on charPath
-    const characterList = fs.readdirSync(charPath, { withFileTypes: true })
-        .filter(dirent => dirent.isDirectory())
-        .map(dirent => dirent.name)
-        .filter((name) => {
-            // if the folder name contains '_Workshop' or 'Random', exclude it
-            if (name != "_Workshop" && name != "Random") {
-                return true;
-            }
-        }
-    )
-
-    // add random to the end of the character list
-    characterList.push("Random")
-
-    // add entries to the character list
-    for (let i = 0; i < characterList.length; i++) {
-
-        // get us the charInfo for this character
-        const charInfo = getJson(`${charPath}/${characterList[i]}/_Info`);
-
-        // this will be the div to click
-        const newDiv = document.createElement('div');
-        newDiv.className = "finderEntry";
-        newDiv.addEventListener("click", () => {charChange(characterList[i])});
-
-        // character icon
-        const imgIcon = document.createElement('img');
-        imgIcon.className = "fIconImg";
-        // check if the character exists
-        let skin = {name: "Default"}, ogColor, colorRange;
-        if (charInfo) {
-            skin = charInfo.skinList[0];
-            ogColor = charInfo.ogColor;
-            colorRange = charInfo.colorRange;
-        }
-        // this will get us the true default icon for any character
-        imgIcon.src = await players[0].getRecolorImage(
-            characterList[i],
-            skin,
-            ogColor,
-            colorRange,
-            "Icons/",
-            "Icon"
-        );
-        
-        // character name
-        const spanName = document.createElement('span');
-        spanName.innerHTML = characterList[i];
-        spanName.className = "pfName";
-
-        //add them to the div we created before
-        newDiv.appendChild(imgIcon);
-        newDiv.appendChild(spanName);
-
-        //and now add the div to the actual interface
-        charFinder.lastElementChild.appendChild(newDiv);
-
-    }
-
-    // this is just so Remote Update has a character list
-    fs.writeFileSync(`${textPath}/Character List.json`, JSON.stringify(characterList, null, 2));
-
-}
-
-function openCharSelector(charSel, pNum) {
-    
-    // move the dropdown menu under the current char selector
-    charSel.appendChild(charFinder);
-
-    // focus the search input field and reset the list
-    charFinder.firstElementChild.value = "";
-    charFinder.firstElementChild.focus();
-    filterFinder(charFinder);
-
-    currentPlayer = pNum;
-    currentFocus = -1;
-
-    // if in bracket view, invert anchor point so it stays visible
-    if (inBracket && pNum > 1 && bracketPlayers.length > 2) {
-        charFinder.style.top = "auto";
-        charFinder.style.bottom = "100%";
-    } else if (inBracket && pNum > 0 && bracketPlayers.length <= 2) {
-        charFinder.style.top = "auto";
-        charFinder.style.bottom = "100%";
-    } else {
-        charFinder.style.top = "100%";
-        charFinder.style.bottom = "auto";
-    }
-
-}
-
 // every time a character is clicked on the char list
 function charChange(character, pNum = -1, notDefault) {
     
@@ -952,14 +767,14 @@ function charChange(character, pNum = -1, notDefault) {
     charFinder.firstElementChild.value = "";
 
     if (pNum != -1) {
-        currentPlayer = pNum;
+        glob.current.player = pNum;
     }
 
     // our player class will take things from here
-    if (inBracket) {
-        bracketPlayers[currentPlayer].charChange(character, notDefault);
+    if (glob.inside.bracket) {
+        bracketPlayers[glob.current.player].charChange(character, notDefault);
     } else {
-        players[currentPlayer].charChange(character, notDefault);
+        players[glob.current.player].charChange(character, notDefault);
     }
 
 }
@@ -967,7 +782,7 @@ function charChange(character, pNum = -1, notDefault) {
 function openSkinSelector(pNum) {
 
     // move the dropdown menu under the current skin selector
-    if (inBracket) {
+    if (glob.inside.bracket) {
         bracketPlayers[pNum].skinSel.appendChild(skinFinder);
     } else {
         players[pNum].skinSel.appendChild(skinFinder);
@@ -980,14 +795,14 @@ function openSkinSelector(pNum) {
         skinFinder.lastElementChild.innerHTML = "";
 
         // now populate it
-        if (inBracket) {
+        if (glob.inside.bracket) {
             bracketPlayers[pNum].fillSkinList();
         } else {
             players[pNum].fillSkinList();
         }
 
         // if this is the right side, change anchor point so it stays visible
-        if (pNum%2 != 0 && window.innerWidth > 600 && !inBracket) {
+        if (pNum%2 != 0 && window.innerWidth > 600 && !glob.inside.bracket) {
             skinFinder.style.right = "0px";
             skinFinder.style.left = "";
         } else {
@@ -995,10 +810,10 @@ function openSkinSelector(pNum) {
             skinFinder.style.right = "";
         }
         // if in bracket view, invert anchor point so it stays visible
-        if (inBracket && pNum > 1 && bracketPlayers.length > 2) {
+        if (glob.inside.bracket && pNum > 1 && bracketPlayers.length > 2) {
             skinFinder.style.top = "auto";
             skinFinder.style.bottom = "100%";
-        } else if (inBracket && pNum > 0 && bracketPlayers.length <= 2) {
+        } else if (glob.inside.bracket && pNum > 0 && bracketPlayers.length <= 2) {
             skinFinder.style.top = "auto";
             skinFinder.style.bottom = "100%";
         } else {
@@ -1010,8 +825,8 @@ function openSkinSelector(pNum) {
         skinFinder.firstElementChild.value = "";
         skinFinder.firstElementChild.focus({preventScroll: true});
 
-        currentPlayer = pNum;
-        currentFocus = -1;
+        glob.current.player = pNum;
+        glob.current.focus = -1;
 
     }
     
@@ -1028,10 +843,10 @@ function customChange(hex) {
         name: "Custom",
         hex: skinHex
     };
-    if (inBracket) {
-        bracketPlayers[currentPlayer].skinChange(skin);
+    if (glob.inside.bracket) {
+        bracketPlayers[glob.current.player].skinChange(skin);
     } else {
-        players[currentPlayer].skinChange(skin);
+        players[glob.current.player].skinChange(skin);
     }
     hideCustomSkin();
 
@@ -1042,7 +857,7 @@ function showCustomSkin(pNum) {
 
     document.getElementById("customSkinInput").focus();
 
-    if (inBracket) {
+    if (glob.inside.bracket) {
         document.getElementById("customSkinCharSpan").textContent = bracketPlayers[pNum].char;
     } else {
         document.getElementById("customSkinCharSpan").textContent = players[pNum-1].char;
@@ -1053,14 +868,14 @@ function showCustomSkin(pNum) {
     customSkinDiv.style.pointerEvents = "auto";
     customSkinDiv.style.opacity = 1;
     customSkinDiv.style.transform = "scale(1)";
-    overlayDiv.style.opacity = .25;
+    viewport.opacity(".25");
 
 }
 function hideCustomSkin() {
     customSkinDiv.style.pointerEvents = "none";
     customSkinDiv.style.opacity = 0;
     customSkinDiv.style.transform = "scale(1.15)";
-    overlayDiv.style.opacity = 1;
+    viewport.opacity("1");
 }
 
 
@@ -1095,13 +910,13 @@ function filterFinder(finder) {
 
     }
 
-    currentFocus = -1;
+    glob.current.focus = -1;
 
     // if no value, just remove any remaining active classes
     if (filterValue == "") {
         removeActiveClass(finder.getElementsByClassName("finderEntry"));
     } else {
-        if (startsWith) currentFocus = startsWith - 1;
+        if (startsWith) glob.current.focus = startsWith - 1;
         addActive(finder.getElementsByClassName("finderEntry"), true);
     }
 
@@ -1111,7 +926,7 @@ function filterFinder(finder) {
 //will load the color list to a color slot combo box
 function loadColors() {
 
-    colorList = getJson(textPath + "/Color Slots");
+    colorList = getJson(glob.path.text + "/Color Slots");
 
     //for each color on the list, add them to the color dropdown
     for (let i = 0; i < colorList.length; i++) {
@@ -1264,11 +1079,11 @@ function deactivateWL() {
 async function checkPlayerPreset(pNum) {
 
     //remove the "focus" for the player presets list
-    currentFocus = -1;
+    glob.current.focus = -1;
 
     let curPlayer;
     // determine the current player class
-    if (inBracket) {
+    if (glob.inside.bracket) {
         curPlayer = bracketPlayers[pNum];
     } else {
         curPlayer = players[pNum];
@@ -1291,7 +1106,7 @@ async function checkPlayerPreset(pNum) {
     if (curPlayer.getName().length >= 3) {
 
         //check the files in that folder
-        const files = fs.readdirSync(textPath + "/Player Info/");
+        const files = fs.readdirSync(glob.path.text + "/Player Info/");
         files.forEach(file => {
 
             //removes ".json" from the file name
@@ -1307,7 +1122,7 @@ async function checkPlayerPreset(pNum) {
                 pFinder.style.display = "block";
 
                 //go inside that file to get the player info
-                const playerInfo = getJson(textPath + "/Player Info/" + file);
+                const playerInfo = getJson(glob.path.text + "/Player Info/" + file);
                 //for each character that player plays
                 playerInfo.characters.forEach(char => {
 
@@ -1357,7 +1172,7 @@ async function checkPlayerPreset(pNum) {
                     //actual image
                     const charImg = document.createElement('img');
                     charImg.className = "pfCharImg";
-                    const charJson = getJson(charPath + "/" + char.character + "/_Info");
+                    const charJson = getJson(glob.path.char + "/" + char.character + "/_Info");
                     // we will store this for later
                     skinImgs.push({
                         el : charImg,
@@ -1431,7 +1246,7 @@ async function checkPlayerPreset(pNum) {
             finalColIn = skinImgs[i].charJson.ogColor;
             finalColRan = skinImgs[i].charJson.colorRange;
         }
-        const finalSrc = await players[0].getRecolorImage(
+        const finalSrc = await getRecolorImage(
             skinImgs[i].char,
             skin,
             finalColIn,
@@ -1474,7 +1289,7 @@ async function positionChar(skin, charEL, pos) {
     
     //if the image fails to load, we will put a placeholder
 	charEL.addEventListener("error", () => {
-        charEL.setAttribute('src', charPathRandom + '/P2.png');
+        charEL.setAttribute('src', glob.path.charRandom + '/P2.png');
         charEL.style.left = "0px";
         charEL.style.top = "-2px";
         charEL.style.transform = "scale(1.2)";
@@ -1485,7 +1300,7 @@ async function positionChar(skin, charEL, pos) {
 function playerPreset(el, pNum) {
 
     let curPlayer;
-    if (inBracket) {
+    if (glob.inside.bracket) {
         curPlayer = bracketPlayers[pNum];
     } else {
         curPlayer = players[pNum];
@@ -1497,7 +1312,7 @@ function playerPreset(el, pNum) {
     curPlayer.yt = el.getAttribute("yt");
 
     curPlayer.setName(el.getAttribute("name"));
-    if (!inBracket) {
+    if (!glob.inside.bracket) {
         curPlayer.tag = el.getAttribute("tag");
         changeInputWidth(curPlayer.nameInp);
     } else {
@@ -1526,14 +1341,14 @@ function playerPreset(el, pNum) {
 function checkCasterPreset(el) {
 
     // this is mostly copy paste from player preset code
-    currentFocus = -1;
+    glob.current.focus = -1;
     el.nameEl.parentElement.appendChild(cFinder);
     cFinder.innerHTML = "";
     let fileFound;
 
     if (el.getName().length >= 3) {
 
-        const files = fs.readdirSync(textPath + "/Commentator Info/");
+        const files = fs.readdirSync(glob.path.text + "/Commentator Info/");
         files.forEach(file => {
 
             file = file.substring(0, file.length - 5);
@@ -1543,7 +1358,7 @@ function checkCasterPreset(el) {
                 fileFound = true;
                 cFinder.style.display = "block";
 
-                const casterInfo = getJson(textPath + "/Commentator Info/" + file);
+                const casterInfo = getJson(glob.path.text + "/Commentator Info/" + file);
 
                 const newDiv = document.createElement('div');
                 newDiv.className = "finderEntry";
@@ -1594,65 +1409,65 @@ function addActive(x, direction) {
     if (direction) {
 
         // increase that focus
-        currentFocus++;
+        glob.current.focus++;
         // if end of list, cicle
-        if (currentFocus >= x.length) currentFocus = 0;
+        if (glob.current.focus >= x.length) glob.current.focus = 0;
 
         // search for the next visible entry
-        while (currentFocus <= x.length-1) {
-            if (x[currentFocus].style.display == "none") {
-                currentFocus++;
+        while (glob.current.focus <= x.length-1) {
+            if (x[glob.current.focus].style.display == "none") {
+                glob.current.focus++;
             } else {
                 break;
             }
         }
         // if we didnt find any, start from 0
-        if (currentFocus == x.length) {
-            currentFocus = 0;
-            while (currentFocus <= x.length-1) {
-                if (x[currentFocus].style.display == "none") {
-                    currentFocus++;
+        if (glob.current.focus == x.length) {
+            glob.current.focus = 0;
+            while (glob.current.focus <= x.length-1) {
+                if (x[glob.current.focus].style.display == "none") {
+                    glob.current.focus++;
                 } else {
                     break;
                 }
             }
         }
         // if even then we couldnt find a visible entry, set it to invalid
-        if (currentFocus == x.length) {
-            currentFocus = -1;
+        if (glob.current.focus == x.length) {
+            glob.current.focus = -1;
         }
 
     } else { // same as above but inverted
-        currentFocus--;
-        if (currentFocus < 0) currentFocus = (x.length - 1);
-        while (currentFocus > -1) {
-            if (x[currentFocus].style.display == "none") {
-                currentFocus--;
+        glob.current.focus--;
+        if (glob.current.focus < 0) glob.current.focus = (x.length - 1);
+        while (glob.current.focus > -1) {
+            if (x[glob.current.focus].style.display == "none") {
+                glob.current.focus--;
             } else {
                 break;
             }
         }
-        if (currentFocus == -1) {
-            currentFocus = x.length-1;
-            while (currentFocus > -1) {
-                if (x[currentFocus].style.display == "none") {
-                    currentFocus--;
+        if (glob.current.focus == -1) {
+            glob.current.focus = x.length-1;
+            while (glob.current.focus > -1) {
+                if (x[glob.current.focus].style.display == "none") {
+                    glob.current.focus--;
                 } else {
                     break;
                 }
             }
         }
-        if (currentFocus == x.length) {
-            currentFocus = -1;
+        if (glob.current.focus == x.length) {
+            glob.current.focus = -1;
         }
     }
 
     // if there is a valid entry
-    if (currentFocus > -1) {
+    if (glob.current.focus > -1) {
         //add to the selected entry the active class
-        x[currentFocus].classList.add("finderEntry-active");
+        x[glob.current.focus].classList.add("finderEntry-active");
         // make it scroll if it goes out of view
-        x[currentFocus].scrollIntoView({block: "center"});
+        x[glob.current.focus].scrollIntoView({block: "center"});
     }
     
 }
@@ -1691,7 +1506,7 @@ function getTextWidth(text, font) {
 function showPlayerInfo() {
     
     const pNum = this.getAttribute("player") - 1;
-    currentPlayer = pNum;
+    glob.current.player = pNum;
 
     document.getElementById("pInfoPNum").textContent = pNum + 1;
 
@@ -1714,14 +1529,14 @@ function showPlayerInfo() {
     pInfoDiv.style.pointerEvents = "auto";
     pInfoDiv.style.opacity = 1;
     pInfoDiv.style.transform = "scale(1)";
-    overlayDiv.style.opacity = .25;
+    viewport.opacity(".25");
 
 }
 function hidePlayerInfo() {
     pInfoDiv.style.pointerEvents = "none";
     pInfoDiv.style.opacity = 0;
     pInfoDiv.style.transform = "scale(1.15)";
-    overlayDiv.style.opacity = 1;
+    viewport.opacity("1");
 
     document.getElementById("pInfoInputPronouns").setAttribute("tabindex", "-1");
     document.getElementById("pInfoInputTag").setAttribute("tabindex", "-1");
@@ -1747,7 +1562,7 @@ function applyPlayerInfo() {
 
 function savePlayerPreset() {
     
-    const pNum = currentPlayer;
+    const pNum = glob.current.player;
 
     const preset = {
         name: players[pNum].getName(),
@@ -1768,9 +1583,9 @@ function savePlayerPreset() {
     }
 
     // if a player preset for this player exists, add already existing characters
-    if (fs.existsSync(`${textPath}/Player Info/${document.getElementById("pInfoInputName").value}.json`)) {
+    if (fs.existsSync(`${glob.path.text}/Player Info/${document.getElementById("pInfoInputName").value}.json`)) {
         
-        const existingPreset = getJson(`${textPath}/Player Info/${document.getElementById("pInfoInputName").value}`);
+        const existingPreset = getJson(`${glob.path.text}/Player Info/${document.getElementById("pInfoInputName").value}`);
         // add existing characters to the new json, but not if the character is the same
         for (let i = 0; i < existingPreset.characters.length; i++) {
             if (existingPreset.characters[i].character != players[pNum].char) {
@@ -1780,7 +1595,7 @@ function savePlayerPreset() {
 
     }
 
-    fs.writeFileSync(`${textPath}/Player Info/${document.getElementById("pInfoInputName").value}.json`, JSON.stringify(preset, null, 2));
+    fs.writeFileSync(`${glob.path.text}/Player Info/${document.getElementById("pInfoInputName").value}.json`, JSON.stringify(preset, null, 2));
 
     displayNotif("Player preset has been saved");
 
@@ -2034,16 +1849,16 @@ function clearPlayers() {
 function workshopToggle() {
 
     // set a new character path
-    charPath = workshopCheck.checked ? charPathWork : charPathBase;
+    glob.path.char = glob.wsCheck.checked ? charPathWork : charPathBase;
     // reload character lists
-    loadCharacters();
+    charFinder.loadCharacters();
     // clear current character lists
     for (let i = 0; i < maxPlayers; i++) {
         charChange("Random", i);
     }
 
     // disable or enable alt arts checkbox
-    if (workshopCheck.checked) {
+    if (glob.wsCheck.checked) {
         forceAlt.disabled = false;
     } else {
         forceAlt.disabled = true;
@@ -2130,11 +1945,11 @@ function copyMatch() {
 function saveGUISettings() {
     
     // read the file
-    const guiSettings = JSON.parse(fs.readFileSync(textPath + "/GUI Settings.json", "utf-8"));
+    const guiSettings = JSON.parse(fs.readFileSync(glob.path.text + "/GUI Settings.json", "utf-8"));
 
     // update the settings to current values
     guiSettings.allowIntro = document.getElementById("allowIntro").checked;
-    guiSettings.workshop = workshopCheck.checked;
+    guiSettings.workshop = glob.wsCheck.checked;
     guiSettings.forceAlt = document.getElementById("forceAlt").checked;
     guiSettings.forceHD = forceHDCheck.checked;
     guiSettings.noLoAHD = noLoAHDCheck.checked;
@@ -2144,7 +1959,7 @@ function saveGUISettings() {
     guiSettings.alwaysOnTop = document.getElementById("alwaysOnTop").checked;
 
     // save the file
-    fs.writeFileSync(textPath + "/GUI Settings.json", JSON.stringify(guiSettings, null, 2));
+    fs.writeFileSync(glob.path.text + "/GUI Settings.json", JSON.stringify(guiSettings, null, 2));
 
 }
 
@@ -2178,7 +1993,7 @@ function writeScoreboard() {
         altSkin: forceAlt.checked,
         forceHD: forceHDCheck.checked,
         noLoAHD: noLoAHDCheck.checked,
-        workshop: workshopCheck.checked,
+        workshop: glob.wsCheck.checked,
         forceWL: forceWL.checked,
         id : "gameData"
     };
@@ -2195,7 +2010,7 @@ function writeScoreboard() {
 
         // get us the path used by the browser sources
         let browserCharPath = "Characters";
-        if (workshopCheck.checked) {
+        if (glob.wsCheck.checked) {
             browserCharPath = "Characters/_Workshop";
         }
 
@@ -2330,23 +2145,23 @@ function writeScoreboard() {
 
     //simple .txt files
     for (let i = 0; i < maxPlayers; i++) {
-        fs.writeFileSync(textPath + "/Simple Texts/Player "+(i+1)+".txt", players[i].getName());        
+        fs.writeFileSync(glob.path.text + "/Simple Texts/Player "+(i+1)+".txt", players[i].getName());        
     }
 
-    fs.writeFileSync(textPath + "/Simple Texts/Team 1.txt", tNameInps[0].value);
-    fs.writeFileSync(textPath + "/Simple Texts/Team 2.txt", tNameInps[1].value);
+    fs.writeFileSync(glob.path.text + "/Simple Texts/Team 1.txt", tNameInps[0].value);
+    fs.writeFileSync(glob.path.text + "/Simple Texts/Team 2.txt", tNameInps[1].value);
 
-    fs.writeFileSync(textPath + "/Simple Texts/Score L.txt", scores[0].getScore().toString());
-    fs.writeFileSync(textPath + "/Simple Texts/Score R.txt", scores[1].getScore().toString());
+    fs.writeFileSync(glob.path.text + "/Simple Texts/Score L.txt", scores[0].getScore().toString());
+    fs.writeFileSync(glob.path.text + "/Simple Texts/Score R.txt", scores[1].getScore().toString());
 
-    fs.writeFileSync(textPath + "/Simple Texts/Round.txt", roundInp.value);
-    fs.writeFileSync(textPath + "/Simple Texts/Tournament Name.txt", tournamentInp.value);
+    fs.writeFileSync(glob.path.text + "/Simple Texts/Round.txt", roundInp.value);
+    fs.writeFileSync(glob.path.text + "/Simple Texts/Tournament Name.txt", tournamentInp.value);
 
     for (let i = 0; i < casters.length; i++) {
-        fs.writeFileSync(textPath + "/Simple Texts/Caster "+(i+1)+" Name.txt", casters[i].getName());
-        fs.writeFileSync(textPath + "/Simple Texts/Caster "+(i+1)+" Twitter.txt", casters[i].getTwitter());
-        fs.writeFileSync(textPath + "/Simple Texts/Caster "+(i+1)+" Twitch.txt", casters[i].getTwitch());
-        fs.writeFileSync(textPath + "/Simple Texts/Caster "+(i+1)+" Youtube.txt", casters[i].getYt());
+        fs.writeFileSync(glob.path.text + "/Simple Texts/Caster "+(i+1)+" Name.txt", casters[i].getName());
+        fs.writeFileSync(glob.path.text + "/Simple Texts/Caster "+(i+1)+" Twitter.txt", casters[i].getTwitter());
+        fs.writeFileSync(glob.path.text + "/Simple Texts/Caster "+(i+1)+" Twitch.txt", casters[i].getTwitch());
+        fs.writeFileSync(glob.path.text + "/Simple Texts/Caster "+(i+1)+" Youtube.txt", casters[i].getYt());
     }
 
 }
@@ -2399,18 +2214,18 @@ ipc.on('remoteGuiData', (event, data) => {
     document.getElementById("bestOf").click();
 
     // set the settings
-    if (newJson.workshop != workshopCheck.checked) {
+    if (newJson.workshop != wsCheck.checked) {
         if (newJson.workshop) {
-            workshopCheck.checked = true;
+            glob.wsCheck.checked = true;
         } else {
-            workshopCheck.checked = false;
+            glob.wsCheck.checked = false;
         }
         workshopToggle();
     } else {
         if (newJson.workshop) {
-            workshopCheck.checked = true;
+            glob.wsCheck.checked = true;
         } else {
-            workshopCheck.checked = false;
+            glob.wsCheck.checked = false;
         }
     }
     if (newJson.altSkin) {

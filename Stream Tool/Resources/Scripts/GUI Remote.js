@@ -465,7 +465,6 @@ async function getJson(jPath) {
     } catch (e) {
         return null;
     }
-    
 }
 
 

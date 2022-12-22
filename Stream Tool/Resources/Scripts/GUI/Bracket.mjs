@@ -1,4 +1,10 @@
-'use strict';
+const fs = require('fs');
+
+import { getRoARecolor } from "./RoA WebGL Shader.mjs";
+import { getJson } from "./Utils.mjs";
+import * as glob from './Globals.mjs';
+import { viewport } from './Viewport.mjs';
+import { charFinder } from './CharFinder.mjs';
 
 const bRoundSelect = document.getElementById('bracketRoundSelect');
 const bEncountersDiv = document.getElementById('bracketEncounters');
@@ -26,7 +32,6 @@ let bracketData = {
 
 let previousRound;
 
-
 class BracketPlayer {
 
     constructor(id) {
@@ -47,7 +52,7 @@ class BracketPlayer {
         this.scoreInp;
 
         // set listeners that will trigger when character or skin changes
-        this.charSel.addEventListener("click", () => {openCharSelector(this.charSel, id)});
+        this.charSel.addEventListener("click", () => {charFinder.open(this.charSel, id)});
         this.skinSel.addEventListener("click", () => {openSkinSelector(id)});
 
     }
@@ -127,7 +132,7 @@ class BracketPlayer {
         this.charSel.children[1].innerHTML = character;
 
         // set the skin list for this character
-        this.charInfo = getJson(`${charPath}/${character}/_Info`);
+        this.charInfo = getJson(`${glob.path.char}/${character}/_Info`);
 
         // if the character doesnt exist, write in a placeholder
         if (this.charInfo === null) {
@@ -251,41 +256,41 @@ class BracketPlayer {
 
     // checks if the image for that skin exists, recolors Default if not
     async getRecolorImage(char, skin, colIn, colRan, extraPath, failPath) {
-        if (fs.existsSync(`${charPath}/${char}/${extraPath}${skin.name}.png`) && !skin.force) {
-            return `${charPath}/${char}/${extraPath}${skin.name}.png`;
-        } else if (fs.existsSync(`${charPath}/${char}/${extraPath}Default.png`)) {
+        if (fs.existsSync(`${glob.path.char}/${char}/${extraPath}${skin.name}.png`) && !skin.force) {
+            return `${glob.path.char}/${char}/${extraPath}${skin.name}.png`;
+        } else if (fs.existsSync(`${glob.path.char}/${char}/${extraPath}Default.png`)) {
             if (skin.hex) {
                 return await getRoARecolor(
                     char,
-                    `${charPath}/${char}/${extraPath}Default.png`,
+                    `${glob.path.char}/${char}/${extraPath}Default.png`,
                     colIn,
                     colRan,
                     skin
                 );
             } else {
-                return `${charPath}/${char}/${extraPath}Default.png`;
+                return `${glob.path.char}/${char}/${extraPath}Default.png`;
             }
         } else {
-            return `${charPathRandom}/${failPath}.png`;
+            return `${glob.path.charRandom}/${failPath}.png`;
         }
     }
 
     getBrowserSrc(char, skin) {
         let browserCharPath = "Resources/Characters";
-        if (workshopCheck.checked) {
+        if (glob.wsCheck.checked) {
             browserCharPath = "Resources/Characters/_Workshop";
         }
         
-        if (fs.existsSync(`${charPath}/${char}/Icons/${skin.name}.png`) && !skin.force) {
+        if (fs.existsSync(`${glob.path.char}/${char}/Icons/${skin.name}.png`) && !skin.force) {
             return browserCharPath + `/${char}/Icons/${skin.name}.png`;
-        } else if (fs.existsSync(`${charPath}/${char}/Icons/Default.png`)) {
+        } else if (fs.existsSync(`${glob.path.char}/${char}/Icons/Default.png`)) {
             if (skin.hex) {
                 return null;
             } else {
                 return browserCharPath + `/${char}/Icons/Default.png`;
             }
         } else {
-            return `${charPathRandom}/Icon.png`;
+            return `${glob.path.charRandom}/Icon.png`;
         }
     }
 
@@ -308,10 +313,7 @@ let bracketPlayers = [];
 
 // its always good to listen closely
 bRoundSelect.addEventListener("change", createEncounters);
-document.getElementById('bracketGoBack').addEventListener("click", () => {
-    inBracket = false;
-    goBack();
-});
+document.getElementById('bracketGoBack').addEventListener("click", () => {viewport.toCenter()});
 document.getElementById('bracketUpdate').addEventListener("click", updateBracket);
 // force change event for initial creation of encounters
 bRoundSelect.dispatchEvent(new Event('change'));

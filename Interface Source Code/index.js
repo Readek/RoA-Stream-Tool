@@ -55,7 +55,7 @@ http.createServer((request, response) => {
                 } else {
                     if (fname.endsWith(".html")) {
                         response.writeHead(200, {'Content-Type': 'text/html'})
-                    } else if (fname.endsWith(".js")) {
+                    } else if (fname.endsWith(".js") || fname.endsWith(".mjs")) {
                         response.writeHead(200, {'Content-Type': 'text/javascript'})
                     } else if (fname.endsWith(".css")) {
                         response.writeHead(200, {'Content-Type': 'text/css'})
