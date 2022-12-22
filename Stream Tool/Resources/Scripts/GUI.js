@@ -7,8 +7,9 @@ const ipc = electron.ipcRenderer;
 import { getJson } from './GUI/Utils.mjs';
 import * as glob from './GUI/Globals.mjs';
 import { viewport } from './GUI/Viewport.mjs';
-import { charFinder } from './GUI/CharFinder.mjs';
+import { charFinder } from './GUI/Finder/Char Finder.mjs';
 import { getRecolorImage, getTrailImage } from './GUI/GetImage.mjs';
+import { addActive, removeActiveClass } from './GUI/Finder/Finder Key Nav.mjs';
 
 // this is a weird way to have file svg's that can be recolored by css
 customElements.define("load-svg", class extends HTMLElement {
@@ -190,7 +191,7 @@ class Player {
             skin,
             this.charInfo.ogColor,
             this.charInfo.colorRange,
-            "Icons/",
+            "Icons",
             "Icon"
         );
         this.charSel.children[0].src = this.iconSrc;
@@ -201,7 +202,7 @@ class Player {
             skin,
             this.charInfo.ogColor,
             this.charInfo.colorRange,
-            "Skins/",
+            "Skins",
             this.randomImg
         );
         this.scBrowserSrc = this.getBrowserSrc(this.char, skin, "Skins/", this.randomImg);
@@ -209,11 +210,11 @@ class Player {
         // if we want HD skins, get us those for the VS screen
         if (forceHDCheck.checked) {
             if (skin.name.includes("LoA") && !noLoAHDCheck.checked) {
-                this.vsSrc = await getRecolorImage(this.char, {name: "LoA HD"}, "Skins/", this.randomImg);
+                this.vsSrc = await getRecolorImage(this.char, {name: "LoA HD"}, "Skins", this.randomImg);
                 this.vsBrowserSrc = this.getBrowserSrc(this.char, {name: "LoA HD"}, "Skins/", this.randomImg);
                 this.vsSkin = {name: "LoA HD"};
             } else {
-                this.vsSrc = await getRecolorImage(this.char, {name: "HD"}, "Skins/", this.randomImg);
+                this.vsSrc = await getRecolorImage(this.char, {name: "HD"}, "Skins", this.randomImg);
                 this.vsBrowserSrc = this.getBrowserSrc(this.char, {name: "HD"}, "Skins/", this.randomImg);
                 this.vsSkin = {name: "HD"};
             }
@@ -302,7 +303,7 @@ class Player {
                 this.charInfo.skinList[i],
                 this.charInfo.ogColor,
                 this.charInfo.colorRange,
-                "Skins/",
+                "Skins",
                 "P2"
             );
             skinImgs[i].setAttribute('src', finalSrc);
@@ -577,7 +578,6 @@ function init() {
 
 
     // set listeners for the input filters of char/skin selects
-    /* charFinder.addEventListener("input", () => {filterFinder(charFinder)}); */
     skinFinder.addEventListener("input", () => {filterFinder(skinFinder)});
 
 
@@ -677,9 +677,9 @@ function init() {
             if (glob.current.focus > -1) {
                 pFinder.getElementsByClassName("finderEntry")[glob.current.focus].click();
             }
-        } else if (window.getComputedStyle(charFinder).getPropertyValue("display") == "block") {
+        } else if (charFinder.getDisplayValue() == "block") {
             if (glob.current.focus > -1) {
-                charFinder.getElementsByClassName("finderEntry")[glob.current.focus].click();
+                charFinder.getFinderEntries()[glob.current.focus].click();
             }
         } else if (window.getComputedStyle(skinFinder).getPropertyValue("display") == "block") {
             if (glob.current.focus > -1) {
@@ -711,7 +711,7 @@ function init() {
             viewport.toCenter();
         } else if (pFinder.style.display == "block") { // if a finder menu is open, close it
             pFinder.style.display = "none";
-        } else if (window.getComputedStyle(charFinder).getPropertyValue("display") == "block"
+        } else if (charFinder.getDisplayValue() == "block"
         || window.getComputedStyle(skinFinder).getPropertyValue("display") == "block") {
             document.activeElement.blur();
         } else if (pInfoDiv.style.pointerEvents == "auto") { // if player info menu is up
@@ -735,8 +735,8 @@ function init() {
     Mousetrap.bind('down', () => {
         if (pFinder.style.display == "block") {
             addActive(pFinder.getElementsByClassName("finderEntry"), true);
-        } else if (window.getComputedStyle(charFinder).getPropertyValue("display") == "block") {
-            addActive(charFinder.getElementsByClassName("finderEntry"), true);
+        } else if (charFinder.getDisplayValue() == "block") {
+            addActive(charFinder.getFinderEntries(), true);
         } else if (window.getComputedStyle(skinFinder).getPropertyValue("display") == "block") {
             addActive(skinFinder.getElementsByClassName("finderEntry"), true);
         } else if (window.getComputedStyle(cFinder).getPropertyValue("display") == "block") {
@@ -746,8 +746,8 @@ function init() {
     Mousetrap.bind('up', () => {
         if (pFinder.style.display == "block") {
             addActive(pFinder.getElementsByClassName("finderEntry"), false);
-        } else if (window.getComputedStyle(charFinder).getPropertyValue("display") == "block") {
-            addActive(charFinder.getElementsByClassName("finderEntry"), false);
+        } else if (charFinder.getDisplayValue() == "block") {
+            addActive(charFinder.getFinderEntries(), false);
         } else if (window.getComputedStyle(skinFinder).getPropertyValue("display") == "block") {
             addActive(skinFinder.getElementsByClassName("finderEntry"), false);
         } else if (window.getComputedStyle(cFinder).getPropertyValue("display") == "block") {
@@ -876,50 +876,6 @@ function hideCustomSkin() {
     customSkinDiv.style.opacity = 0;
     customSkinDiv.style.transform = "scale(1.15)";
     viewport.opacity("1");
-}
-
-
-// called whenever we type anything on the finders
-function filterFinder(finder) {
-
-    // we want to store the first entry starting with filter value
-    let startsWith;
-
-    // get the current text
-    const filterValue = finder.getElementsByClassName("listSearch")[0].value;
-
-    // for every entry on the list
-    const finderEntries = finder.getElementsByClassName("searchList")[0].children;
-
-    for (let i = 0; i < finderEntries.length; i++) {
-        
-        // find the name we are looking for
-        const entryName = finderEntries[i].getElementsByClassName("pfName")[0].innerHTML;
-
-        // if the name doesnt include the filter value, hide it
-        if (entryName.toLocaleLowerCase().includes(filterValue.toLocaleLowerCase())) {
-            finderEntries[i].style.display = "flex";
-        } else {
-            finderEntries[i].style.display = "none";
-        }
-
-        // if its starts with the value, store its position
-        if (entryName.toLocaleLowerCase().startsWith(filterValue.toLocaleLowerCase()) && !startsWith) {
-            startsWith = i;
-        }
-
-    }
-
-    glob.current.focus = -1;
-
-    // if no value, just remove any remaining active classes
-    if (filterValue == "") {
-        removeActiveClass(finder.getElementsByClassName("finderEntry"));
-    } else {
-        if (startsWith) glob.current.focus = startsWith - 1;
-        addActive(finder.getElementsByClassName("finderEntry"), true);
-    }
-
 }
 
 
@@ -1251,7 +1207,7 @@ async function checkPlayerPreset(pNum) {
             skin,
             finalColIn,
             finalColRan,
-            "Skins/",
+            "Skins",
             "P2"
         );
         skinImgs[i].el.setAttribute('src', finalSrc);
@@ -1397,85 +1353,6 @@ function casterPreset(clickDiv, caster) {
 
     cFinder.style.display = "none";
 
-}
-
-
-// visual feedback to navigate menus with the keyboard
-function addActive(x, direction) {
-    
-    removeActiveClass(x);
-
-    // if true, were going up
-    if (direction) {
-
-        // increase that focus
-        glob.current.focus++;
-        // if end of list, cicle
-        if (glob.current.focus >= x.length) glob.current.focus = 0;
-
-        // search for the next visible entry
-        while (glob.current.focus <= x.length-1) {
-            if (x[glob.current.focus].style.display == "none") {
-                glob.current.focus++;
-            } else {
-                break;
-            }
-        }
-        // if we didnt find any, start from 0
-        if (glob.current.focus == x.length) {
-            glob.current.focus = 0;
-            while (glob.current.focus <= x.length-1) {
-                if (x[glob.current.focus].style.display == "none") {
-                    glob.current.focus++;
-                } else {
-                    break;
-                }
-            }
-        }
-        // if even then we couldnt find a visible entry, set it to invalid
-        if (glob.current.focus == x.length) {
-            glob.current.focus = -1;
-        }
-
-    } else { // same as above but inverted
-        glob.current.focus--;
-        if (glob.current.focus < 0) glob.current.focus = (x.length - 1);
-        while (glob.current.focus > -1) {
-            if (x[glob.current.focus].style.display == "none") {
-                glob.current.focus--;
-            } else {
-                break;
-            }
-        }
-        if (glob.current.focus == -1) {
-            glob.current.focus = x.length-1;
-            while (glob.current.focus > -1) {
-                if (x[glob.current.focus].style.display == "none") {
-                    glob.current.focus--;
-                } else {
-                    break;
-                }
-            }
-        }
-        if (glob.current.focus == x.length) {
-            glob.current.focus = -1;
-        }
-    }
-
-    // if there is a valid entry
-    if (glob.current.focus > -1) {
-        //add to the selected entry the active class
-        x[glob.current.focus].classList.add("finderEntry-active");
-        // make it scroll if it goes out of view
-        x[glob.current.focus].scrollIntoView({block: "center"});
-    }
-    
-}
-function removeActiveClass(x) {
-    //clears active from all entries
-    for (let i = 0; i < x.length; i++) {
-        x[i].classList.remove("finderEntry-active");
-    }
 }
 
 

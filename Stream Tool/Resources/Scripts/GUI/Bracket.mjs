@@ -4,7 +4,7 @@ import { getRoARecolor } from "./RoA WebGL Shader.mjs";
 import { getJson } from "./Utils.mjs";
 import * as glob from './Globals.mjs';
 import { viewport } from './Viewport.mjs';
-import { charFinder } from './CharFinder.mjs';
+import { charFinder } from "./Finder/Char Finder.mjs";
 
 const bRoundSelect = document.getElementById('bracketRoundSelect');
 const bEncountersDiv = document.getElementById('bracketEncounters');

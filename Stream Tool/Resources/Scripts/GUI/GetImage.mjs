@@ -18,27 +18,30 @@ import * as glob from './Globals.mjs';
  * Returns the random image if a default skin image can't be found.
  * @param {String} char - Character name
  * @param {Skin} skin - Skin data
- * @param {String} jPath - Path to local file
+ * @param {Array} colorIn - Character's original colors for shader data
+ * @param {Array} colorRan - Character's color ranges for shader data
+ * @param {String} imgType - To determine which folder to look for
+ * @param {String} failPath - To determine which image to use in case of fail
  * @returns {String} - Image src
 */
-export async function getRecolorImage(char, skin, colIn, colRan, extraPath, failPath) {
+export async function getRecolorImage(char, skin, colIn, colRan, imgType, failPath) {
 
-    if (fs.existsSync(`${glob.path.char}/${char}/${extraPath}${skin.name}.png`) && !skin.force) {
+    if (fs.existsSync(`${glob.path.char}/${char}/${imgType}/${skin.name}.png`) && !skin.force) {
 
-        return `${glob.path.char}/${char}/${extraPath}${skin.name}.png`;
+        return `${glob.path.char}/${char}/${imgType}${skin.name}.png`;
 
-    } else if (fs.existsSync(`${glob.path.char}/${char}/${extraPath}Default.png`)) {
+    } else if (fs.existsSync(`${glob.path.char}/${char}/${imgType}Default.png`)) {
 
         if (skin.hex) {
             return getRoARecolor(
                 char,
-                `${glob.path.char}/${char}/${extraPath}Default.png`,
+                `${glob.path.char}/${char}/${imgType}Default.png`,
                 colIn,
                 colRan,
                 skin
             );
         } else {
-            return `${glob.path.char}/${char}/${extraPath}Default.png`;
+            return `${glob.path.char}/${char}/${imgType}Default.png`;
         }
 
     } else {

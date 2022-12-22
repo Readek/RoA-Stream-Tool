@@ -1,11 +1,19 @@
 const fs = require('fs');
-import * as glob from './Globals.mjs';
-import { getJson } from './Utils.mjs';
-import { getRecolorImage } from './GetImage.mjs';
+import * as glob from '../Globals.mjs';
+import { getJson } from '../Utils.mjs';
+import { getRecolorImage } from '../GetImage.mjs';
+import { filterFinder } from './Filter Finder.mjs';
 
 class CharFinder {
 
     #finderEl = document.getElementById("characterFinder");
+
+    constructor() {
+
+        // filter the finder list as we type
+        this.#finderEl.addEventListener("input", () => {filterFinder(this.#finderEl)});
+    
+    }
 
     /** Fills the character list with each folder on the Characters folder */
     loadCharacters() {
@@ -23,7 +31,7 @@ class CharFinder {
                     return true;
                 }
             }
-            )
+        )
 
         // add random to the end of the character list
         characterList.push("Random")
@@ -89,7 +97,7 @@ class CharFinder {
         // focus the search input field and reset the list
         this.#finderEl.firstElementChild.value = "";
         this.#finderEl.firstElementChild.focus();
-        /* filterFinder(this.#finderEl); */
+        filterFinder(this.#finderEl);
 
         // set up some global variables for other functions
         glob.current.player = pNum;
@@ -130,6 +138,23 @@ class CharFinder {
             players[glob.current.player].charChange(charName);
         }
 
+    }
+
+    /**
+     * Scans for all current entries, then returns them
+     * @returns { HTMLCollectionOf}
+    */
+    getFinderEntries() {
+        return this.#finderEl.getElementsByClassName("finderEntry");
+
+    }
+
+    /**
+     * Checks for the current finder's display status
+     * @returns {String} - Current display css value
+     */
+    getDisplayValue() {
+        return window.getComputedStyle(this.#finderEl).getPropertyValue("display");
     }
 
 }
