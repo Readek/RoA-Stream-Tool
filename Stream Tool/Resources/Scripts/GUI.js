@@ -10,7 +10,6 @@ import { viewport } from './GUI/Viewport.mjs';
 import { charFinder } from './GUI/Finder/Char Finder.mjs';
 import { skinFinder } from './GUI/Finder/Skin Finder.mjs';
 import { getRecolorImage, getTrailImage } from './GUI/GetImage.mjs';
-import { addActive, removeActiveClass } from './GUI/Finder/Finder Key Nav.mjs';
 import { players } from './GUI/Players.mjs';
 
 // this is a weird way to have file svg's that can be recolored by css
@@ -124,10 +123,14 @@ class Player {
 
 
         // set listeners that will trigger when character or skin changes
-        this.charSel.addEventListener("click", () => {charFinder.open(this.charSel, id-1)});
+        this.charSel.addEventListener("click", () => {
+            charFinder.open(this.charSel, id-1)
+            charFinder.focusFilter();
+        });
         this.skinSel.addEventListener("click", () => {
             skinFinder.open(this.skinSel, id-1);
             this.fillSkinList();
+            skinFinder.focusFilter();
         });
         // also set an initial character value
         this.charChange("Random");
@@ -736,9 +739,9 @@ function init() {
         if (pFinder.style.display == "block") {
             addActive(pFinder.getElementsByClassName("finderEntry"), true);
         } else if (charFinder.isVisible()) {
-            addActive(charFinder.getFinderEntries(), true);
+            charFinder.addActive(true);
         } else if (skinFinder.isVisible()) {
-            addActive(skinFinder.getElementsByClassName("finderEntry"), true);
+            skinFinder.addActive(true);
         } else if (window.getComputedStyle(cFinder).getPropertyValue("display") == "block") {
             addActive(cFinder.getElementsByClassName("finderEntry"), true);
         }
@@ -747,9 +750,9 @@ function init() {
         if (pFinder.style.display == "block") {
             addActive(pFinder.getElementsByClassName("finderEntry"), false);
         } else if (charFinder.isVisible()) {
-            addActive(charFinder.getFinderEntries(), false);
-        } else if (window.getComputedStyle(skinFinder).getPropertyValue("display") == "block") {
-            addActive(skinFinder.getFinderEntries(), false);
+            charFinder.addActive(false);
+        } else if (skinFinder.isVisible()) {
+            skinFinder.addActive(false);
         } else if (window.getComputedStyle(cFinder).getPropertyValue("display") == "block") {
             addActive(cFinder.getElementsByClassName("finderEntry"), false);
         }

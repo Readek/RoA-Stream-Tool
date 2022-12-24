@@ -3,9 +3,9 @@ import * as glob from '../Globals.mjs';
 import { getJson } from '../Utils.mjs';
 import { getRecolorImage } from '../GetImage.mjs';
 import { players } from '../Players.mjs';
-import { Finder } from './Finder.mjs';
+import { FinderSelect } from './Finder Select.mjs';
 
-class CharFinder extends Finder {
+class CharFinder extends FinderSelect {
 
     constructor() {
         super(document.getElementById("characterFinder"));

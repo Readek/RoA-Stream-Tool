@@ -1,7 +1,7 @@
-import { Finder } from "./Finder.mjs";
+import { FinderSelect } from "./Finder Select.mjs";
 
 
-class SkinFinder extends Finder {
+class SkinFinder extends FinderSelect {
 
     constructor() {
         super(document.getElementById("skinFinder"));
