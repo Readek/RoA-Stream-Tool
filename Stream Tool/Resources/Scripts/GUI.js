@@ -129,7 +129,7 @@ class Player {
         });
         this.skinSel.addEventListener("click", () => {
             skinFinder.open(this.skinSel, id-1);
-            this.fillSkinList();
+            skinFinder.fillSkinList(this);
             skinFinder.focusFilter();
         });
         // also set an initial character value
@@ -239,84 +239,6 @@ class Player {
 
         // set up a trail for the vs screen
         this.setTrailImage();
-
-    }
-
-    async fillSkinList() {
-
-        const skinImgs = [];
-
-        // clear the list
-        skinFinder.clearList();
-
-        // for every skin on the skin list, add an entry
-        for (let i = 0; i < this.charInfo.skinList.length; i++) {
-            
-            // this will be the div to click
-            const newDiv = document.createElement('div');
-            newDiv.className = "finderEntry";
-            newDiv.addEventListener("click", () => {this.skinChange(this.charInfo.skinList[i])});
-            
-            // character name
-            const spanName = document.createElement('span');
-            spanName.innerHTML = this.charInfo.skinList[i].name;
-            spanName.className = "pfName";
-
-            // add them to the div we created before
-            newDiv.appendChild(spanName);
-
-            // now for the character image, this is the mask/mirror div
-            const charImgBox = document.createElement("div");
-            charImgBox.className = "pfCharImgBox";
-
-            // actual image
-            const charImg = document.createElement('img');
-            charImg.className = "pfCharImg";
-            skinImgs.push(charImg);
-            
-            // we have to position it
-            positionChar(this.charInfo.skinList[i].name, charImg, {gui: this.charInfo.gui});
-            // and add it to the mask
-            charImgBox.appendChild(charImg);
-
-            //add it to the main div
-            newDiv.appendChild(charImgBox);
-
-            // and now add the div to the actual GUI
-            skinFinder.addEntry(newDiv);
-
-        }
-
-        // now add a final entry for custom skins
-        const newDiv = document.createElement('div');
-        newDiv.className = "finderEntry";
-        newDiv.addEventListener("click", () => {showCustomSkin(this.pNum)});
-        const spanName = document.createElement('span');
-        spanName.innerHTML = "Custom Skin";
-        spanName.className = "pfName";
-        spanName.style.color = "lightsalmon"
-        newDiv.appendChild(spanName);
-        skinFinder.addEntry(newDiv);
-
-        // add them images to each entry and recolor them if needed
-        for (let i = 0; i < skinImgs.length; i++) {
-
-            // if the skin list isnt being shown, break the cycle
-            if (!skinFinder.isVisible()) {
-                break;
-            }
-            // add the final image
-            const finalSrc = await getRecolorImage(
-                this.char,
-                this.charInfo.skinList[i],
-                this.charInfo.ogColor,
-                this.charInfo.colorRange,
-                "Skins",
-                "P2"
-            );
-            skinImgs[i].setAttribute('src', finalSrc);
-            
-        }
 
     }
 
@@ -677,21 +599,15 @@ function init() {
     Mousetrap.bind('enter', () => {
 
         // if a dropdown menu is open, click on the current focus
-        if (pFinder.style.display == "block") {
-            if (glob.current.focus > -1) {
+        if (glob.current.focus > -1) {
+            if (pFinder.style.display == "block") {
                 pFinder.getElementsByClassName("finderEntry")[glob.current.focus].click();
-            }
-        } else if (charFinder.isVisible()) {
-            if (glob.current.focus > -1) {
-                charFinder.getFinderEntries()[glob.current.focus].click();
-            }
-        } else if (skinFinder.isVisible()) {
-            if (glob.current.focus > -1) {
-                skinFinder.getFinderEntries()[glob.current.focus].click();
-            }
-        } else if (window.getComputedStyle(cFinder).getPropertyValue("display") == "block") {
-            if (glob.current.focus > -1) {
-                cFinder.getElementsByClassName("finderEntry")[glob.current.focus].click();
+            } else if (charFinder.isVisible()) {
+                    charFinder.getFinderEntries()[glob.current.focus].click();
+            } else if (skinFinder.isVisible()) {
+                    skinFinder.getFinderEntries()[glob.current.focus].click();
+            } else if (window.getComputedStyle(cFinder).getPropertyValue("display") == "block") {
+                    cFinder.getElementsByClassName("finderEntry")[glob.current.focus].click();
             }
         } else if (pInfoDiv.style.pointerEvents == "auto") { // if player info menu is up
             document.getElementById("pInfoApplyButt").click();
@@ -1142,42 +1058,6 @@ async function checkPlayerPreset(pNum) {
 
     }
 
-}
-
-// now the complicated "position character image" function!
-async function positionChar(skin, charEL, pos) {
-	
-	//               x, y, scale
-	const charPos = [0, 0, 1];
-	//now, check if the character and skin exist in the database down there
-	if (pos) {
-		if (pos.gui[skin]) { //if the skin has a specific position
-			charPos[0] = pos.gui[skin].x;
-			charPos[1] = pos.gui[skin].y;
-			charPos[2] = pos.gui[skin].scale;
-		} else { //if none of the above, use a default position
-			charPos[0] = pos.gui.neutral.x;
-			charPos[1] = pos.gui.neutral.y;
-			charPos[2] = pos.gui.neutral.scale;
-		}
-	} else { //if the character isnt on the database, set positions for the "?" image
-		charPos[0] = 0;
-        charPos[1] = 0;
-        charPos[2] = 1.2;
-	}
-    
-    //to position the character
-    charEL.style.left = charPos[0] + "px";
-    charEL.style.top = charPos[1] + "px";
-    charEL.style.transform = "scale(" + charPos[2] + ")";
-    
-    //if the image fails to load, we will put a placeholder
-	charEL.addEventListener("error", () => {
-        charEL.setAttribute('src', glob.path.charRandom + '/P2.png');
-        charEL.style.left = "0px";
-        charEL.style.top = "-2px";
-        charEL.style.transform = "scale(1.2)";
-	});
 }
 
 //called when the user clicks on a player preset

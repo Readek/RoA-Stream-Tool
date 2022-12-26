@@ -121,6 +121,41 @@ export class Finder {
     }
 
     /**
+     * Positions a character image inside a finder entry
+     * @param {String} skin - Name of the skin
+     * @param {HTMLElement} charEL - Element to be positioned
+     * @param {Object} pos - Character position data
+     */
+    positionCharImg(skin, charEL, pos) {
+
+        //               x, y, scale
+        const charPos = [0, 0, 1];
+        //now, check if the character and skin exist in the database down there
+        if (pos) {
+            if (pos.gui[skin]) { //if the skin has a specific position
+                charPos[0] = pos.gui[skin].x;
+                charPos[1] = pos.gui[skin].y;
+                charPos[2] = pos.gui[skin].scale;
+            } else { //if none of the above, use a default position
+                charPos[0] = pos.gui.neutral.x;
+                charPos[1] = pos.gui.neutral.y;
+                charPos[2] = pos.gui.neutral.scale;
+            }
+        } else { //if the character isnt on the database, set positions for the "?" image
+            charPos[0] = 0;
+            charPos[1] = 0;
+            charPos[2] = 1.2;
+        }
+    
+        //to position the character
+        charEL.style.transform = `
+            translate(${charPos[0]}px, ${charPos[1]}px)
+            scale(${charPos[2]})
+        `;
+    
+    }
+
+    /**
      * Adds visual feedback to navigate finder lists with the keyboard
      * @param {Boolean} direction - Up (true) or down (false)
      */
