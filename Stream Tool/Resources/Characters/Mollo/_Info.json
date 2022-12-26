@@ -12,6 +12,7 @@
         {"name": "Summer", "hex": "F29A-30FF-F9A1-D63D-3D1A-5A72-28D4-FF3D-EFFF-2C18-0F53"},
         {"name": "Default Custom 1", "hex": "8251-31ED-D8B6-C493-684C-2E1B-FFFB-E9FF-9136-1608-0202"},
         {"name": "Default Custom 2", "hex": "5E67-72D2-F2E6-8EFF-D701-395E-3DD8-FFED-EDED-0014-21CA"},
+        {"name": "Champion", "hex": "6B6A-68E0-E4E8-B2FF-D041-3E37-B2FF-D0B2-FFD0-110F-0E9F"},
         {"name": "Abyss", "hex": "5654-9285-6E96-A6AC-D64F-3D5E-DC71-FFE2-A0E1-1610-1CA6"},
         {"name": "Early Access", "hex": "537A-3ED3-E29A-A7BA-4A23-4331-A7BA-4AD3-E29A-2343-31F4", "ea": true},
         {"name": "Ranked", "hex": "A260-A0D2-D2D2-FDD2-5152-2B5A-FFE9-00FF-6E00-0000-0030"},
