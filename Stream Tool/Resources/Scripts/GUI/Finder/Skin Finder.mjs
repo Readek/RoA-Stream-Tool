@@ -1,5 +1,6 @@
 import { FinderSelect } from "./Finder Select.mjs";
 import { getRecolorImage } from '../GetImage.mjs';
+import { showCustomSkin } from "../Custom Skin.mjs";
 
 class SkinFinder extends FinderSelect {
 
@@ -7,6 +8,10 @@ class SkinFinder extends FinderSelect {
         super(document.getElementById("skinFinder"));
     }
 
+    /**
+     * Fills the skin finder with the player's current character's skins
+     * @param {Player} player - Player that clicked on the skin selector
+     */
     async fillSkinList(player) {
 
         const skinImgs = [];
@@ -61,7 +66,7 @@ class SkinFinder extends FinderSelect {
         // now add a final entry for custom skins
         const newDiv = document.createElement('div');
         newDiv.className = "finderEntry";
-        /* newDiv.addEventListener("click", () => {showCustomSkin(player.pNum)}); */
+        newDiv.addEventListener("click", () => {showCustomSkin(player)});
         const spanName = document.createElement('span');
         spanName.innerHTML = "Custom Skin";
         spanName.className = "pfName";

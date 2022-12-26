@@ -46,7 +46,6 @@ const maxPlayers = 4; //change this if you ever want to remake this into singles
 
 //preload  e v e r y t h i n g
 const pInfoDiv = document.getElementById("pInfoDiv");
-const customSkinDiv = document.getElementById("customSkinDiv");
 
 const tNameInps = document.getElementsByClassName("teamName");
 
@@ -556,11 +555,6 @@ function init() {
     })
 
 
-    // set listeners for the custom skins menu
-    document.getElementById("customSkinBackButt").addEventListener("click", hideCustomSkin);
-    document.getElementById("customSkinApplyButt").addEventListener("click", () => {customChange()});
-
-
     // set click listeners to change the "best of" status
     document.getElementById("bestOf").addEventListener("click", changeBestOf);
 
@@ -673,53 +667,6 @@ function init() {
             addActive(cFinder.getElementsByClassName("finderEntry"), false);
         }
     });
-}
-
-
-// for those times the skin list just isnt enough
-function customChange(hex) {
-
-    let skinHex = document.getElementById("customSkinInput").value;
-    if (hex) {
-        skinHex = hex;
-    }
-    const skin = {
-        name: "Custom",
-        hex: skinHex
-    };
-    if (glob.inside.bracket) {
-        bracketPlayers[glob.current.player].skinChange(skin);
-    } else {
-        players[glob.current.player].skinChange(skin);
-    }
-    hideCustomSkin();
-
-}
-
-// whenever the user clicks on the "Custom Skin" skin entry
-function showCustomSkin(pNum) {
-
-    document.getElementById("customSkinInput").focus();
-
-    if (glob.inside.bracket) {
-        document.getElementById("customSkinCharSpan").textContent = bracketPlayers[pNum].char;
-    } else {
-        document.getElementById("customSkinCharSpan").textContent = players[pNum-1].char;
-    }
-
-    document.getElementById("customSkinInput").value = "";
-
-    customSkinDiv.style.pointerEvents = "auto";
-    customSkinDiv.style.opacity = 1;
-    customSkinDiv.style.transform = "scale(1)";
-    viewport.opacity(".25");
-
-}
-function hideCustomSkin() {
-    customSkinDiv.style.pointerEvents = "none";
-    customSkinDiv.style.opacity = 0;
-    customSkinDiv.style.transform = "scale(1.15)";
-    viewport.opacity("1");
 }
 
 
