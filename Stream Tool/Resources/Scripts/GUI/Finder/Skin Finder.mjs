@@ -17,7 +17,7 @@ class SkinFinder extends FinderSelect {
         const skinImgs = [];
 
         // clear the list
-        this.clearList();
+        this._clearList();
 
         // for every skin on the skin list, add an entry
         for (let i = 0; i < player.charInfo.skinList.length; i++) {
@@ -47,7 +47,7 @@ class SkinFinder extends FinderSelect {
             skinImgs.push(charImg);
             
             // we have to position it
-            this.positionCharImg(
+            this._positionCharImg(
                 player.charInfo.skinList[i].name,
                 charImg,
                 {gui: player.charInfo.gui}

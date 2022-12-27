@@ -84,7 +84,7 @@ class BracketPlayer {
 
         // for the character list
         const cFinderPositionDiv = document.createElement('div');
-        cFinderPositionDiv.className = "cFinderPosition";
+        cFinderPositionDiv.className = "finderPosition";
         charDiv.appendChild(cFinderPositionDiv);
 
         // actual character button
@@ -107,7 +107,7 @@ class BracketPlayer {
 
         // for the skin list
         const cFinderPositionSkinDiv = document.createElement('div');
-        cFinderPositionSkinDiv.className = "cFinderPosition";
+        cFinderPositionSkinDiv.className = "finderPosition";
         charDiv.appendChild(cFinderPositionSkinDiv);
 
         // actual skin button
@@ -350,7 +350,7 @@ function createEncounters() {
 
         // player name
         const pFinderPos = document.createElement('div');
-        pFinderPos.classList = "pFinderPosition";
+        pFinderPos.classList = "finderPosition";
         const nameInp = document.createElement('input');
         nameInp.classList = "bNameInp bInput textInput mousetrap";
         nameInp.setAttribute("placeholder", "Player Name");

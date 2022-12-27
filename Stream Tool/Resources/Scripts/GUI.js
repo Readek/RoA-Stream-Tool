@@ -4,13 +4,14 @@ const electron = require('electron');
 const ipc = electron.ipcRenderer;
 
 // import local stuff
-import { getJson } from './GUI/Utils.mjs';
 import * as glob from './GUI/Globals.mjs';
+import { getJson } from './GUI/Utils.mjs';
 import { viewport } from './GUI/Viewport.mjs';
 import { charFinder } from './GUI/Finder/Char Finder.mjs';
 import { skinFinder } from './GUI/Finder/Skin Finder.mjs';
 import { getRecolorImage, getTrailImage } from './GUI/GetImage.mjs';
 import { players } from './GUI/Players.mjs';
+import { commFinder } from './GUI/Finder/Comm Finder.mjs';
 
 // this is a weird way to have file svg's that can be recolored by css
 customElements.define("load-svg", class extends HTMLElement {
@@ -38,7 +39,6 @@ let currentBestOf = 5;
 
 let gamemode = 1;
 
-let inPF = false;
 let presName; // to break playerpreset cycle
 
 const maxPlayers = 4; //change this if you ever want to remake this into singles only or 3v3 idk
@@ -72,7 +72,6 @@ const invertScoreCheck = document.getElementById("invertScore");
 const forceAlt = document.getElementById("forceAlt");
 
 const pFinder = document.getElementById("playerFinder");
-const cFinder = document.getElementById("casterFinder");
 
 const notifSpan = document.getElementById("notifText");
 
@@ -290,16 +289,19 @@ class Caster {
             }
 
             // check if theres an existing caster preset
-            checkCasterPreset(this);
+            commFinder.fillFinderPresets(this);
 
         });
 
         // if we click on the name text input
-        this.nameEl.addEventListener("focusin", () => {checkCasterPreset(this)});
+        this.nameEl.addEventListener("focusin", () => {
+            commFinder.fillFinderPresets(this);
+            commFinder.open(this.nameEl.parentElement);
+        });
         // hide the presets dropdown if text input loses focus
         this.nameEl.addEventListener("focusout", () => {
-            if (!inPF) { // but not if the mouse is hovering a preset
-                cFinder.style.display = "none";
+            if (!glob.inside.finder) {
+                commFinder.hide();
             }
         });
 
@@ -532,8 +534,8 @@ function init() {
 
     // prepare the player finder (player presets)
     // if the mouse is hovering a player preset, let us know
-    pFinder.addEventListener("mouseenter", () => { inPF = true });
-    pFinder.addEventListener("mouseleave", () => { inPF = false });
+    /* pFinder.addEventListener("mouseenter", () => { inPF = true });
+    pFinder.addEventListener("mouseleave", () => { inPF = false }); */
 
 
     // open player info menu if clicking on the icon
@@ -572,9 +574,6 @@ function init() {
         new Caster(document.getElementById("caster1")),
         new Caster(document.getElementById("caster2")),
     );
-    // set up the caster finders
-    cFinder.addEventListener("mouseenter", () => { inPF = true });
-    cFinder.addEventListener("mouseleave", () => { inPF = false });
 
 
     //add a listener to the swap button
@@ -597,11 +596,11 @@ function init() {
             if (pFinder.style.display == "block") {
                 pFinder.getElementsByClassName("finderEntry")[glob.current.focus].click();
             } else if (charFinder.isVisible()) {
-                    charFinder.getFinderEntries()[glob.current.focus].click();
+                charFinder.getFinderEntries()[glob.current.focus].click();
             } else if (skinFinder.isVisible()) {
-                    skinFinder.getFinderEntries()[glob.current.focus].click();
-            } else if (window.getComputedStyle(cFinder).getPropertyValue("display") == "block") {
-                    cFinder.getElementsByClassName("finderEntry")[glob.current.focus].click();
+                skinFinder.getFinderEntries()[glob.current.focus].click();
+            } else if (commFinder.isVisible()) {
+                commFinder.getFinderEntries()[glob.current.focus].click();
             }
         } else if (pInfoDiv.style.pointerEvents == "auto") { // if player info menu is up
             document.getElementById("pInfoApplyButt").click();
@@ -625,7 +624,8 @@ function init() {
             viewport.toCenter();
         } else if (pFinder.style.display == "block") { // if a finder menu is open, close it
             pFinder.style.display = "none";
-        } else if (charFinder.isVisible() || skinFinder.isVisible()) {
+        } else if (charFinder.isVisible() || skinFinder.isVisible()
+        || commFinder.isVisible()) {
             document.activeElement.blur();
         } else if (pInfoDiv.style.pointerEvents == "auto") { // if player info menu is up
             document.getElementById("pInfoBackButt").click();
@@ -652,8 +652,8 @@ function init() {
             charFinder.addActive(true);
         } else if (skinFinder.isVisible()) {
             skinFinder.addActive(true);
-        } else if (window.getComputedStyle(cFinder).getPropertyValue("display") == "block") {
-            addActive(cFinder.getElementsByClassName("finderEntry"), true);
+        } else if (commFinder.isVisible()) {
+            commFinder.addActive(true);
         }
     });
     Mousetrap.bind('up', () => {
@@ -663,8 +663,8 @@ function init() {
             charFinder.addActive(false);
         } else if (skinFinder.isVisible()) {
             skinFinder.addActive(false);
-        } else if (window.getComputedStyle(cFinder).getPropertyValue("display") == "block") {
-            addActive(cFinder.getElementsByClassName("finderEntry"), false);
+        } else if (commFinder.isVisible()) {
+            commFinder.addActive(false);
         }
     });
 }
@@ -840,7 +840,7 @@ async function checkPlayerPreset(pNum) {
     curPlayer.nameInp.parentElement.appendChild(pFinder);
 
 
-    //clear the current list each time we type
+    //1 the current list each time we type
     pFinder.innerHTML = "";
 
     // check for later
@@ -1044,69 +1044,6 @@ function playerPreset(el, pNum) {
     }
 
     pFinder.style.display = "none";
-
-}
-
-
-// called whenever the user types something in a commentator name box
-function checkCasterPreset(el) {
-
-    // this is mostly copy paste from player preset code
-    glob.current.focus = -1;
-    el.nameEl.parentElement.appendChild(cFinder);
-    cFinder.innerHTML = "";
-    let fileFound;
-
-    if (el.getName().length >= 3) {
-
-        const files = fs.readdirSync(glob.path.text + "/Commentator Info/");
-        files.forEach(file => {
-
-            file = file.substring(0, file.length - 5);
-
-            if (file.toLocaleLowerCase().includes(el.getName().toLocaleLowerCase())) {
-
-                fileFound = true;
-                cFinder.style.display = "block";
-
-                const casterInfo = getJson(glob.path.text + "/Commentator Info/" + file);
-
-                const newDiv = document.createElement('div');
-                newDiv.className = "finderEntry";
-                newDiv.addEventListener("click", () => {casterPreset(newDiv, el)});
-
-                const spanName = document.createElement('span');
-                spanName.innerHTML = file;
-                spanName.className = "pfName";
-
-                newDiv.setAttribute("twitter", casterInfo.twitter);
-                newDiv.setAttribute("twitch", casterInfo.twitch);
-                newDiv.setAttribute("yt", casterInfo.yt);
-                newDiv.setAttribute("name", file);
-
-                newDiv.appendChild(spanName);
-
-                cFinder.appendChild(newDiv);
-
-            }
-        });
-    }
-
-    if (!fileFound) {
-        cFinder.style.display = "none";
-    }
-
-}
-
-//called when the user clicks on a player preset
-function casterPreset(clickDiv, caster) {
-
-    caster.setName(clickDiv.getAttribute("name"));
-    caster.setTwitter(clickDiv.getAttribute("twitter"));
-    caster.setTwitch(clickDiv.getAttribute("twitch"));
-    caster.setYt(clickDiv.getAttribute("yt"));
-
-    cFinder.style.display = "none";
 
 }
 
@@ -1941,3 +1878,4 @@ ipc.on('remoteGuiData', (event, data) => {
     displayNotif("GUI was remotely updated");
 
 });
+

@@ -189,7 +189,7 @@ button:hover {
   border-bottom-left-radius: 0px;
 }
 
-.pFinderPosition, .cFinderPosition, .sFinderPosition, .castFinderPosition {
+.finderPosition {
   position: relative;
   display: flex;
 }
@@ -753,13 +753,10 @@ button:hover {
   z-index: 3;
   font-size: 15px;
   max-height: 165px;
-  overflow: auto;
   width: 175px;
+  height: auto;
 }
 
-.castFinderPosition {
-  width: 100%;
-}
 
 /* the bottom bar */
 #botBar {

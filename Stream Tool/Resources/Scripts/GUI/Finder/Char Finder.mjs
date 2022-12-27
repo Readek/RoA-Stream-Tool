@@ -41,7 +41,7 @@ class CharFinder extends FinderSelect {
             // this will be the div to click
             const newDiv = document.createElement('div');
             newDiv.className = "finderEntry";
-            newDiv.addEventListener("click", () => {this.entryClick(characterList[i])});
+            newDiv.addEventListener("click", () => {this.#entryClick(characterList[i])});
 
             // character icon
             const imgIcon = document.createElement('img');
@@ -84,7 +84,7 @@ class CharFinder extends FinderSelect {
 
     }
 
-    entryClick(charName) {
+    #entryClick(charName) {
 
         // clear focus to hide character select menu
         document.activeElement.blur();

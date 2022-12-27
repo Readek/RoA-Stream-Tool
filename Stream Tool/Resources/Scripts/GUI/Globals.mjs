@@ -14,5 +14,6 @@ export const wsCheck = document.getElementById('workshopToggle');
 // these are set when their respective views are visible
 export const inside = {
     settings : false,
-    bracket : false
+    bracket : false,
+    finder : false
 };

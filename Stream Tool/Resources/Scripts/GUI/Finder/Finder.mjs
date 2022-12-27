@@ -12,6 +12,10 @@ export class Finder {
         this._finderEl = el;
         this._list = el.getElementsByClassName("searchList")[0];
 
+        // flags to know if cursor is above the finder
+        this._finderEl.addEventListener("mouseenter", () => { glob.inside.finder = true });
+        this._finderEl.addEventListener("mouseleave", () => { glob.inside.finder = false });
+
     }
 
     /**
@@ -49,48 +53,6 @@ export class Finder {
     }
 
     /**
-     * Filters the finder's content depending on input text
-     * @param {HTMLElement} finder - Finder to filter
-    */ 
-    filterFinder(filterValue) {
-
-        // we want to store the first entry starting with filter value
-        let startsWith;
-
-        // for every entry on the list
-        const finderEntries = this.getFinderEntries();
-        for (let i = 0; i < finderEntries.length; i++) {
-            
-            // find the name we are looking for
-            const entryName = finderEntries[i].getElementsByClassName("pfName")[0].innerHTML;
-
-            // if the name doesnt include the filter value, hide it
-            if (entryName.toLocaleLowerCase().includes(filterValue.toLocaleLowerCase())) {
-                finderEntries[i].style.display = "flex";
-            } else {
-                finderEntries[i].style.display = "none";
-            }
-
-            // if its starts with the value, store its position
-            if (entryName.toLocaleLowerCase().startsWith(filterValue.toLocaleLowerCase()) && !startsWith) {
-                startsWith = i;
-            }
-
-        }
-
-        glob.current.focus = -1;
-
-        // if no value, just remove any remaining active classes
-        if (filterValue == "") {
-            this.removeActiveClass(this.getFinderEntries());
-        } else {
-            if (startsWith) glob.current.focus = startsWith - 1;
-            this.addActive(true);
-        }
-
-    }
-
-    /**
      * Scans for all current entries, then returns them
      * @returns {HTMLCollectionOf}
     */
@@ -104,7 +66,12 @@ export class Finder {
      */
     isVisible() {
         const displayValue = window.getComputedStyle(this._finderEl).getPropertyValue("display");
-        return displayValue == "block";
+        return (displayValue == "block" && this.getFinderEntries().length > 0);
+    }
+
+    /** I will let you assume what this function does */
+    hide() {
+        this._finderEl.style.display = "none";
     }
 
     /**
@@ -115,8 +82,11 @@ export class Finder {
         this._list.appendChild(newEl);
     }
 
-    /** Removes all entries on a finder list */
-    clearList() {
+    /** 
+     * Removes all entries on a finder list
+     * @protected clearList
+     */
+    _clearList() {
         this._list.innerHTML = "";
     }
 
@@ -125,8 +95,9 @@ export class Finder {
      * @param {String} skin - Name of the skin
      * @param {HTMLElement} charEL - Element to be positioned
      * @param {Object} pos - Character position data
+     * @protected positionCharImg
      */
-    positionCharImg(skin, charEL, pos) {
+    _positionCharImg(skin, charEL, pos) {
 
         //               x, y, scale
         const charPos = [0, 0, 1];
@@ -165,7 +136,7 @@ export class Finder {
         const entries = this.getFinderEntries();
 
         // clean up the current active element
-        this.removeActiveClass(entries);
+        this._removeActiveClass(entries);
 
         // if true, were going up
         if (direction) {
@@ -237,8 +208,9 @@ export class Finder {
     /**
      * Removes visual feedback from a finder list
      * @param {HTMLCollectionOf} entries - All entries from a list
+     * @protected removeActiveClass
      */
-    removeActiveClass(entries) {
+    _removeActiveClass(entries) {
         for (let i = 0; i < entries.length; i++) {
             entries[i].classList.remove("finderEntry-active");
         }
