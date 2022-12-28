@@ -11,8 +11,9 @@ import { charFinder } from './GUI/Finder/Char Finder.mjs';
 import { skinFinder } from './GUI/Finder/Skin Finder.mjs';
 import { commFinder } from './GUI/Finder/Comm Finder.mjs';
 import { playerFinder } from './GUI/Finder/Player Finder.mjs';
-import { getRecolorImage, getTrailImage } from './GUI/GetImage.mjs';
 import { players } from './GUI/Players.mjs';
+import { PlayerGame } from './GUI/Player/Player Game.mjs';
+import { hideBgCharImgs, showBgCharImgs } from './GUI/Player/BG Char Image.mjs';
 
 // this is a weird way to have file svg's that can be recolored by css
 customElements.define("load-svg", class extends HTMLElement {
@@ -27,10 +28,6 @@ customElements.define("load-svg", class extends HTMLElement {
 window.onscroll = () => { window.scroll(0, 0) };
 
 // yes we all like global variables
-const charPathBase = __dirname + '/Characters';
-const charPathWork = __dirname + '/Characters/_Workshop';
-
-let colorList;
 let currentColors = [0, 0];
 
 let scData; // we will store data to send to the browsers here
@@ -47,8 +44,6 @@ const maxPlayers = 4; //change this if you ever want to remake this into singles
 const pInfoDiv = document.getElementById("pInfoDiv");
 
 const tNameInps = document.getElementsByClassName("teamName");
-
-const charImgs = document.getElementsByClassName("charImg");
 
 const scores = [];
 
@@ -71,208 +66,6 @@ const invertScoreCheck = document.getElementById("invertScore");
 const forceAlt = document.getElementById("forceAlt");
 
 const notifSpan = document.getElementById("notifText");
-
-
-// player class!
-class Player {
-
-    constructor(id) {
-
-        this.pNum = id;
-        this.nameInp = document.getElementById(`p${id}Name`);
-        this.charSel = document.getElementById(`p${id}CharSelector`);
-        this.skinSel = document.getElementById(`p${id}SkinSelector`);
-        
-        this.tag = "";
-        this.pronouns = "";
-        this.twitter = "";
-        this.twitch = "";
-        this.yt = "";
-
-        this.char = "";
-        this.skin = "";
-        this.vsSkin = "";
-        this.charInfo;
-        this.iconSrc = "";
-        this.scSrc = "";
-        this.scBrowserSrc = "";
-        this.vsSrc = "";
-        this.vsBrowserSrc = "";
-
-        this.randomImg = (this.pNum-1)%2 ? "P2" : "P1";
-
-
-        // check if theres a player preset every time we type or click in the player box
-        this.nameInp.addEventListener("input", () => {
-            playerFinder.fillFinderPresets(this);
-        });
-        this.nameInp.addEventListener("focusin", () => {
-            playerFinder.fillFinderPresets(this);
-            playerFinder.open(this.nameInp.parentElement);
-        });
-
-        // hide the player presets menu if text input loses focus
-        this.nameInp.addEventListener("focusout", () => {
-            if (!glob.inside.finder) { //but not if the mouse is hovering a finder
-                playerFinder.hide();
-            }
-        });
-
-        //resize the container if it overflows
-        this.nameInp.addEventListener("input", resizeInput);
-
-
-        // set listeners that will trigger when character or skin changes
-        this.charSel.addEventListener("click", () => {
-            charFinder.open(this.charSel, id-1)
-            charFinder.focusFilter();
-        });
-        this.skinSel.addEventListener("click", () => {
-            skinFinder.open(this.skinSel, id-1);
-            skinFinder.fillSkinList(this);
-            skinFinder.focusFilter();
-        });
-        // also set an initial character value
-        this.charChange("Random");
-
-    }
-
-    getName() {
-        return this.nameInp.value;
-    }
-    setName(name) {
-        this.nameInp.value = name;
-    }
-    getTag() {
-        return this.tag;
-    }
-    setTag(tag) {
-        this.tag = tag;
-    }
-
-    async charChange(character, notDefault) {
-
-        this.char = character;
-
-        // update character selector text
-        this.charSel.children[1].innerHTML = character;
-
-        // set the skin list for this character
-        this.charInfo = getJson(`${glob.path.char}/${character}/_Info`);
-
-        // if the character doesnt exist, write in a placeholder
-        if (this.charInfo === null) {
-            this.charInfo = {
-                skinList : [{name: "Default"}],
-                gui : []
-            }
-        }
-
-        // set the skin variable from the skin list
-        this.skin = this.charInfo.skinList[0];
-
-        // if there's only 1 skin, dont bother displaying skin selector
-        if (this.charInfo.skinList.length > 1) {
-            this.skinSel.style.display = "flex";
-        } else {
-            this.skinSel.style.display = "none";
-        }
-
-        // if we are changing both char and skin, dont show default skin
-        if (!notDefault) {
-            this.skinChange(this.skin);
-        }
-
-    }
-
-    async skinChange(skin) {
-
-        // remove focus from the skin list so it auto hides
-        document.activeElement.blur();
-
-        this.skin = skin;
-        this.vsSkin = skin;
-
-        // update the text of the skin selector
-        this.skinSel.innerHTML = skin.name;
-
-        // check if an icon for this skin exists, recolor if not
-        this.iconSrc = await getRecolorImage(
-            this.char,
-            skin,
-            this.charInfo.ogColor,
-            this.charInfo.colorRange,
-            "Icons",
-            "Icon"
-        );
-        this.charSel.children[0].src = this.iconSrc;
-
-        // get us that scoreboard image
-        this.scSrc = await getRecolorImage(
-            this.char,
-            skin,
-            this.charInfo.ogColor,
-            this.charInfo.colorRange,
-            "Skins",
-            this.randomImg
-        );
-        this.scBrowserSrc = this.getBrowserSrc(this.char, skin, "Skins/", this.randomImg);
-
-        // if we want HD skins, get us those for the VS screen
-        if (forceHDCheck.checked) {
-            if (skin.name.includes("LoA") && !noLoAHDCheck.checked) {
-                this.vsSrc = await getRecolorImage(this.char, {name: "LoA HD"}, "Skins", this.randomImg);
-                this.vsBrowserSrc = this.getBrowserSrc(this.char, {name: "LoA HD"}, "Skins/", this.randomImg);
-                this.vsSkin = {name: "LoA HD"};
-            } else {
-                this.vsSrc = await getRecolorImage(this.char, {name: "HD"}, "Skins", this.randomImg);
-                this.vsBrowserSrc = this.getBrowserSrc(this.char, {name: "HD"}, "Skins/", this.randomImg);
-                this.vsSkin = {name: "HD"};
-            }
-        } else {
-            this.vsSrc = this.scSrc;
-            this.vsBrowserSrc = this.scBrowserSrc;
-            this.vsSkin = skin;
-        }
-
-        // change the background character image (if first 2 players)
-        if (this.pNum-1 < 2) {
-            charImgs[this.pNum-1].src = this.scSrc;
-            if (this.char == "Random" && this.pNum == 1) {
-                charImgs[this.pNum-1].src = `${glob.path.charRandom}/P2.png`;
-            }
-        }
-
-        // set up a trail for the vs screen
-        this.setTrailImage();
-
-    }
-
-    async setTrailImage() {
-        const color = currentColors[(this.pNum-1)%2].hex.substring(1);
-        this.trailSrc = await getTrailImage(this.char, this.vsSkin.name, color);
-    }
-
-    getBrowserSrc(char, skin, extraPath, failPath) {
-        let browserCharPath = "Resources/Characters";
-        if (glob.wsCheck.checked) {
-            browserCharPath = "Resources/Characters/_Workshop";
-        }
-        
-        if (fs.existsSync(`${glob.path.char}/${char}/${extraPath}${skin.name}.png`) && !skin.force) {
-            return browserCharPath + `/${char}/${extraPath}${skin.name}.png`;
-        } else if (fs.existsSync(`${glob.path.char}/${char}/${extraPath}Default.png`)) {
-            if (skin.hex) {
-                return null;
-            } else {
-                return browserCharPath + `/${char}/${extraPath}Default.png`;
-            }
-        } else {
-            return `Resources/Characters/Random/${failPath}.png`;;
-        }
-    }
-
-}
 
 
 // commentator class
@@ -508,17 +301,13 @@ function init() {
     if (guiSettings.alwaysOnTop) {document.getElementById("alwaysOnTop").click()};
 
 
-    //load color slot list and add the color background on each side
-    loadColors();
-
-
     // we need to set the current char path
-    glob.wsCheck.checked ? glob.path.char = charPathWork : glob.path.char = charPathBase;
+    glob.wsCheck.checked ? glob.path.char = glob.path.charWork : glob.path.char = glob.path.charBase;
 
 
     // initialize our player class
     for (let i = 0; i < maxPlayers; i++) {
-        players.push(new Player(i+1));
+        players.push(new PlayerGame(i+1));
     }
 
     
@@ -671,103 +460,6 @@ function init() {
 }
 
 
-//will load the color list to a color slot combo box
-function loadColors() {
-
-    colorList = getJson(glob.path.text + "/Color Slots");
-
-    //for each color on the list, add them to the color dropdown
-    for (let i = 0; i < colorList.length; i++) {
-
-        //create a new div that will have the color info
-        const newDiv = document.createElement('div');
-        newDiv.title = "Also known as " + colorList[i].hex;
-        newDiv.className = "colorEntry";
-
-        //create the color's name
-        const newText = document.createElement('div');
-        newText.innerHTML = colorList[i].name;
-        
-        //create the color's rectangle
-        const newRect = document.createElement('div');
-        newRect.className = "colorInList";
-        newRect.style.backgroundColor = colorList[i].hex;
-
-        //add them to the div we created before
-        newDiv.appendChild(newRect);
-        newDiv.appendChild(newText);
-
-        //now add them to the actual interface
-        document.getElementById("dropdownColorL").appendChild(newDiv);
-
-        //copy the div we just created to add it to the right side
-        const newDivR = newDiv.cloneNode(true);
-        document.getElementById("dropdownColorR").appendChild(newDivR);
-        
-        //if the divs get clicked, update the colors
-        newDiv.addEventListener("click", updateColor);
-        newDivR.addEventListener("click", updateColor);
-    
-    }
-
-    //set the initial colors for the interface (the first color for p1, and the second for p2)
-    document.getElementById('dropdownColorL').children[0].click();
-    document.getElementById('dropdownColorR').children[1].click();
-}
-
-function updateColor() {
-
-    const side = this.parentElement.parentElement.id.substring(0, 1);;
-    const clickedColor = this.textContent;
-
-    //search for the color we just clicked
-    for (let i = 0; i < colorList.length; i++) {
-        if (colorList[i].name == clickedColor) {
-
-            const colorRectangle = document.getElementById(side+"ColorRect");
-            const colorGrad = document.getElementById(side+"Side");
-            
-            //change the variable that will be read when clicking the update button
-            if (side == "l") {
-                currentColors[0] = colorList[i];
-            } else {
-                currentColors[1] = colorList[i];
-            }
-
-            //then change both the color rectangle and the background gradient
-            colorRectangle.style.backgroundColor = colorList[i].hex;
-            colorGrad.style.backgroundImage = "linear-gradient(to bottom left, "+colorList[i].hex+"50, #00000000, #00000000)";
-        }
-    }
-
-    // generate new trails for existing characters
-    for (let i = 0; i < players.length; i+=2) {
-        if (side == "l") {
-            players[i].setTrailImage();
-        } else {
-            players[i+1].setTrailImage();
-        }
-    }
-
-    //remove focus from the menu so it hides on click
-    this.parentElement.parentElement.blur();
-
-}
-function updateColorManual(color, pNum) {
-
-    const side = (pNum % 2) ? "r" : "l";
-
-    const colorRectangle = document.getElementById(side+"ColorRect");
-    const colorGrad = document.getElementById(side+"Side");
-    
-    currentColors[pNum] = color;
-
-    colorRectangle.style.backgroundColor = color.hex;
-    colorGrad.style.backgroundImage = "linear-gradient(to bottom left, "+color.hex+"50, #00000000, #00000000)";
-
-}
-
-
 // score hotkeys function
 function giveWin(num) {
     
@@ -820,29 +512,6 @@ function deactivateWL() {
         pWLs[i].style.color = "var(--text2)";
         pWLs[i].style.backgroundImage = "var(--bg4)";
     }
-}
-
-
-//changes the width of an input box depending on the text
-function changeInputWidth(input) {
-    input.style.width = getTextWidth(input.value,
-        window.getComputedStyle(input).fontSize + " " +
-        window.getComputedStyle(input).fontFamily
-        ) + 12 + "px";
-}
-//same code as above but just for listeners
-function resizeInput() {
-    changeInputWidth(this);
-}
-
-
-//used to get the exact width of a text considering the font used
-function getTextWidth(text, font) {
-    const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
-    const context = canvas.getContext("2d");
-    context.font = font;
-    const metrics = context.measureText(text);
-    return metrics.width;
 }
 
 
@@ -1023,10 +692,11 @@ function changeGamemode() {
             dubEls[i].style.display = "flex";
         }
 
-        for (let i = 1; i < 3; i++) {
-            //hide the background character image to reduce clutter
-            charImgs[i-1].style.display = "none";
+        //hide the background character image to reduce clutter
+        hideBgCharImgs();
 
+        for (let i = 1; i < 3; i++) {
+            
             document.getElementById("row1-"+i).insertAdjacentElement("afterbegin", wlButtons[i-1]);
             document.getElementById("row1-"+i).insertAdjacentElement("afterbegin", document.getElementById('scoreBox'+i));
             
@@ -1066,10 +736,10 @@ function changeGamemode() {
             dubEls[i].style.display = "none";
         }
 
+        showBgCharImgs();
+
         //move everything back to normal
         for (let i = 1; i < 3; i++) {
-            charImgs[i-1].style.display = "block";
-
             document.getElementById('pInfo'+(i+2)).style.display = "none";
 
             document.getElementById("row3-"+i).insertAdjacentElement("afterbegin", wlButtons[i-1]);
@@ -1193,7 +863,7 @@ function clearPlayers() {
 function workshopToggle() {
 
     // set a new character path
-    glob.path.char = glob.wsCheck.checked ? charPathWork : charPathBase;
+    glob.path.char = glob.wsCheck.checked ? glob.path.charWork : glob.path.charBase;
     // reload character lists
     charFinder.loadCharacters();
     // clear current character lists
@@ -1629,7 +1299,7 @@ ipc.on('remoteGuiData', (event, data) => {
         // stuff for each side
         scores[i].setScore(newJson.score[i]);
         tNameInps[i].value = newJson.teamName[i];
-        updateColorManual(newJson.color[i], i);
+        updateColor(i, newJson.color[i]);
         
     }
 

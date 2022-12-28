@@ -1,7 +1,9 @@
 export const path = {
     char : "",
     charRandom : __dirname + '/Characters/Random',
-    text : __dirname + '/Texts'
+    text : __dirname + '/Texts',
+    charBase : __dirname + '/Characters',
+    charWork : __dirname + '/Characters/_Workshop'
 };
 
 export const current = {

@@ -1,10 +1,7 @@
-const fs = require('fs');
-
-import { getRoARecolor } from "./RoA WebGL Shader.mjs";
-import { getJson } from "./Utils.mjs";
-import * as glob from './Globals.mjs';
 import { viewport } from './Viewport.mjs';
-import { charFinder } from "./Finder/Char Finder.mjs";
+import { bracketPlayers } from "./Players.mjs";
+import { PlayerBracket } from "./Player/Player Bracket.mjs";
+
 
 const bRoundSelect = document.getElementById('bracketRoundSelect');
 const bEncountersDiv = document.getElementById('bracketEncounters');
@@ -32,284 +29,6 @@ let bracketData = {
 
 let previousRound;
 
-class BracketPlayer {
-
-    constructor(id) {
-
-        this.pNum = id;
-        this.nameInp;
-        this.tagInp;
-        this.charSel;
-        this.skinSel;
-        this.charDiv = this.createCharDiv();
-
-        this.char = "";
-        this.skin = "";
-        this.charInfo;
-        this.iconSrc = "";
-        this.iconBrowserSrc;
-
-        this.scoreInp;
-
-        // set listeners that will trigger when character or skin changes
-        this.charSel.addEventListener("click", () => {charFinder.open(this.charSel, id)});
-        this.skinSel.addEventListener("click", () => {openSkinSelector(id)});
-
-    }
-
-    getName() {
-        return this.nameInp.value;
-    }
-    setName(name) {
-        this.nameInp.value = name == "-" ? "" : name;
-    }
-    getTag() {
-        return this.tagInp.value;
-    }
-    setTag(tag) {
-        this.tagInp.value = tag;
-    }
-    getScore() {
-        return this.scoreInp.value;
-    }
-    setScore(score) {
-        this.scoreInp.value = score == "-" ? "" : score;
-    }
-
-    createCharDiv() {
-
-        // main div
-        const charDiv = document.createElement('div');
-        charDiv.className = "charSelects";
-
-        // for the character list
-        const cFinderPositionDiv = document.createElement('div');
-        cFinderPositionDiv.className = "finderPosition";
-        charDiv.appendChild(cFinderPositionDiv);
-
-        // actual character button
-        const charSelectorDiv = document.createElement('div');
-        charSelectorDiv.className = "selector charSelector bCharSelector";
-        charSelectorDiv.setAttribute("tabindex", "-1");
-        this.charSel = charSelectorDiv;
-        cFinderPositionDiv.appendChild(charSelectorDiv);
-
-        // character icon
-        const charSelectorIconImg = document.createElement('img');
-        charSelectorIconImg.className = "charSelectorIcon";
-        charSelectorIconImg.setAttribute("alt", "");
-        charSelectorDiv.appendChild(charSelectorIconImg);
-
-        // character text
-        const charSelectorTextDiv = document.createElement('div');
-        charSelectorTextDiv.className = "charSelectorText";
-        charSelectorDiv.appendChild(charSelectorTextDiv);
-
-        // for the skin list
-        const cFinderPositionSkinDiv = document.createElement('div');
-        cFinderPositionSkinDiv.className = "finderPosition";
-        charDiv.appendChild(cFinderPositionSkinDiv);
-
-        // actual skin button
-        const skinSelectorDiv = document.createElement('div');
-        skinSelectorDiv.className = "selector skinSelector bSkinSelector";
-        skinSelectorDiv.setAttribute("tabindex", "-1");
-        this.skinSel = skinSelectorDiv;
-        cFinderPositionSkinDiv.appendChild(skinSelectorDiv);
-
-        return charDiv;
-
-    }
-
-    async charChange(character, notDefault) {
-
-        if (character == "-" || character == "Random") {
-            character = "None"
-        }
-        this.char = character;
-
-        // update character selector text
-        this.charSel.children[1].innerHTML = character;
-
-        // set the skin list for this character
-        this.charInfo = getJson(`${glob.path.char}/${character}/_Info`);
-
-        // if the character doesnt exist, write in a placeholder
-        if (this.charInfo === null) {
-            this.charInfo = {
-                skinList : [{name: "Default"}],
-                gui : []
-            }
-        }
-
-        // set the skin variable from the skin list
-        this.skin = this.charInfo.skinList[0];
-
-        // if there's only 1 skin, dont bother displaying skin selector
-        if (this.charInfo.skinList.length > 1) {
-            this.skinSel.style.display = "flex";
-        } else {
-            this.skinSel.style.display = "none";
-        }
-
-        // if we are changing both char and skin, dont show default skin
-        if (!notDefault) {
-            this.skinChange(this.skin);
-        }
-
-    }
-
-    async skinChange(skin) {
-
-        // remove focus from the skin list so it auto hides
-        document.activeElement.blur();
-
-        this.skin = skin;
-
-        // update the text of the skin selector
-        this.skinSel.innerHTML = skin.name;
-
-        // check if an icon for this skin exists, recolor if not
-        this.iconSrc = await this.getRecolorImage(
-            this.char,
-            skin,
-            this.charInfo.ogColor,
-            this.charInfo.colorRange,
-            "Icons/",
-            "Icon"
-        );
-        this.charSel.children[0].src = this.iconSrc;
-        this.iconBrowserSrc = this.getBrowserSrc(this.char, skin);
-
-    }
-
-    async fillSkinList() {
-
-        const skinImgs = [];
-
-        // for every skin on the skin list, add an entry
-        for (let i = 0; i < this.charInfo.skinList.length; i++) {
-            
-            // this will be the div to click
-            const newDiv = document.createElement('div');
-            newDiv.className = "finderEntry";
-            newDiv.addEventListener("click", () => {this.skinChange(this.charInfo.skinList[i])});
-            
-            // character name
-            const spanName = document.createElement('span');
-            spanName.innerHTML = this.charInfo.skinList[i].name;
-            spanName.className = "pfName";
-
-            // add them to the div we created before
-            newDiv.appendChild(spanName);
-
-            // now for the character image, this is the mask/mirror div
-            const charImgBox = document.createElement("div");
-            charImgBox.className = "pfCharImgBox";
-
-            // actual image
-            const charImg = document.createElement('img');
-            charImg.className = "pfCharImg";
-            skinImgs.push(charImg);
-            
-            // we have to position it
-            positionChar(this.charInfo.skinList[i].name, charImg, {gui: this.charInfo.gui});
-            // and add it to the mask
-            charImgBox.appendChild(charImg);
-
-            //add it to the main div
-            newDiv.appendChild(charImgBox);
-
-            // and now add the div to the actual GUI
-            skinFinder.lastElementChild.appendChild(newDiv);
-
-        }
-
-        // now add a final entry for custom skins
-        const newDiv = document.createElement('div');
-        newDiv.className = "finderEntry";
-        newDiv.addEventListener("click", () => {showCustomSkin(this.pNum)});
-        const spanName = document.createElement('span');
-        spanName.innerHTML = "Custom Skin";
-        spanName.className = "pfName";
-        spanName.style.color = "lightsalmon"
-        newDiv.appendChild(spanName);
-        skinFinder.lastElementChild.appendChild(newDiv);
-
-        // add them images to each entry and recolor them if needed
-        for (let i = 0; i < skinImgs.length; i++) {
-            if (window.getComputedStyle(skinFinder).getPropertyValue("display") == "none") {
-                break;
-            }
-            const finalSrc = await this.getRecolorImage(
-                this.char,
-                this.charInfo.skinList[i],
-                this.charInfo.ogColor,
-                this.charInfo.colorRange,
-                "Skins/",
-                "P2"
-            );
-            skinImgs[i].setAttribute('src', finalSrc);
-        }
-
-    }
-
-    // checks if the image for that skin exists, recolors Default if not
-    async getRecolorImage(char, skin, colIn, colRan, extraPath, failPath) {
-        if (fs.existsSync(`${glob.path.char}/${char}/${extraPath}${skin.name}.png`) && !skin.force) {
-            return `${glob.path.char}/${char}/${extraPath}${skin.name}.png`;
-        } else if (fs.existsSync(`${glob.path.char}/${char}/${extraPath}Default.png`)) {
-            if (skin.hex) {
-                return await getRoARecolor(
-                    char,
-                    `${glob.path.char}/${char}/${extraPath}Default.png`,
-                    colIn,
-                    colRan,
-                    skin
-                );
-            } else {
-                return `${glob.path.char}/${char}/${extraPath}Default.png`;
-            }
-        } else {
-            return `${glob.path.charRandom}/${failPath}.png`;
-        }
-    }
-
-    getBrowserSrc(char, skin) {
-        let browserCharPath = "Resources/Characters";
-        if (glob.wsCheck.checked) {
-            browserCharPath = "Resources/Characters/_Workshop";
-        }
-        
-        if (fs.existsSync(`${glob.path.char}/${char}/Icons/${skin.name}.png`) && !skin.force) {
-            return browserCharPath + `/${char}/Icons/${skin.name}.png`;
-        } else if (fs.existsSync(`${glob.path.char}/${char}/Icons/Default.png`)) {
-            if (skin.hex) {
-                return null;
-            } else {
-                return browserCharPath + `/${char}/Icons/Default.png`;
-            }
-        } else {
-            return `${glob.path.charRandom}/Icon.png`;
-        }
-    }
-
-    setPresetListeners() {
-        // hide the player presets menu if text input loses focus
-        this.nameInp.addEventListener("focusout", () => {
-            if (!inPF) { //but not if the mouse is hovering a player preset
-                pFinder.style.display = "none";
-            }
-        });
-
-        //check if theres a player preset every time we type or click in the player box
-        this.nameInp.addEventListener("input", () => {checkPlayerPreset(this.pNum)});
-        this.nameInp.addEventListener("focusin", () => {checkPlayerPreset(this.pNum)});
-    }
-
-}
-
-let bracketPlayers = [];
 
 // its always good to listen closely
 bRoundSelect.addEventListener("change", createEncounters);
@@ -328,11 +47,11 @@ function createEncounters() {
     }
 
     bEncountersDiv.innerHTML = "";
-    bracketPlayers = [];
+    bracketPlayers.length = 0;
     
     for (let i = 0; i < bracketData[this.value].length; i++) {
 
-        bracketPlayers.push(new BracketPlayer(i));
+        bracketPlayers.push(new PlayerBracket(i));
         
         // new encounter div
         const newEnc = document.createElement('div');
@@ -376,7 +95,7 @@ function createEncounters() {
         bracketPlayers[i].setScore(bracketData[this.value][i].score);
         bracketPlayers[i].charChange(bracketData[this.value][i].character);
         bracketPlayers[i].skinChange(bracketData[this.value][i].skin);
-        bracketPlayers[i].setPresetListeners();
+        bracketPlayers[i].setFinderListeners();
 
         if (i%2 == 0) {
 

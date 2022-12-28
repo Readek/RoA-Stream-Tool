@@ -2,10 +2,11 @@ const fs = require('fs');
 import * as glob from '../Globals.mjs';
 import { getJson } from '../Utils.mjs';
 import { getRecolorImage } from '../GetImage.mjs';
-import { players } from '../Players.mjs';
 import { FinderSelect } from './Finder Select.mjs';
 
 class CharFinder extends FinderSelect {
+
+    #curPlayer;
 
     constructor() {
         super(document.getElementById("characterFinder"));
@@ -93,12 +94,12 @@ class CharFinder extends FinderSelect {
         this._finderEl.firstElementChild.value = "";
 
         // our player class will take things from here
-        if (glob.inside.bracket) {
-            /* bracketPlayers[glob.current.player].charChange(charName); */
-        } else {
-            players[glob.current.player].charChange(charName);
-        }
+        this.#curPlayer.charChange(charName);
 
+    }
+
+    setCurrentPlayer(player) {
+        this.#curPlayer = player;
     }
 
 }
