@@ -9,9 +9,10 @@ import { getJson } from './GUI/Utils.mjs';
 import { viewport } from './GUI/Viewport.mjs';
 import { charFinder } from './GUI/Finder/Char Finder.mjs';
 import { skinFinder } from './GUI/Finder/Skin Finder.mjs';
+import { commFinder } from './GUI/Finder/Comm Finder.mjs';
+import { playerFinder } from './GUI/Finder/Player Finder.mjs';
 import { getRecolorImage, getTrailImage } from './GUI/GetImage.mjs';
 import { players } from './GUI/Players.mjs';
-import { commFinder } from './GUI/Finder/Comm Finder.mjs';
 
 // this is a weird way to have file svg's that can be recolored by css
 customElements.define("load-svg", class extends HTMLElement {
@@ -38,8 +39,6 @@ let currentP1WL = "", currentP2WL = "";
 let currentBestOf = 5;
 
 let gamemode = 1;
-
-let presName; // to break playerpreset cycle
 
 const maxPlayers = 4; //change this if you ever want to remake this into singles only or 3v3 idk
 
@@ -70,8 +69,6 @@ const forceWL = document.getElementById('forceWLToggle');
 const scoreAutoUpdateCheck = document.getElementById("scoreAutoUpdate");
 const invertScoreCheck = document.getElementById("invertScore");
 const forceAlt = document.getElementById("forceAlt");
-
-const pFinder = document.getElementById("playerFinder");
 
 const notifSpan = document.getElementById("notifText");
 
@@ -105,16 +102,21 @@ class Player {
         this.randomImg = (this.pNum-1)%2 ? "P2" : "P1";
 
 
-        // hide the player presets menu if text input loses focus
-        this.nameInp.addEventListener("focusout", () => {
-            if (!inPF) { //but not if the mouse is hovering a player preset
-                pFinder.style.display = "none";
-            }
+        // check if theres a player preset every time we type or click in the player box
+        this.nameInp.addEventListener("input", () => {
+            playerFinder.fillFinderPresets(this);
+        });
+        this.nameInp.addEventListener("focusin", () => {
+            playerFinder.fillFinderPresets(this);
+            playerFinder.open(this.nameInp.parentElement);
         });
 
-        //check if theres a player preset every time we type or click in the player box
-        this.nameInp.addEventListener("input", () => {checkPlayerPreset(id-1)});
-        this.nameInp.addEventListener("focusin", () => {checkPlayerPreset(id-1)});
+        // hide the player presets menu if text input loses focus
+        this.nameInp.addEventListener("focusout", () => {
+            if (!glob.inside.finder) { //but not if the mouse is hovering a finder
+                playerFinder.hide();
+            }
+        });
 
         //resize the container if it overflows
         this.nameInp.addEventListener("input", resizeInput);
@@ -140,6 +142,12 @@ class Player {
     }
     setName(name) {
         this.nameInp.value = name;
+    }
+    getTag() {
+        return this.tag;
+    }
+    setTag(tag) {
+        this.tag = tag;
     }
 
     async charChange(character, notDefault) {
@@ -532,12 +540,6 @@ function init() {
     p2L.addEventListener("click", setWLP2);
 
 
-    // prepare the player finder (player presets)
-    // if the mouse is hovering a player preset, let us know
-    /* pFinder.addEventListener("mouseenter", () => { inPF = true });
-    pFinder.addEventListener("mouseleave", () => { inPF = false }); */
-
-
     // open player info menu if clicking on the icon
     const pInfoButts = document.getElementsByClassName("pInfoButt");
     for (let i = 0; i < pInfoButts.length; i++) {
@@ -593,8 +595,8 @@ function init() {
 
         // if a dropdown menu is open, click on the current focus
         if (glob.current.focus > -1) {
-            if (pFinder.style.display == "block") {
-                pFinder.getElementsByClassName("finderEntry")[glob.current.focus].click();
+            if (playerFinder.isVisible()) {
+                playerFinder.getFinderEntries()[glob.current.focus].click();
             } else if (charFinder.isVisible()) {
                 charFinder.getFinderEntries()[glob.current.focus].click();
             } else if (skinFinder.isVisible()) {
@@ -620,12 +622,10 @@ function init() {
 
     //esc to clear player info
     Mousetrap.bind('esc', () => {
-        if (glob.inside.settings || glob.inside.bracket) { //if settings are open, close them
+        if (glob.inside.settings || glob.inside.bracket) {
             viewport.toCenter();
-        } else if (pFinder.style.display == "block") { // if a finder menu is open, close it
-            pFinder.style.display = "none";
         } else if (charFinder.isVisible() || skinFinder.isVisible()
-        || commFinder.isVisible()) {
+        || commFinder.isVisible() || playerFinder.isVisible()) {
             document.activeElement.blur();
         } else if (pInfoDiv.style.pointerEvents == "auto") { // if player info menu is up
             document.getElementById("pInfoBackButt").click();
@@ -646,8 +646,8 @@ function init() {
 
     //up/down, to navigate the player presets menu (only when a menu is shown)
     Mousetrap.bind('down', () => {
-        if (pFinder.style.display == "block") {
-            addActive(pFinder.getElementsByClassName("finderEntry"), true);
+        if (playerFinder.isVisible()) {
+            playerFinder.addActive(true);
         } else if (charFinder.isVisible()) {
             charFinder.addActive(true);
         } else if (skinFinder.isVisible()) {
@@ -657,8 +657,8 @@ function init() {
         }
     });
     Mousetrap.bind('up', () => {
-        if (pFinder.style.display == "block") {
-            addActive(pFinder.getElementsByClassName("finderEntry"), false);
+        if (playerFinder.isVisible()) {
+            playerFinder.addActive(false);
         } else if (charFinder.isVisible()) {
             charFinder.addActive(false);
         } else if (skinFinder.isVisible()) {
@@ -667,6 +667,7 @@ function init() {
             commFinder.addActive(false);
         }
     });
+
 }
 
 
@@ -819,232 +820,6 @@ function deactivateWL() {
         pWLs[i].style.color = "var(--text2)";
         pWLs[i].style.backgroundImage = "var(--bg4)";
     }
-}
-
-
-//called whenever the user types something in the player name box
-async function checkPlayerPreset(pNum) {
-
-    //remove the "focus" for the player presets list
-    glob.current.focus = -1;
-
-    let curPlayer;
-    // determine the current player class
-    if (glob.inside.bracket) {
-        curPlayer = bracketPlayers[pNum];
-    } else {
-        curPlayer = players[pNum];
-    }
-
-    // move the player finder under the current player input
-    curPlayer.nameInp.parentElement.appendChild(pFinder);
-
-
-    //1 the current list each time we type
-    pFinder.innerHTML = "";
-
-    // check for later
-    let fileFound;
-    const skinImgs = [];
-
-    let currentPresName;
-
-    //if we typed at least 3 letters
-    if (curPlayer.getName().length >= 3) {
-
-        //check the files in that folder
-        const files = fs.readdirSync(glob.path.text + "/Player Info/");
-        files.forEach(file => {
-
-            //removes ".json" from the file name
-            file = file.substring(0, file.length - 5);
-
-            //if the current text matches a file from that folder
-            if (file.toLocaleLowerCase().includes(curPlayer.getName().toLocaleLowerCase())) {
-
-                // store that we found at least one preset
-                fileFound = true;
-
-                //un-hides the player presets div
-                pFinder.style.display = "block";
-
-                //go inside that file to get the player info
-                const playerInfo = getJson(glob.path.text + "/Player Info/" + file);
-                //for each character that player plays
-                playerInfo.characters.forEach(char => {
-
-                    //this will be the div to click
-                    const newDiv = document.createElement('div');
-                    newDiv.className = "finderEntry";
-                    newDiv.addEventListener("click", () => {playerPreset(newDiv, pNum)});
-                    
-                    //create the texts for the div, starting with the tag
-                    const spanTag = document.createElement('span');
-                    //if the tag is empty, dont do anything
-                    if (playerInfo.tag != "") {
-                        spanTag.innerHTML = playerInfo.tag;
-                        spanTag.className = "pfTag";
-                    }
-
-                    //player name
-                    const spanName = document.createElement('span');
-                    spanName.innerHTML = file;
-                    spanName.className = "pfName";
-
-                    //player character
-                    const spanChar = document.createElement('span');
-                    spanChar.innerHTML = char.character;
-                    spanChar.className = "pfChar";
-
-                    //we will use atributes to store data to read when clicked
-                    newDiv.setAttribute("pronouns", playerInfo.pronouns);
-                    newDiv.setAttribute("tag", playerInfo.tag);
-                    newDiv.setAttribute("twitter", playerInfo.twitter);
-                    newDiv.setAttribute("twitch", playerInfo.twitch);
-                    newDiv.setAttribute("yt", playerInfo.yt);
-                    newDiv.setAttribute("name", file);
-                    newDiv.setAttribute("char", char.character);
-                    newDiv.setAttribute("skin", char.skin);
-                    newDiv.setAttribute("hex", char.hex);
-
-                    //add them to the div we created before
-                    newDiv.appendChild(spanTag);
-                    newDiv.appendChild(spanName);
-                    newDiv.appendChild(spanChar);
-
-                    //now for the character image, this is the mask/mirror div
-                    const charImgBox = document.createElement("div");
-                    charImgBox.className = "pfCharImgBox";
-
-                    //actual image
-                    const charImg = document.createElement('img');
-                    charImg.className = "pfCharImg";
-                    const charJson = getJson(glob.path.char + "/" + char.character + "/_Info");
-                    // we will store this for later
-                    skinImgs.push({
-                        el : charImg,
-                        charJson : charJson,
-                        char : char.character,
-                        skin : char.skin,
-                        hex : char.hex
-                    });
-                    //we have to position it
-                    positionChar(char.skin, charImg, charJson);
-                    //and add it to the mask
-                    charImgBox.appendChild(charImg);
-
-                    //add it to the main div
-                    newDiv.appendChild(charImgBox);
-
-                    //and now add the div to the actual interface
-                    pFinder.appendChild(newDiv);
-
-                    // we need this to know which cycle we're in
-                    presName = curPlayer.getName();
-
-                });
-            }
-        });
-    }
-
-    // if no presets were found, hide the player finder
-    if (!fileFound) {
-        pFinder.style.display = "none";
-    }
-
-    // if playing 2v2 and if the current player is on the right side
-    if (gamemode == 2 && pNum%2 != 0) {
-        // anchor point will be at the right side so it stays visible
-        pFinder.style.right = "0px";
-        pFinder.style.left = "";
-    } else {
-        pFinder.style.left = "0px";
-        pFinder.style.right = "";
-    }
-
-    // now lets add those images to each entry
-    currentPresName = presName;
-    for (let i = 0; i < skinImgs.length; i++) {
-
-        // if the list isnt being shown, break the cycle
-        if (presName != currentPresName ||
-        window.getComputedStyle(pFinder).getPropertyValue("display") == "none") {
-            break;
-        }
-
-        let skin;
-        if (skinImgs[i].charJson) {
-            if (skinImgs[i].skin == "Custom") {
-                skin = {name: "Custom", hex: skinImgs[i].hex}
-            } else {
-                for (let j = 0; j < skinImgs[i].charJson.skinList.length; j++) {
-                    if (skinImgs[i].charJson.skinList[j].name == skinImgs[i].skin) {
-                        skin = skinImgs[i].charJson.skinList[j];
-                    }
-                }
-            }
-        } else {
-            skin = {name: skinImgs[i].skin}
-        }
-        
-        let finalColIn = null;
-        let finalColRan = null;
-        if (skinImgs[i].charJson) {
-            finalColIn = skinImgs[i].charJson.ogColor;
-            finalColRan = skinImgs[i].charJson.colorRange;
-        }
-        const finalSrc = await getRecolorImage(
-            skinImgs[i].char,
-            skin,
-            finalColIn,
-            finalColRan,
-            "Skins",
-            "P2"
-        );
-        skinImgs[i].el.setAttribute('src', finalSrc);
-
-    }
-
-}
-
-//called when the user clicks on a player preset
-function playerPreset(el, pNum) {
-
-    let curPlayer;
-    if (glob.inside.bracket) {
-        curPlayer = bracketPlayers[pNum];
-    } else {
-        curPlayer = players[pNum];
-    }
-
-    curPlayer.pronouns = el.getAttribute("pronouns");
-    curPlayer.twitter = el.getAttribute("twitter");
-    curPlayer.twitch = el.getAttribute("twitch");
-    curPlayer.yt = el.getAttribute("yt");
-
-    curPlayer.setName(el.getAttribute("name"));
-    if (!glob.inside.bracket) {
-        curPlayer.tag = el.getAttribute("tag");
-        changeInputWidth(curPlayer.nameInp);
-    } else {
-        curPlayer.setTag(el.getAttribute("tag"));
-    }
-
-
-    players[pNum].charChange(el.getAttribute("char"), true);
-
-    if (el.getAttribute("skin") == "Custom") {
-        customChange(el.getAttribute("hex"));
-    } else {
-        for (let i = 0; i < curPlayer.charInfo.skinList.length; i++) {
-            if (curPlayer.charInfo.skinList[i].name == el.getAttribute("skin")) {
-                curPlayer.skinChange(curPlayer.charInfo.skinList[i]);
-            }
-        }
-    }
-
-    pFinder.style.display = "none";
-
 }
 
 
@@ -1878,4 +1653,3 @@ ipc.on('remoteGuiData', (event, data) => {
     displayNotif("GUI was remotely updated");
 
 });
-

@@ -7,7 +7,7 @@ const fs = require('fs');
 class CommFinder extends Finder {
 
     constructor() {
-        super(document.getElementById("casterFinder"))
+        super(document.getElementById("casterFinder"));
     }
 
     fillFinderPresets(caster) {
@@ -25,12 +25,13 @@ class CommFinder extends Finder {
             const files = fs.readdirSync(glob.path.text + "/Commentator Info/");
             files.forEach(file => {
 
-                // get the preset name
+                // removes ".json" from the file name
                 file = file.substring(0, file.length - 5);
 
                 // if it matches with the current input text
                 if (file.toLocaleLowerCase().includes(caster.getName().toLocaleLowerCase())) {
 
+                    // store that we found at least one preset
                     fileFound = true;
 
                     // get the preset data
@@ -39,20 +40,24 @@ class CommFinder extends Finder {
                     // create the new div that will be added as an entry
                     const newDiv = document.createElement('button');
                     newDiv.className = "finderEntry";
-                    newDiv.addEventListener("click", () => {this.casterPreset(newDiv, caster)});
 
                     // entry text
                     const spanName = document.createElement('span');
                     spanName.innerHTML = file;
                     spanName.className = "pfName";
 
-                    // data to be accessed when clicked
-                    newDiv.setAttribute("twitter", casterInfo.twitter);
-                    newDiv.setAttribute("twitch", casterInfo.twitch);
-                    newDiv.setAttribute("yt", casterInfo.yt);
-                    newDiv.setAttribute("name", file);
-
                     newDiv.appendChild(spanName);
+
+                    // data to be accessed when clicked
+                    const cData = {
+                        name : file,
+                        twitter : casterInfo.twitter,
+                        twitch : casterInfo.twitch,
+                        yt : casterInfo.yt
+                    }
+
+                    // when the div is clicked, update caster
+                    newDiv.addEventListener("click", () => {this.#entryClick(cData, caster)});
 
                     this.addEntry(newDiv);
 
@@ -71,15 +76,19 @@ class CommFinder extends Finder {
 
     }
 
-    //called when the user clicks on a player preset
-    casterPreset(clickDiv, caster) {
+    /**
+     * Updates a caster with the data stored on the list's entry
+     * @param {Object} cData - Data to be added to the caster
+     * @param {Caster} caster - Commentator to be updated
+     */
+    #entryClick(cData, caster) {
 
-        caster.setName(clickDiv.getAttribute("name"));
-        caster.setTwitter(clickDiv.getAttribute("twitter"));
-        caster.setTwitch(clickDiv.getAttribute("twitch"));
-        caster.setYt(clickDiv.getAttribute("yt"));
+        caster.setName(cData.name);
+        caster.setTwitter(cData.twitter);
+        caster.setTwitch(cData.twitch);
+        caster.setYt(cData.yt);
 
-        commFinder.hide();
+        this.hide();
 
     }
 

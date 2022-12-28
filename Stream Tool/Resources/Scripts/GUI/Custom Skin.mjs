@@ -71,3 +71,7 @@ export function customChange(hex) {
     hideCustomSkin();
 
 }
+
+export function setCurrentPlayer(player) {
+    curPlayer = player;
+}
