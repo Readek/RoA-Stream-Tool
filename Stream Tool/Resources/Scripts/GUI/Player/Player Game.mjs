@@ -4,6 +4,7 @@ import * as glob from '../Globals.mjs';
 import { getRecolorImage, getTrailImage } from "../GetImage.mjs";
 import { updateBgCharImg } from "./BG Char Image.mjs";
 import { currentColors } from "../Colors.mjs";
+import { settings } from "../Settings.mjs";
 
 export class PlayerGame extends Player {
 
@@ -54,6 +55,11 @@ export class PlayerGame extends Player {
     }
 
 
+    /**
+     * Updates the character for this player
+     * @param {String} character - Name of the character to update to
+     * @param {Boolean} notDefault - Determines if we skinChange to the default skin
+     */
     async charChange(character, notDefault) {
 
         this.char = character;
@@ -89,6 +95,10 @@ export class PlayerGame extends Player {
 
     }
 
+    /**
+     * Updates the skin for this player
+     * @param {Object} skin - Skin data
+     */
     async skinChange(skin) {
 
         // remove focus from the skin list so it auto hides
@@ -123,16 +133,11 @@ export class PlayerGame extends Player {
         this.scBrowserSrc = this.getBrowserSrc(this.char, skin, "Skins", this.randomImg);
 
         // if we want HD skins, get us those for the VS screen
-        if (/* forceHDCheck.checked */ false) {
-            if (skin.name.includes("LoA") && !noLoAHDCheck.checked) {
-                this.vsSrc = await getRecolorImage(this.char, {name: "LoA HD"}, "Skins", this.randomImg);
-                this.vsBrowserSrc = this.getBrowserSrc(this.char, {name: "LoA HD"}, "Skins/", this.randomImg);
-                this.vsSkin = {name: "LoA HD"};
-            } else {
-                this.vsSrc = await getRecolorImage(this.char, {name: "HD"}, "Skins", this.randomImg);
-                this.vsBrowserSrc = this.getBrowserSrc(this.char, {name: "HD"}, "Skins/", this.randomImg);
-                this.vsSkin = {name: "HD"};
-            }
+        if (settings.isHDChecked()) {
+            const skinName = skin.name.includes("LoA") && !settings.isNoLoAChecked() ? "LoA HD" : "HD";
+            this.vsSrc = await getRecolorImage(this.char, {name: skinName}, "Skins", this.randomImg);
+            this.vsBrowserSrc = this.getBrowserSrc(this.char, {name: skinName}, "Skins/", this.randomImg);
+            this.vsSkin = {name: skinName};
         } else {
             this.vsSrc = this.scSrc;
             this.vsBrowserSrc = this.scBrowserSrc;
@@ -153,12 +158,13 @@ export class PlayerGame extends Player {
 
     }
 
+    /** Generates a new trail image for this player */
     async setTrailImage() {
         const color = currentColors[(this.pNum-1)%2].hex.substring(1);
         this.trailSrc = await getTrailImage(this.char, this.vsSkin.name, color);
     }
 
-    // changes the width of an input box depending on the text
+    /** Changes the width of an input box depending on the text */
     resizeInput() {
         this.nameInp.style.width = this.getTextWidth(this.nameInp.value,
             window.getComputedStyle(this.nameInp).fontSize + " " +
@@ -166,7 +172,7 @@ export class PlayerGame extends Player {
             ) + 12 + "px";
     }
 
-    //used to get the exact width of a text considering the font used
+    /** Used to get the exact width of a text considering the font used */
     getTextWidth(text, font) {
         const canvas = this.getTextWidth.canvas || (this.getTextWidth.canvas = document.createElement("canvas"));
         const context = canvas.getContext("2d");

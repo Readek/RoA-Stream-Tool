@@ -14,7 +14,7 @@ export class PlayerBracket extends Player {
 
         super(id);
 
-        this.charDiv = this.createCharDiv();
+        this.charDiv = this.createCharSelects();
 
     }
 
@@ -38,7 +38,8 @@ export class PlayerBracket extends Player {
     }
 
 
-    createCharDiv() {
+    /** Creates the charSel and skinSel div elements */
+    createCharSelects() {
 
         // main div
         const charDiv = document.createElement('div');
@@ -83,6 +84,11 @@ export class PlayerBracket extends Player {
 
     }
 
+    /**
+     * Updates the character for this player
+     * @param {String} character - Name of the character to update to
+     * @param {Boolean} notDefault - Determines if we skinChange to the default skin
+     */
     async charChange(character, notDefault) {
 
         if (character == "-" || character == "Random") {
@@ -121,6 +127,10 @@ export class PlayerBracket extends Player {
 
     }
 
+    /**
+     * Updates the skin for this player
+     * @param {Object} skin - Skin data
+     */
     async skinChange(skin) {
 
         // remove focus from the skin list so it auto hides

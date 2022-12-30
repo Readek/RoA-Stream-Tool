@@ -11,8 +11,6 @@ export const current = {
     focus : -1
 }
 
-export const wsCheck = document.getElementById('workshopToggle');
-
 // these are set when their respective views are visible
 export const inside = {
     settings : false,

@@ -14,6 +14,7 @@ import { playerFinder } from './GUI/Finder/Player Finder.mjs';
 import { players } from './GUI/Players.mjs';
 import { PlayerGame } from './GUI/Player/Player Game.mjs';
 import { hideBgCharImgs, showBgCharImgs } from './GUI/Player/BG Char Image.mjs';
+import { settings } from './GUI/Settings.mjs';
 
 // this is a weird way to have file svg's that can be recolored by css
 customElements.define("load-svg", class extends HTMLElement {
@@ -58,12 +59,9 @@ const tournamentInp = document.getElementById('tournamentName');
 
 const casters = [];
 
-const forceHDCheck = document.getElementById('forceHD');
-const noLoAHDCheck = document.getElementById('noLoAHD');
 const forceWL = document.getElementById('forceWLToggle');
 const scoreAutoUpdateCheck = document.getElementById("scoreAutoUpdate");
 const invertScoreCheck = document.getElementById("invertScore");
-const forceAlt = document.getElementById("forceAlt");
 
 const notifSpan = document.getElementById("notifText");
 
@@ -256,29 +254,18 @@ class Score {
 
 }
 
-// (more classes may be created in future releases maybe?)
 
 init();
 function init() {
 
     //first, add listeners for the bottom bar buttons
     document.getElementById('updateRegion').addEventListener("click", writeScoreboard);
-    document.getElementById('settingsRegion').addEventListener("click", () => {viewport.toSettings()});
-    document.getElementById('botBarBracket').addEventListener("click", () => {viewport.toBracket()});
-
 
     //if the viewport is moved, click anywhere on the center to go back
     document.getElementById('goBack').addEventListener("click", () => {viewport.toCenter()});
 
 
-    /* SETTINGS */
-
     //set listeners for the settings checkboxes
-    document.getElementById("allowIntro").addEventListener("click", saveGUISettings);
-    glob.wsCheck.addEventListener("click", workshopToggle);
-    forceAlt.addEventListener("click", saveGUISettings);
-    forceHDCheck.addEventListener("click", HDtoggle);
-    noLoAHDCheck.addEventListener("click", saveGUISettings);
     forceWL.addEventListener("click", forceWLtoggle);
     scoreAutoUpdateCheck.addEventListener("click", saveGUISettings);
     invertScoreCheck.addEventListener("click", saveGUISettings);
@@ -287,14 +274,6 @@ function init() {
     
     // load GUI settings
     const guiSettings = JSON.parse(fs.readFileSync(glob.path.text + "/GUI Settings.json", "utf-8"));
-    if (guiSettings.allowIntro) {document.getElementById("allowIntro").checked = true};
-    if (guiSettings.workshop) {glob.wsCheck.checked = true} else {
-        // disable alt arts checkbox
-        forceAlt.disabled = true;
-    };
-    if (guiSettings.forceAlt) {forceAlt.checked = true};
-    if (guiSettings.forceHD) {forceHDCheck.checked = true};
-    if (guiSettings.noLoAHD) {noLoAHDCheck.checked = true; noLoAHDCheck.disabled = false};
     if (guiSettings.forceWL) {forceWL.click()};
     if (guiSettings.scoreAutoUpdate) {scoreAutoUpdateCheck.checked = true};
     if (guiSettings.invertScore) {invertScoreCheck.checked = true};
@@ -302,7 +281,7 @@ function init() {
 
 
     // we need to set the current char path
-    glob.wsCheck.checked ? glob.path.char = glob.path.charWork : glob.path.char = glob.path.charBase;
+    glob.path.char = settings.isWsChecked() ? glob.path.charWork : glob.path.charBase;
 
 
     // initialize our player class
@@ -859,30 +838,6 @@ function clearPlayers() {
 }
 
 
-//called whenever the user clicks on the workshop toggle
-function workshopToggle() {
-
-    // set a new character path
-    glob.path.char = glob.wsCheck.checked ? glob.path.charWork : glob.path.charBase;
-    // reload character lists
-    charFinder.loadCharacters();
-    // clear current character lists
-    for (let i = 0; i < maxPlayers; i++) {
-        players[i].charChange("Random");
-    }
-
-    // disable or enable alt arts checkbox
-    if (glob.wsCheck.checked) {
-        forceAlt.disabled = false;
-    } else {
-        forceAlt.disabled = true;
-    }
-
-    // save current checkbox value to the settings file
-    saveGUISettings();
-
-}
-
 // whenever the user clicks on the force W/L checkbox
 function forceWLtoggle() {
 
@@ -896,26 +851,6 @@ function forceWLtoggle() {
             wlButtons[i].style.display = "none";
             deactivateWL();
         }
-    }
-
-    // save current checkbox value to the settings file
-    saveGUISettings();
-
-}
-
-// whenever the user clicks on the HD renders checkbox
-function HDtoggle() {
-
-    // enables or disables the second forceHD option
-    if (this.checked) {
-        noLoAHDCheck.disabled = false;
-    } else {
-        noLoAHDCheck.disabled = true;
-    }
-
-    // to update character images
-    for (let i = 0; i < players.length; i++) {
-        players[i].skinChange(players[i].skin);
     }
 
     // save current checkbox value to the settings file
@@ -962,11 +897,6 @@ function saveGUISettings() {
     const guiSettings = JSON.parse(fs.readFileSync(glob.path.text + "/GUI Settings.json", "utf-8"));
 
     // update the settings to current values
-    guiSettings.allowIntro = document.getElementById("allowIntro").checked;
-    guiSettings.workshop = glob.wsCheck.checked;
-    guiSettings.forceAlt = document.getElementById("forceAlt").checked;
-    guiSettings.forceHD = forceHDCheck.checked;
-    guiSettings.noLoAHD = noLoAHDCheck.checked;
     guiSettings.forceWL = forceWL.checked;
     guiSettings.scoreAutoUpdate = scoreAutoUpdateCheck.checked;
     guiSettings.invertScore = invertScoreCheck.checked;
@@ -1004,10 +934,10 @@ function writeScoreboard() {
         caster: [],
         allowIntro: document.getElementById('allowIntro').checked,
         // this is just for remote updating
-        altSkin: forceAlt.checked,
-        forceHD: forceHDCheck.checked,
-        noLoAHD: noLoAHDCheck.checked,
-        workshop: glob.wsCheck.checked,
+        altSkin: settings.isAltArtChecked(),
+        forceHD: settings.isHDChecked(),
+        noLoAHD: settings.isNoLoAChecked(),
+        workshop: settings.isWsChecked(),
         forceWL: forceWL.checked,
         id : "gameData"
     };
@@ -1024,7 +954,7 @@ function writeScoreboard() {
 
         // get us the path used by the browser sources
         let browserCharPath = "Characters";
-        if (glob.wsCheck.checked) {
+        if (settings.isWsChecked()) {
             browserCharPath = "Characters/_Workshop";
         }
 

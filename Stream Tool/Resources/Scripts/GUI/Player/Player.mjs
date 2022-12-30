@@ -2,6 +2,7 @@ import { charFinder } from "../Finder/Char Finder.mjs";
 import { playerFinder } from "../Finder/Player Finder.mjs";
 import { skinFinder } from "../Finder/Skin Finder.mjs";
 import * as glob from '../Globals.mjs';
+import { settings } from "../Settings.mjs";
 const fs = require('fs');
 
 
@@ -23,6 +24,7 @@ export class Player {
 
     }
 
+    /** Sets up listeners for all finders */
     setFinderListeners() {
 
         // check if theres a player preset every time we type or click in the player box
@@ -55,9 +57,11 @@ export class Player {
 
     }
 
+    /** Returns a valid src for browser sources */
     getBrowserSrc(char, skin, extraPath, failPath) {
+
         let browserCharPath = "Resources/Characters";
-        if (glob.wsCheck.checked) {
+        if (settings.isWsChecked()) {
             browserCharPath = "Resources/Characters/_Workshop";
         }
         
@@ -72,6 +76,7 @@ export class Player {
         } else {
             return `Resources/Characters/Random/${failPath}.png`;;
         }
+        
     }
 
 }

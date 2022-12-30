@@ -31,6 +31,7 @@ let previousRound;
 
 
 // its always good to listen closely
+document.getElementById('botBarBracket').addEventListener("click", () => {viewport.toBracket()});
 bRoundSelect.addEventListener("change", createEncounters);
 document.getElementById('bracketGoBack').addEventListener("click", () => {viewport.toCenter()});
 document.getElementById('bracketUpdate').addEventListener("click", updateBracket);
