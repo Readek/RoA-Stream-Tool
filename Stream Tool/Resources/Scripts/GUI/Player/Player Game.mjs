@@ -46,6 +46,7 @@ export class PlayerGame extends Player {
     }
     setName(name) {
         this.nameInp.value = name;
+        this.resizeInput();
     }
     getTag() {
         return this.tag;

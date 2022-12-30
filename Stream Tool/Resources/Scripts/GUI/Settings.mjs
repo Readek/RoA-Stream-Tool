@@ -3,6 +3,7 @@ import * as glob from './Globals.mjs';
 import { charFinder } from "./Finder/Char Finder.mjs";
 import { players } from "./Players.mjs";
 const fs = require('fs');
+const ipc = require('electron').ipcRenderer;
 
 
 class GuiSettings {
@@ -14,6 +15,10 @@ class GuiSettings {
     #noLoACheck = document.getElementById('noLoAHD');
 
     #wsCheck = document.getElementById('workshopToggle');
+    #forceWLCheck = document.getElementById('forceWLToggle');
+    #scoreAutoCheck = document.getElementById("scoreAutoUpdate");
+    #invertScoreCheck = document.getElementById("invertScore");
+    #alwaysOnTopCheck = document.getElementById("alwaysOnTop");
 
     constructor() {
 
@@ -29,7 +34,20 @@ class GuiSettings {
 
         // gui settings listeners
         this.#wsCheck.addEventListener("click", () => {this.toggleWs()});
+        this.#forceWLCheck.addEventListener("click", () => {this.toggleForceWL()});
+        this.#scoreAutoCheck.addEventListener("click", () => {
+            this.save("scoreAutoUpdate", this.isScoreAutoChecked())
+        });
+        this.#invertScoreCheck.addEventListener("click", () => {
+            this.save("invertScore", this.isInvertScoreChecked())
+        });
+        this.#alwaysOnTopCheck.addEventListener("click", () => {
+            ipc.send('alwaysOnTop', this.#alwaysOnTopCheck.checked);
+            this.save("alwaysOnTop", this.#alwaysOnTopCheck.checked);
+        });
 
+        // dont forget about the copy match to clipboard button
+        document.getElementById("copyMatch").addEventListener("click", () => {this.copyMatch()});
 
         // clicking the settings button will bring up the menu
         document.getElementById('settingsRegion').addEventListener("click", () => {
@@ -51,7 +69,11 @@ class GuiSettings {
         this.#altArtCheck.checked = guiSettings.forceAlt;
         if (guiSettings.forceHD) this.#HDCheck.click();
         this.#noLoACheck.checked = guiSettings.noLoAHD;
-        if (guiSettings.workshop) this.#wsCheck.click();        
+        if (guiSettings.workshop) this.#wsCheck.click();
+        if (guiSettings.forceWL) this.#forceWLCheck.click();
+        this.#scoreAutoCheck.checked = guiSettings.scoreAutoUpdate;
+        this.#invertScoreCheck.checked = guiSettings.invertScore;
+        this.#alwaysOnTopCheck.checked = guiSettings.alwaysOnTop;
 
     }
 
@@ -146,6 +168,64 @@ class GuiSettings {
 
         // save current checkbox value to the settings file
         this.save("workshop", this.isWsChecked());
+
+    }
+
+    isForceWLChecked() {
+        return this.#forceWLCheck.checked;
+    }
+    toggleForceWL() {
+
+        // forces the W/L buttons to appear, or unforces them
+        /* if (this.isForceWLChecked()) {
+            for (let i = 0; i < wlButtons.length; i++) {
+                wlButtons[i].style.display = "flex";
+            }
+        } else {
+            for (let i = 0; i < wlButtons.length; i++) {
+                wlButtons[i].style.display = "none";
+                deactivateWL();
+            }
+        } */
+
+        // save current checkbox value to the settings file
+        this.save("forceWL", this.isForceWLChecked());
+
+    }
+
+    isScoreAutoChecked() {
+        return this.#scoreAutoCheck.checked;
+    }
+
+    isInvertScoreChecked() {
+        return this.#invertScoreCheck.checked;
+    }
+
+    /**
+     * Will copy the current match info to the clipboard
+     * Format: "Tournament Name - Round - Player1 (Character1) VS Player2 (Character2)"
+     */
+    copyMatch() {
+
+        // initialize the string
+        let copiedText = /* tournamentInp.value + " - " + roundInp.value + */ " - ";
+
+        /* if (gamemode == 1) { // for singles matches
+            // check if the player has a tag to add
+            if (players[0].tag) {
+                copiedText += players[0].tag + " | ";
+            }
+            copiedText += players[0].getName() + " (" + players[0].char +") VS ";
+            if (players[1].tag) {
+                copiedText += players[1].tag + " | ";
+            }
+            copiedText += players[1].getName() + " (" +  players[1].char +")";
+        } else { // for team matches
+            copiedText += tNameInps[0].value + " VS " + tNameInps[1].value;
+        } */
+
+        // send the string to the user's clipboard
+        navigator.clipboard.writeText(copiedText);
 
     }
 

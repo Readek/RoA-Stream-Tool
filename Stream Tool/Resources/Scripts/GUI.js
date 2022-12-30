@@ -1,7 +1,6 @@
 // import electron stuff
 const fs = require('fs');
-const electron = require('electron');
-const ipc = electron.ipcRenderer;
+const ipc = require('electron').ipcRenderer;
 
 // import local stuff
 import * as glob from './GUI/Globals.mjs';
@@ -15,6 +14,7 @@ import { players } from './GUI/Players.mjs';
 import { PlayerGame } from './GUI/Player/Player Game.mjs';
 import { hideBgCharImgs, showBgCharImgs } from './GUI/Player/BG Char Image.mjs';
 import { settings } from './GUI/Settings.mjs';
+import { currentColors } from './GUI/Colors.mjs';
 
 // this is a weird way to have file svg's that can be recolored by css
 customElements.define("load-svg", class extends HTMLElement {
@@ -29,8 +29,6 @@ customElements.define("load-svg", class extends HTMLElement {
 window.onscroll = () => { window.scroll(0, 0) };
 
 // yes we all like global variables
-let currentColors = [0, 0];
-
 let scData; // we will store data to send to the browsers here
 
 let currentP1WL = "", currentP2WL = "";
@@ -60,8 +58,6 @@ const tournamentInp = document.getElementById('tournamentName');
 const casters = [];
 
 const forceWL = document.getElementById('forceWLToggle');
-const scoreAutoUpdateCheck = document.getElementById("scoreAutoUpdate");
-const invertScoreCheck = document.getElementById("invertScore");
 
 const notifSpan = document.getElementById("notifText");
 
@@ -265,21 +261,6 @@ function init() {
     document.getElementById('goBack').addEventListener("click", () => {viewport.toCenter()});
 
 
-    //set listeners for the settings checkboxes
-    forceWL.addEventListener("click", forceWLtoggle);
-    scoreAutoUpdateCheck.addEventListener("click", saveGUISettings);
-    invertScoreCheck.addEventListener("click", saveGUISettings);
-    document.getElementById("alwaysOnTop").addEventListener("click", alwaysOnTop);
-    document.getElementById("copyMatch").addEventListener("click", copyMatch);
-    
-    // load GUI settings
-    const guiSettings = JSON.parse(fs.readFileSync(glob.path.text + "/GUI Settings.json", "utf-8"));
-    if (guiSettings.forceWL) {forceWL.click()};
-    if (guiSettings.scoreAutoUpdate) {scoreAutoUpdateCheck.checked = true};
-    if (guiSettings.invertScore) {invertScoreCheck.checked = true};
-    if (guiSettings.alwaysOnTop) {document.getElementById("alwaysOnTop").click()};
-
-
     // we need to set the current char path
     glob.path.char = settings.isWsChecked() ? glob.path.charWork : glob.path.charBase;
 
@@ -405,11 +386,11 @@ function init() {
     //F1 or F2 to give players a score tick
     Mousetrap.bind('f1', () => {
         giveWin(0)
-        if (scoreAutoUpdateCheck.checked) {writeScoreboard()};
+        if (settings.isScoreAutoChecked()) {writeScoreboard()};
     });
     Mousetrap.bind('f2', () => {
         giveWin(1)
-        if (scoreAutoUpdateCheck.checked) {writeScoreboard()};
+        if (settings.isScoreAutoChecked()) {writeScoreboard()};
     });
 
     //up/down, to navigate the player presets menu (only when a menu is shown)
@@ -442,7 +423,7 @@ function init() {
 // score hotkeys function
 function giveWin(num) {
     
-    if (invertScoreCheck.checked) {
+    if (settings.isInvertScoreChecked()) {
         scores[num].setScore(scores[num].getScore()-1);
     } else {
         scores[num].setScore(scores[num].getScore()+1);
@@ -760,8 +741,6 @@ function swap() {
         const nameStore = players[i].getName();
         players[i].setName(players[i+1].getName());
         players[i+1].setName(nameStore);
-        changeInputWidth(players[i].nameInp);
-        changeInputWidth(players[i+1].nameInp);
 
         // player info
         [players[i].tag, players[i+1].tag] = [players[i+1].tag, players[i].tag];
@@ -816,7 +795,6 @@ function clearPlayers() {
 
         //clear player texts
         players[i].setName("");
-        changeInputWidth(players[i].nameInp);
         
         // clear player info
         players[i].pronouns = "";
@@ -834,76 +812,6 @@ function clearPlayers() {
     for (let i = 0; i < scores.length; i++) {
         scores[i].setScore(0);
     }
-
-}
-
-
-// whenever the user clicks on the force W/L checkbox
-function forceWLtoggle() {
-
-    // forces the W/L buttons to appear, or unforces them
-    if (forceWL.checked) {
-        for (let i = 0; i < wlButtons.length; i++) {
-            wlButtons[i].style.display = "flex";
-        }
-    } else {
-        for (let i = 0; i < wlButtons.length; i++) {
-            wlButtons[i].style.display = "none";
-            deactivateWL();
-        }
-    }
-
-    // save current checkbox value to the settings file
-    saveGUISettings();
-
-}
-
-// sends the signal to electron to activate always on top
-function alwaysOnTop() {
-    ipc.send('alwaysOnTop', this.checked);
-    saveGUISettings();
-}
-
-//will copy the current match info to the clipboard
-// Format: "Tournament Name - Round - Player1 (Character1) VS Player2 (Character2)"
-function copyMatch() {
-
-    //initialize the string
-    let copiedText = tournamentInp.value + " - " + roundInp.value + " - ";
-
-    if (gamemode == 1) { //for singles matches
-        //check if the player has a tag to add
-        if (players[0].tag) {
-            copiedText += players[0].tag + " | ";
-        }
-        copiedText += players[0].getName() + " (" + players[0].char +") VS ";
-        if (players[1].tag) {
-            copiedText += players[1].tag + " | ";
-        }
-        copiedText += players[1].getName() + " (" +  players[1].char +")";
-    } else { //for team matches
-        copiedText += tNameInps[0].value + " VS " + tNameInps[1].value;
-    }
-
-    //send the string to the user's clipboard
-    navigator.clipboard.writeText(copiedText);
-
-}
-
-// called whenever the used clicks on a settings checkbox
-function saveGUISettings() {
-    
-    // read the file
-    const guiSettings = JSON.parse(fs.readFileSync(glob.path.text + "/GUI Settings.json", "utf-8"));
-
-    // update the settings to current values
-    guiSettings.forceWL = forceWL.checked;
-    guiSettings.scoreAutoUpdate = scoreAutoUpdateCheck.checked;
-    guiSettings.invertScore = invertScoreCheck.checked;
-    guiSettings.alwaysOnTop = document.getElementById("alwaysOnTop").checked;
-
-    // save the file
-    fs.writeFileSync(glob.path.text + "/GUI Settings.json", JSON.stringify(guiSettings, null, 2));
 
 }
 
