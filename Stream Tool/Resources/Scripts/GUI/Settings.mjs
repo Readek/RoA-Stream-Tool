@@ -2,6 +2,7 @@ import { viewport } from "./Viewport.mjs";
 import * as glob from './Globals.mjs';
 import { charFinder } from "./Finder/Char Finder.mjs";
 import { players } from "./Players.mjs";
+import { wl } from "./WinnersLosers.mjs";
 const fs = require('fs');
 const ipc = require('electron').ipcRenderer;
 
@@ -177,16 +178,11 @@ class GuiSettings {
     toggleForceWL() {
 
         // forces the W/L buttons to appear, or unforces them
-        /* if (this.isForceWLChecked()) {
-            for (let i = 0; i < wlButtons.length; i++) {
-                wlButtons[i].style.display = "flex";
-            }
+        if (this.isForceWLChecked()) {
+            wl.show();
         } else {
-            for (let i = 0; i < wlButtons.length; i++) {
-                wlButtons[i].style.display = "none";
-                deactivateWL();
-            }
-        } */
+            wl.hide();
+        }
 
         // save current checkbox value to the settings file
         this.save("forceWL", this.isForceWLChecked());

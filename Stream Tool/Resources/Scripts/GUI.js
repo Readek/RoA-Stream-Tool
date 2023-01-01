@@ -15,6 +15,8 @@ import { PlayerGame } from './GUI/Player/Player Game.mjs';
 import { hideBgCharImgs, showBgCharImgs } from './GUI/Player/BG Char Image.mjs';
 import { settings } from './GUI/Settings.mjs';
 import { currentColors } from './GUI/Colors.mjs';
+import { round } from './GUI/Round.mjs';
+import { wl } from './GUI/WinnersLosers.mjs';
 
 // this is a weird way to have file svg's that can be recolored by css
 customElements.define("load-svg", class extends HTMLElement {
@@ -31,7 +33,6 @@ window.onscroll = () => { window.scroll(0, 0) };
 // yes we all like global variables
 let scData; // we will store data to send to the browsers here
 
-let currentP1WL = "", currentP2WL = "";
 let currentBestOf = 5;
 
 let gamemode = 1;
@@ -46,13 +47,6 @@ const tNameInps = document.getElementsByClassName("teamName");
 
 const scores = [];
 
-const wlButtons = document.getElementsByClassName("wlButtons");
-const p1W = document.getElementById('p1W');
-const p1L = document.getElementById('p1L');
-const p2W = document.getElementById('p2W');
-const p2L = document.getElementById('p2L');
-
-const roundInp = document.getElementById('roundName');
 const tournamentInp = document.getElementById('tournamentName');
 
 const casters = [];
@@ -282,13 +276,6 @@ function init() {
     );
 
 
-    //set click listeners for the [W] and [L] buttons
-    p1W.addEventListener("click", setWLP1);
-    p1L.addEventListener("click", setWLP1);
-    p2W.addEventListener("click", setWLP2);
-    p2L.addEventListener("click", setWLP2);
-
-
     // open player info menu if clicking on the icon
     const pInfoButts = document.getElementsByClassName("pInfoButt");
     for (let i = 0; i < pInfoButts.length; i++) {
@@ -310,10 +297,6 @@ function init() {
 
     // set click listeners to change the "best of" status
     document.getElementById("bestOf").addEventListener("click", changeBestOf);
-
-
-    // check if the round is grand finals whenever we type on round input
-    roundInp.addEventListener("input", checkRound);
 
 
     //gamemode button
@@ -429,49 +412,6 @@ function giveWin(num) {
         scores[num].setScore(scores[num].getScore()+1);
     }
 
-}
-
-
-function setWLP1() {
-    if (this == p1W) {
-        currentP1WL = "W";
-        this.style.color = "var(--text1)";
-        p1L.style.color = "var(--text2)";
-        this.style.backgroundImage = "linear-gradient(to top, #575757, #00000000)";
-        p1L.style.backgroundImage = "var(--bg4)";
-    } else {
-        currentP1WL = "L";
-        this.style.color = "var(--text1)";
-        p1W.style.color = "var(--text2)";
-        this.style.backgroundImage = "linear-gradient(to top, #575757, #00000000)";
-        p1W.style.backgroundImage = "var(--bg4)";
-    }
-}
-function setWLP2() {
-    if (this == p2W) {
-        currentP2WL = "W";
-        this.style.color = "var(--text1)";
-        p2L.style.color = "var(--text2)";
-        this.style.backgroundImage = "linear-gradient(to top, #575757, #00000000)";
-        p2L.style.backgroundImage = "var(--bg4)";
-    } else {
-        currentP2WL = "L";
-        this.style.color = "var(--text1)";
-        p2W.style.color = "var(--text2)";
-        this.style.backgroundImage = "linear-gradient(to top, #575757, #00000000)";
-        p2W.style.backgroundImage = "var(--bg4)";
-    }
-}
-
-function deactivateWL() {
-    currentP1WL = "";
-    currentP2WL = "";
-
-    const pWLs = document.getElementsByClassName("wlBox");
-    for (let i = 0; i < pWLs.length; i++) {
-        pWLs[i].style.color = "var(--text2)";
-        pWLs[i].style.backgroundImage = "var(--bg4)";
-    }
 }
 
 
@@ -616,23 +556,6 @@ function changeBestOf() {
 }
 
 
-//for checking if its "Grands" so we make the WL buttons visible
-function checkRound() {
-    if (!forceWL.checked) {
-        if (roundInp.value.toLocaleUpperCase().includes("Grand".toLocaleUpperCase())) {
-            for (let i = 0; i < wlButtons.length; i++) {
-                wlButtons[i].style.display = "flex";
-            }
-        } else {
-            for (let i = 0; i < wlButtons.length; i++) {
-                wlButtons[i].style.display = "none";
-                deactivateWL();
-            }
-        }
-    }
-}
-
-
 //called when clicking on the gamemode icon, cycles through singles and doubles
 function changeGamemode() {
 
@@ -657,7 +580,7 @@ function changeGamemode() {
 
         for (let i = 1; i < 3; i++) {
             
-            document.getElementById("row1-"+i).insertAdjacentElement("afterbegin", wlButtons[i-1]);
+            document.getElementById("row1-"+i).insertAdjacentElement("afterbegin", wl.getWLButtons()[i-1]);
             document.getElementById("row1-"+i).insertAdjacentElement("afterbegin", document.getElementById('scoreBox'+i));
             
             document.getElementById("scoreText"+i).style.display = "none";
@@ -702,7 +625,7 @@ function changeGamemode() {
         for (let i = 1; i < 3; i++) {
             document.getElementById('pInfo'+(i+2)).style.display = "none";
 
-            document.getElementById("row3-"+i).insertAdjacentElement("afterbegin", wlButtons[i-1]);
+            document.getElementById("row3-"+i).insertAdjacentElement("afterbegin", wl.getWLButtons()[i-1]);
             document.getElementById("row3-"+i).insertAdjacentElement("afterbegin", document.getElementById('scoreBox'+i));
             document.getElementById("scoreText"+i).style.display = "block";
         
@@ -768,18 +691,18 @@ function swap() {
     scores[1].setScore(scoreStore);
 
     // [W]/[L] swap
-    const previousP1WL = currentP1WL;
-    const previousP2WL = currentP2WL;
+    const previousP1WL = wl.getLeft();
+    const previousP2WL = wl.getRight();
 
     if (previousP2WL == "W") {
-        p1W.click();
+        wl.leftW.click();
     } else if (previousP2WL == "L") {
-        p1L.click();
+        wl.leftL.click();
     }
     if (previousP1WL == "W") {
-        p2W.click();
+        wl.rightW.click();
     } else if (previousP1WL == "L") {
-        p2L.click();
+        wl.rightL.click();
     }
 
 }
@@ -832,12 +755,12 @@ function writeScoreboard() {
             scores[1].getScore()
         ],
         wl: [
-            currentP1WL,
-            currentP2WL,
+            wl.getLeft(),
+            wl.getRight(),
         ],
         bestOf: currentBestOf,
         gamemode: gamemode,
-        round: roundInp.value,
+        round: round.getRound(),
         tournamentName: tournamentInp.value,
         caster: [],
         allowIntro: document.getElementById('allowIntro').checked,
@@ -1006,7 +929,7 @@ function writeScoreboard() {
     fs.writeFileSync(glob.path.text + "/Simple Texts/Score L.txt", scores[0].getScore().toString());
     fs.writeFileSync(glob.path.text + "/Simple Texts/Score R.txt", scores[1].getScore().toString());
 
-    fs.writeFileSync(glob.path.text + "/Simple Texts/Round.txt", roundInp.value);
+    fs.writeFileSync(glob.path.text + "/Simple Texts/Round.txt", round.getRound());
     fs.writeFileSync(glob.path.text + "/Simple Texts/Tournament Name.txt", tournamentInp.value);
 
     for (let i = 0; i < casters.length; i++) {
