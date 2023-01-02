@@ -1,5 +1,5 @@
 import { viewport } from './Viewport.mjs';
-import { bracketPlayers } from "./Players.mjs";
+import { bracketPlayers } from './Player/Players.mjs';
 import { PlayerBracket } from "./Player/Player Bracket.mjs";
 import { displayNotif } from './Notifications.mjs';
 

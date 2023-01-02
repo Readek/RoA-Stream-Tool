@@ -4,13 +4,12 @@ const ipc = require('electron').ipcRenderer;
 
 // import local stuff
 import * as glob from './GUI/Globals.mjs';
-import { getJson } from './GUI/Utils.mjs';
 import { viewport } from './GUI/Viewport.mjs';
 import { charFinder } from './GUI/Finder/Char Finder.mjs';
 import { skinFinder } from './GUI/Finder/Skin Finder.mjs';
 import { commFinder } from './GUI/Finder/Comm Finder.mjs';
 import { playerFinder } from './GUI/Finder/Player Finder.mjs';
-import { players } from './GUI/Players.mjs';
+import { players } from './GUI/Player/Players.mjs';
 import { PlayerGame } from './GUI/Player/Player Game.mjs';
 import { hideBgCharImgs, showBgCharImgs } from './GUI/Player/BG Char Image.mjs';
 import { settings } from './GUI/Settings.mjs';
@@ -20,6 +19,11 @@ import { wl } from './GUI/WinnersLosers.mjs';
 import { tournament } from './GUI/Tournament.mjs';
 import { playerInfo } from './GUI/Player/Player Info.mjs';
 import { displayNotif } from './GUI/Notifications.mjs';
+import { Caster } from './GUI/Caster.mjs';
+import { Score } from './GUI/Score.mjs';
+import { scores } from './GUI/Scores.mjs';
+import { bestOf } from './GUI/BestOf.mjs';
+import { Team } from './GUI/Team.mjs';
 
 // this is a weird way to have file svg's that can be recolored by css
 customElements.define("load-svg", class extends HTMLElement {
@@ -36,208 +40,14 @@ window.onscroll = () => { window.scroll(0, 0) };
 // yes we all like global variables
 let scData; // we will store data to send to the browsers here
 
-let currentBestOf = 5;
-
 let gamemode = 1;
 
 const maxPlayers = 4; //change this if you ever want to remake this into singles only or 3v3 idk
 
 
 //preload  e v e r y t h i n g
-const tNameInps = document.getElementsByClassName("teamName");
-
-const scores = [];
-
 const casters = [];
-
-
-// commentator class
-class Caster {
-
-    constructor(el) {
-
-        this.nameEl = el.getElementsByClassName(`cName`)[0];
-        this.twitterEl = el.getElementsByClassName(`cTwitter`)[0];
-        this.twitchEl = el.getElementsByClassName(`cTwitch`)[0];
-        this.ytEl = el.getElementsByClassName(`cYt`)[0];
-        this.saveEl = el.getElementsByClassName(`saveCasterButt`)[0];
-
-        // every time we type on name
-        this.nameEl.addEventListener("input", () => {
-
-            // check to disable or enable save button
-            if (this.getName()) {
-                this.saveEl.disabled = false;
-            } else {
-                this.saveEl.disabled = true;
-            }
-
-            // check if theres an existing caster preset
-            commFinder.fillFinderPresets(this);
-
-        });
-
-        // if we click on the name text input
-        this.nameEl.addEventListener("focusin", () => {
-            commFinder.fillFinderPresets(this);
-            commFinder.open(this.nameEl.parentElement);
-        });
-        // hide the presets dropdown if text input loses focus
-        this.nameEl.addEventListener("focusout", () => {
-            if (!glob.inside.finder) {
-                commFinder.hide();
-            }
-        });
-
-        // every time we click on the save button
-        this.saveEl.addEventListener("click", () => {
-
-            // save current info to an object
-            const preset = {
-                twitter: this.getTwitter(),
-                twitch: this.getTwitch(),
-                yt: this.getYt()
-            };
-
-            // use this object to create a json file
-            fs.writeFileSync(`${glob.path.text}/Commentator Info/${this.getName()}.json`, JSON.stringify(preset, null, 2));
-
-            displayNotif("Commentator preset has been saved");
-        });
-
-    }
-
-    getName() {
-        return this.nameEl.value;
-    }
-    getTwitter() {
-        if (this.twitterEl.value == "") {
-            return "-";
-        } else {
-            return this.twitterEl.value;
-        }
-    }
-    getTwitch() {
-        if (this.twitchEl.value == "") {
-            return "-";
-        } else {
-            return this.twitchEl.value;
-        }
-    }
-    getYt() {
-        if (this.ytEl.value == "") {
-            return "-";
-        } else {
-            return this.ytEl.value;
-        }
-    }
-    setName(text) {
-        this.nameEl.value = text;
-    }
-    setTwitter(text) {
-        this.twitterEl.value = text;
-    }
-    setTwitch(text) {
-        this.twitchEl.value = text;
-    }
-    setYt(text) {
-        this.ytEl.value = text;
-    }
-
-}
-
-// yes also a class for score because classes are cool
-class Score {
-
-    constructor(el) {
-
-        this.scoreEls = el.getElementsByClassName("scoreCheck");
-        this.scoreNumEl = el.getElementsByClassName("scoreCheckN")[0];
-
-        // set the score whenever we click on a score checkbox
-        for (let i = 0; i < this.scoreEls.length; i++) {
-            this.scoreEls[i].addEventListener("click", () => {
-
-                // if the checkbox we clicked is already checked, uncheck it
-                if (this.scoreEls[i].checked) {
-                    this.setScore(i+1);
-                } else {
-                    this.setScore(i);
-                }
-
-            });            
-        };
-
-    }
-
-    getScore() {
-
-        if (currentBestOf != "X") { // if score ticks are visible
-
-            let result = 0;
-
-            // if a score tick is checked, add +1 to the result variable
-            for (let i = 0; i < this.scoreEls.length; i++) {
-                if (this.scoreEls[i].checked) {
-                    result++;
-                }            
-            }
-    
-            return result;
-
-        } else { // if we are using actual numbers
-
-            return Number(this.scoreNumEl.value);
-            
-        }
-
-
-
-    }
-
-    setScore(score) {
-
-        // just for safety, dont let it drop to negative numbers
-        let actualScore;
-        if (score <= 0) {
-            actualScore = 0;
-        } else {
-            actualScore = score;
-        }
-
-        // check ticks below and equal to score, uncheck ticks above score
-        for (let i = 0; i < this.scoreEls.length; i++) {
-            if (actualScore > i) {
-                this.scoreEls[i].checked = true;
-            } else {
-                this.scoreEls[i].checked = false;
-            }            
-        }
-
-        this.scoreNumEl.value = actualScore;
-
-    }
-
-    // called whenever we change the "best of" mode
-    showBo5() {
-        for (let i = 0; i < this.scoreEls.length; i++) {
-            this.scoreEls[i].style.display = "block";            
-        }
-        this.scoreNumEl.style.display = "none";
-    }
-    showBo3() {
-        this.scoreEls[2].style.display = "none";
-    }
-    showBoX() {
-        for (let i = 0; i < this.scoreEls.length; i++) {
-            this.scoreEls[i].style.display = "none";            
-        }
-        this.scoreNumEl.style.display = "block";
-    }
-    
-
-
-}
+const teams = [];
 
 
 init();
@@ -274,10 +84,6 @@ function init() {
     );
 
 
-    // set click listeners to change the "best of" status
-    document.getElementById("bestOf").addEventListener("click", changeBestOf);
-
-
     //gamemode button
     document.getElementById("gamemode").addEventListener("click", changeGamemode);
 
@@ -286,6 +92,13 @@ function init() {
     casters.push(
         new Caster(document.getElementById("caster1")),
         new Caster(document.getElementById("caster2")),
+    );
+
+
+    // start up those team classes
+    teams.push(
+        new Team(document.getElementsByClassName("side")[0]),
+        new Team(document.getElementsByClassName("side")[1]),
     );
 
 
@@ -394,47 +207,6 @@ function giveWin(num) {
 }
 
 
-// called when clicking on the "Best of" button
-function changeBestOf() {
-
-    if (currentBestOf == 5) {
-
-        currentBestOf = 3;
-
-        // change the visual text
-        this.innerHTML = "Best of 3";
-        this.title = "Click to change the scoring to Best of X";
-
-        // hide the last score tick from the score ticks
-        scores[0].showBo3();
-        scores[1].showBo3();
-
-    } else if (currentBestOf == 3) {
-
-        currentBestOf = "X";
-
-        this.innerHTML = "Best of X";
-        this.title = "Click to change the scoring to Best of 5";
-
-        scores[0].showBoX();
-        scores[1].showBoX();
-        
-
-    } else if (currentBestOf == "X") {
-
-        currentBestOf = 5;
-
-        this.innerHTML = "Best of 5";
-        this.title = "Click to change the scoring to Best of 3";
-
-        scores[0].showBo5();
-        scores[1].showBo5();
-
-    }
-
-}
-
-
 //called when clicking on the gamemode icon, cycles through singles and doubles
 function changeGamemode() {
 
@@ -464,7 +236,7 @@ function changeGamemode() {
             
             document.getElementById("scoreText"+i).style.display = "none";
 
-            document.getElementById("row1-"+i).insertAdjacentElement("afterbegin", tNameInps[i-1]);
+            document.getElementById("row1-"+i).insertAdjacentElement("afterbegin", teams[i-1].getNameInp());
 
             document.getElementById('row2-'+i).insertAdjacentElement("beforeend", document.getElementById('pInfo'+i));
         }
@@ -533,9 +305,9 @@ function changeGamemode() {
 function swap() {
 
     //team name
-    const teamStore = tNameInps[0].value;
-    tNameInps[0].value = tNameInps[1].value;
-    tNameInps[1].value = teamStore;
+    const teamStore = teams[0].getName();
+    teams[0].setName(teams[1].getName());
+    teams[1].setName(teamStore);
 
     for (let i = 0; i < maxPlayers; i+=2) {
 
@@ -589,9 +361,8 @@ function swap() {
 function clearPlayers() {
 
     //crear the team names
-    for (let i = 0; i < tNameInps.length; i++) {
-        tNameInps[i].value = "";        
-    }
+    teams[0].setName("");
+    teams[1].setName("");
 
     for (let i = 0; i < maxPlayers; i++) {
 
@@ -625,8 +396,8 @@ function writeScoreboard() {
     const scoreboardJson = {
         player: [], //more lines will be added below
         teamName: [
-            tNameInps[0].value,
-            tNameInps[1].value
+            teams[0].getName(),
+            teams[1].getName()
         ],
         color: [],
         score: [
@@ -637,7 +408,7 @@ function writeScoreboard() {
             wl.getLeft(),
             wl.getRight(),
         ],
-        bestOf: currentBestOf,
+        bestOf: bestOf.getBo(),
         gamemode: gamemode,
         round: round.getText(),
         tournamentName: tournament.getText(),
@@ -777,7 +548,7 @@ function writeScoreboard() {
             hex: currentColors[i].hex
         });
         // if the team inputs dont have anything, display as [Color Team]
-        if (!tNameInps[i].value) {
+        if (!teams[i].getName()) {
             scoreboardJson.teamName[i] = currentColors[i].name + " Team"
         }
     }
@@ -802,8 +573,8 @@ function writeScoreboard() {
         fs.writeFileSync(glob.path.text + "/Simple Texts/Player "+(i+1)+".txt", players[i].getName());        
     }
 
-    fs.writeFileSync(glob.path.text + "/Simple Texts/Team 1.txt", tNameInps[0].value);
-    fs.writeFileSync(glob.path.text + "/Simple Texts/Team 2.txt", tNameInps[1].value);
+    fs.writeFileSync(glob.path.text + "/Simple Texts/Team 1.txt", teams[0].getName());
+    fs.writeFileSync(glob.path.text + "/Simple Texts/Team 2.txt", teams[1].getName());
 
     fs.writeFileSync(glob.path.text + "/Simple Texts/Score L.txt", scores[0].getScore().toString());
     fs.writeFileSync(glob.path.text + "/Simple Texts/Score R.txt", scores[1].getScore().toString());

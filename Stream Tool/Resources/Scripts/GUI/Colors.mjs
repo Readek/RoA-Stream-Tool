@@ -1,5 +1,5 @@
 import * as glob from './Globals.mjs';
-import { players } from './Players.mjs';
+import { players } from './Player/Players.mjs';
 import { getJson } from './Utils.mjs';
 
 export const currentColors = [];

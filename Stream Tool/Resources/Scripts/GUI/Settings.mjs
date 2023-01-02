@@ -1,7 +1,7 @@
 import { viewport } from "./Viewport.mjs";
 import * as glob from './Globals.mjs';
 import { charFinder } from "./Finder/Char Finder.mjs";
-import { players } from "./Players.mjs";
+import { players } from "./Player/Players.mjs";
 import { wl } from "./WinnersLosers.mjs";
 const fs = require('fs');
 const ipc = require('electron').ipcRenderer;
