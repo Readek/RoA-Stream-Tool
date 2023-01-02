@@ -1,6 +1,7 @@
 import { viewport } from './Viewport.mjs';
 import { bracketPlayers } from "./Players.mjs";
 import { PlayerBracket } from "./Player/Player Bracket.mjs";
+import { displayNotif } from './Notifications.mjs';
 
 
 const bRoundSelect = document.getElementById('bracketRoundSelect');

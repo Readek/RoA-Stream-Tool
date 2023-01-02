@@ -12,17 +12,17 @@ class Round {
 
     }
 
-    getRound() {
+    getText() {
         return this.#roundInp.value;
     }
-    setRound(text) {
+    setText(text) {
         this.#roundInp.value = text;
     }
 
     /** Checks if the round text contains "Grands" so it shows/hides W/L buttons */
     checkGrands() {
         if (!settings.isForceWLChecked()) {
-            if (this.getRound().toLocaleUpperCase().includes("Grand".toLocaleUpperCase())) {
+            if (this.getText().toLocaleUpperCase().includes("Grand".toLocaleUpperCase())) {
                 wl.show();
             } else {
                 wl.hide();

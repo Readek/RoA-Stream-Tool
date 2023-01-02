@@ -5,6 +5,7 @@ import { getRecolorImage, getTrailImage } from "../GetImage.mjs";
 import { updateBgCharImg } from "./BG Char Image.mjs";
 import { currentColors } from "../Colors.mjs";
 import { settings } from "../Settings.mjs";
+import { playerInfo } from "./Player Info.mjs";
 
 export class PlayerGame extends Player {
 
@@ -21,12 +22,12 @@ export class PlayerGame extends Player {
     vsBrowserSrc;
 
 
-    constructor(id) {
+    constructor(id, pInfoEl, cInfoEl) {
         
         super(id);
-        this.nameInp = document.getElementById(`p${id}Name`);
-        this.charSel = document.getElementById(`p${id}CharSelector`);
-        this.skinSel = document.getElementById(`p${id}SkinSelector`);
+        this.nameInp = pInfoEl.getElementsByClassName("nameInput")[0];
+        this.charSel = cInfoEl.getElementsByClassName("charSelector")[0];
+        this.skinSel = cInfoEl.getElementsByClassName("skinSelector")[0];
 
         this.setFinderListeners();
 
@@ -37,6 +38,11 @@ export class PlayerGame extends Player {
 
         // also set an initial character value
         this.charChange("Random");
+
+        // open player info menu if clicking on the icon
+        pInfoEl.getElementsByClassName("pInfoButt")[0].addEventListener("click", () => {
+            playerInfo.show(this);
+        })
 
     }
 
@@ -148,7 +154,7 @@ export class PlayerGame extends Player {
         // change the background character image (if first 2 players)
         if (this.pNum-1 < 2) {
 
-            updateBgCharImg(this.pNum-1, this.scSrc)
+            updateBgCharImg(this.pNum-1, this.scSrc);
             if (this.char == "Random" && this.pNum == 1) {
                 updateBgCharImg(this.pNum-1, `${glob.path.charRandom}/P2.png`);
             }

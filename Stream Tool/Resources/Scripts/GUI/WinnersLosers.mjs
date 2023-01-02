@@ -12,10 +12,10 @@ class WinnersLosers {
     constructor() {
 
         // set click listeners for the [W] and [L] buttons
-        this.leftW.addEventListener("click", (el) => {this.setLeft(el.target)});
-        this.leftL.addEventListener("click", (el) => {this.setLeft(el.target)});
-        this.rightW.addEventListener("click", (el) => {this.setRight(el.target)});
-        this.rightL.addEventListener("click", (el) => {this.setRight(el.target)});
+        this.leftW.addEventListener("click", (e) => {this.setLeft(e.target)});
+        this.leftL.addEventListener("click", (e) => {this.setLeft(e.target)});
+        this.rightW.addEventListener("click", (e) => {this.setRight(e.target)});
+        this.rightL.addEventListener("click", (e) => {this.setRight(e.target)});
 
     }
 

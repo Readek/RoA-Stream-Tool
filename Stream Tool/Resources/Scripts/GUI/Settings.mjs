@@ -25,7 +25,7 @@ class GuiSettings {
 
         // scoreboard listeners
         this.#introCheck.addEventListener("click", () => {
-            this.save("allowIntro", this.#introCheck.checked)
+            this.save("allowIntro", this.isIntroChecked())
         });
         this.#altArtCheck.addEventListener("click", () => {this.toggleAltArt()});
 
@@ -94,6 +94,10 @@ class GuiSettings {
         // save the file
         fs.writeFileSync(`${glob.path.text}/GUI Settings.json`, JSON.stringify(guiSettings, null, 2));
 
+    }
+
+    isIntroChecked() {
+        return this.#introCheck.checked;
     }
 
     isAltArtChecked() {

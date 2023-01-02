@@ -75,6 +75,7 @@ class PlayerFinder extends Finder {
                         const pData = {
                             name : file,
                             tag : playerInfo.tag,
+                            pronouns : playerInfo.pronouns,
                             twitter : playerInfo.twitter,
                             twitch : playerInfo.twitch,
                             yt : playerInfo.yt,

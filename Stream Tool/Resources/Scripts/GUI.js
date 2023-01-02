@@ -17,6 +17,9 @@ import { settings } from './GUI/Settings.mjs';
 import { currentColors } from './GUI/Colors.mjs';
 import { round } from './GUI/Round.mjs';
 import { wl } from './GUI/WinnersLosers.mjs';
+import { tournament } from './GUI/Tournament.mjs';
+import { playerInfo } from './GUI/Player/Player Info.mjs';
+import { displayNotif } from './GUI/Notifications.mjs';
 
 // this is a weird way to have file svg's that can be recolored by css
 customElements.define("load-svg", class extends HTMLElement {
@@ -41,19 +44,11 @@ const maxPlayers = 4; //change this if you ever want to remake this into singles
 
 
 //preload  e v e r y t h i n g
-const pInfoDiv = document.getElementById("pInfoDiv");
-
 const tNameInps = document.getElementsByClassName("teamName");
 
 const scores = [];
 
-const tournamentInp = document.getElementById('tournamentName');
-
 const casters = [];
-
-const forceWL = document.getElementById('forceWLToggle');
-
-const notifSpan = document.getElementById("notifText");
 
 
 // commentator class
@@ -260,9 +255,12 @@ function init() {
 
 
     // initialize our player class
-    for (let i = 0; i < maxPlayers; i++) {
-        players.push(new PlayerGame(i+1));
-    }
+    const pInfoEls = document.getElementsByClassName("playerInfo");
+    const cInfoEls = document.getElementsByClassName("charSelects");
+    players.push(new PlayerGame(1, pInfoEls[0], cInfoEls[0]));
+    players.push(new PlayerGame(2, pInfoEls[2], cInfoEls[2]));
+    players.push(new PlayerGame(3, pInfoEls[1], cInfoEls[1]));
+    players.push(new PlayerGame(4, pInfoEls[3], cInfoEls[3]));
 
     
     // initialize the character list
@@ -274,25 +272,6 @@ function init() {
         new Score(document.getElementById("scoreBox1")),
         new Score(document.getElementById("scoreBox2")),
     );
-
-
-    // open player info menu if clicking on the icon
-    const pInfoButts = document.getElementsByClassName("pInfoButt");
-    for (let i = 0; i < pInfoButts.length; i++) {
-        pInfoButts[i].addEventListener("click", showPlayerInfo);
-    }
-    
-    // close player info with the buttons
-    document.getElementById("pInfoBackButt").addEventListener("click", hidePlayerInfo);
-    document.getElementById("pInfoSaveButt").addEventListener("click", () => {
-        applyPlayerInfo();
-        savePlayerPreset();
-        hidePlayerInfo();
-    });
-    document.getElementById("pInfoApplyButt").addEventListener("click", () => {
-        applyPlayerInfo();
-        hidePlayerInfo();
-    })
 
 
     // set click listeners to change the "best of" status
@@ -336,7 +315,7 @@ function init() {
             } else if (commFinder.isVisible()) {
                 commFinder.getFinderEntries()[glob.current.focus].click();
             }
-        } else if (pInfoDiv.style.pointerEvents == "auto") { // if player info menu is up
+        } else if (playerInfo.isVisible()) { // if player info menu is up
             document.getElementById("pInfoApplyButt").click();
         } else if (glob.inside.bracket) {
             updateBracket();
@@ -359,7 +338,7 @@ function init() {
         } else if (charFinder.isVisible() || skinFinder.isVisible()
         || commFinder.isVisible() || playerFinder.isVisible()) {
             document.activeElement.blur();
-        } else if (pInfoDiv.style.pointerEvents == "auto") { // if player info menu is up
+        } else if (playerInfo.isVisible()) { // if player info menu is up
             document.getElementById("pInfoBackButt").click();
         } else {
             clearPlayers(); //by default, clear player info
@@ -411,106 +390,6 @@ function giveWin(num) {
     } else {
         scores[num].setScore(scores[num].getScore()+1);
     }
-
-}
-
-
-// when a player info button is clicked
-function showPlayerInfo() {
-    
-    const pNum = this.getAttribute("player") - 1;
-    glob.current.player = pNum;
-
-    document.getElementById("pInfoPNum").textContent = pNum + 1;
-
-    // display the current info for this player
-    document.getElementById("pInfoInputPronouns").value = players[pNum].pronouns;
-    document.getElementById("pInfoInputTag").value = players[pNum].tag;
-    document.getElementById("pInfoInputName").value = players[pNum].nameInp.value;
-    document.getElementById("pInfoInputTwitter").value = players[pNum].twitter;
-    document.getElementById("pInfoInputTwitch").value = players[pNum].twitch;
-    document.getElementById("pInfoInputYt").value = players[pNum].yt;
-
-    // give tab index so we can jump from input to input with the keyboard
-    document.getElementById("pInfoInputPronouns").setAttribute("tabindex", "0");
-    document.getElementById("pInfoInputTag").setAttribute("tabindex", "0");
-    document.getElementById("pInfoInputName").setAttribute("tabindex", "0");
-    document.getElementById("pInfoInputTwitter").setAttribute("tabindex", "0");
-    document.getElementById("pInfoInputTwitch").setAttribute("tabindex", "0");
-    document.getElementById("pInfoInputYt").setAttribute("tabindex", "0");
-
-    pInfoDiv.style.pointerEvents = "auto";
-    pInfoDiv.style.opacity = 1;
-    pInfoDiv.style.transform = "scale(1)";
-    viewport.opacity(".25");
-
-}
-function hidePlayerInfo() {
-    pInfoDiv.style.pointerEvents = "none";
-    pInfoDiv.style.opacity = 0;
-    pInfoDiv.style.transform = "scale(1.15)";
-    viewport.opacity("1");
-
-    document.getElementById("pInfoInputPronouns").setAttribute("tabindex", "-1");
-    document.getElementById("pInfoInputTag").setAttribute("tabindex", "-1");
-    document.getElementById("pInfoInputName").setAttribute("tabindex", "-1");
-    document.getElementById("pInfoInputTwitter").setAttribute("tabindex", "-1");
-    document.getElementById("pInfoInputTwitch").setAttribute("tabindex", "-1");
-    document.getElementById("pInfoInputYt").setAttribute("tabindex", "-1");
-}
-function applyPlayerInfo() {
-    
-    const pNum = document.getElementById("pInfoPNum").textContent - 1;
-
-    players[pNum].pronouns = document.getElementById("pInfoInputPronouns").value;
-    players[pNum].tag = document.getElementById("pInfoInputTag").value;
-    players[pNum].nameInp.value = document.getElementById("pInfoInputName").value;
-    players[pNum].twitter = document.getElementById("pInfoInputTwitter").value;
-    players[pNum].twitch = document.getElementById("pInfoInputTwitch").value;
-    players[pNum].yt = document.getElementById("pInfoInputYt").value;
-
-    changeInputWidth(players[pNum].nameInp);
-
-}
-
-function savePlayerPreset() {
-    
-    const pNum = glob.current.player;
-
-    const preset = {
-        name: players[pNum].getName(),
-        tag: players[pNum].tag,
-        pronouns: players[pNum].pronouns,
-        twitter: players[pNum].twitter,
-        twitch: players[pNum].twitch,
-        yt: players[pNum].yt,
-        characters : []
-
-    }
-    preset.characters.push({
-        character: players[pNum].char,
-        skin: players[pNum].skin.name
-    });
-    if (players[pNum].skin.name == "Custom") {
-        preset.characters[0].hex = players[pNum].skin.hex;
-    }
-
-    // if a player preset for this player exists, add already existing characters
-    if (fs.existsSync(`${glob.path.text}/Player Info/${document.getElementById("pInfoInputName").value}.json`)) {
-        
-        const existingPreset = getJson(`${glob.path.text}/Player Info/${document.getElementById("pInfoInputName").value}`);
-        // add existing characters to the new json, but not if the character is the same
-        for (let i = 0; i < existingPreset.characters.length; i++) {
-            if (existingPreset.characters[i].character != players[pNum].char) {
-                preset.characters.push(existingPreset.characters[i]);
-            }
-        }
-
-    }
-
-    fs.writeFileSync(`${glob.path.text}/Player Info/${document.getElementById("pInfoInputName").value}.json`, JSON.stringify(preset, null, 2));
-
-    displayNotif("Player preset has been saved");
 
 }
 
@@ -760,16 +639,16 @@ function writeScoreboard() {
         ],
         bestOf: currentBestOf,
         gamemode: gamemode,
-        round: round.getRound(),
-        tournamentName: tournamentInp.value,
+        round: round.getText(),
+        tournamentName: tournament.getText(),
         caster: [],
-        allowIntro: document.getElementById('allowIntro').checked,
+        allowIntro: settings.isIntroChecked(),
         // this is just for remote updating
         altSkin: settings.isAltArtChecked(),
         forceHD: settings.isHDChecked(),
         noLoAHD: settings.isNoLoAChecked(),
         workshop: settings.isWsChecked(),
-        forceWL: forceWL.checked,
+        forceWL: settings.isForceWLChecked(),
         id : "gameData"
     };
 
@@ -929,8 +808,8 @@ function writeScoreboard() {
     fs.writeFileSync(glob.path.text + "/Simple Texts/Score L.txt", scores[0].getScore().toString());
     fs.writeFileSync(glob.path.text + "/Simple Texts/Score R.txt", scores[1].getScore().toString());
 
-    fs.writeFileSync(glob.path.text + "/Simple Texts/Round.txt", round.getRound());
-    fs.writeFileSync(glob.path.text + "/Simple Texts/Tournament Name.txt", tournamentInp.value);
+    fs.writeFileSync(glob.path.text + "/Simple Texts/Round.txt", round.getText());
+    fs.writeFileSync(glob.path.text + "/Simple Texts/Tournament Name.txt", tournament.getText());
 
     for (let i = 0; i < casters.length; i++) {
         fs.writeFileSync(glob.path.text + "/Simple Texts/Caster "+(i+1)+" Name.txt", casters[i].getName());
@@ -938,19 +817,6 @@ function writeScoreboard() {
         fs.writeFileSync(glob.path.text + "/Simple Texts/Caster "+(i+1)+" Twitch.txt", casters[i].getTwitch());
         fs.writeFileSync(glob.path.text + "/Simple Texts/Caster "+(i+1)+" Youtube.txt", casters[i].getYt());
     }
-
-}
-
-
-// whenever we need to display some info text to the user
-function displayNotif(text) {
-    
-    notifSpan.innerHTML = text;
-
-    notifSpan.style.animation = "";
-    setTimeout(() => {
-        notifSpan.style.animation = "notifAnim 2.5s both";
-    });
 
 }
 

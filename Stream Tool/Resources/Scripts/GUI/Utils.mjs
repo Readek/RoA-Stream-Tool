@@ -12,5 +12,3 @@ export function getJson(jPath) {
         return null;
     }
 }
-
-
