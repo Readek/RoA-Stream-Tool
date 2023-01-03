@@ -24,6 +24,9 @@ import { Score } from './GUI/Score.mjs';
 import { scores } from './GUI/Scores.mjs';
 import { bestOf } from './GUI/BestOf.mjs';
 import { Team } from './GUI/Team.mjs';
+import { teams } from './GUI/Teams.mjs';
+import { clearPlayers } from './GUI/Clear Players.mjs';
+import { swapPlayers } from './GUI/Swap Players.mjs'; // so it loads the listener
 
 // this is a weird way to have file svg's that can be recolored by css
 customElements.define("load-svg", class extends HTMLElement {
@@ -39,15 +42,9 @@ window.onscroll = () => { window.scroll(0, 0) };
 
 // yes we all like global variables
 let scData; // we will store data to send to the browsers here
-
 let gamemode = 1;
-
 const maxPlayers = 4; //change this if you ever want to remake this into singles only or 3v3 idk
-
-
-//preload  e v e r y t h i n g
 const casters = [];
-const teams = [];
 
 
 init();
@@ -84,10 +81,6 @@ function init() {
     );
 
 
-    //gamemode button
-    document.getElementById("gamemode").addEventListener("click", changeGamemode);
-
-
     // initialize the commentators
     casters.push(
         new Caster(document.getElementById("caster1")),
@@ -102,10 +95,8 @@ function init() {
     );
 
 
-    //add a listener to the swap button
-    document.getElementById('swapButton').addEventListener("click", swap);
-    //add a listener to the clear button
-    document.getElementById('clearButton').addEventListener("click", clearPlayers);
+    //gamemode button
+    document.getElementById("gamemode").addEventListener("click", changeGamemode);
 
 
     // finally, update the GUI on startup so we have something to send to browsers
@@ -160,11 +151,11 @@ function init() {
 
     //F1 or F2 to give players a score tick
     Mousetrap.bind('f1', () => {
-        giveWin(0)
+        scores[0].giveWin();
         if (settings.isScoreAutoChecked()) {writeScoreboard()};
     });
     Mousetrap.bind('f2', () => {
-        giveWin(1)
+        scores[1].giveWin();
         if (settings.isScoreAutoChecked()) {writeScoreboard()};
     });
 
@@ -191,18 +182,6 @@ function init() {
             commFinder.addActive(false);
         }
     });
-
-}
-
-
-// score hotkeys function
-function giveWin(num) {
-    
-    if (settings.isInvertScoreChecked()) {
-        scores[num].setScore(scores[num].getScore()-1);
-    } else {
-        scores[num].setScore(scores[num].getScore()+1);
-    }
 
 }
 
@@ -299,93 +278,6 @@ function changeGamemode() {
         document.getElementById("dropdownColorR").style.left = "0px";
 
     }
-}
-
-
-function swap() {
-
-    //team name
-    const teamStore = teams[0].getName();
-    teams[0].setName(teams[1].getName());
-    teams[1].setName(teamStore);
-
-    for (let i = 0; i < maxPlayers; i+=2) {
-
-        //names
-        const nameStore = players[i].getName();
-        players[i].setName(players[i+1].getName());
-        players[i+1].setName(nameStore);
-
-        // player info
-        [players[i].tag, players[i+1].tag] = [players[i+1].tag, players[i].tag];
-        [players[i].pronouns, players[i+1].pronouns] = [players[i+1].pronouns, players[i].pronouns];
-        [players[i].twitter, players[i+1].twitter] = [players[i+1].twitter, players[i].twitter];
-        [players[i].twitch, players[i+1].twitch] = [players[i+1].twitch, players[i].twitch];
-        [players[i].yt, players[i+1].yt] = [players[i+1].yt, players[i].yt]
-
-        //characters and skins
-        const tempP1Char = players[i].char;
-        const tempP2Char = players[i+1].char;
-        const tempP1Skin = players[i].skin;
-        const tempP2Skin = players[i+1].skin;
-        // update the stuff
-        players[i].charChange(tempP2Char, true);
-        players[i+1].charChange(tempP1Char, true);
-        players[i].skinChange(tempP2Skin);
-        players[i+1].skinChange(tempP1Skin);
-
-    }    
-
-    //scores
-    const scoreStore = scores[0].getScore();
-    scores[0].setScore(scores[1].getScore());
-    scores[1].setScore(scoreStore);
-
-    // [W]/[L] swap
-    const previousP1WL = wl.getLeft();
-    const previousP2WL = wl.getRight();
-
-    if (previousP2WL == "W") {
-        wl.leftW.click();
-    } else if (previousP2WL == "L") {
-        wl.leftL.click();
-    }
-    if (previousP1WL == "W") {
-        wl.rightW.click();
-    } else if (previousP1WL == "L") {
-        wl.rightL.click();
-    }
-
-}
-
-function clearPlayers() {
-
-    //crear the team names
-    teams[0].setName("");
-    teams[1].setName("");
-
-    for (let i = 0; i < maxPlayers; i++) {
-
-        //clear player texts
-        players[i].setName("");
-        
-        // clear player info
-        players[i].pronouns = "";
-        players[i].tag = "";
-        players[i].twitter = "";
-        players[i].twitch = "";
-        players[i].yt = "";
-
-        //reset characters to random
-        players[i].charChange("Random");
-
-    }
-
-    //clear player scores
-    for (let i = 0; i < scores.length; i++) {
-        scores[i].setScore(0);
-    }
-
 }
 
 
