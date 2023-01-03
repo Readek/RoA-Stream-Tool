@@ -1,4 +1,5 @@
 import { bestOf } from "./BestOf.mjs";
+import { settings } from "./Settings.mjs";
 
 export class Score {
 
@@ -70,6 +71,12 @@ export class Score {
 
         this.#scoreNumEl.value = actualScore;
 
+    }
+
+    /** Gives (or takes) a win to/from the player */
+    giveWin() {
+        const value = settings.isInvertScoreChecked() ? -1 : 1;
+        this.setScore(this.getScore()+value);
     }
 
     // called whenever we change the "best of" mode
