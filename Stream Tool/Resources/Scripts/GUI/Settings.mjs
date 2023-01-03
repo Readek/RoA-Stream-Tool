@@ -1,8 +1,8 @@
 import { viewport } from "./Viewport.mjs";
-import * as glob from './Globals.mjs';
 import { charFinder } from "./Finder/Char Finder.mjs";
 import { players } from "./Player/Players.mjs";
 import { wl } from "./WinnersLosers.mjs";
+import { stPath } from "./Globals.mjs";
 const fs = require('fs');
 const ipc = require('electron').ipcRenderer;
 
@@ -63,7 +63,7 @@ class GuiSettings {
     load() {
 
         // get us the json file
-        const guiSettings = JSON.parse(fs.readFileSync(`${glob.path.text}/GUI Settings.json`, "utf-8"));
+        const guiSettings = JSON.parse(fs.readFileSync(`${stPath.text}/GUI Settings.json`, "utf-8"));
 
         // and update it all!
         this.#introCheck.checked = guiSettings.allowIntro;
@@ -86,13 +86,13 @@ class GuiSettings {
     save(name, value) {
     
         // read the file
-        const guiSettings = JSON.parse(fs.readFileSync(`${glob.path.text}/GUI Settings.json`, "utf-8"));
+        const guiSettings = JSON.parse(fs.readFileSync(`${stPath.text}/GUI Settings.json`, "utf-8"));
 
         // update the setting's value
         guiSettings[name] = value;
 
         // save the file
-        fs.writeFileSync(`${glob.path.text}/GUI Settings.json`, JSON.stringify(guiSettings, null, 2));
+        fs.writeFileSync(`${stPath.text}/GUI Settings.json`, JSON.stringify(guiSettings, null, 2));
 
     }
 
@@ -155,7 +155,7 @@ class GuiSettings {
     toggleWs() {
 
         // set a new character path
-        glob.path.char = this.isWsChecked() ? glob.path.charWork : glob.path.charBase;
+        stPath.char = this.isWsChecked() ? stPath.charWork : stPath.charBase;
 
         // reload character lists
         charFinder.loadCharacters();

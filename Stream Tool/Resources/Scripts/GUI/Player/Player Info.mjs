@@ -1,7 +1,8 @@
 const fs = require('fs');
 import { getJson } from "../Utils.mjs";
 import { viewport } from "../Viewport.mjs";
-import * as glob from '../Globals.mjs';
+import { displayNotif } from "../Notifications.mjs";
+import { stPath } from "../Globals.mjs";
 
 class PlayerInfo {
 
@@ -48,8 +49,6 @@ class PlayerInfo {
      * @param {PlayerGame} player Player data to fill inputs
      */
     show(player) {
-
-        /* glob.current.player = pNum; */
 
         // update player number text
         this.#pNumSpan.textContent = player.pNum + 1;
@@ -132,9 +131,9 @@ class PlayerInfo {
         }
     
         // if a player preset for this player exists, add already existing characters
-        if (fs.existsSync(`${glob.path.text}/Player Info/${this.#nameInp.value}.json`)) {
+        if (fs.existsSync(`${stPath.text}/Player Info/${this.#nameInp.value}.json`)) {
             
-            const existingPreset = getJson(`${glob.path.text}/Player Info/${this.#nameInp.value}`);
+            const existingPreset = getJson(`${stPath.text}/Player Info/${this.#nameInp.value}`);
             // add existing characters to the new json, but not if the character is the same
             for (let i = 0; i < existingPreset.characters.length; i++) {
                 if (existingPreset.characters[i].character != this.#curPlayer.char) {
@@ -144,9 +143,9 @@ class PlayerInfo {
     
         }
     
-        fs.writeFileSync(`${glob.path.text}/Player Info/${this.#nameInp.value}.json`, JSON.stringify(preset, null, 2));
+        fs.writeFileSync(`${stPath.text}/Player Info/${this.#nameInp.value}.json`, JSON.stringify(preset, null, 2));
     
-        /* displayNotif("Player preset has been saved"); */
+        displayNotif("Player preset has been saved");
     
     }
 

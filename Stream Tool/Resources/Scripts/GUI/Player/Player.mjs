@@ -1,7 +1,7 @@
 import { charFinder } from "../Finder/Char Finder.mjs";
 import { playerFinder } from "../Finder/Player Finder.mjs";
 import { skinFinder } from "../Finder/Skin Finder.mjs";
-import * as glob from '../Globals.mjs';
+import { inside, stPath } from "../Globals.mjs";
 import { settings } from "../Settings.mjs";
 const fs = require('fs');
 
@@ -38,7 +38,7 @@ export class Player {
 
         // hide the player presets menu if text input loses focus
         this.nameInp.addEventListener("focusout", () => {
-            if (!glob.inside.finder) { //but not if the mouse is hovering a finder
+            if (!inside.finder) { //but not if the mouse is hovering a finder
                 playerFinder.hide();
             }
         });
@@ -65,9 +65,9 @@ export class Player {
             browserCharPath = "Resources/Characters/_Workshop";
         }
         
-        if (fs.existsSync(`${glob.path.char}/${char}/${extraPath}/${skin.name}.png`) && !skin.force) {
+        if (fs.existsSync(`${stPath.char}/${char}/${extraPath}/${skin.name}.png`) && !skin.force) {
             return browserCharPath + `/${char}/${extraPath}/${skin.name}.png`;
-        } else if (fs.existsSync(`${glob.path.char}/${char}/${extraPath}/Default.png`)) {
+        } else if (fs.existsSync(`${stPath.char}/${char}/${extraPath}/Default.png`)) {
             if (skin.hex) {
                 return null;
             } else {

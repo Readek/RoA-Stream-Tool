@@ -1,7 +1,7 @@
 const fs = require('fs');
 
+import { stPath } from './Globals.mjs';
 import { getRoARecolor } from './RoA WebGL Shader.mjs';
-import * as glob from './Globals.mjs';
 
 /**
  * @typedef {Object} Skin
@@ -26,26 +26,26 @@ import * as glob from './Globals.mjs';
 */
 export async function getRecolorImage(char, skin, colIn, colRan, imgType, failPath) {
 
-    if (fs.existsSync(`${glob.path.char}/${char}/${imgType}/${skin.name}.png`) && !skin.force) {
+    if (fs.existsSync(`${stPath.char}/${char}/${imgType}/${skin.name}.png`) && !skin.force) {
 
-        return `${glob.path.char}/${char}/${imgType}/${skin.name}.png`;
+        return `${stPath.char}/${char}/${imgType}/${skin.name}.png`;
 
-    } else if (fs.existsSync(`${glob.path.char}/${char}/${imgType}/Default.png`)) {
+    } else if (fs.existsSync(`${stPath.char}/${char}/${imgType}/Default.png`)) {
 
         if (skin.hex) {
             return getRoARecolor(
                 char,
-                `${glob.path.char}/${char}/${imgType}/Default.png`,
+                `${stPath.char}/${char}/${imgType}/Default.png`,
                 colIn,
                 colRan,
                 skin
             );
         } else {
-            return `${glob.path.char}/${char}/${imgType}/Default.png`;
+            return `${stPath.char}/${char}/${imgType}/Default.png`;
         }
 
     } else {
-        return `${glob.path.charRandom}/${failPath}.png`;
+        return `${stPath.charRandom}/${failPath}.png`;
     }
 
 }
@@ -63,23 +63,23 @@ export async function getTrailImage(char, skin, color) {
     // we add "FFFFFF" to the color to avoid shader issues when using only 1 color
     color += "FFFFFF";
 
-    if (fs.existsSync(`${glob.path.char}/${char}/Skins/${skin}.png`)) {
+    if (fs.existsSync(`${stPath.char}/${char}/Skins/${skin}.png`)) {
 
         // if the requested skin exists as a separate image
         return getRoARecolor(
             "Trail",
-            `${glob.path.char}/${char}/Skins/${skin}.png`,
+            `${stPath.char}/${char}/Skins/${skin}.png`,
             [127, 127, 127, 1, 0,0,0,0], // any color would do
             [360, 100, 100, 1, 0,0,0,0], // range picks up all colors
             {hex : color, ea : true}, // with blend true, only 1 color will be applied to everything
         )
 
-    } else if (fs.existsSync(`${glob.path.char}/${char}/Skins/Default.png`)) {
+    } else if (fs.existsSync(`${stPath.char}/${char}/Skins/Default.png`)) {
 
         // else, use the default skin image
         return getRoARecolor(
             "Trail",
-            `${glob.path.char}/${char}/Skins/Default.png`,
+            `${stPath.char}/${char}/Skins/Default.png`,
             [127, 127, 127, 1, 0,0,0,0],
             [360, 100, 100, 1, 0,0,0,0],
             {hex : color, ea : true},

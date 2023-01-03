@@ -1,6 +1,6 @@
 const fs = require('fs');
 import { commFinder } from "./Finder/Comm Finder.mjs";
-import * as glob from './Globals.mjs';
+import { inside, stPath } from "./Globals.mjs";
 import { displayNotif } from "./Notifications.mjs";
 
 export class Caster {
@@ -41,7 +41,7 @@ export class Caster {
         });
         // hide the presets dropdown if text input loses focus
         this.#nameEl.addEventListener("focusout", () => {
-            if (!glob.inside.finder) {
+            if (!inside.finder) {
                 commFinder.hide();
             }
         });
@@ -99,7 +99,7 @@ export class Caster {
         };
 
         // use this object to create a json file
-        fs.writeFileSync(`${glob.path.text}/Commentator Info/${this.getName()}.json`, JSON.stringify(preset, null, 2));
+        fs.writeFileSync(`${stPath.text}/Commentator Info/${this.getName()}.json`, JSON.stringify(preset, null, 2));
 
         displayNotif("Commentator preset has been saved");
 

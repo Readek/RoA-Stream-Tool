@@ -1,11 +1,11 @@
 import { Player } from "./Player.mjs";
 import { getJson } from "../Utils.mjs";
-import * as glob from '../Globals.mjs';
 import { getRecolorImage, getTrailImage } from "../GetImage.mjs";
 import { updateBgCharImg } from "./BG Char Image.mjs";
 import { currentColors } from "../Colors.mjs";
 import { settings } from "../Settings.mjs";
 import { playerInfo } from "./Player Info.mjs";
+import { stPath } from "../Globals.mjs";
 
 export class PlayerGame extends Player {
 
@@ -80,7 +80,7 @@ export class PlayerGame extends Player {
         this.charSel.children[1].innerHTML = character;
 
         // set the skin list for this character
-        this.charInfo = getJson(`${glob.path.char}/${character}/_Info`);
+        this.charInfo = getJson(`${stPath.char}/${character}/_Info`);
 
         // if the character doesnt exist, write in a placeholder
         if (this.charInfo === null) {
@@ -161,7 +161,7 @@ export class PlayerGame extends Player {
 
             updateBgCharImg(this.pNum-1, this.scSrc);
             if (this.char == "Random" && this.pNum == 1) {
-                updateBgCharImg(this.pNum-1, `${glob.path.charRandom}/P2.png`);
+                updateBgCharImg(this.pNum-1, `${stPath.charRandom}/P2.png`);
             }
         }
 

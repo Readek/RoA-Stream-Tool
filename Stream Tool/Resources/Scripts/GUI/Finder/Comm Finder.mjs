@@ -1,6 +1,6 @@
 import { Finder } from "./Finder.mjs";
-import * as glob from '../Globals.mjs';
 import { getJson } from '../Utils.mjs';
+import { stPath } from "../Globals.mjs";
 const fs = require('fs');
 
 
@@ -22,7 +22,7 @@ class CommFinder extends Finder {
         if (caster.getName().length >= 3) {
 
             // get us the preset files, then for each one:
-            const files = fs.readdirSync(glob.path.text + "/Commentator Info/");
+            const files = fs.readdirSync(stPath.text + "/Commentator Info/");
             files.forEach(file => {
 
                 // removes ".json" from the file name
@@ -35,7 +35,7 @@ class CommFinder extends Finder {
                     fileFound = true;
 
                     // get the preset data
-                    const casterInfo = getJson(`${glob.path.text}/Commentator Info/${file}`);
+                    const casterInfo = getJson(`${stPath.text}/Commentator Info/${file}`);
 
                     // create the new div that will be added as an entry
                     const newDiv = document.createElement('button');

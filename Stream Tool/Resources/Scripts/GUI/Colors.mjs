@@ -1,4 +1,4 @@
-import * as glob from './Globals.mjs';
+import { stPath } from './Globals.mjs';
 import { players } from './Player/Players.mjs';
 import { getJson } from './Utils.mjs';
 
@@ -7,7 +7,7 @@ const colorRectangles = document.getElementsByClassName("pColorRect");
 const colorGradients = document.getElementsByClassName("side");
 
 // load the color list from a json file
-const colorList = getJson(glob.path.text + "/Color Slots");
+const colorList = getJson(stPath.text + "/Color Slots");
 
 // for each color on the list, add them to the color dropdown
 for (let i = 0; i < colorList.length; i++) {

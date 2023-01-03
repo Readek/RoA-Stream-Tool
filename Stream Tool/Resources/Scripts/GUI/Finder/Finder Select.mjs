@@ -1,5 +1,5 @@
+import { current } from "../Globals.mjs";
 import { Finder } from "./Finder.mjs";
-import * as glob from '../Globals.mjs';
 
 export class FinderSelect extends Finder {
 
@@ -46,13 +46,13 @@ export class FinderSelect extends Finder {
 
         }
 
-        glob.current.focus = -1;
+        current.focus = -1;
 
         // if no value, just remove any remaining active classes
         if (filterValue == "") {
             this._removeActiveClass(this.getFinderEntries());
         } else {
-            if (startsWith) glob.current.focus = startsWith - 1;
+            if (startsWith) current.focus = startsWith - 1;
             this.addActive(true);
         }
 

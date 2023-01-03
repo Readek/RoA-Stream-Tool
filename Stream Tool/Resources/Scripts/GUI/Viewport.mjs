@@ -1,4 +1,4 @@
-import * as glob from './Globals.mjs';
+import { inside } from "./Globals.mjs";
 
 class Viewport {
 
@@ -6,21 +6,26 @@ class Viewport {
     #goBackDiv = document.getElementById('goBack');
     #overlayDiv = document.getElementById('overlay');
 
+    constructor() {
+        //if the viewport is moved, click anywhere on the center to go back
+        this.#goBackDiv.addEventListener("click", () => {this.toCenter()});
+    }
+
     /** Moves the viewport back to the center */
     toCenter() {
 
         this.#goBackDiv.style.display = "none";
         this.opacity("1");
         this.#moveViewport("0");
-        glob.inside.bracket = false;
-        glob.inside.settings = false;
+        inside.bracket = false;
+        inside.settings = false;
 
     }
 
     /** Moves the viewport sightly to see the settings */
     toSettings() {
 
-        glob.inside.settings = true;
+        inside.settings = true;
         this.#goBackDiv.style.display = "block";
         this.opacity(".25");
         this.#moveViewport("-240px");
@@ -30,7 +35,7 @@ class Viewport {
     /** Moves the viewport to bracket editor */
     toBracket() {
 
-        glob.inside.bracket = true;
+        inside.bracket = true;
         this.opacity(".25");
         this.#moveViewport("100%");
 

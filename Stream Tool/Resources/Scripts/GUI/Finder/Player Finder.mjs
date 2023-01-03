@@ -1,8 +1,8 @@
 import { Finder } from "./Finder.mjs";
-import * as glob from '../Globals.mjs';
 import { getJson } from '../Utils.mjs';
 import { getRecolorImage } from "../GetImage.mjs";
 import { customChange, setCurrentPlayer } from "../Custom Skin.mjs";
+import { current, stPath } from "../Globals.mjs";
 const fs = require('fs');
 
 class PlayerFinder extends Finder {
@@ -17,7 +17,7 @@ class PlayerFinder extends Finder {
     async fillFinderPresets(player) {
 
         //remove the "focus" for the player presets list
-        glob.current.focus = -1;
+        current.focus = -1;
 
         // clear the current list each time we type
         this._clearList();
@@ -32,7 +32,7 @@ class PlayerFinder extends Finder {
         if (player.getName().length >= 3) {
 
             // check the files in that folder
-            const files = fs.readdirSync(glob.path.text + "/Player Info/");
+            const files = fs.readdirSync(stPath.text + "/Player Info/");
             files.forEach(file => {
 
                 // removes ".json" from the file name
@@ -45,7 +45,7 @@ class PlayerFinder extends Finder {
                     fileFound = true;
 
                     // go inside that file to get the player info
-                    const playerInfo = getJson(`${glob.path.text}/Player Info/${file}`);
+                    const playerInfo = getJson(`${stPath.text}/Player Info/${file}`);
                     // for each character that player plays
                     playerInfo.characters.forEach(char => {
 
@@ -96,7 +96,7 @@ class PlayerFinder extends Finder {
                         // actual image
                         const charImg = document.createElement('img');
                         charImg.className = "pfCharImg";
-                        const charJson = getJson(`${glob.path.char}/${char.character}/_Info`);
+                        const charJson = getJson(`${stPath.char}/${char.character}/_Info`);
                         // we will store this for later
                         skinImgs.push({
                             el : charImg,

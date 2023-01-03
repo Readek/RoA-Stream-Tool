@@ -1,8 +1,8 @@
 const fs = require('fs');
-import * as glob from '../Globals.mjs';
 import { getJson } from '../Utils.mjs';
 import { getRecolorImage } from '../GetImage.mjs';
 import { FinderSelect } from './Finder Select.mjs';
+import { stPath } from '../Globals.mjs';
 
 class CharFinder extends FinderSelect {
 
@@ -19,7 +19,7 @@ class CharFinder extends FinderSelect {
         this._finderEl.lastElementChild.innerHTML = "";
 
         // create a list with folder names on charPath
-        const characterList = fs.readdirSync(glob.path.char, { withFileTypes: true })
+        const characterList = fs.readdirSync(stPath.char, { withFileTypes: true })
             .filter(dirent => dirent.isDirectory())
             .map(dirent => dirent.name)
             .filter((name) => {
@@ -37,7 +37,7 @@ class CharFinder extends FinderSelect {
         for (let i = 0; i < characterList.length; i++) {
 
             // get us the charInfo for this character
-            const charInfo = getJson(`${glob.path.char}/${characterList[i]}/_Info`);
+            const charInfo = getJson(`${stPath.char}/${characterList[i]}/_Info`);
 
             // this will be the div to click
             const newDiv = document.createElement('div');
@@ -81,7 +81,7 @@ class CharFinder extends FinderSelect {
         }
 
         // this is just so Remote Update has a character list
-        fs.writeFileSync(`${glob.path.text}/Character List.json`, JSON.stringify(characterList, null, 2));
+        fs.writeFileSync(`${stPath.text}/Character List.json`, JSON.stringify(characterList, null, 2));
 
     }
 

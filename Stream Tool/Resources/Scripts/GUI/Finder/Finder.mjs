@@ -1,4 +1,5 @@
-import * as glob from '../Globals.mjs';
+import { current, inside } from "../Globals.mjs";
+
 
 export class Finder {
 
@@ -8,13 +9,12 @@ export class Finder {
     _list;
     
     constructor(el) {
-
         this._finderEl = el;
         this._list = el.getElementsByClassName("searchList")[0];
 
         // flags to know if cursor is above the finder
-        this._finderEl.addEventListener("mouseenter", () => { glob.inside.finder = true });
-        this._finderEl.addEventListener("mouseleave", () => { glob.inside.finder = false });
+        this._finderEl.addEventListener("mouseenter", () => { inside.finder = true });
+        this._finderEl.addEventListener("mouseleave", () => { inside.finder = false });
 
     }
 
@@ -29,8 +29,7 @@ export class Finder {
         callEl.appendChild(this._finderEl);
 
         // set up some global variables for other functions
-        glob.current.player = pNum;
-        glob.current.focus = -1;
+        current.focus = -1;
 
         // reset the dropdown position
         this._finderEl.style.top = "100%";
@@ -142,65 +141,65 @@ export class Finder {
         if (direction) {
 
             // increase that focus
-            glob.current.focus++;
+            current.focus++;
             // if end of list, cicle
-            if (glob.current.focus >= entries.length) glob.current.focus = 0;
+            if (current.focus >= entries.length) current.focus = 0;
 
             // search for the next visible entry
-            while (glob.current.focus <= entries.length-1) {
-                if (entries[glob.current.focus].style.display == "none") {
-                    glob.current.focus++;
+            while (current.focus <= entries.length-1) {
+                if (entries[current.focus].style.display == "none") {
+                    current.focus++;
                 } else {
                     break;
                 }
             }
             // if we didnt find any, start from 0
-            if (glob.current.focus == entries.length) {
-                glob.current.focus = 0;
-                while (glob.current.focus <= entries.length-1) {
-                    if (entries[glob.current.focus].style.display == "none") {
-                        glob.current.focus++;
+            if (current.focus == entries.length) {
+                current.focus = 0;
+                while (current.focus <= entries.length-1) {
+                    if (entries[current.focus].style.display == "none") {
+                        current.focus++;
                     } else {
                         break;
                     }
                 }
             }
             // if even then we couldnt find a visible entry, set it to invalid
-            if (glob.current.focus == entries.length) {
-                glob.current.focus = -1;
+            if (current.focus == entries.length) {
+                current.focus = -1;
             }
 
         } else { // same as above but inverted
-            glob.current.focus--;
-            if (glob.current.focus < 0) glob.current.focus = (entries.length - 1);
-            while (glob.current.focus > -1) {
-                if (entries[glob.current.focus].style.display == "none") {
-                    glob.current.focus--;
+            current.focus--;
+            if (current.focus < 0) current.focus = (entries.length - 1);
+            while (current.focus > -1) {
+                if (entries[current.focus].style.display == "none") {
+                    current.focus--;
                 } else {
                     break;
                 }
             }
-            if (glob.current.focus == -1) {
-                glob.current.focus = entries.length-1;
-                while (glob.current.focus > -1) {
-                    if (entries[glob.current.focus].style.display == "none") {
-                        glob.current.focus--;
+            if (current.focus == -1) {
+                current.focus = entries.length-1;
+                while (current.focus > -1) {
+                    if (entries[current.focus].style.display == "none") {
+                        current.focus--;
                     } else {
                         break;
                     }
                 }
             }
-            if (glob.current.focus == entries.length) {
-                glob.current.focus = -1;
+            if (current.focus == entries.length) {
+                current.focus = -1;
             }
         }
 
         // if there is a valid entry
-        if (glob.current.focus > -1) {
+        if (current.focus > -1) {
             //add to the selected entry the active class
-            entries[glob.current.focus].classList.add("finderEntry-active");
+            entries[current.focus].classList.add("finderEntry-active");
             // make it scroll if it goes out of view
-            entries[glob.current.focus].scrollIntoView({block: "center"});
+            entries[current.focus].scrollIntoView({block: "center"});
         }
         
     }

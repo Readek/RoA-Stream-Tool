@@ -1,7 +1,7 @@
 import { Player } from "./Player.mjs";
 import { getJson } from "../Utils.mjs";
-import * as glob from '../Globals.mjs';
 import { getRecolorImage } from "../GetImage.mjs";
+import { stPath } from "../Globals.mjs";
 
 export class PlayerBracket extends Player {
 
@@ -100,7 +100,7 @@ export class PlayerBracket extends Player {
         this.charSel.children[1].innerHTML = character;
 
         // set the skin list for this character
-        this.charInfo = getJson(`${glob.path.char}/${character}/_Info`);
+        this.charInfo = getJson(`${stPath.char}/${character}/_Info`);
 
         // if the character doesnt exist, write in a placeholder
         if (this.charInfo === null) {

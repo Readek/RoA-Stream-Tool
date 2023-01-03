@@ -1,4 +1,3 @@
-const ipc = require('electron').ipcRenderer;
 import { viewport } from './Viewport.mjs';
 import { bracketPlayers, players } from './Player/Players.mjs';
 import { PlayerBracket } from "./Player/Player Bracket.mjs";
@@ -154,8 +153,11 @@ function copyFromGameToBracket() {
 }
 
 
-/** Updates the bracket with current data, then sends it */
-function updateBracket() {
+/**
+ * Updates the bracket with current data, then sends it
+ * @param {Boolean} startup - Won't show a "bracket updated" notification if true
+ */
+export function updateBracket(startup) {
     
     // save the current info
     updateLocalBracket();
@@ -163,7 +165,7 @@ function updateBracket() {
     // time to send it away
     updateBracketData(JSON.stringify(bracketData, null, 2));
     sendBracketData();
-    displayNotif("Bracket has been updated");
+    if (!startup) displayNotif("Bracket has been updated");
 
 }
 

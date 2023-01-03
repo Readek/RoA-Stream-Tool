@@ -9,10 +9,15 @@ import { settings } from './Settings.mjs';
 import { teams } from './Teams.mjs';
 import { tournament } from './Tournament.mjs';
 import { wl } from './WinnersLosers.mjs';
-import * as glob from './Globals.mjs';
 import { sendGameData, updateGameData } from './IPC.mjs';
+import { stPath } from './Globals.mjs';
 
 const fs = require('fs');
+
+// bottom bar update button
+document.getElementById('updateRegion').addEventListener("click", () => {
+    writeScoreboard();
+});
 
 /** Generates an object with game data, then sends it */
 export function writeScoreboard() {
@@ -195,23 +200,23 @@ export function writeScoreboard() {
 
     //simple .txt files
     for (let i = 0; i < players.length; i++) {
-        fs.writeFileSync(glob.path.text + "/Simple Texts/Player "+(i+1)+".txt", players[i].getName());        
+        fs.writeFileSync(`${stPath.text}/Simple Texts/Player ${i+1}.txt`, players[i].getName());        
     }
 
-    fs.writeFileSync(glob.path.text + "/Simple Texts/Team 1.txt", teams[0].getName());
-    fs.writeFileSync(glob.path.text + "/Simple Texts/Team 2.txt", teams[1].getName());
+    fs.writeFileSync(`${stPath.text}/Simple Texts/Team 1.txt`, teams[0].getName());
+    fs.writeFileSync(`${stPath.text}/Simple Texts/Team 2.txt`, teams[1].getName());
 
-    fs.writeFileSync(glob.path.text + "/Simple Texts/Score L.txt", scores[0].getScore().toString());
-    fs.writeFileSync(glob.path.text + "/Simple Texts/Score R.txt", scores[1].getScore().toString());
+    fs.writeFileSync(`${stPath.text}/Simple Texts/Score L.txt`, scores[0].getScore().toString());
+    fs.writeFileSync(`${stPath.text}/Simple Texts/Score R.txt`, scores[1].getScore().toString());
 
-    fs.writeFileSync(glob.path.text + "/Simple Texts/Round.txt", round.getText());
-    fs.writeFileSync(glob.path.text + "/Simple Texts/Tournament Name.txt", tournament.getText());
+    fs.writeFileSync(`${stPath.text}/Simple Texts/Round.txt`, round.getText());
+    fs.writeFileSync(`${stPath.text}/Simple Texts/Tournament Name.txt`, tournament.getText());
 
     for (let i = 0; i < casters.length; i++) {
-        fs.writeFileSync(glob.path.text + "/Simple Texts/Caster "+(i+1)+" Name.txt", casters[i].getName());
-        fs.writeFileSync(glob.path.text + "/Simple Texts/Caster "+(i+1)+" Twitter.txt", casters[i].getTwitter());
-        fs.writeFileSync(glob.path.text + "/Simple Texts/Caster "+(i+1)+" Twitch.txt", casters[i].getTwitch());
-        fs.writeFileSync(glob.path.text + "/Simple Texts/Caster "+(i+1)+" Youtube.txt", casters[i].getYt());
+        fs.writeFileSync(`${stPath.text}/Simple Texts/Caster ${i+1} Name.txt`, casters[i].getName());
+        fs.writeFileSync(`${stPath.text}/Simple Texts/Caster ${i+1} Twitter.txt`, casters[i].getTwitter());
+        fs.writeFileSync(`${stPath.text}/Simple Texts/Caster ${i+1} Twitch.txt`, casters[i].getTwitch());
+        fs.writeFileSync(`${stPath.text}/Simple Texts/Caster ${i+1} Youtube.txt`, casters[i].getYt());
     }
 
 }

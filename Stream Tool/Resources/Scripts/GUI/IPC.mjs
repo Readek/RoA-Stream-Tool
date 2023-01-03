@@ -32,7 +32,7 @@ export function updateGameData(data) {
 }
 /** Sends current bracket object to websocket clients */
 export function sendBracketData() {
-    ipc.send('sendData', JSON.stringify(bracketData, null, 2));
+    ipc.send('sendData', bracketData);
 }
 export function updateBracketData(data) {
     bracketData = data;
