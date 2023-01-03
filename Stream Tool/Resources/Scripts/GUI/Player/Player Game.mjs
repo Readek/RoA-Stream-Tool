@@ -21,6 +21,8 @@ export class PlayerGame extends Player {
     vsSrc;
     vsBrowserSrc;
 
+    pInfoDiv;
+    cInfoDiv;
 
     constructor(id, pInfoEl, cInfoEl) {
         
@@ -42,7 +44,10 @@ export class PlayerGame extends Player {
         // open player info menu if clicking on the icon
         pInfoEl.getElementsByClassName("pInfoButt")[0].addEventListener("click", () => {
             playerInfo.show(this);
-        })
+        });
+
+        this.pInfoDiv = pInfoEl;
+        this.cInfoDiv = cInfoEl;
 
     }
 

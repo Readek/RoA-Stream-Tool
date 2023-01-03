@@ -11,7 +11,6 @@ import { commFinder } from './GUI/Finder/Comm Finder.mjs';
 import { playerFinder } from './GUI/Finder/Player Finder.mjs';
 import { players } from './GUI/Player/Players.mjs';
 import { PlayerGame } from './GUI/Player/Player Game.mjs';
-import { hideBgCharImgs, showBgCharImgs } from './GUI/Player/BG Char Image.mjs';
 import { settings } from './GUI/Settings.mjs';
 import { currentColors } from './GUI/Colors.mjs';
 import { round } from './GUI/Round.mjs';
@@ -27,6 +26,7 @@ import { Team } from './GUI/Team.mjs';
 import { teams } from './GUI/Teams.mjs';
 import { clearPlayers } from './GUI/Clear Players.mjs';
 import { swapPlayers } from './GUI/Swap Players.mjs'; // so it loads the listener
+import { gamemode } from './GUI/Gamemode Change.mjs';
 
 // this is a weird way to have file svg's that can be recolored by css
 customElements.define("load-svg", class extends HTMLElement {
@@ -42,7 +42,6 @@ window.onscroll = () => { window.scroll(0, 0) };
 
 // yes we all like global variables
 let scData; // we will store data to send to the browsers here
-let gamemode = 1;
 const maxPlayers = 4; //change this if you ever want to remake this into singles only or 3v3 idk
 const casters = [];
 
@@ -94,12 +93,7 @@ function init() {
         new Team(document.getElementsByClassName("side")[1]),
     );
 
-
-    //gamemode button
-    document.getElementById("gamemode").addEventListener("click", changeGamemode);
-
-
-    // finally, update the GUI on startup so we have something to send to browsers
+    // update the GUI on startup so we have something to send to browsers
     writeScoreboard();
 
 
@@ -186,101 +180,6 @@ function init() {
 }
 
 
-//called when clicking on the gamemode icon, cycles through singles and doubles
-function changeGamemode() {
-
-    // store 2v2 only elements
-    const dubEls = document.getElementsByClassName("elGm2");
-
-    //things are about to get messy
-    if (gamemode == 1) {
-        
-        gamemode = 2;
-
-        // change gamemode selector text
-        this.innerText = "2v2";
-
-        // display all 2v2 only elements
-        for (let i = 0; i < dubEls.length; i++) {
-            dubEls[i].style.display = "flex";
-        }
-
-        //hide the background character image to reduce clutter
-        hideBgCharImgs();
-
-        for (let i = 1; i < 3; i++) {
-            
-            document.getElementById("row1-"+i).insertAdjacentElement("afterbegin", wl.getWLButtons()[i-1]);
-            document.getElementById("row1-"+i).insertAdjacentElement("afterbegin", document.getElementById('scoreBox'+i));
-            
-            document.getElementById("scoreText"+i).style.display = "none";
-
-            document.getElementById("row1-"+i).insertAdjacentElement("afterbegin", teams[i-1].getNameInp());
-
-            document.getElementById('row2-'+i).insertAdjacentElement("beforeend", document.getElementById('pInfo'+i));
-        }
-
-        // change max width to the name inputs and char selects
-        for (let i = 0; i < maxPlayers; i++) {
-
-            players[i].nameInp.style.maxWidth = "94px"
-            
-            players[i].charSel.style.maxWidth = "73px";
-            players[i].skinSel.style.maxWidth = "72px";
-
-        }
-
-        //change the hover tooltip
-        this.setAttribute('title', "Change the gamemode to Singles");
-
-        //dropdown menus for the right side will now be positioned to the right
-        document.getElementById("dropdownColorR").style.right = "0px";
-        document.getElementById("dropdownColorR").style.left = "";
-
-    } else if (gamemode == 2) {
-
-        gamemode = 1;
-
-        // change gamemode selector text
-        this.innerText = "1v1";
-
-        // hide all 2v2 only elements
-        for (let i = 0; i < dubEls.length; i++) {
-            dubEls[i].style.display = "none";
-        }
-
-        showBgCharImgs();
-
-        //move everything back to normal
-        for (let i = 1; i < 3; i++) {
-            document.getElementById('pInfo'+(i+2)).style.display = "none";
-
-            document.getElementById("row3-"+i).insertAdjacentElement("afterbegin", wl.getWLButtons()[i-1]);
-            document.getElementById("row3-"+i).insertAdjacentElement("afterbegin", document.getElementById('scoreBox'+i));
-            document.getElementById("scoreText"+i).style.display = "block";
-        
-            document.getElementById('row1-'+i).insertAdjacentElement("afterbegin", document.getElementById('pInfo'+i));
-        }
-
-        for (let i = 0; i < maxPlayers; i++) {
-
-            players[i].nameInp.style.maxWidth = "210px"
-            
-            players[i].charSel.style.maxWidth = "141px";
-            players[i].skinSel.style.maxWidth = "141px";
-            
-        }
-
-        this.setAttribute('title', "Change the gamemode to Doubles");
-
-        //dropdown menus for the right side will now be positioned to the left
-        document.getElementById("dropdownColorR").style.right = "";
-        document.getElementById("dropdownColorR").style.left = "0px";
-
-    }
-}
-
-
 //time to write it down
 function writeScoreboard() {
 
@@ -301,7 +200,7 @@ function writeScoreboard() {
             wl.getRight(),
         ],
         bestOf: bestOf.getBo(),
-        gamemode: gamemode,
+        gamemode: gamemode.getGm(),
         round: round.getText(),
         tournamentName: tournament.getText(),
         caster: [],
@@ -380,7 +279,7 @@ function writeScoreboard() {
                 vsCharPos[0] = -500;
             }
             //if doubles, we need to move it up a bit
-            if (gamemode == 2) {
+            if (gamemode.getGm() == 2) {
                 vsCharPos[1] = -125;
             } else {
                 vsCharPos[1] = 0;

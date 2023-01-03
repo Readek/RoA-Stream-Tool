@@ -1,7 +1,9 @@
+const ipc = require('electron').ipcRenderer;
 import { viewport } from './Viewport.mjs';
-import { bracketPlayers } from './Player/Players.mjs';
+import { bracketPlayers, players } from './Player/Players.mjs';
 import { PlayerBracket } from "./Player/Player Bracket.mjs";
 import { displayNotif } from './Notifications.mjs';
+import { scores } from './Scores.mjs';
 
 
 const bRoundSelect = document.getElementById('bracketRoundSelect');
@@ -144,7 +146,7 @@ function copyFromGameToBracket() {
         bracketPlayers[num+i].setName(players[i].getName());
         bracketPlayers[num+i].setTag(players[i].tag);
         bracketPlayers[num+i].setScore(scores[i].getScore());
-        charChange(players[i].char, num+i, true);
+        bracketPlayers[num+i].charChange(players[i].char, true);
         bracketPlayers[num+i].skinChange(players[i].skin);
     }
 
