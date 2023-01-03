@@ -4,6 +4,7 @@ import { bracketPlayers, players } from './Player/Players.mjs';
 import { PlayerBracket } from "./Player/Player Bracket.mjs";
 import { displayNotif } from './Notifications.mjs';
 import { scores } from './Scores.mjs';
+import { sendBracketData, updateBracketData } from './IPC.mjs';
 
 
 const bRoundSelect = document.getElementById('bracketRoundSelect');
@@ -160,7 +161,8 @@ function updateBracket() {
     updateLocalBracket();
 
     // time to send it away
-    sendBracket();
+    updateBracketData(JSON.stringify(bracketData, null, 2));
+    sendBracketData();
     displayNotif("Bracket has been updated");
 
 }
@@ -188,11 +190,6 @@ function updateLocalBracket(previous) {
 
 }
 
-
-/** Sends current bracket object to websocket clients */
-function sendBracket() {
-    ipc.send('sendData', JSON.stringify(bracketData, null, 2));
-}
 
 /**
  * Replaces current bracket object with the one recieved remotely
