@@ -5,9 +5,8 @@
   <title>RoA Stream Tool v9 [GIT]</title>
   <link rel="stylesheet" href="CSS/GUI.css">
   <script src="Scripts/GUI/mousetrap.min.js" defer></script>
-  <script src="Scripts/GUI.js" defer></script>
-  <script src="Scripts/GUI/Bracket.js" defer></script>
-  <script src="Scripts/GUI/RoA WebGL Shader.js"></script>
+  <script src="Scripts/GUI.js" type="module"></script>
+  <script src="Scripts/GUI/Bracket.mjs" type="module" defer></script>
 </head>
   
 <body>
@@ -30,12 +29,12 @@
 
             <input type="text" id="teamName1" class="teamName textInput elGm2 mousetrap" tabindex="1" placeholder="Team 1 name" spellcheck="false" contenteditable="true">
 
-            <div class="playerInfo" id="pInfo1">
+            <div class="playerInfo">
 
-              <button class="pInfoButt" player="1" tabindex="-1">
+              <button class="pInfoButt" tabindex="-1">
                 <load-svg src="SVGs/Person.svg" class="pInfoButtIcon"></load-svg>
               </button>
-              <div class="pFinderPosition" id="pFinderBox1">
+              <div class="finderPosition" id="pFinderBox1">
                 <input type="text" id="p1Name" class="textInput mousetrap nameInput" tabindex="2" placeholder="Player 1" title="Insert P1's name here" spellcheck="false">
               </div>
 
@@ -53,13 +52,13 @@
           <div class="row" id="row2-1">
 
             <div class="charSelects">
-              <div class="cFinderPosition">
+              <div class="finderPosition">
                 <div class="selector charSelector" id="p1CharSelector" tabindex="-1" title="Everyone is here!">
                   <img class="charSelectorIcon" alt="">
                   <div class="charSelectorText"></div>
                 </div>
               </div>
-              <div class="cFinderPosition">
+              <div class="finderPosition">
                 <div class="selector skinSelector" id="p1SkinSelector" tabindex="-1"></div>
               </div>
             </div>
@@ -69,23 +68,23 @@
           <div class="row" id="row3-1">
 
             <div class="charSelects elGm2">
-              <div class="cFinderPosition">
+              <div class="finderPosition">
                 <div class="selector charSelector" id="p3CharSelector" tabindex="-1" title="Everyone is here!">
                   <img class="charSelectorIcon" id="charSelIcon" alt="">
                   <div class="charSelectorText"></div>
                 </div>
               </div>
-              <div class="cFinderPosition">
+              <div class="finderPosition">
                 <div class="selector skinSelector" id="p3SkinSelector" tabindex="-1"></div>
               </div>
             </div>
 
-            <div class="playerInfo elGm2" id="pInfo3">
+            <div class="playerInfo elGm2">
 
-              <button class="pInfoButt" player="3" tabindex="-1">
+              <button class="pInfoButt" tabindex="-1">
                 <load-svg src="SVGs/Person.svg" class="pInfoIcon"></load-svg>
               </button>
-              <div class="pFinderPosition" id="pFinderBox3">
+              <div class="finderPosition" id="pFinderBox3">
                 <input type="text" id="p3Name" class="textInput mousetrap nameInput" tabindex="3" placeholder="Player 3" title="Insert P3's name here" spellcheck="false">
               </div>
 
@@ -131,11 +130,11 @@
 
             <input type="text" id="teamName2" class="teamName textInput elGm2 mousetrap" tabindex="1" placeholder="Team 2 name" spellcheck="false" contenteditable="true">
 
-            <div class="playerInfo" id="pInfo2">
-              <button class="pInfoButt" player="2" tabindex="-1">
+            <div class="playerInfo">
+              <button class="pInfoButt" tabindex="-1">
                 <load-svg src="SVGs/Person.svg" class="pInfoIcon"></load-svg>
               </button>
-              <div class="pFinderPosition" id="pFinderBox2">
+              <div class="finderPosition" id="pFinderBox2">
                 <input type="text" id="p2Name" class="textInput mousetrap nameInput" tabindex="2" placeholder="Player 2" title="Insert P2's name here." spellcheck="false">
               </div>
             </div>
@@ -153,13 +152,13 @@
           <div class="row" id="row2-2">
 
             <div class="charSelects">
-              <div class="cFinderPosition">
+              <div class="finderPosition">
                 <div class="selector charSelector" id="p2CharSelector" tabindex="-1" title="Everyone is here!">
                   <img class="charSelectorIcon" id="charSelIcon" alt="">
                   <div class="charSelectorText"></div>
                 </div>
               </div>
-              <div class="cFinderPosition">
+              <div class="finderPosition">
                 <div class="selector skinSelector" id="p2SkinSelector" tabindex="-1"></div>
               </div>
             </div>
@@ -169,22 +168,22 @@
           <div class="row" id="row3-2">
 
             <div class="charSelects elGm2">
-              <div class="cFinderPosition">
+              <div class="finderPosition">
                 <div class="selector charSelector" id="p4CharSelector" tabindex="-1" title="Everyone is here!">
                   <img class="charSelectorIcon" id="charSelIcon" alt="">
                   <div class="charSelectorText"></div>
                 </div>
               </div>
-              <div class="cFinderPosition">
+              <div class="finderPosition">
                 <div class="selector skinSelector" id="p4SkinSelector" tabindex="-1"></div>
               </div>
             </div>
 
-            <div class="playerInfo elGm2" id="pInfo4">
-              <button class="pInfoButt" player="4" tabindex="-1">
+            <div class="playerInfo elGm2">
+              <button class="pInfoButt" tabindex="-1">
                 <load-svg src="SVGs/Person.svg" class="pInfoIcon"></load-svg>
               </button>
-              <div class="pFinderPosition" id="pFinderBox4">
+              <div class="finderPosition" id="pFinderBox4">
                 <input type="text" id="p4Name" class="textInput mousetrap nameInput" tabindex="3" placeholder="Player 4" title="Insert P4's name here" spellcheck="false">
               </div>
 
@@ -230,7 +229,7 @@
 
           <div class="casterGroup casterNameG">
             <load-svg src="SVGs/Mic.svg" class="casterIcon"></load-svg>
-            <div class="castFinderPosition">
+            <div class="finderPosition">
               <input type="text" class="cName textInput mousetrap" placeholder="Caster name" spellcheck="false">
             </div>
           </div>
@@ -262,7 +261,7 @@
 
           <div class="casterGroup casterNameG">
             <load-svg src="SVGs/Mic.svg" class="casterIcon"></load-svg>
-            <div class="castFinderPosition">
+            <div class="finderPosition">
               <input type="text" class="cName textInput mousetrap" placeholder="Caster name" spellcheck="false">
             </div>
           </div>
@@ -330,7 +329,7 @@
         </div>
 
         <div class="settingBox" title="Uses alternative art for workshop characters that have one.">
-          <input type="checkbox" id="forceAlt" class="settingsCheck" tabindex="-1">
+          <input type="checkbox" id="forceAlt" class="settingsCheck" disabled tabindex="-1">
           <label for="forceAlt" id="mmText" class="settingsText">Use 'Alt' skins</span>
         </div>
 
@@ -545,16 +544,23 @@ They will always appear when typing 'Grand' in the round box.">
 
 
 <!-- stuff that will get moved around -->
-<div id="playerFinder"></div>
-<div id="characterFinder" class="finder">
+<div id="playerFinder" class="finder">
+  <div class="searchList"></div>
+</div>
+
+<div id="characterFinder" class="finder" tabindex="-1">
   <input type="text" class="listSearch mousetrap" placeholder="Type to filter..." spellcheck="false" tabindex="-1">
   <div class="searchList" id="charSearchList"></div>
 </div>
+
 <div id="skinFinder" class="finder">
   <input type="text" class="listSearch mousetrap" placeholder="Type to filter..." spellcheck="false" tabindex="-1">
   <div class="searchList"></div>
 </div>
-<div id="casterFinder"></div>
+
+<div id="casterFinder" class="finder">
+  <div class="searchList"></div>
+</div>
   
 </body>
 </html>
