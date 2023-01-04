@@ -42,7 +42,7 @@ http.createServer((request, response) => {
     if (request.method === "GET") {
         let fname;
         if (request.url == "/") { // main remote update page
-            fname = resourcesPath + "/Remote Update.html";
+            fname = resourcesPath + "/GUI.html";
         } else { // every other request will just send the file
             fname = resourcesPath + request.url;
         }
