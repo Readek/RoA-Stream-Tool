@@ -1,7 +1,6 @@
 import { Finder } from "./Finder.mjs";
-import { getJson } from '../Utils.mjs';
+import { getJson, getPresetList } from '../File System.mjs';
 import { stPath } from "../Globals.mjs";
-const fs = require('fs');
 
 
 class CommFinder extends Finder {
@@ -10,7 +9,7 @@ class CommFinder extends Finder {
         super(document.getElementById("casterFinder"));
     }
 
-    fillFinderPresets(caster) {
+    async fillFinderPresets(caster) {
 
         // get rid of the previous list
         this._clearList();
@@ -22,8 +21,8 @@ class CommFinder extends Finder {
         if (caster.getName().length >= 3) {
 
             // get us the preset files, then for each one:
-            const files = fs.readdirSync(stPath.text + "/Commentator Info/");
-            files.forEach(file => {
+            const files = await getPresetList("Commentator Info");
+            files.forEach(async file => {
 
                 // removes ".json" from the file name
                 file = file.substring(0, file.length - 5);
@@ -35,7 +34,7 @@ class CommFinder extends Finder {
                     fileFound = true;
 
                     // get the preset data
-                    const casterInfo = getJson(`${stPath.text}/Commentator Info/${file}`);
+                    const casterInfo = await getJson(`${stPath.text}/Commentator Info/${file}`);
 
                     // create the new div that will be added as an entry
                     const newDiv = document.createElement('button');

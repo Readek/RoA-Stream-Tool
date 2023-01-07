@@ -29,7 +29,7 @@ window.onscroll = () => { window.scroll(0, 0) };
 
 init();
 /** It all starts here */
-function init() {
+async function init() {
 
     // we need to set the current char path
     stPath.char = settings.isWsChecked() ? stPath.charWork : stPath.charBase;
@@ -42,6 +42,10 @@ function init() {
     players.push(new PlayerGame(2, pInfoEls[2], cInfoEls[2]));
     players.push(new PlayerGame(3, pInfoEls[1], cInfoEls[1]));
     players.push(new PlayerGame(4, pInfoEls[3], cInfoEls[3]));
+    // also set an initial character value
+    for (let i = 0; i < players.length; i++) {
+        await players[i].charChange("Random")
+    }
 
     
     // initialize the character list
@@ -72,6 +76,7 @@ function init() {
     // update the GUI on startup so we have something to send to browsers
     writeScoreboard();
     updateBracket(true);
+
 
     // get those keybinds running
     loadKeybinds();

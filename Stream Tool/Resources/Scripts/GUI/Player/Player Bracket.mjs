@@ -1,5 +1,5 @@
 import { Player } from "./Player.mjs";
-import { getJson } from "../Utils.mjs";
+import { getJson } from "../File System.mjs";
 import { getRecolorImage } from "../GetImage.mjs";
 import { stPath } from "../Globals.mjs";
 
@@ -100,7 +100,7 @@ export class PlayerBracket extends Player {
         this.charSel.children[1].innerHTML = character;
 
         // set the skin list for this character
-        this.charInfo = getJson(`${stPath.char}/${character}/_Info`);
+        this.charInfo = await getJson(`${stPath.char}/${character}/_Info`);
 
         // if the character doesnt exist, write in a placeholder
         if (this.charInfo === null) {
@@ -147,11 +147,11 @@ export class PlayerBracket extends Player {
             skin,
             this.charInfo.ogColor,
             this.charInfo.colorRange,
-            "Icons/",
+            "Icons",
             "Icon"
         );
         this.charSel.children[0].src = this.iconSrc;
-        this.iconBrowserSrc = this.getBrowserSrc(this.char, skin, "Icons", "Icon");
+        this.iconBrowserSrc = await this.getBrowserSrc(this.char, skin, "Icons", "Icon");
 
     }
 

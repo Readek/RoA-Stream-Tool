@@ -43,7 +43,7 @@ bRoundSelect.dispatchEvent(new Event('change'));
 
 
 /** Creates encounter divs for the bracket section when changing round */
-function createEncounters() {
+async function createEncounters() {
 
     // first of all, save current contents to object
     if (bracketPlayers[0]) { // not on the first run
@@ -97,7 +97,7 @@ function createEncounters() {
         bracketPlayers[i].setName(bracketData[this.value][i].name);
         bracketPlayers[i].setTag(bracketData[this.value][i].tag);
         bracketPlayers[i].setScore(bracketData[this.value][i].score);
-        bracketPlayers[i].charChange(bracketData[this.value][i].character);
+        await bracketPlayers[i].charChange(bracketData[this.value][i].character);
         bracketPlayers[i].skinChange(bracketData[this.value][i].skin);
         bracketPlayers[i].setFinderListeners();
 
@@ -138,7 +138,7 @@ function createEncounters() {
 
 
 /** Pastes the current game data to the clicked bracket encounter */
-function copyFromGameToBracket() {
+async function copyFromGameToBracket() {
     
     const num = Number(this.getAttribute("num"));
 
@@ -146,7 +146,7 @@ function copyFromGameToBracket() {
         bracketPlayers[num+i].setName(players[i].getName());
         bracketPlayers[num+i].setTag(players[i].tag);
         bracketPlayers[num+i].setScore(scores[i].getScore());
-        bracketPlayers[num+i].charChange(players[i].char, true);
+        await bracketPlayers[num+i].charChange(players[i].char, true);
         bracketPlayers[num+i].skinChange(players[i].skin);
     }
 

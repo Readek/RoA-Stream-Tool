@@ -1,5 +1,5 @@
 import { Player } from "./Player.mjs";
-import { getJson } from "../Utils.mjs";
+import { getJson } from "../File System.mjs";
 import { getRecolorImage, getTrailImage } from "../GetImage.mjs";
 import { updateBgCharImg } from "./BG Char Image.mjs";
 import { currentColors } from "../Colors.mjs";
@@ -37,9 +37,6 @@ export class PlayerGame extends Player {
 
         // resize the container if it overflows
         this.nameInp.addEventListener("input", () => {this.resizeInput()});
-
-        // also set an initial character value
-        this.charChange("Random");
 
         // open player info menu if clicking on the icon
         pInfoEl.getElementsByClassName("pInfoButt")[0].addEventListener("click", () => {
@@ -80,7 +77,7 @@ export class PlayerGame extends Player {
         this.charSel.children[1].innerHTML = character;
 
         // set the skin list for this character
-        this.charInfo = getJson(`${stPath.char}/${character}/_Info`);
+        this.charInfo = await getJson(`${stPath.char}/${character}/_Info`);
 
         // if the character doesnt exist, write in a placeholder
         if (this.charInfo === null) {
@@ -142,13 +139,13 @@ export class PlayerGame extends Player {
             "Skins",
             this.randomImg
         );
-        this.scBrowserSrc = this.getBrowserSrc(this.char, skin, "Skins", this.randomImg);
+        this.scBrowserSrc = await this.getBrowserSrc(this.char, skin, "Skins", this.randomImg);
 
         // if we want HD skins, get us those for the VS screen
         if (settings.isHDChecked()) {
             const skinName = skin.name.includes("LoA") && !settings.isNoLoAChecked() ? "LoA HD" : "HD";
             this.vsSrc = await getRecolorImage(this.char, {name: skinName}, "Skins", this.randomImg);
-            this.vsBrowserSrc = this.getBrowserSrc(this.char, {name: skinName}, "Skins/", this.randomImg);
+            this.vsBrowserSrc = await this.getBrowserSrc(this.char, {name: skinName}, "Skins/", this.randomImg);
             this.vsSkin = {name: skinName};
         } else {
             this.vsSrc = this.scSrc;

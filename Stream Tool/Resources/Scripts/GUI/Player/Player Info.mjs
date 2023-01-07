@@ -1,5 +1,4 @@
-const fs = require('fs');
-import { getJson } from "../Utils.mjs";
+import { getJson, saveJson } from "../File System.mjs";
 import { viewport } from "../Viewport.mjs";
 import { displayNotif } from "../Notifications.mjs";
 import { stPath } from "../Globals.mjs";
@@ -112,7 +111,7 @@ class PlayerInfo {
         
     }
 
-    savePreset() {
+    async savePreset() {
     
         const preset = {
             name: this.#curPlayer.getName(),
@@ -131,9 +130,9 @@ class PlayerInfo {
         }
     
         // if a player preset for this player exists, add already existing characters
-        if (fs.existsSync(`${stPath.text}/Player Info/${this.#nameInp.value}.json`)) {
+        const existingPreset = await getJson(`${stPath.text}/Player Info/${this.#nameInp.value}`)
+        if (existingPreset) {
             
-            const existingPreset = getJson(`${stPath.text}/Player Info/${this.#nameInp.value}`);
             // add existing characters to the new json, but not if the character is the same
             for (let i = 0; i < existingPreset.characters.length; i++) {
                 if (existingPreset.characters[i].character != this.#curPlayer.char) {
@@ -143,7 +142,7 @@ class PlayerInfo {
     
         }
     
-        fs.writeFileSync(`${stPath.text}/Player Info/${this.#nameInp.value}.json`, JSON.stringify(preset, null, 2));
+        saveJson(`${stPath.text}/Player Info/${this.#nameInp.value}`, preset);
     
         displayNotif("Player preset has been saved");
     

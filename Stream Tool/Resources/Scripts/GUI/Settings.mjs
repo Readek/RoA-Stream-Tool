@@ -3,8 +3,8 @@ import { charFinder } from "./Finder/Char Finder.mjs";
 import { players } from "./Player/Players.mjs";
 import { wl } from "./WinnersLosers.mjs";
 import { stPath } from "./Globals.mjs";
-const fs = require('fs');
-const ipc = require('electron').ipcRenderer;
+import { getJson, saveJson } from "./File System.mjs";
+import { alwaysOnTop } from "./IPC.mjs";
 
 
 class GuiSettings {
@@ -43,7 +43,7 @@ class GuiSettings {
             this.save("invertScore", this.isInvertScoreChecked())
         });
         this.#alwaysOnTopCheck.addEventListener("click", () => {
-            ipc.send('alwaysOnTop', this.#alwaysOnTopCheck.checked);
+            alwaysOnTop(this.#alwaysOnTopCheck.checked);
             this.save("alwaysOnTop", this.#alwaysOnTopCheck.checked);
         });
 
@@ -60,10 +60,11 @@ class GuiSettings {
     }
 
     /** Loads all settings from the "GUI Settings.json" file */
-    load() {
+    async load() {
 
         // get us the json file
-        const guiSettings = JSON.parse(fs.readFileSync(`${stPath.text}/GUI Settings.json`, "utf-8"));
+        
+        const guiSettings = await getJson(`${stPath.text}/GUI Settings`);
 
         // and update it all!
         this.#introCheck.checked = guiSettings.allowIntro;
@@ -83,16 +84,16 @@ class GuiSettings {
      * @param {String} name - Name of the json variable
      * @param {} value - Value to add to the variable
      */
-    save(name, value) {
+    async save(name, value) {
     
         // read the file
-        const guiSettings = JSON.parse(fs.readFileSync(`${stPath.text}/GUI Settings.json`, "utf-8"));
+        const guiSettings = await getJson(`${stPath.text}/GUI Settings`);
 
         // update the setting's value
         guiSettings[name] = value;
 
         // save the file
-        fs.writeFileSync(`${stPath.text}/GUI Settings.json`, JSON.stringify(guiSettings, null, 2));
+        saveJson(`${stPath.text}/GUI Settings`, guiSettings);
 
     }
 
@@ -105,7 +106,7 @@ class GuiSettings {
     }
     toggleAltArt() {
 
-        //
+        // TODO
 
         // save current checkbox value to the settings file
         this.save("forceAlt", this.isAltArtChecked());

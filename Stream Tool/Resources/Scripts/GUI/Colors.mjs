@@ -1,13 +1,13 @@
 import { stPath } from './Globals.mjs';
 import { players } from './Player/Players.mjs';
-import { getJson } from './Utils.mjs';
+import { getJson } from './File System.mjs';
 
 export const currentColors = [];
 const colorRectangles = document.getElementsByClassName("pColorRect");
 const colorGradients = document.getElementsByClassName("side");
 
 // load the color list from a json file
-const colorList = getJson(stPath.text + "/Color Slots");
+const colorList = await getJson(stPath.text + "/Color Slots");
 
 // for each color on the list, add them to the color dropdown
 for (let i = 0; i < colorList.length; i++) {

@@ -1,4 +1,4 @@
-const fs = require('fs');
+import { saveJson } from "./File System.mjs";
 import { commFinder } from "./Finder/Comm Finder.mjs";
 import { inside, stPath } from "./Globals.mjs";
 import { displayNotif } from "./Notifications.mjs";
@@ -99,7 +99,7 @@ export class Caster {
         };
 
         // use this object to create a json file
-        fs.writeFileSync(`${stPath.text}/Commentator Info/${this.getName()}.json`, JSON.stringify(preset, null, 2));
+        saveJson(`${stPath.text}/Commentator Info/${this.getName()}`, preset);
 
         displayNotif("Commentator preset has been saved");
 

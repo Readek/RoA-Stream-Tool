@@ -1,5 +1,4 @@
-const fs = require('fs');
-import { getJson } from '../Utils.mjs';
+import { getCharacterList, getJson } from '../File System.mjs';
 import { getRecolorImage } from '../GetImage.mjs';
 import { FinderSelect } from './Finder Select.mjs';
 import { stPath } from '../Globals.mjs';
@@ -13,31 +12,19 @@ class CharFinder extends FinderSelect {
     }
 
     /** Fills the character list with each folder on the Characters folder */
-    loadCharacters() {
+    async loadCharacters() {
 
         // first of all, clear a possible already existing list
         this._finderEl.lastElementChild.innerHTML = "";
 
         // create a list with folder names on charPath
-        const characterList = fs.readdirSync(stPath.char, { withFileTypes: true })
-            .filter(dirent => dirent.isDirectory())
-            .map(dirent => dirent.name)
-            .filter((name) => {
-                // if the folder name contains '_Workshop' or 'Random', exclude it
-                if (name != "_Workshop" && name != "Random") {
-                    return true;
-                }
-            }
-        )
-
-        // add random to the end of the character list
-        characterList.push("Random")
+        const characterList = await getCharacterList();
 
         // add entries to the character list
         for (let i = 0; i < characterList.length; i++) {
 
             // get us the charInfo for this character
-            const charInfo = getJson(`${stPath.char}/${characterList[i]}/_Info`);
+            const charInfo = await getJson(`${stPath.char}/${characterList[i]}/_Info`);
 
             // this will be the div to click
             const newDiv = document.createElement('div');
@@ -60,7 +47,7 @@ class CharFinder extends FinderSelect {
                 skin,
                 ogColor,
                 colorRange,
-                "Icons/",
+                "Icons",
                 "Icon"
             ).then((imgSrc) => {
                 imgIcon.src = imgSrc;
@@ -79,9 +66,6 @@ class CharFinder extends FinderSelect {
             this.addEntry(newDiv);
 
         }
-
-        // this is just so Remote Update has a character list
-        fs.writeFileSync(`${stPath.text}/Character List.json`, JSON.stringify(characterList, null, 2));
 
     }
 

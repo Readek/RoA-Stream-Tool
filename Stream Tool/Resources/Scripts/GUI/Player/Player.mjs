@@ -1,9 +1,9 @@
+import { fileExists } from "../File System.mjs";
 import { charFinder } from "../Finder/Char Finder.mjs";
 import { playerFinder } from "../Finder/Player Finder.mjs";
 import { skinFinder } from "../Finder/Skin Finder.mjs";
 import { inside, stPath } from "../Globals.mjs";
 import { settings } from "../Settings.mjs";
-const fs = require('fs');
 
 
 export class Player {
@@ -58,16 +58,16 @@ export class Player {
     }
 
     /** Returns a valid src for browser sources */
-    getBrowserSrc(char, skin, extraPath, failPath) {
+    async getBrowserSrc(char, skin, extraPath, failPath) {
 
         let browserCharPath = "Resources/Characters";
         if (settings.isWsChecked()) {
             browserCharPath = "Resources/Characters/_Workshop";
         }
         
-        if (fs.existsSync(`${stPath.char}/${char}/${extraPath}/${skin.name}.png`) && !skin.force) {
+        if (await fileExists(`${stPath.char}/${char}/${extraPath}/${skin.name}.png`) && !skin.force) {
             return browserCharPath + `/${char}/${extraPath}/${skin.name}.png`;
-        } else if (fs.existsSync(`${stPath.char}/${char}/${extraPath}/Default.png`)) {
+        } else if (await fileExists(`${stPath.char}/${char}/${extraPath}/Default.png`)) {
             if (skin.hex) {
                 return null;
             } else {

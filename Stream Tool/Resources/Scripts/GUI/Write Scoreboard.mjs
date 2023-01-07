@@ -11,8 +11,7 @@ import { tournament } from './Tournament.mjs';
 import { wl } from './WinnersLosers.mjs';
 import { sendGameData, updateGameData } from './IPC.mjs';
 import { stPath } from './Globals.mjs';
-
-const fs = require('fs');
+import { fileExists, saveSimpleTexts } from './File System.mjs';
 
 // bottom bar update button
 document.getElementById('updateRegion').addEventListener("click", () => {
@@ -20,7 +19,7 @@ document.getElementById('updateRegion').addEventListener("click", () => {
 });
 
 /** Generates an object with game data, then sends it */
-export function writeScoreboard() {
+export async function writeScoreboard() {
 
     // this is what's going to be sent to the browsers
     const scoreboardJson = {
@@ -62,12 +61,6 @@ export function writeScoreboard() {
         const charVSSkin = players[i].vsSkin.name;
         // get the character position data
         let charPos = players[i].charInfo;
-
-        // get us the path used by the browser sources
-        let browserCharPath = "Characters";
-        if (settings.isWsChecked()) {
-            browserCharPath = "Characters/_Workshop";
-        }
 
         // set data for the scoreboard
         // get the character positions
@@ -126,12 +119,13 @@ export function writeScoreboard() {
             vsCharPos[2] = .8;
         }
         // oh we are still not done here, we need to check the BG
+        let trueBGPath = stPath.char;
         if (charVSSkin.includes("LoA")) { // show LoA background if the skin is LoA
             vsBG = 'BG LoA.webm';
-            browserCharPath = "Characters";
+            trueBGPath = stPath.charBase;;
         } else if (charVSSkin == "Ragnir") { // Ragnir shows the default stage in the actual game
             vsBG = 'BG.webm';
-            browserCharPath = "Characters";
+            trueBGPath = stPath.charBase;
         } else if (charName == "Shovel Knight" && charVSSkin == "Golden") { // why not
             vsBG = `${charName}/BG Golden.webm`;
         } else if (charPos.vsScreen) { // safety check
@@ -140,10 +134,10 @@ export function writeScoreboard() {
             }
         }
         // if it doesnt exist, use a default BG
-        if (!fs.existsSync(`${__dirname}/${browserCharPath}/${vsBG}`)) {
+        if (!await fileExists(`${trueBGPath}/${vsBG}`)) {
             vsBG = "Resources/Characters/BG.webm";
         } else {
-            vsBG = `Resources/${browserCharPath}/${vsBG}`;
+            vsBG = `${trueBGPath}/${vsBG}`;
         }
 
         // finally, add it to the main json
@@ -199,24 +193,6 @@ export function writeScoreboard() {
 
 
     //simple .txt files
-    for (let i = 0; i < players.length; i++) {
-        fs.writeFileSync(`${stPath.text}/Simple Texts/Player ${i+1}.txt`, players[i].getName());        
-    }
-
-    fs.writeFileSync(`${stPath.text}/Simple Texts/Team 1.txt`, teams[0].getName());
-    fs.writeFileSync(`${stPath.text}/Simple Texts/Team 2.txt`, teams[1].getName());
-
-    fs.writeFileSync(`${stPath.text}/Simple Texts/Score L.txt`, scores[0].getScore().toString());
-    fs.writeFileSync(`${stPath.text}/Simple Texts/Score R.txt`, scores[1].getScore().toString());
-
-    fs.writeFileSync(`${stPath.text}/Simple Texts/Round.txt`, round.getText());
-    fs.writeFileSync(`${stPath.text}/Simple Texts/Tournament Name.txt`, tournament.getText());
-
-    for (let i = 0; i < casters.length; i++) {
-        fs.writeFileSync(`${stPath.text}/Simple Texts/Caster ${i+1} Name.txt`, casters[i].getName());
-        fs.writeFileSync(`${stPath.text}/Simple Texts/Caster ${i+1} Twitter.txt`, casters[i].getTwitter());
-        fs.writeFileSync(`${stPath.text}/Simple Texts/Caster ${i+1} Twitch.txt`, casters[i].getTwitch());
-        fs.writeFileSync(`${stPath.text}/Simple Texts/Caster ${i+1} Youtube.txt`, casters[i].getYt());
-    }
+    saveSimpleTexts();
 
 }

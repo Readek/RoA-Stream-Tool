@@ -1,7 +1,6 @@
-const fs = require('fs');
-
 import { stPath } from './Globals.mjs';
 import { getRoARecolor } from './RoA WebGL Shader.mjs';
+import { fileExists } from './File System.mjs';
 
 /**
  * @typedef {Object} Skin
@@ -26,11 +25,12 @@ import { getRoARecolor } from './RoA WebGL Shader.mjs';
 */
 export async function getRecolorImage(char, skin, colIn, colRan, imgType, failPath) {
 
-    if (fs.existsSync(`${stPath.char}/${char}/${imgType}/${skin.name}.png`) && !skin.force) {
+    
+    if (await fileExists(`${stPath.char}/${char}/${imgType}/${skin.name}.png`) && !skin.force) {
 
         return `${stPath.char}/${char}/${imgType}/${skin.name}.png`;
 
-    } else if (fs.existsSync(`${stPath.char}/${char}/${imgType}/Default.png`)) {
+    } else if (await fileExists(`${stPath.char}/${char}/${imgType}/Default.png`)) {
 
         if (skin.hex) {
             return getRoARecolor(
@@ -63,7 +63,7 @@ export async function getTrailImage(char, skin, color) {
     // we add "FFFFFF" to the color to avoid shader issues when using only 1 color
     color += "FFFFFF";
 
-    if (fs.existsSync(`${stPath.char}/${char}/Skins/${skin}.png`)) {
+    if (await fileExists(`${stPath.char}/${char}/Skins/${skin}.png`)) {
 
         // if the requested skin exists as a separate image
         return getRoARecolor(
@@ -74,7 +74,7 @@ export async function getTrailImage(char, skin, color) {
             {hex : color, ea : true}, // with blend true, only 1 color will be applied to everything
         )
 
-    } else if (fs.existsSync(`${stPath.char}/${char}/Skins/Default.png`)) {
+    } else if (await fileExists(`${stPath.char}/${char}/Skins/Default.png`)) {
 
         // else, use the default skin image
         return getRoARecolor(

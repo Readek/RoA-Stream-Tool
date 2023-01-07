@@ -38,6 +38,16 @@ export function updateBracketData(data) {
     bracketData = data;
 }
 
+
+/**
+ * Sends the signal to Electron to keep the window
+ * on top of others (or not) at all times
+ * @param {Boolean} value - Verdadero o Falso
+ */
+export function alwaysOnTop(value) {
+    ipc.send('alwaysOnTop', value);
+}
+
 // when we get data remotely, update GUI
 /* TODO fix this mess*/
 /* ipc.on('remoteGuiData', (event, data) => {
