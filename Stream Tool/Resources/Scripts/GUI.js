@@ -7,7 +7,7 @@ import { Score } from './GUI/Score.mjs';
 import { scores } from './GUI/Scores.mjs';
 import { Team } from './GUI/Team.mjs';
 import { teams } from './GUI/Teams.mjs';
-import { swapPlayers } from './GUI/Swap Players.mjs'; // so it loads the listener
+import './GUI/Swap Players.mjs'; // so it loads the listener
 import { casters } from './GUI/Casters.mjs';
 import { writeScoreboard } from './GUI/Write Scoreboard.mjs';
 import { loadKeybinds } from './GUI/Keybinds.mjs';
@@ -49,7 +49,7 @@ async function init() {
 
     
     // initialize the character list
-    charFinder.loadCharacters();
+    await charFinder.loadCharacters();
 
 
     // initialize that score class

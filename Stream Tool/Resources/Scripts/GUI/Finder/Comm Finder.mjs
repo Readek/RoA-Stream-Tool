@@ -5,10 +5,23 @@ import { stPath } from "../Globals.mjs";
 
 class CommFinder extends Finder {
 
+    #commPresets;
+
     constructor() {
         super(document.getElementById("casterFinder"));
+        this.setCasterPresets();
     }
 
+
+    /** Sets a new player preset list from the presets folder */
+    async setCasterPresets() {
+        this.#commPresets = await getPresetList("Commentator Info");
+    }
+
+    /**
+     * Fills the caster preset finder depending on current commentator name
+     * @param {Caster} caster - Commentator to find presets for
+     */
     async fillFinderPresets(caster) {
 
         // get rid of the previous list
@@ -21,7 +34,7 @@ class CommFinder extends Finder {
         if (caster.getName().length >= 3) {
 
             // get us the preset files, then for each one:
-            const files = await getPresetList("Commentator Info");
+            const files = this.#commPresets;
             files.forEach(async file => {
 
                 // removes ".json" from the file name

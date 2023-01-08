@@ -3,8 +3,15 @@ import { bracketPlayers, players } from './Player/Players.mjs';
 import { PlayerBracket } from "./Player/Player Bracket.mjs";
 import { displayNotif } from './Notifications.mjs';
 import { scores } from './Scores.mjs';
-import { sendBracketData, updateBracketData } from './IPC.mjs';
+import { inside } from './Globals.mjs';
 
+// only electron can call ipc
+let ipc;
+if (inside.electron) {
+    ipc = await import("./IPC.mjs");
+} else {
+    
+}
 
 const bRoundSelect = document.getElementById('bracketRoundSelect');
 const bEncountersDiv = document.getElementById('bracketEncounters');
@@ -163,8 +170,8 @@ export function updateBracket(startup) {
     updateLocalBracket();
 
     // time to send it away
-    updateBracketData(JSON.stringify(bracketData, null, 2));
-    sendBracketData();
+    ipc.updateBracketData(JSON.stringify(bracketData, null, 2));
+    ipc.sendBracketData();
     if (!startup) displayNotif("Bracket has been updated");
 
 }

@@ -2,6 +2,7 @@ import { getJson, saveJson } from "../File System.mjs";
 import { viewport } from "../Viewport.mjs";
 import { displayNotif } from "../Notifications.mjs";
 import { stPath } from "../Globals.mjs";
+import { playerFinder } from "../Finder/Player Finder.mjs";
 
 class PlayerInfo {
 
@@ -145,6 +146,9 @@ class PlayerInfo {
         saveJson(`${stPath.text}/Player Info/${this.#nameInp.value}`, preset);
     
         displayNotif("Player preset has been saved");
+
+        // generate a new player presets list
+        playerFinder.setPlayerPresets();
     
     }
 

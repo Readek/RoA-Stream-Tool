@@ -6,13 +6,20 @@ import { current, stPath } from "../Globals.mjs";
 
 class PlayerFinder extends Finder {
 
+    #playerPresets;
     #presName; // to break playerpreset cycle
 
 
     constructor() {
         super(document.getElementById("playerFinder"));
+        this.setPlayerPresets();
     }
 
+
+    /** Sets a new player preset list from the presets folder */
+    async setPlayerPresets() {
+        this.#playerPresets = await getPresetList("Player Info");
+    }
 
     /**
      * Fills the player preset finder depending on current player name
@@ -94,7 +101,7 @@ class PlayerFinder extends Finder {
 
         const skinImgs = [];
 
-        const files = await getPresetList("Player Info");
+        const files = this.#playerPresets;
         for (let i = 0; i < files.length; i++) {
 
             // removes ".json" from the file name

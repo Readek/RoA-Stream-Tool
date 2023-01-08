@@ -33,7 +33,7 @@ export async function getJson(jPath) {
             return null;
         }
 
-    }    
+    }
 
 }
 
@@ -52,7 +52,7 @@ export async function fileExists(filePath) {
     } else {
 
         try {
-            if (await fetch(filePath)) {
+            if ((await fetch(filePath)).ok) {
                 return true;
             }
         } catch (e) {
@@ -69,22 +69,30 @@ export async function fileExists(filePath) {
  */
 export async function getCharacterList() {
 
-    const fs = require('fs');
-    const characterList = fs.readdirSync(stPath.char, { withFileTypes: true })
-        .filter(dirent => dirent.isDirectory())
-        .map(dirent => dirent.name)
-        .filter((name) => {
-            // if the folder name contains '_Workshop' or 'Random', exclude it
-            if (name != "_Workshop" && name != "Random") {
-                return true;
+    if (inside.electron) {
+        
+        const fs = require('fs');
+        const characterList = fs.readdirSync(stPath.char, { withFileTypes: true })
+            .filter(dirent => dirent.isDirectory())
+            .map(dirent => dirent.name)
+            .filter((name) => {
+                // if the folder name contains '_Workshop' or 'Random', exclude it
+                if (name != "_Workshop" && name != "Random") {
+                    return true;
+                }
             }
-        }
-    )
+        )
 
-    // add random to the end of the character list
-    characterList.push("Random");
+        // add random to the end of the character list
+        characterList.push("Random");
 
-    return characterList;
+        return characterList;
+
+    } else {
+        
+        return ["Absa", "Maypul", "Zetterburn"]
+
+    }
 
 }
 
@@ -107,6 +115,7 @@ export function saveJson(path, data) {
     fs.writeFileSync(`${path}.json`, JSON.stringify(data, null, 2));
 }
 
+/** Saves simple text files to a folder, to be read by other programs */
 export function saveSimpleTexts() {
 
     const fs = require('fs');

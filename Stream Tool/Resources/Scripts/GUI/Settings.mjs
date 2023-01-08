@@ -2,9 +2,9 @@ import { viewport } from "./Viewport.mjs";
 import { charFinder } from "./Finder/Char Finder.mjs";
 import { players } from "./Player/Players.mjs";
 import { wl } from "./WinnersLosers.mjs";
-import { stPath } from "./Globals.mjs";
+import { inside, stPath } from "./Globals.mjs";
 import { getJson, saveJson } from "./File System.mjs";
-import { alwaysOnTop } from "./IPC.mjs";
+import { gamemode } from "./Gamemode Change.mjs";
 
 
 class GuiSettings {
@@ -42,10 +42,13 @@ class GuiSettings {
         this.#invertScoreCheck.addEventListener("click", () => {
             this.save("invertScore", this.isInvertScoreChecked())
         });
-        this.#alwaysOnTopCheck.addEventListener("click", () => {
-            alwaysOnTop(this.#alwaysOnTopCheck.checked);
-            this.save("alwaysOnTop", this.#alwaysOnTopCheck.checked);
-        });
+
+        // always on top is electron only
+        if (inside.electron) {
+            this.#setAlwaysOnTopListener();
+        } else {
+            this.#alwaysOnTopCheck.disabled = true;
+        }
 
         // dont forget about the copy match to clipboard button
         document.getElementById("copyMatch").addEventListener("click", () => {this.copyMatch()});
@@ -202,6 +205,14 @@ class GuiSettings {
         return this.#invertScoreCheck.checked;
     }
 
+    async #setAlwaysOnTopListener() {
+        const ipc = await import("./IPC.mjs");
+        this.#alwaysOnTopCheck.addEventListener("click", () => {
+            ipc.alwaysOnTop(this.#alwaysOnTopCheck.checked);
+            this.save("alwaysOnTop", this.#alwaysOnTopCheck.checked);
+        });
+    }
+
     /**
      * Will copy the current match info to the clipboard
      * Format: "Tournament Name - Round - Player1 (Character1) VS Player2 (Character2)"
@@ -209,9 +220,9 @@ class GuiSettings {
     copyMatch() {
 
         // initialize the string
-        let copiedText = /* tournamentInp.value + " - " + roundInp.value + */ " - ";
+        let copiedText = tournamentInp.value + " - " + roundInp.value + " - ";
 
-        /* if (gamemode == 1) { // for singles matches
+        if (gamemode.getGm() == 1) { // for singles matches
             // check if the player has a tag to add
             if (players[0].tag) {
                 copiedText += players[0].tag + " | ";
@@ -223,7 +234,7 @@ class GuiSettings {
             copiedText += players[1].getName() + " (" +  players[1].char +")";
         } else { // for team matches
             copiedText += tNameInps[0].value + " VS " + tNameInps[1].value;
-        } */
+        }
 
         // send the string to the user's clipboard
         navigator.clipboard.writeText(copiedText);

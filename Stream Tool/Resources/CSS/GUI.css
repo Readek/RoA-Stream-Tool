@@ -701,10 +701,10 @@ button:hover {
   display: flex;
 }
 .casterNameG {
-  width: 37%;
+  width: 28%;
 }
 .casterSocialG {
-  width: 32%;
+  width: 24%;
 }
 
 .cName {
@@ -755,6 +755,9 @@ button:hover {
   max-height: 165px;
   width: 175px;
   height: auto;
+}
+.cFinderPosition {
+  width: 100%;
 }
 
 

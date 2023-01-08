@@ -103,6 +103,9 @@ export class Caster {
 
         displayNotif("Commentator preset has been saved");
 
+        // generate a new presets list
+        commFinder.setCasterPresets();
+
     }
 
 }

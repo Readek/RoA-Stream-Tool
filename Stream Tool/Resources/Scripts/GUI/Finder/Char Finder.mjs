@@ -5,6 +5,7 @@ import { stPath } from '../Globals.mjs';
 
 class CharFinder extends FinderSelect {
 
+    #charList;
     #curPlayer;
 
     constructor() {
@@ -18,18 +19,18 @@ class CharFinder extends FinderSelect {
         this._finderEl.lastElementChild.innerHTML = "";
 
         // create a list with folder names on charPath
-        const characterList = await getCharacterList();
+        this.#charList = await getCharacterList();
 
         // add entries to the character list
-        for (let i = 0; i < characterList.length; i++) {
+        for (let i = 0; i < this.#charList.length; i++) {
 
             // get us the charInfo for this character
-            const charInfo = await getJson(`${stPath.char}/${characterList[i]}/_Info`);
+            const charInfo = await getJson(`${stPath.char}/${this.#charList[i]}/_Info`);
 
             // this will be the div to click
             const newDiv = document.createElement('div');
             newDiv.className = "finderEntry";
-            newDiv.addEventListener("click", () => {this.#entryClick(characterList[i])});
+            newDiv.addEventListener("click", () => {this.#entryClick(this.#charList[i])});
 
             // character icon
             const imgIcon = document.createElement('img');
@@ -43,7 +44,7 @@ class CharFinder extends FinderSelect {
             }
             // this will get us the true default icon for any character
             getRecolorImage(
-                characterList[i],
+                this.#charList[i],
                 skin,
                 ogColor,
                 colorRange,
@@ -55,7 +56,7 @@ class CharFinder extends FinderSelect {
 
             // character name
             const spanName = document.createElement('span');
-            spanName.innerHTML = characterList[i];
+            spanName.innerHTML = this.#charList[i];
             spanName.className = "pfName";
 
             //add them to the div we created before
@@ -67,6 +68,9 @@ class CharFinder extends FinderSelect {
 
         }
 
+    }
+    getCharList() {
+        return this.#charList;
     }
 
     #entryClick(charName) {

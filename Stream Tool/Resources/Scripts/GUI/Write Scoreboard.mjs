@@ -9,9 +9,16 @@ import { settings } from './Settings.mjs';
 import { teams } from './Teams.mjs';
 import { tournament } from './Tournament.mjs';
 import { wl } from './WinnersLosers.mjs';
-import { sendGameData, updateGameData } from './IPC.mjs';
-import { stPath } from './Globals.mjs';
+import { inside, stPath } from './Globals.mjs';
 import { fileExists, saveSimpleTexts } from './File System.mjs';
+
+// only electron can call ipc
+let ipc;
+if (inside.electron) {
+    ipc = await import("./IPC.mjs");
+} else {
+    
+}
 
 // bottom bar update button
 document.getElementById('updateRegion').addEventListener("click", () => {
@@ -188,8 +195,8 @@ export async function writeScoreboard() {
     }
 
     // now convert it into something readable to send to OBS
-    updateGameData(JSON.stringify(scoreboardJson, null, 2));
-    sendGameData();
+    ipc.updateGameData(JSON.stringify(scoreboardJson, null, 2));
+    ipc.sendGameData();
 
 
     //simple .txt files
