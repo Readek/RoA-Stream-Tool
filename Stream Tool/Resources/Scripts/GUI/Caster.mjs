@@ -93,6 +93,7 @@ export class Caster {
 
         // save current info to an object
         const preset = {
+            name: this.getName(),
             twitter: this.getTwitter(),
             twitch: this.getTwitch(),
             yt: this.getYt()

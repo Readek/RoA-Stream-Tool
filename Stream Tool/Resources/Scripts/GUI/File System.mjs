@@ -86,23 +86,49 @@ export async function getCharacterList() {
         // add random to the end of the character list
         characterList.push("Random");
 
+        // save the data for the remote gui
+        saveJson(`${stPath.text}/Character List`, characterList);
+
         return characterList;
 
     } else {
         
-        return ["Absa", "Maypul", "Zetterburn"]
+        return await getJson(`${stPath.text}/Character List`);
 
     }
 
 }
 
 /**
- * Generates a list with each of the files on a presets folder
- * @returns Array of preset names
+ * Generates a json with each of the files on a presets folder
+ * @returns Array of preset jsons
  */
 export async function getPresetList(folderName) {
-    const fs = require('fs');
-    return fs.readdirSync(`${stPath.text}/${folderName}/`);
+
+    if (inside.electron) {
+        
+        // get us the files to look for
+        const fs = require('fs');
+        const files = fs.readdirSync(`${stPath.text}/${folderName}/`);
+
+        // for each file, add a new entry with its data
+        const jsonList = [];
+        for (let i = 0; i < files.length; i++) {
+            files[i] = files[i].substring(0, files[i].length - 5); // remove .json
+            jsonList.push(await getJson(`${stPath.text}/${folderName}/${files[i]}`));
+        }
+
+        // save for remote gui
+        saveJson(`${stPath.text}/${folderName}`, jsonList);
+
+        return jsonList;
+
+    } else {
+
+        return await getJson(`${stPath.text}/${folderName}`);
+        
+    }
+    
 }
 
 /**

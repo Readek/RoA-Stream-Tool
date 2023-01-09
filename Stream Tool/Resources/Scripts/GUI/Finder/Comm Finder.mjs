@@ -33,21 +33,15 @@ class CommFinder extends Finder {
         // only activate if we get at least 3 characters
         if (caster.getName().length >= 3) {
 
-            // get us the preset files, then for each one:
-            const files = this.#commPresets;
-            files.forEach(async file => {
-
-                // removes ".json" from the file name
-                file = file.substring(0, file.length - 5);
-
+            for (let i = 0; i < this.#commPresets.length; i++) {
+                
+                const preset = this.#commPresets[i]; // to simplify code
+                
                 // if it matches with the current input text
-                if (file.toLocaleLowerCase().includes(caster.getName().toLocaleLowerCase())) {
+                if (preset.name.toLocaleLowerCase().includes(caster.getName().toLocaleLowerCase())) {
 
                     // store that we found at least one preset
                     fileFound = true;
-
-                    // get the preset data
-                    const casterInfo = await getJson(`${stPath.text}/Commentator Info/${file}`);
 
                     // create the new div that will be added as an entry
                     const newDiv = document.createElement('button');
@@ -55,17 +49,17 @@ class CommFinder extends Finder {
 
                     // entry text
                     const spanName = document.createElement('span');
-                    spanName.innerHTML = file;
+                    spanName.innerHTML = preset.name;
                     spanName.className = "pfName";
 
                     newDiv.appendChild(spanName);
 
                     // data to be accessed when clicked
                     const cData = {
-                        name : file,
-                        twitter : casterInfo.twitter,
-                        twitch : casterInfo.twitch,
-                        yt : casterInfo.yt
+                        name : preset.name,
+                        twitter : preset.twitter,
+                        twitch : preset.twitch,
+                        yt : preset.yt
                     }
 
                     // when the div is clicked, update caster
@@ -74,8 +68,7 @@ class CommFinder extends Finder {
                     this.addEntry(newDiv);
 
                 }
-
-            });
+            }
 
         }
 

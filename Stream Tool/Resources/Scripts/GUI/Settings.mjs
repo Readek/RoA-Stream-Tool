@@ -119,7 +119,7 @@ class GuiSettings {
     isHDChecked() {
         return this.#HDCheck.checked;
     }
-    toggleHD() {
+    async toggleHD() {
 
         // enables or disables the second forceHD option
         this.#noLoACheck.disabled = !this.isHDChecked();
@@ -130,7 +130,9 @@ class GuiSettings {
 
         // to update character images
         for (let i = 0; i < players.length; i++) {
-            players[i].skinChange(players[i].skin);
+            await players[i].setVsImg();
+            await players[i].setVsBg();
+            await players[i].setTrailImage();
         }
 
         // save current checkbox value to the settings file
@@ -141,11 +143,13 @@ class GuiSettings {
     isNoLoAChecked() {
         return this.#noLoACheck.checked;
     }
-    toggleNoLoA() {
+    async toggleNoLoA() {
 
         // to update character images
         for (let i = 0; i < players.length; i++) {
-            players[i].skinChange(players[i].skin);
+            await players[i].setVsImg();
+            await players[i].setVsBg();
+            await players[i].setTrailImage();
         }
 
         // save current checkbox value to the settings file

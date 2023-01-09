@@ -101,20 +101,16 @@ class PlayerFinder extends Finder {
 
         const skinImgs = [];
 
-        const files = this.#playerPresets;
-        for (let i = 0; i < files.length; i++) {
+        for (let i = 0; i < this.#playerPresets.length; i++) {
 
-            // removes ".json" from the file name
-            const file = files[i].substring(0, files[i].length - 5);
+            const preset = this.#playerPresets[i]; // to simplify code
 
             // if the current text matches a file from that folder
-            if (file.toLocaleLowerCase().includes(player.getName().toLocaleLowerCase())) {
+            if (preset.name.toLocaleLowerCase().includes(player.getName().toLocaleLowerCase())) {
 
-                // go inside that file to get the player info
-                const playerInfo = await getJson(`${stPath.text}/Player Info/${file}`);
                 // for each character that player plays
-                playerInfo.characters.forEach(async char => {
-
+                for (let i = 0; i < preset.characters.length; i++) {
+                    
                     // this will be the div to click
                     const newDiv = document.createElement('div');
                     newDiv.className = "finderEntry";
@@ -122,32 +118,32 @@ class PlayerFinder extends Finder {
                     //create the texts for the div, starting with the tag
                     const spanTag = document.createElement('span');
                     //if the tag is empty, dont do anything
-                    if (playerInfo.tag != "") {
-                        spanTag.innerHTML = playerInfo.tag;
+                    if (preset.tag != "") {
+                        spanTag.innerHTML = preset.tag;
                         spanTag.className = "pfTag";
                     }
 
                     // player name
                     const spanName = document.createElement('span');
-                    spanName.innerHTML = file;
+                    spanName.innerHTML = preset.name;
                     spanName.className = "pfName";
 
                     // plapDatayer character
                     const spanChar = document.createElement('span');
-                    spanChar.innerHTML = char.character;
+                    spanChar.innerHTML = preset.characters[i].character;
                     spanChar.className = "pfChar";
 
                     // data to be accessed when clicked
                     const pData = {
-                        name : file,
-                        tag : playerInfo.tag,
-                        pronouns : playerInfo.pronouns,
-                        twitter : playerInfo.twitter,
-                        twitch : playerInfo.twitch,
-                        yt : playerInfo.yt,
-                        char : char.character,
-                        skin : char.skin,
-                        hex : char.hex
+                        name : preset.name,
+                        tag : preset.tag,
+                        pronouns : preset.pronouns,
+                        twitter : preset.twitter,
+                        twitch : preset.twitch,
+                        yt : preset.yt,
+                        char : preset.characters[i].character,
+                        skin : preset.characters[i].skin,
+                        hex : preset.characters[i].hex
                     }
 
                     // add them to the div we created before
@@ -162,17 +158,17 @@ class PlayerFinder extends Finder {
                     // actual image
                     const charImg = document.createElement('img');
                     charImg.className = "pfCharImg";
-                    const charJson = await getJson(`${stPath.char}/${char.character}/_Info`);
+                    const charJson = await getJson(`${stPath.char}/${preset.characters[i].character}/_Info`);
                     // we will store this for later
                     skinImgs.push({
                         el : charImg,
                         charJson : charJson,
-                        char : char.character,
-                        skin : char.skin,
-                        hex : char.hex
+                        char : preset.characters[i].character,
+                        skin : preset.characters[i].skin,
+                        hex : preset.characters[i].hex
                     });
                     // we have to position it
-                    this._positionCharImg(char.skin, charImg, charJson);
+                    this._positionCharImg(preset.characters[i].skin, charImg, charJson);
                     // and add it to the mask
                     charImgBox.appendChild(charImg);
 
@@ -190,7 +186,7 @@ class PlayerFinder extends Finder {
                     // we need this to know which cycle we're in
                     this.#presName = player.getName();
 
-                });
+                }
 
             }
 

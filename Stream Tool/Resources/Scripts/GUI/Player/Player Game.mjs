@@ -1,5 +1,5 @@
 import { Player } from "./Player.mjs";
-import { getJson } from "../File System.mjs";
+import { fileExists, getJson } from "../File System.mjs";
 import { getRecolorImage, getTrailImage } from "../GetImage.mjs";
 import { updateBgCharImg } from "./BG Char Image.mjs";
 import { currentColors } from "../Colors.mjs";
@@ -20,6 +20,7 @@ export class PlayerGame extends Player {
     scBrowserSrc;
     vsSrc;
     vsBrowserSrc;
+    vsBgSrc;
 
     pInfoDiv;
     cInfoDiv;
@@ -119,52 +120,95 @@ export class PlayerGame extends Player {
         // update the text of the skin selector
         this.skinSel.innerHTML = skin.name;
 
-        // check if an icon for this skin exists, recolor if not
-        this.iconSrc = await getRecolorImage(
-            this.char,
-            skin,
-            this.charInfo.ogColor,
-            this.charInfo.colorRange,
-            "Icons",
-            "Icon"
-        );
-        this.charSel.children[0].src = this.iconSrc;
-
-        // get us that scoreboard image
-        this.scSrc = await getRecolorImage(
-            this.char,
-            skin,
-            this.charInfo.ogColor,
-            this.charInfo.colorRange,
-            "Skins",
-            this.randomImg
-        );
-        this.scBrowserSrc = await this.getBrowserSrc(this.char, skin, "Skins", this.randomImg);
-
-        // if we want HD skins, get us those for the VS screen
-        if (settings.isHDChecked()) {
-            const skinName = skin.name.includes("LoA") && !settings.isNoLoAChecked() ? "LoA HD" : "HD";
-            this.vsSrc = await getRecolorImage(this.char, {name: skinName}, "Skins", this.randomImg);
-            this.vsBrowserSrc = await this.getBrowserSrc(this.char, {name: skinName}, "Skins/", this.randomImg);
-            this.vsSkin = {name: skinName};
-        } else {
-            this.vsSrc = this.scSrc;
-            this.vsBrowserSrc = this.scBrowserSrc;
-            this.vsSkin = skin;
-        }
+        // update all images!
+        await this.setIconImg();
+        await this.setScImg();
+        await this.setVsImg();
+        await this.setVsBg();
 
         // change the background character image (if first 2 players)
         if (this.pNum-1 < 2) {
-
-            updateBgCharImg(this.pNum-1, this.scSrc);
             if (this.char == "Random" && this.pNum == 1) {
                 updateBgCharImg(this.pNum-1, `${stPath.charRandom}/P2.png`);
+            } else {
+                updateBgCharImg(this.pNum-1, this.scSrc);
             }
         }
 
         // set up a trail for the vs screen
         this.setTrailImage();
 
+    }
+
+    /** Checks if an icon for the current skin exists, recolors the icon if it doesnt */
+    async setIconImg() {
+        this.iconSrc = await getRecolorImage(
+            this.char,
+            this.skin,
+            this.charInfo.ogColor,
+            this.charInfo.colorRange,
+            "Icons",
+            "Icon"
+        );
+        this.charSel.children[0].src = this.iconSrc;
+    }
+
+    /** Sets the Scoreboard image depening on recolors */
+    async setScImg() {
+        this.scSrc = await getRecolorImage(
+            this.char,
+            this.skin,
+            this.charInfo.ogColor,
+            this.charInfo.colorRange,
+            "Skins",
+            this.randomImg
+        );
+        this.scBrowserSrc = await this.getBrowserSrc(
+            this.char, this.skin, "Skins", this.randomImg
+        );
+    }
+
+    /** Sets the VS Screen image depending on recolors and settings */
+    async setVsImg() {
+        if (settings.isHDChecked()) {
+            const skinName = this.skin.name.includes("LoA") && !settings.isNoLoAChecked() ? "LoA HD" : "HD";
+            this.vsSrc = await getRecolorImage(this.char, {name: skinName}, "Skins", this.randomImg);
+            this.vsBrowserSrc = await this.getBrowserSrc(this.char, {name: skinName}, "Skins/", this.randomImg);
+            this.vsSkin = {name: skinName};
+        } else { // if no HD, just use the scoreboard image
+            this.vsSrc = this.scSrc;
+            this.vsBrowserSrc = this.scBrowserSrc;
+            this.vsSkin = this.skin;
+        }
+    }
+
+    /** Sets the player's VS Screen background video src */
+    async setVsBg() {
+        // we will also need to know the vs background
+        let vsBG = `${this.char}/BG.webm`;
+        let trueBGPath = stPath.char;
+        if (this.skin.name.includes("LoA") && !settings.isNoLoAChecked()) {
+            // show LoA background if the skin is LoA
+            vsBG = 'BG LoA.webm';
+            trueBGPath = stPath.charBase;;
+        } else if (this.skin.name == "Ragnir") {
+            // Ragnir shows the default stage in the actual game
+            vsBG = 'BG.webm';
+            trueBGPath = stPath.charBase;
+        } else if (this.skin.name == "Shovel Knight" && this.skin.name == "Golden") {
+             // why not
+            vsBG = `${charName}/BG Golden.webm`;
+        } else if (this.charInfo.vsScreen) { // safety check
+            if (this.charInfo.vsScreen.background) { // if the character has a specific BG
+                vsBG = `${this.charInfo.vsScreen.background}/BG.webm`;
+            }
+        }
+        // if it doesnt exist, use a default BG
+        if (!await fileExists(`${trueBGPath}/${vsBG}`)) {
+            this.vsBgSrc = "Resources/Characters/BG.webm";
+        } else {
+            this.vsBgSrc = `${trueBGPath}/${vsBG}`;
+        }
     }
 
     /** Generates a new trail image for this player */

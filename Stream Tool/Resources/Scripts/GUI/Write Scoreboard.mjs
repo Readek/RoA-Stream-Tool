@@ -63,14 +63,12 @@ export async function writeScoreboard() {
     for (let i = 0; i < players.length; i++) {
 
         // to simplify code
-        const charName = players[i].char;
         const charSkin = players[i].skin.name;
         const charVSSkin = players[i].vsSkin.name;
         // get the character position data
         let charPos = players[i].charInfo;
 
         // set data for the scoreboard
-        // get the character positions
         let scCharPos = [];
         if (charPos.scoreboard) {
             if (charPos.scoreboard[charSkin]) { // if the skin has a specific position
@@ -98,8 +96,6 @@ export async function writeScoreboard() {
 
         // now, basically the same as above, but for the VS
         let vsCharPos = [];
-        let vsTrailImg = players[i].trailSrc;
-        let vsBG = `${charName}/BG.webm`;
         // get the character positions
         if (charPos.vsScreen) {
             if (charPos.vsScreen[charVSSkin]) { // if the skin has a specific position
@@ -125,27 +121,6 @@ export async function writeScoreboard() {
             }
             vsCharPos[2] = .8;
         }
-        // oh we are still not done here, we need to check the BG
-        let trueBGPath = stPath.char;
-        if (charVSSkin.includes("LoA")) { // show LoA background if the skin is LoA
-            vsBG = 'BG LoA.webm';
-            trueBGPath = stPath.charBase;;
-        } else if (charVSSkin == "Ragnir") { // Ragnir shows the default stage in the actual game
-            vsBG = 'BG.webm';
-            trueBGPath = stPath.charBase;
-        } else if (charName == "Shovel Knight" && charVSSkin == "Golden") { // why not
-            vsBG = `${charName}/BG Golden.webm`;
-        } else if (charPos.vsScreen) { // safety check
-            if (charPos.vsScreen["background"]) { // if the character has a specific BG
-                vsBG = `${charPos.vsScreen["background"]}/BG.webm`;
-            }
-        }
-        // if it doesnt exist, use a default BG
-        if (!await fileExists(`${trueBGPath}/${vsBG}`)) {
-            vsBG = "Resources/Characters/BG.webm";
-        } else {
-            vsBG = `${trueBGPath}/${vsBG}`;
-        }
 
         // finally, add it to the main json
         scoreboardJson.player.push({
@@ -162,11 +137,11 @@ export async function writeScoreboard() {
             vs : {
                 charImg: players[i].vsBrowserSrc || players[i].vsSrc,
                 charPos: vsCharPos,
-                trailImg: vsTrailImg,
-                bgVid: vsBG,
+                trailImg: players[i].trailSrc,
+                bgVid: players[i].vsBgSrc,
             },
             // these are just for remote updating
-            char: charName,
+            char: players[i].char,
             skin: charSkin
         })
     }
