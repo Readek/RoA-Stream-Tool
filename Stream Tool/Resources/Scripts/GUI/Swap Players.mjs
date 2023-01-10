@@ -5,7 +5,7 @@ import { wl } from "./WinnersLosers.mjs";
 
 document.getElementById('swapButton').addEventListener("click", swapPlayers);
 
-export function swapPlayers() {
+export async function swapPlayers() {
     
     //team name
     const teamStore = teams[0].getName();
@@ -31,9 +31,10 @@ export function swapPlayers() {
         const tempP2Char = players[i+1].char;
         const tempP1Skin = players[i].skin;
         const tempP2Skin = players[i+1].skin;
+
         // update the stuff
-        players[i].charChange(tempP2Char, true);
-        players[i+1].charChange(tempP1Char, true);
+        await players[i].charChange(tempP2Char, true);
+        await players[i+1].charChange(tempP1Char, true);
         players[i].skinChange(tempP2Skin);
         players[i+1].skinChange(tempP1Skin);
 

@@ -1,5 +1,5 @@
 import { Player } from "./Player.mjs";
-import { fileExists, getJson } from "../File System.mjs";
+import { fileExists } from "../File System.mjs";
 import { getRecolorImage, getTrailImage } from "../GetImage.mjs";
 import { updateBgCharImg } from "./BG Char Image.mjs";
 import { currentColors } from "../Colors.mjs";
@@ -66,46 +66,6 @@ export class PlayerGame extends Player {
 
 
     /**
-     * Updates the character for this player
-     * @param {String} character - Name of the character to update to
-     * @param {Boolean} notDefault - Determines if we skinChange to the default skin
-     */
-    async charChange(character, notDefault) {
-
-        this.char = character;
-
-        // update character selector text
-        this.charSel.children[1].innerHTML = character;
-
-        // set the skin list for this character
-        this.charInfo = await getJson(`${stPath.char}/${character}/_Info`);
-
-        // if the character doesnt exist, write in a placeholder
-        if (this.charInfo === null) {
-            this.charInfo = {
-                skinList : [{name: "Default"}],
-                gui : []
-            }
-        }
-
-        // set the skin variable from the skin list
-        this.skin = this.charInfo.skinList[0];
-
-        // if there's only 1 skin, dont bother displaying skin selector
-        if (this.charInfo.skinList.length > 1) {
-            this.skinSel.style.display = "flex";
-        } else {
-            this.skinSel.style.display = "none";
-        }
-
-        // if we are changing both char and skin, dont show default skin
-        if (!notDefault) {
-            this.skinChange(this.skin);
-        }
-
-    }
-
-    /**
      * Updates the skin for this player
      * @param {Object} skin - Skin data
      */
@@ -121,7 +81,7 @@ export class PlayerGame extends Player {
         this.skinSel.innerHTML = skin.name;
 
         // update all images!
-        await this.setIconImg();
+        this.setIconImg();
         await this.setScImg();
         await this.setVsImg();
         await this.setVsBg();
@@ -138,19 +98,6 @@ export class PlayerGame extends Player {
         // set up a trail for the vs screen
         this.setTrailImage();
 
-    }
-
-    /** Checks if an icon for the current skin exists, recolors the icon if it doesnt */
-    async setIconImg() {
-        this.iconSrc = await getRecolorImage(
-            this.char,
-            this.skin,
-            this.charInfo.ogColor,
-            this.charInfo.colorRange,
-            "Icons",
-            "Icon"
-        );
-        this.charSel.children[0].src = this.iconSrc;
     }
 
     /** Sets the Scoreboard image depening on recolors */
@@ -184,9 +131,10 @@ export class PlayerGame extends Player {
 
     /** Sets the player's VS Screen background video src */
     async setVsBg() {
-        // we will also need to know the vs background
+
         let vsBG = `${this.char}/BG.webm`;
         let trueBGPath = stPath.char;
+
         if (this.skin.name.includes("LoA") && !settings.isNoLoAChecked()) {
             // show LoA background if the skin is LoA
             vsBG = 'BG LoA.webm';
@@ -203,12 +151,14 @@ export class PlayerGame extends Player {
                 vsBG = `${this.charInfo.vsScreen.background}/BG.webm`;
             }
         }
+
         // if it doesnt exist, use a default BG
         if (!await fileExists(`${trueBGPath}/${vsBG}`)) {
             this.vsBgSrc = "Resources/Characters/BG.webm";
         } else {
             this.vsBgSrc = `${trueBGPath}/${vsBG}`;
         }
+
     }
 
     /** Generates a new trail image for this player */

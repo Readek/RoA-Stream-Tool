@@ -1,7 +1,4 @@
 import { Player } from "./Player.mjs";
-import { getJson } from "../File System.mjs";
-import { getRecolorImage } from "../GetImage.mjs";
-import { stPath } from "../Globals.mjs";
 
 export class PlayerBracket extends Player {
 
@@ -90,41 +87,11 @@ export class PlayerBracket extends Player {
      * @param {Boolean} notDefault - Determines if we skinChange to the default skin
      */
     async charChange(character, notDefault) {
-
         if (character == "-" || character == "Random") {
-            character = "None"
-        }
-        this.char = character;
-
-        // update character selector text
-        this.charSel.children[1].innerHTML = character;
-
-        // set the skin list for this character
-        this.charInfo = await getJson(`${stPath.char}/${character}/_Info`);
-
-        // if the character doesnt exist, write in a placeholder
-        if (this.charInfo === null) {
-            this.charInfo = {
-                skinList : [{name: "Default"}],
-                gui : []
-            }
-        }
-
-        // set the skin variable from the skin list
-        this.skin = this.charInfo.skinList[0];
-
-        // if there's only 1 skin, dont bother displaying skin selector
-        if (this.charInfo.skinList.length > 1) {
-            this.skinSel.style.display = "flex";
+            await super.charChange("None", notDefault);
         } else {
-            this.skinSel.style.display = "none";
+            await super.charChange(character, notDefault);
         }
-
-        // if we are changing both char and skin, dont show default skin
-        if (!notDefault) {
-            this.skinChange(this.skin);
-        }
-
     }
 
     /**
@@ -142,16 +109,7 @@ export class PlayerBracket extends Player {
         this.skinSel.innerHTML = skin.name;
 
         // check if an icon for this skin exists, recolor if not
-        this.iconSrc = await getRecolorImage(
-            this.char,
-            skin,
-            this.charInfo.ogColor,
-            this.charInfo.colorRange,
-            "Icons",
-            "Icon"
-        );
-        this.charSel.children[0].src = this.iconSrc;
-        this.iconBrowserSrc = await this.getBrowserSrc(this.char, skin, "Icons", "Icon");
+        this.setIconImg();
 
     }
 

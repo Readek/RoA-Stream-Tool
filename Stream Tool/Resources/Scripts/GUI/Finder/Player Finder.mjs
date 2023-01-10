@@ -168,7 +168,7 @@ class PlayerFinder extends Finder {
                         hex : preset.characters[i].hex
                     });
                     // we have to position it
-                    this._positionCharImg(preset.characters[i].skin, charImg, charJson);
+                    this.positionCharImg(preset.characters[i].skin, charImg, charJson);
                     // and add it to the mask
                     charImgBox.appendChild(charImg);
 

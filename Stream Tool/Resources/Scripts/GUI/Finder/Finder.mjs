@@ -94,9 +94,8 @@ export class Finder {
      * @param {String} skin - Name of the skin
      * @param {HTMLElement} charEL - Element to be positioned
      * @param {Object} pos - Character position data
-     * @protected positionCharImg
      */
-    _positionCharImg(skin, charEL, pos) {
+    positionCharImg(skin, charEL, pos) {
 
         //               x, y, scale
         const charPos = [0, 0, 1];
