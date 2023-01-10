@@ -6,6 +6,7 @@ import { skinFinder } from "../Finder/Skin Finder.mjs";
 import { getRecolorImage } from "../GetImage.mjs";
 import { inside, stPath } from "../Globals.mjs";
 import { settings } from "../Settings.mjs";
+import { readyToUpdate } from "../Write Scoreboard.mjs";
 
 
 export class Player {
@@ -21,6 +22,8 @@ export class Player {
     iconSrc;
 
     skinEntries = [];
+
+    #readyToUpdate;
 
     constructor(id) {
 
@@ -67,6 +70,9 @@ export class Player {
      * @param {Boolean} notDefault - Determines if we skinChange to the default skin
      */
     async charChange(character, notDefault) {
+
+        // notify the user that we are not ready to update
+        this.setReady(false);
 
         this.char = character;
 
@@ -202,7 +208,6 @@ export class Player {
                 break;
             }
             
-            
         }
 
     }
@@ -230,6 +235,18 @@ export class Player {
             return `Resources/Characters/Random/${failPath}.png`;;
         }
         
+    }
+
+    /**
+     * Sends a signal to the updater to notify if the player is busy
+     * @param {Boolean} state - True if ready, false if not
+     */
+    setReady(state) {
+        this.#readyToUpdate = state;
+        readyToUpdate(state);
+    }
+    getReadyState() {
+        return this.#readyToUpdate;
     }
 
 }

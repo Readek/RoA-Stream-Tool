@@ -25,7 +25,6 @@ import { fileExists } from './File System.mjs';
 */
 export async function getRecolorImage(char, skin, colIn, colRan, imgType, failPath) {
 
-    
     if (await fileExists(`${stPath.char}/${char}/${imgType}/${skin.name}.png`) && !skin.force) {
 
         return `${stPath.char}/${char}/${imgType}/${skin.name}.png`;

@@ -781,6 +781,7 @@ button:hover {
 .botText {
   color: var(--text1);
   font-family: 'Roboto-Medium';
+  white-space: nowrap;
 }
 
 .rectangle {

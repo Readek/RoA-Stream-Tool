@@ -2,15 +2,15 @@ import { bestOf } from './BestOf.mjs';
 import { casters } from './Casters.mjs';
 import { currentColors } from './Colors.mjs';
 import { gamemode } from './Gamemode Change.mjs';
-import { players } from './Player/Players.mjs';
+import { players, playersReady } from './Player/Players.mjs';
 import { round } from './Round.mjs';
 import { scores } from './Scores.mjs';
 import { settings } from './Settings.mjs';
 import { teams } from './Teams.mjs';
 import { tournament } from './Tournament.mjs';
 import { wl } from './WinnersLosers.mjs';
-import { inside, stPath } from './Globals.mjs';
-import { fileExists, saveSimpleTexts } from './File System.mjs';
+import { inside } from './Globals.mjs';
+import { saveSimpleTexts } from './File System.mjs';
 
 // only electron can call ipc
 let ipc;
@@ -20,10 +20,27 @@ if (inside.electron) {
     
 }
 
+const updateDiv = document.getElementById('updateRegion');
+const updateText = updateDiv.getElementsByClassName("botText")[0];
+
 // bottom bar update button
-document.getElementById('updateRegion').addEventListener("click", () => {
+updateDiv.addEventListener("click", () => {
     writeScoreboard();
 });
+
+/**
+ * Warns the user that a player is not ready to update yet
+ * @param {Boolean} state - True if ready, false if not
+ */
+export function readyToUpdate(state) {
+    if (state) {
+        if (playersReady()) {
+            updateText.innerHTML = "UPDATE";
+        }
+    } else {
+        updateText.innerHTML = "LOADING CHARACTERS...";
+    }
+}
 
 /** Generates an object with game data, then sends it */
 export async function writeScoreboard() {

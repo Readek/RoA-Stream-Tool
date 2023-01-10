@@ -71,6 +71,8 @@ export class PlayerGame extends Player {
      */
     async skinChange(skin) {
 
+        this.setReady(false);
+
         // remove focus from the skin list so it auto hides
         document.activeElement.blur();
 
@@ -96,7 +98,10 @@ export class PlayerGame extends Player {
         }
 
         // set up a trail for the vs screen
-        this.setTrailImage();
+        await this.setTrailImage();
+
+        // notify the user that we done here
+        this.setReady(true);
 
     }
 

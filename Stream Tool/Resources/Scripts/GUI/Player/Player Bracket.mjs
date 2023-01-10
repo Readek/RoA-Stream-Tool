@@ -100,6 +100,8 @@ export class PlayerBracket extends Player {
      */
     async skinChange(skin) {
 
+        this.setReady(false);
+
         // remove focus from the skin list so it auto hides
         document.activeElement.blur();
 
@@ -109,7 +111,10 @@ export class PlayerBracket extends Player {
         this.skinSel.innerHTML = skin.name;
 
         // check if an icon for this skin exists, recolor if not
-        this.setIconImg();
+        await this.setIconImg();
+
+        // notify the user that we done here
+        this.setReady(true);
 
     }
 
