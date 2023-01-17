@@ -1,3 +1,4 @@
+import { showCustomSkin } from "../Custom Skin.mjs";
 import { FinderSelect } from "./Finder Select.mjs";
 
 class SkinFinder extends FinderSelect {
