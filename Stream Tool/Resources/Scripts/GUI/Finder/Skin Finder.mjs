@@ -11,7 +11,7 @@ class SkinFinder extends FinderSelect {
      * Fills the skin finder with the player's current character's skins
      * @param {Player} player - Player that clicked on the skin selector
      */
-    async fillSkinList(player) {
+    fillSkinList(player) {
 
         // clear the list
         this._clearList();
@@ -29,9 +29,12 @@ class SkinFinder extends FinderSelect {
         const spanName = document.createElement('span');
         spanName.innerHTML = "Custom Skin";
         spanName.className = "pfName";
-        spanName.style.color = "lightsalmon"
+        spanName.style.color = "lightsalmon";
         newDiv.appendChild(spanName);
         skinFinder.addEntry(newDiv);
+
+        // load them skin images
+        player.loadSkinImages();
 
     }
 

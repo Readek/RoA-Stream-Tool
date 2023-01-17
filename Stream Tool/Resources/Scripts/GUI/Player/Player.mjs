@@ -22,6 +22,7 @@ export class Player {
     iconSrc;
 
     skinEntries = [];
+    #skinsLoaded;
 
     #readyToUpdate;
 
@@ -73,6 +74,7 @@ export class Player {
 
         // notify the user that we are not ready to update
         this.setReady(false);
+        this.#skinsLoaded = false;
 
         this.char = character;
 
@@ -131,7 +133,6 @@ export class Player {
 
         const skinImgs = [];
         this.skinEntries = [];
-        const currentChar = this.char;
 
         // for every skin on the skin list, add an entry
         for (let i = 0; i < this.charInfo.skinList.length; i++) {
@@ -166,53 +167,59 @@ export class Player {
 
         }
 
-        // now add a final entry for custom skins
-        const newDiv = document.createElement('div');
-        newDiv.className = "finderEntry";
-        newDiv.addEventListener("click", () => {showCustomSkin(this)});
-        const spanName = document.createElement('span');
-        spanName.innerHTML = "Custom Skin";
-        spanName.className = "pfName";
-        spanName.style.color = "lightsalmon"
-        newDiv.appendChild(spanName);
-        skinFinder.addEntry(newDiv);
-
-        // add them images to each entry and recolor them if needed
-        for (let i = 0; i < skinImgs.length; i++) {
-
-            // if we changed character in the middle of img loading, discard next ones
-            if (currentChar == this.char) {
-                // get the final image
-                const finalImg = new Image();
-                finalImg.className = "pfCharImg";
-                finalImg.src = await getRecolorImage(
-                    this.char,
-                    this.charInfo.skinList[i],
-                    this.charInfo.ogColor,
-                    this.charInfo.colorRange,
-                    "Skins",
-                    "P2"
-                );
-                // preload it so the gui doesnt implode when loading 30 images at once
-                finalImg.decode().then(() => {
-                    // we have to position it
-                    skinFinder.positionCharImg(
-                        this.charInfo.skinList[i].name,
-                        finalImg,
-                        {gui: this.charInfo.gui}
-                    );
-                    // attach it
-                    skinImgs[i].appendChild(finalImg);
-                })
-            } else {
-                break;
-            }
-            
-        }
+        this.skinImgs = skinImgs;
 
     }
     getSkinEntries() {
         return this.skinEntries;
+    }
+
+    /** Loads skin images next to each skin entry on the skin list */
+    async loadSkinImages() {
+
+        if (!this.#skinsLoaded) { // only first time skin finder is opened
+            
+            this.#skinsLoaded = true;
+
+            const currentChar = this.char;
+    
+            // add them images to each entry and recolor them if needed
+            for (let i = 0; i < this.skinImgs.length; i++) {
+    
+                // if we changed character in the middle of img loading, discard next ones
+                if (currentChar == this.char) {
+    
+                    // get the final image
+                    const finalImg = new Image();
+                    finalImg.className = "pfCharImg";
+                    finalImg.src = await getRecolorImage(
+                        this.char,
+                        this.charInfo.skinList[i],
+                        this.charInfo.ogColor,
+                        this.charInfo.colorRange,
+                        "Skins",
+                        "P2"
+                    );
+                    // preload it so the gui doesnt implode when loading 30 images at once
+                    finalImg.decode().then(() => {
+                        // we have to position it
+                        skinFinder.positionCharImg(
+                            this.charInfo.skinList[i].name,
+                            finalImg,
+                            {gui: this.charInfo.gui}
+                        );
+                        // attach it
+                        this.skinImgs[i].appendChild(finalImg);
+                    })
+    
+                } else {
+                    break;
+                }
+                
+            }
+
+        }
+
     }
 
     /** Returns a valid src for browser sources */

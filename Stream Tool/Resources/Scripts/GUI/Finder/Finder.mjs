@@ -23,7 +23,7 @@ export class Finder {
      * @param {HTMLElement} callEl - Element that calls the finder
      * @param {Number} pNum - Currently active player
      */
-    open(callEl, pNum = -1) {
+    open(callEl) {
 
         // move the dropdown menu under the selected element
         callEl.appendChild(this._finderEl);
