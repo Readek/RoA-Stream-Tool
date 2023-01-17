@@ -79,21 +79,40 @@ export class Score {
         this.setScore(this.getScore()+value);
     }
 
-    // called whenever we change the "best of" mode
-    showBo5() {
-        for (let i = 0; i < this.#scoreEls.length; i++) {
-            this.#scoreEls[i].style.display = "block";            
+    /** Sets the display mode for score inputs */
+    showMode(mode) {
+    
+        if (mode == 5) {
+
+            this.#setChecksDisplay("block");
+            this.#scoreNumEl.style.display = "none";
+
+            if (this.getScore() > 3) {
+                this.setScore(3);
+            }
+
+        } else if (mode == 3) {
+
+            this.#setChecksDisplay("block");
+            this.#scoreEls[2].style.display = "none";
+
+            if (this.getScore() > 2) {
+                this.setScore(2);
+            }
+
+        } else {
+            
+            this.#setChecksDisplay("none");
+            this.#scoreNumEl.style.display = "block";
+            
         }
-        this.#scoreNumEl.style.display = "none";
+    
     }
-    showBo3() {
-        this.#scoreEls[2].style.display = "none";
-    }
-    showBoX() {
+
+    #setChecksDisplay(value) {
         for (let i = 0; i < this.#scoreEls.length; i++) {
-            this.#scoreEls[i].style.display = "none";            
+            this.#scoreEls[i].style.display = value;            
         }
-        this.#scoreNumEl.style.display = "block";
     }
     
 }

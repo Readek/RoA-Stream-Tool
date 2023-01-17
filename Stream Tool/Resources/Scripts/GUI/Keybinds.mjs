@@ -1,5 +1,5 @@
 import { updateBracket } from './Bracket.mjs';
-import { clearPlayers } from './Clear Players.mjs';
+import { clear } from './Clear.mjs';
 import { charFinder } from './Finder/Char Finder.mjs';
 import { commFinder } from './Finder/Comm Finder.mjs';
 import { playerFinder } from './Finder/Player Finder.mjs';
@@ -54,7 +54,7 @@ export function loadKeybinds() {
         } else if (playerInfo.isVisible()) { // if player info menu is up
             document.getElementById("pInfoBackButt").click();
         } else {
-            clearPlayers(); // by default, clear player info
+            clear(); // by default, clear player info
         }
     });
 

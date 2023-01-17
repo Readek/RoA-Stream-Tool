@@ -16,3 +16,25 @@ export function playersReady() {
     }
     return allReady;
 }
+
+/** Resets all player data */
+export function clearPlayers() {
+    
+    for (let i = 0; i < players.length; i++) {
+
+        //clear player texts
+        players[i].setName("");
+        
+        // clear player info
+        players[i].pronouns = "";
+        players[i].setTag("");
+        players[i].twitter = "";
+        players[i].twitch = "";
+        players[i].yt = "";
+
+        //reset characters to random
+        players[i].charChange("Random");
+
+    }
+
+}

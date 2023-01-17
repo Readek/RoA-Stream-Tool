@@ -3,7 +3,6 @@ import { players } from './GUI/Player/Players.mjs';
 import { PlayerGame } from './GUI/Player/Player Game.mjs';
 import { settings } from './GUI/Settings.mjs';
 import { Caster } from './GUI/Caster.mjs';
-import { Score } from './GUI/Score.mjs';
 import { scores } from './GUI/Scores.mjs';
 import { Team } from './GUI/Team.mjs';
 import { teams } from './GUI/Teams.mjs';
@@ -13,6 +12,7 @@ import { writeScoreboard } from './GUI/Write Scoreboard.mjs';
 import { loadKeybinds } from './GUI/Keybinds.mjs';
 import { updateBracket } from './GUI/Bracket.mjs';
 import { stPath } from './GUI/Globals.mjs';
+import { Score } from './GUI/Score.mjs';
 
 // this is a weird way to have file svg's that can be recolored by css
 customElements.define("load-svg", class extends HTMLElement {
@@ -44,7 +44,7 @@ async function init() {
     players.push(new PlayerGame(4, pInfoEls[3], cInfoEls[3]));
     // also set an initial character value
     for (let i = 0; i < players.length; i++) {
-        await players[i].charChange("Random")
+        await players[i].charChange("Random");
     }
 
     

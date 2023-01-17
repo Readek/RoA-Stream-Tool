@@ -1,4 +1,4 @@
-import { scores } from "./Scores.mjs";
+import { showScoreMode } from "./Scores.mjs";
 
 class BestOf {
 
@@ -28,8 +28,7 @@ class BestOf {
             this.title = "Click to change the scoring to Best of X";
 
             // hide the last score tick from the score ticks
-            scores[0].showBo3();
-            scores[1].showBo3();
+            showScoreMode(3);
 
         } else if (this.#currentBestOf == 3) {
 
@@ -38,8 +37,7 @@ class BestOf {
             this.innerHTML = "Best of X";
             this.title = "Click to change the scoring to Best of 5";
 
-            scores[0].showBoX();
-            scores[1].showBoX();
+            showScoreMode("X");
             
 
         } else if (this.#currentBestOf == "X") {
@@ -49,8 +47,7 @@ class BestOf {
             this.innerHTML = "Best of 5";
             this.title = "Click to change the scoring to Best of 3";
 
-            scores[0].showBo5();
-            scores[1].showBo5();
+            showScoreMode(5);
 
         }
 
