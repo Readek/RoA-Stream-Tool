@@ -1,7 +1,7 @@
-import { saveJson } from "./File System.mjs";
-import { commFinder } from "./Finder/Comm Finder.mjs";
-import { inside, stPath } from "./Globals.mjs";
-import { displayNotif } from "./Notifications.mjs";
+import { saveJson } from "../File System.mjs";
+import { commFinder } from "../Finder/Comm Finder.mjs";
+import { inside, stPath } from "../Globals.mjs";
+import { displayNotif } from "../Notifications.mjs";
 
 export class Caster {
 
@@ -76,16 +76,27 @@ export class Caster {
         }
     }
     setName(text) {
-        this.#nameEl.value = text;
+        this.#nameEl.value = this.#checkText(text);
     }
     setTwitter(text) {
-        this.#twitterEl.value = text;
+        this.#twitterEl.value = this.#checkText(text);
     }
     setTwitch(text) {
-        this.#twitchEl.value = text;
+        this.#twitchEl.value = this.#checkText(text);
     }
     setYt(text) {
-        this.#ytEl.value = text;
+        this.#ytEl.value = this.#checkText(text);
+    }
+    /**
+     * Checks if the text is a simple "-" to be able to return nothing
+     * @param {String} text String to check
+     * @returns {String} Final text
+     */
+    #checkText(text) {
+        if (text == "-") {
+            return "";
+        }
+        return text;
     }
 
     /** Saves a commentator local json as a preset */

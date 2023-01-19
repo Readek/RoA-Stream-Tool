@@ -1,24 +1,16 @@
 import { bestOf } from './BestOf.mjs';
-import { casters } from './Casters.mjs';
+import { casters } from './Caster/Casters.mjs';
 import { currentColors } from './Colors.mjs';
 import { gamemode } from './Gamemode Change.mjs';
 import { players, playersReady } from './Player/Players.mjs';
 import { round } from './Round.mjs';
-import { scores } from './Scores.mjs';
+import { scores } from './Score/Scores.mjs';
 import { settings } from './Settings.mjs';
-import { teams } from './Teams.mjs';
+import { teams } from './Team/Teams.mjs';
 import { tournament } from './Tournament.mjs';
 import { wl } from './WinnersLosers.mjs';
 import { inside } from './Globals.mjs';
 import { saveSimpleTexts } from './File System.mjs';
-
-// only electron can call ipc
-let ipc;
-if (inside.electron) {
-    ipc = await import("./IPC.mjs");
-} else {
-    
-}
 
 const updateDiv = document.getElementById('updateRegion');
 const updateText = updateDiv.getElementsByClassName("botText")[0];
@@ -79,66 +71,6 @@ export async function writeScoreboard() {
     //add the player's info to the player section of the json
     for (let i = 0; i < players.length; i++) {
 
-        // to simplify code
-        const charSkin = players[i].skin.name;
-        const charVSSkin = players[i].vsSkin.name;
-        // get the character position data
-        let charPos = players[i].charInfo;
-
-        // set data for the scoreboard
-        let scCharPos = [];
-        if (charPos.scoreboard) {
-            if (charPos.scoreboard[charSkin]) { // if the skin has a specific position
-                scCharPos[0] = charPos.scoreboard[charSkin].x;
-                scCharPos[1] = charPos.scoreboard[charSkin].y;
-                scCharPos[2] = charPos.scoreboard[charSkin].scale;
-            } else if (forceAlt.checked && charPos.scoreboard.alt) { // for workshop alternative art
-                scCharPos[0] = charPos.scoreboard.alt.x;
-                scCharPos[1] = charPos.scoreboard.alt.y;
-                scCharPos[2] = charPos.scoreboard.alt.scale;
-            } else { // if none of the above, use a default position
-                scCharPos[0] = charPos.scoreboard.neutral.x;
-                scCharPos[1] = charPos.scoreboard.neutral.y;
-                scCharPos[2] = charPos.scoreboard.neutral.scale;
-            }
-        } else { // if there are no character positions, set positions for "Random"
-            if (i % 2 == 0) {
-                scCharPos[0] = 35;
-            } else {
-                scCharPos[0] = 30;
-            }
-            scCharPos[1] = -10;
-            scCharPos[2] = 1.2;
-        }
-
-        // now, basically the same as above, but for the VS
-        let vsCharPos = [];
-        // get the character positions
-        if (charPos.vsScreen) {
-            if (charPos.vsScreen[charVSSkin]) { // if the skin has a specific position
-                vsCharPos[0] = charPos.vsScreen[charVSSkin].x;
-                vsCharPos[1] = charPos.vsScreen[charVSSkin].y;
-                vsCharPos[2] = charPos.vsScreen[charVSSkin].scale;
-            } else { //if not, use a default position
-                vsCharPos[0] = charPos.vsScreen.neutral.x;
-                vsCharPos[1] = charPos.vsScreen.neutral.y;
-                vsCharPos[2] = charPos.vsScreen.neutral.scale;
-            }
-        } else { // if there are no character positions, set positions for "Random"
-            if (i % 2 == 0) {
-                vsCharPos[0] = -475;
-            } else {
-                vsCharPos[0] = -500;
-            }
-            //if doubles, we need to move it up a bit
-            if (gamemode.getGm() == 2) {
-                vsCharPos[1] = -125;
-            } else {
-                vsCharPos[1] = 0;
-            }
-            vsCharPos[2] = .8;
-        }
-
         // finally, add it to the main json
         scoreboardJson.player.push({
             pronouns: players[i].pronouns,
@@ -149,17 +81,17 @@ export async function writeScoreboard() {
             yt: players[i].yt,
             sc : {
                 charImg: players[i].scBrowserSrc || players[i].scSrc,
-                charPos: scCharPos,
+                charPos: players[i].getScCharPos(),
             },
             vs : {
                 charImg: players[i].vsBrowserSrc || players[i].vsSrc,
-                charPos: vsCharPos,
+                charPos: players[i].getVsCharPos(),
                 trailImg: players[i].trailSrc,
                 bgVid: players[i].vsBgSrc,
             },
             // these are just for remote updating
             char: players[i].char,
-            skin: charSkin
+            skin: players[i].skin.name
         })
     }
 
@@ -172,7 +104,7 @@ export async function writeScoreboard() {
         });
         // if the team inputs dont have anything, display as [Color Team]
         if (!teams[i].getName()) {
-            scoreboardJson.teamName[i] = currentColors[i].name + " Team"
+            scoreboardJson.teamName[i] = `${currentColors[i].name} Team`
         }
     }
 
@@ -186,12 +118,22 @@ export async function writeScoreboard() {
         })
     }
 
-    // now convert it into something readable to send to OBS
-    ipc.updateGameData(JSON.stringify(scoreboardJson, null, 2));
-    ipc.sendGameData();
+    // its time to send the data away
+    if (inside.electron) {
 
+        const ipc = await import("./IPC.mjs");
+        ipc.updateGameData(JSON.stringify(scoreboardJson, null, 2));
+        ipc.sendGameData();
+        ipc.sendRemoteData();
 
-    //simple .txt files
-    saveSimpleTexts();
+        //simple .txt files
+        saveSimpleTexts();
+
+    } else {
+
+        const remote = await import("./Remote Requests.mjs");
+        remote.sendRemoteData(JSON.stringify(scoreboardJson, null, 2));
+
+    }
 
 }

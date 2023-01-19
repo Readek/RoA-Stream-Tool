@@ -1,6 +1,6 @@
 import { players, playersReady } from "./Player/Players.mjs";
-import { scores } from "./Scores.mjs";
-import { teams } from "./Teams.mjs";
+import { scores } from "./Score/Scores.mjs";
+import { teams } from "./Team/Teams.mjs";
 import { wl } from "./WinnersLosers.mjs";
 
 document.getElementById('swapButton').addEventListener("click", () => {

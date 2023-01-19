@@ -244,6 +244,19 @@ export class Player {
     }
 
     /**
+     * Searches for skin data on the player's skin list
+     * @param {String} name - Just the name of the skin
+     * @returns Skin data object
+     */
+    findSkin(name) {
+        for (let i = 0; i < this.charInfo.skinList.length; i++) {
+            if (this.charInfo.skinList[i].name == name) {
+                return this.charInfo.skinList[i];
+            }
+        }
+    }
+
+    /**
      * Sends a signal to the updater to notify if the player is busy
      * @param {Boolean} state - True if ready, false if not
      */

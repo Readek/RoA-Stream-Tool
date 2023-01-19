@@ -1,5 +1,5 @@
-import { bestOf } from "./BestOf.mjs";
-import { settings } from "./Settings.mjs";
+import { bestOf } from "../BestOf.mjs";
+import { settings } from "../Settings.mjs";
 
 export class Score {
 

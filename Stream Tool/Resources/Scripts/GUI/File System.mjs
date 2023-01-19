@@ -1,9 +1,9 @@
-import { casters } from './Casters.mjs';
+import { casters } from './Caster/Casters.mjs';
 import { inside, stPath } from './Globals.mjs';
 import { players } from './Player/Players.mjs';
 import { round } from './Round.mjs';
-import { scores } from './Scores.mjs';
-import { teams } from './Teams.mjs';
+import { scores } from './Score/Scores.mjs';
+import { teams } from './Team/Teams.mjs';
 import { tournament } from './Tournament.mjs';
 
 /**

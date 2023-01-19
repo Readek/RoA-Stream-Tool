@@ -2,17 +2,17 @@ import { charFinder } from './GUI/Finder/Char Finder.mjs';
 import { players } from './GUI/Player/Players.mjs';
 import { PlayerGame } from './GUI/Player/Player Game.mjs';
 import { settings } from './GUI/Settings.mjs';
-import { Caster } from './GUI/Caster.mjs';
-import { scores } from './GUI/Scores.mjs';
-import { Team } from './GUI/Team.mjs';
-import { teams } from './GUI/Teams.mjs';
+import { Caster } from './GUI/Caster/Caster.mjs';
+import { scores } from './GUI/Score/Scores.mjs';
+import { Team } from './GUI/Team/Team.mjs';
+import { teams } from './GUI/Team/Teams.mjs';
 import './GUI/Swap Players.mjs'; // so it loads the listener
-import { casters } from './GUI/Casters.mjs';
+import { casters } from './GUI/Caster/Casters.mjs';
 import { writeScoreboard } from './GUI/Write Scoreboard.mjs';
 import { loadKeybinds } from './GUI/Keybinds.mjs';
 import { updateBracket } from './GUI/Bracket.mjs';
 import { stPath } from './GUI/Globals.mjs';
-import { Score } from './GUI/Score.mjs';
+import { Score } from './GUI/Score/Score.mjs';
 
 // this is a weird way to have file svg's that can be recolored by css
 customElements.define("load-svg", class extends HTMLElement {

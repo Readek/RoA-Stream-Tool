@@ -6,7 +6,7 @@ import { playerFinder } from './Finder/Player Finder.mjs';
 import { skinFinder } from './Finder/Skin Finder.mjs';
 import { current, inside } from './Globals.mjs';
 import { playerInfo } from './Player/Player Info.mjs';
-import { scores } from './Scores.mjs';
+import { scores } from './Score/Scores.mjs';
 import { settings } from './Settings.mjs';
 import { viewport } from './Viewport.mjs';
 import { writeScoreboard } from './Write Scoreboard.mjs';

@@ -216,12 +216,7 @@ class PlayerFinder extends Finder {
             setCurrentPlayer(player);
             customChange(pData.hex);
         } else { // search for all skins for name matches
-            for (let i = 0; i < player.charInfo.skinList.length; i++) {
-                if (player.charInfo.skinList[i].name == pData.skin) {
-                    player.skinChange(player.charInfo.skinList[i]);
-                    break;
-                }
-            }
+            player.skinChange(player.findSkin(pData.skin));
         }
 
         // and hide the finder of course

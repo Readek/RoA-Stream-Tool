@@ -1,13 +1,14 @@
-import { showScoreMode } from "./Scores.mjs";
+import { showScoreMode } from "./Score/Scores.mjs";
 
 class BestOf {
 
     #currentBestOf = 5;
-
+    #bestOfEl = document.getElementById("bestOf");
+    
     constructor() {
 
-        document.getElementById("bestOf").addEventListener("click", () => {
-            this.#changeBestOf();
+        this.#bestOfEl.addEventListener("click", () => {
+            this.#nextBestOf();
         });
 
     }
@@ -15,37 +16,49 @@ class BestOf {
     getBo() {
         return this.#currentBestOf;
     }
+    setBo(value) {
+        this.#changeBestOf(value);
+    }
 
-    /** Changes "Best of"'s value */
-    #changeBestOf() {
-
+    #nextBestOf() {
         if (this.#currentBestOf == 5) {
+            this.setBo(3);
+        } else if (this.#currentBestOf == 3) {
+            this.setBo("X")
+        } else if (this.#currentBestOf == "X") {
+            this.setBo(5);
+        }
+    }
+
+    #changeBestOf(value) {
+
+        if (value == 3) {
 
             this.#currentBestOf = 3;
 
             // change the visual text
-            this.innerHTML = "Best of 3";
-            this.title = "Click to change the scoring to Best of X";
+            this.#bestOfEl.innerHTML = "Best of 3";
+            this.#bestOfEl.title = "Click to change the scoring to Best of X";
 
             // hide the last score tick from the score ticks
             showScoreMode(3);
 
-        } else if (this.#currentBestOf == 3) {
+        } else if (value == "X") {
 
             this.#currentBestOf = "X";
 
-            this.innerHTML = "Best of X";
-            this.title = "Click to change the scoring to Best of 5";
+            this.#bestOfEl.innerHTML = "Best of X";
+            this.#bestOfEl.title = "Click to change the scoring to Best of 5";
 
             showScoreMode("X");
             
 
-        } else if (this.#currentBestOf == "X") {
+        } else if (value == 5) {
 
             this.#currentBestOf = 5;
 
-            this.innerHTML = "Best of 5";
-            this.title = "Click to change the scoring to Best of 3";
+            this.#bestOfEl.innerHTML = "Best of 5";
+            this.#bestOfEl.title = "Click to change the scoring to Best of 3";
 
             showScoreMode(5);
 

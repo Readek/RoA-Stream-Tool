@@ -1,6 +1,6 @@
 import { hideBgCharImgs, showBgCharImgs } from "./Player/BG Char Image.mjs";
 import { players } from "./Player/Players.mjs";
-import { teams } from "./Teams.mjs";
+import { teams } from "./Team/Teams.mjs";
 import { wl } from "./WinnersLosers.mjs";
 
 class Gamemode {

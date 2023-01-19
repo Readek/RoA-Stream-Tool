@@ -1,6 +1,7 @@
+import { displayNotif } from "./Notifications.mjs";
 import { clearPlayers } from "./Player/Players.mjs";
-import { clearScores } from "./Scores.mjs";
-import { clearTeams } from "./Teams.mjs";
+import { clearScores } from "./Score/Scores.mjs";
+import { clearTeams } from "./Team/Teams.mjs";
 
 document.getElementById('clearButton').addEventListener("click", clear);
 
@@ -11,5 +12,7 @@ export function clear() {
     clearTeams();
     clearPlayers();
     clearScores();
+
+    displayNotif("Cleared all player data");
 
 }

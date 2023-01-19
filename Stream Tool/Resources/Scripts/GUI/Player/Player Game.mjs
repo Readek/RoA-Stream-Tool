@@ -6,6 +6,7 @@ import { currentColors } from "../Colors.mjs";
 import { settings } from "../Settings.mjs";
 import { playerInfo } from "./Player Info.mjs";
 import { stPath } from "../Globals.mjs";
+import { gamemode } from "../Gamemode Change.mjs";
 
 export class PlayerGame extends Player {
 
@@ -170,6 +171,75 @@ export class PlayerGame extends Player {
     async setTrailImage() {
         const color = currentColors[(this.pNum-1)%2].hex.substring(1);
         this.trailSrc = await getTrailImage(this.char, this.vsSkin.name, color);
+    }
+
+    /**
+     * Returns character image position data for the scoreboard
+     * @returns Array of scoreboard position data
+     */
+    getScCharPos() {
+        const scCharPos = [];
+        const charPos = this.charInfo;
+        if (charPos.scoreboard) {
+            if (charPos.scoreboard[this.skin.name]) {
+                // if the skin has a specific position
+                scCharPos[0] = charPos.scoreboard[this.skin.name].x;
+                scCharPos[1] = charPos.scoreboard[this.skin.name].y;
+                scCharPos[2] = charPos.scoreboard[this.skin.name].scale;
+            } else if (settings.isAltArtChecked() && charPos.scoreboard.alt) {
+                // for workshop alternative art
+                scCharPos[0] = charPos.scoreboard.alt.x;
+                scCharPos[1] = charPos.scoreboard.alt.y;
+                scCharPos[2] = charPos.scoreboard.alt.scale;
+            } else { // if none of the above, use a default position
+                scCharPos[0] = charPos.scoreboard.neutral.x;
+                scCharPos[1] = charPos.scoreboard.neutral.y;
+                scCharPos[2] = charPos.scoreboard.neutral.scale;
+            }
+        } else { // if there are no character positions, set positions for "Random"
+            if (this.pNum % 2 == 0) {
+                scCharPos[0] = 30;
+            } else {
+                scCharPos[0] = 35;
+            }
+            scCharPos[1] = -10;
+            scCharPos[2] = 1.2;
+        }
+        return scCharPos;
+    }
+    /**
+     * Returns character image position data for the scoreboard
+     * @returns Array of scoreboard position data
+     */
+    getVsCharPos() {
+        const vsCharPos = [];
+        const charPos = this.charInfo;
+        // get the character positions
+        if (charPos.vsScreen) {
+            if (charPos.vsScreen[this.vsSkin.name]) { // if the skin has a specific position
+                vsCharPos[0] = charPos.vsScreen[this.vsSkin.name].x;
+                vsCharPos[1] = charPos.vsScreen[this.vsSkin.name].y;
+                vsCharPos[2] = charPos.vsScreen[this.vsSkin.name].scale;
+            } else { //if not, use a default position
+                vsCharPos[0] = charPos.vsScreen.neutral.x;
+                vsCharPos[1] = charPos.vsScreen.neutral.y;
+                vsCharPos[2] = charPos.vsScreen.neutral.scale;
+            }
+        } else { // if there are no character positions, set positions for "Random"
+            if (this.pNum % 2 == 0) {
+                vsCharPos[0] = -500;
+            } else {
+                vsCharPos[0] = -475;
+            }
+            //if doubles, we need to move it up a bit
+            if (gamemode.getGm() == 2) {
+                vsCharPos[1] = -125;
+            } else {
+                vsCharPos[1] = 0;
+            }
+            vsCharPos[2] = .8;
+        }
+        return vsCharPos;
     }
 
     /** Changes the width of an input box depending on the text */

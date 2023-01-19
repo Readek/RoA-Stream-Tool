@@ -1,3 +1,6 @@
+import { Score } from "./Score.mjs";
+
+/** @type {Score[]} */
 export const scores = [];
 
 /**

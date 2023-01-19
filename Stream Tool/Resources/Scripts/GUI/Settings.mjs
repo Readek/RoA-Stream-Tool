@@ -100,10 +100,16 @@ class GuiSettings {
 
     }
 
+    setIntro(value) {
+        this.#introCheck.checked = value;
+    }
     isIntroChecked() {
         return this.#introCheck.checked;
     }
 
+    setAltArt(value) {
+        this.#altArtCheck.checked = value;
+    }
     isAltArtChecked() {
         return this.#altArtCheck.checked;
     }
@@ -116,6 +122,9 @@ class GuiSettings {
 
     }
 
+    setHD(value) {
+        this.#HDCheck.checked = value;
+    }
     isHDChecked() {
         return this.#HDCheck.checked;
     }
@@ -140,6 +149,9 @@ class GuiSettings {
 
     }
 
+    setNoLoA(value) {
+        this.#noLoACheck.checked = value;
+    }
     isNoLoAChecked() {
         return this.#noLoACheck.checked;
     }
@@ -157,6 +169,9 @@ class GuiSettings {
 
     }
 
+    setWs(value) {
+        this.#wsCheck.checked = value;
+    }
     isWsChecked() {
         return this.#wsCheck.checked;
     }
@@ -184,6 +199,9 @@ class GuiSettings {
 
     }
 
+    setForceWL(value) {
+        this.#forceWLCheck.checked = value;
+    }
     isForceWLChecked() {
         return this.#forceWLCheck.checked;
     }

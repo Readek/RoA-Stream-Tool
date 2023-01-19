@@ -38,22 +38,20 @@ for (let i = 0; i < colorList.length; i++) {
     document.getElementById("dropdownColorR").appendChild(newDivR);
     
     // if the divs get clicked, update the colors
-    newDiv.addEventListener("click", () => (updateColor(0, colorList[i])));
-    newDivR.addEventListener("click", () => (updateColor(1, colorList[i])));
+    newDiv.addEventListener("click", () => {updateColor(0, colorList[i])});
+    newDivR.addEventListener("click", () => {updateColor(1, colorList[i])});
 
 }
-
-// set the initial colors for the interface (the first color for p1, and the second for p2)
-document.getElementById('dropdownColorL').children[0].click();
-document.getElementById('dropdownColorR').children[1].click();
-
 
 /**
  * Updates the color of a team
  * @param {Number} side - Which side was clicked
  * @param {Object} color - Color data
  */
-export function updateColor(side, color) {
+export async function updateColor(side, color) {
+
+    // this will tell us when this function has finished
+    const promises = [];
 
     currentColors[side] = color;
 
@@ -64,13 +62,28 @@ export function updateColor(side, color) {
     // generate new trails for existing characters
     for (let i = 0; i < players.length; i+=2) {
         if (side == "l") {
-            players[i].setTrailImage();
+            promises.push(players[i].setTrailImage());
         } else {
-            players[i+1].setTrailImage();
+            promises.push(players[i+1].setTrailImage());
         }
     }
 
     // remove focus from the menu so it hides on click
     document.activeElement.blur();
 
+    await Promise.all(promises);
+    return;
+
+}
+
+initColors();
+/** set the initial colors for the interface (the first color for p1, and the second for p2) */
+function initColors() {
+    currentColors[0] = colorList[0];
+    currentColors[1] = colorList[1];
+    // change both the color rectangle and the background gradient
+    colorRectangles[0].style.backgroundColor = colorList[0].hex;
+    colorGradients[0].style.backgroundImage = `linear-gradient(to bottom left, ${colorList[0].hex}50, #00000000, #00000000)`;
+    colorRectangles[1].style.backgroundColor = colorList[1].hex;
+    colorGradients[1].style.backgroundImage = `linear-gradient(to bottom left, ${colorList[1].hex}50, #00000000, #00000000)`;
 }

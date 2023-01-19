@@ -29,7 +29,7 @@ class WinnersLosers {
         if (el == this.leftW) {
             this.#currentLeft = "W";
             this.#styleButtons(el, this.leftL);
-        } else {
+        } else if (el == this.leftW) {
             this.#currentLeft = "L";
             this.#styleButtons(el, this.leftW);
         }
@@ -41,7 +41,7 @@ class WinnersLosers {
         if (el == this.rightW) {
             this.#currentRight = "W";
             this.#styleButtons(el, this.rightL);
-        } else {
+        } else if (el == this.rightW) {
             this.#currentRight = "L";
             this.#styleButtons(el, this.rightW);
         }

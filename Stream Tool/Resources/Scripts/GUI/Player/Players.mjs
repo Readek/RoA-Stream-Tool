@@ -1,7 +1,15 @@
+import { PlayerBracket } from "./Player Bracket.mjs";
+import { PlayerGame } from "./Player Game.mjs";
+
+/** @type {PlayerGame[]} */
 export const players = [];
+/** @type {PlayerBracket[]} */
 export const bracketPlayers = [];
 
-/** Checks if all players are ready to send an update */
+/**
+ * Checks if all players are ready to send an update
+ * @returns {Boolean} Ready (true) or not ready (false)
+ */
 export function playersReady() {
     let allReady = true;
     for (let i = 0; i < players.length; i++) {

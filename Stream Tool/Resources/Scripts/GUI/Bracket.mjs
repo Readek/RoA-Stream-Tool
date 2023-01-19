@@ -2,7 +2,7 @@ import { viewport } from './Viewport.mjs';
 import { bracketPlayers, players } from './Player/Players.mjs';
 import { PlayerBracket } from "./Player/Player Bracket.mjs";
 import { displayNotif } from './Notifications.mjs';
-import { scores } from './Scores.mjs';
+import { scores } from './Score/Scores.mjs';
 import { inside } from './Globals.mjs';
 
 // only electron can call ipc
@@ -170,9 +170,11 @@ export function updateBracket(startup) {
     updateLocalBracket();
 
     // time to send it away
-    ipc.updateBracketData(JSON.stringify(bracketData, null, 2));
-    ipc.sendBracketData();
-    if (!startup) displayNotif("Bracket has been updated");
+    if (inside.electron) {
+        ipc.updateBracketData(JSON.stringify(bracketData, null, 2));
+        ipc.sendBracketData();
+        if (!startup) displayNotif("Bracket has been updated");
+    }
 
 }
 
