@@ -157,7 +157,7 @@ function createWindow() {
 
 // when the GUI is ready to send data to browsers
 ipcMain.on('sendData', (event, data) => {
-    sockets.forEach(socket => {
+    sockets.forEach(socket => { // TODO optimize this
         if (JSON.parse(data).id == socket.id) {
             socket.ws.send(data)
         }

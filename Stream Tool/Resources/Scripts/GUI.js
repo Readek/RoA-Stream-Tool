@@ -11,7 +11,7 @@ import { casters } from './GUI/Caster/Casters.mjs';
 import { writeScoreboard } from './GUI/Write Scoreboard.mjs';
 import { loadKeybinds } from './GUI/Keybinds.mjs';
 import { updateBracket } from './GUI/Bracket.mjs';
-import { stPath } from './GUI/Globals.mjs';
+import { inside, stPath } from './GUI/Globals.mjs';
 import { Score } from './GUI/Score/Score.mjs';
 
 // this is a weird way to have file svg's that can be recolored by css
@@ -74,8 +74,13 @@ async function init() {
 
 
     // update the GUI on startup so we have something to send to browsers
-    writeScoreboard();
-    updateBracket(true);
+    if (inside.electron) { // not on remote GUIs
+        writeScoreboard();
+        updateBracket(true);
+    } else {
+        const remote = await import("./GUI/Remote Requests.mjs");
+        remote.startWebsocket();
+    }
 
 
     // get those keybinds running

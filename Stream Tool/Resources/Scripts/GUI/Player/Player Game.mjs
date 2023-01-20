@@ -101,6 +101,9 @@ export class PlayerGame extends Player {
         // set up a trail for the vs screen
         await this.setTrailImage();
 
+        // store color code for remote gui shenanigans
+        this.skinHex = skin.hex;
+
         // notify the user that we done here
         this.setReady(true);
 

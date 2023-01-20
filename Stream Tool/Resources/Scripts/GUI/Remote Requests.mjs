@@ -5,18 +5,26 @@ import { writeScoreboard } from "./Write Scoreboard.mjs";
 let webSocket;
 const updateButtText = document.getElementsByClassName("botText")[0];
 
-startWebsocket();
-function startWebsocket() {
+export function startWebsocket() {
     
     updateButtText.textContent = "RECONNECTING";
 	// we need to connect to the websocket server
 	webSocket = new WebSocket("ws://"+window.location.hostname+":8080?id=remoteGUI");
 	webSocket.onopen = () => { // if it connects successfully
+        
         updateButtText.textContent = "UPDATE";
-		// everything will update everytime we get data from the server (the GUI)
+		
+        // everything will update everytime we get data from the server (the GUI)
 		webSocket.onmessage = function (event) {
 			getData(JSON.parse(event.data));
 		}
+
+        // request current data to the GUI
+        const objecto = {
+            id: "RemoteRequestData"
+        }
+        sendRemoteData(JSON.stringify({id: "RemoteRequestData"}));
+
 	}
 
 	// if the GUI closes, wait for it to reopen
@@ -37,13 +45,10 @@ function startWebsocket() {
 
 }
 
-
 async function getData(data) {
-   
     if (data.gamemode) { // check if GUI update
         await updateGUI(data);
     }
-
 }
 
 export function sendRemoteData(data) {

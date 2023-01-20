@@ -1,6 +1,7 @@
 import { bestOf } from "./BestOf.mjs";
 import { casters } from "./Caster/Casters.mjs";
 import { updateColor } from "./Colors.mjs";
+import { customChange, setCurrentPlayer } from "./Custom Skin.mjs";
 import { gamemode } from "./Gamemode Change.mjs";
 import { displayNotif } from "./Notifications.mjs";
 import { players } from "./Player/Players.mjs";
@@ -10,7 +11,6 @@ import { settings } from "./Settings.mjs";
 import { teams } from "./Team/Teams.mjs";
 import { tournament } from "./Tournament.mjs";
 import { wl } from "./WinnersLosers.mjs";
-import { writeScoreboard } from "./Write Scoreboard.mjs";
 
 /**
  * Updates the entire GUI with values sent remotely
@@ -58,7 +58,12 @@ export async function updateGUI(data) {
 
         // player character and skin
         await players[i].charChange(data.player[i].char, true);
-        await players[i].skinChange(players[i].findSkin(data.player[i].skin));
+        if (data.player[i].skin == "Custom") {
+            setCurrentPlayer(players[i]);
+            customChange(data.player[i].skinHex);
+        } else {
+            await players[i].skinChange(players[i].findSkin(data.player[i].skin));
+        }
 
     };
 

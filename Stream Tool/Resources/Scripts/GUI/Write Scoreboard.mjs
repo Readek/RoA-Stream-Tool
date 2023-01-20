@@ -91,8 +91,10 @@ export async function writeScoreboard() {
             },
             // these are just for remote updating
             char: players[i].char,
-            skin: players[i].skin.name
+            skin: players[i].skin.name,
+            skinHex: players[i].skinHex
         })
+
     }
 
     // stuff that needs to be done for both sides
@@ -129,9 +131,10 @@ export async function writeScoreboard() {
         //simple .txt files
         saveSimpleTexts();
 
-    } else {
+    } else { // remote update stuff
 
         const remote = await import("./Remote Requests.mjs");
+        scoreboardJson.id = "RemoteUpdateGUI";
         remote.sendRemoteData(JSON.stringify(scoreboardJson, null, 2));
 
     }

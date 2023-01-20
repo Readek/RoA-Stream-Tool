@@ -69,8 +69,13 @@ export function alwaysOnTop(value) {
 // when we get data remotely, update GUI
 ipc.on('remoteGuiData', async (event, data) => {
 
-    // parse that json so we send an object we can read
-    await updateGUI(JSON.parse(data));
-    writeScoreboard();
+    const jsonData = JSON.parse(data);
+    
+    if (jsonData.id == "RemoteUpdateGUI") {
+        await updateGUI(jsonData);
+        writeScoreboard();
+    } else if (jsonData.id == "RemoteRequestData") {
+        sendRemoteData();
+    }
 
 });
