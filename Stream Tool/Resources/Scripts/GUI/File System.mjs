@@ -27,8 +27,7 @@ export async function getJson(jPath) {
 
         // the browser version
         try {
-            const response = await (await fetch(jPath + ".json")).json();
-            return response;
+            return await (await fetch(jPath + ".json")).json();
         } catch (e) {
             return null;
         }
@@ -51,14 +50,8 @@ export async function fileExists(filePath) {
         
     } else {
 
-        try {
-            if ((await fetch(filePath)).ok) {
-                return true;
-            }
-        } catch (e) {
-            return null;
-        }
-        
+        return (await fetch(filePath)).ok;
+    
     }
 
 }

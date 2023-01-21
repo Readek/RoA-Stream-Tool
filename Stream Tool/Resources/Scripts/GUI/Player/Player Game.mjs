@@ -73,6 +73,7 @@ export class PlayerGame extends Player {
     async skinChange(skin) {
 
         this.setReady(false);
+        const promises = [];
 
         // remove focus from the skin list so it auto hides
         document.activeElement.blur();
@@ -84,10 +85,21 @@ export class PlayerGame extends Player {
         this.skinSel.innerHTML = skin.name;
 
         // update all images!
-        this.setIconImg();
-        await this.setScImg();
+        promises.push(this.setIconImg());
+        promises.push(this.setScImg());
+        promises.push(this.setVsBg());
+
+        // set up a trail for the vs screen
+        promises.push(this.setTrailImage());
+
+        // store color code for remote gui shenanigans
+        this.skinHex = skin.hex;
+
+        // and when all images have finished loading
+        await Promise.all(promises);
+
+        // this depends on sc image
         await this.setVsImg();
-        await this.setVsBg();
 
         // change the background character image (if first 2 players)
         if (this.pNum-1 < 2) {
@@ -97,13 +109,6 @@ export class PlayerGame extends Player {
                 updateBgCharImg(this.pNum-1, this.scSrc);
             }
         }
-
-        // set up a trail for the vs screen
-        await this.setTrailImage();
-
-        // store color code for remote gui shenanigans
-        this.skinHex = skin.hex;
-
         // notify the user that we done here
         this.setReady(true);
 
@@ -111,26 +116,36 @@ export class PlayerGame extends Player {
 
     /** Sets the Scoreboard image depening on recolors */
     async setScImg() {
-        this.scSrc = await getRecolorImage(
+        const promises = [];
+        promises.push(getRecolorImage(
             this.char,
             this.skin,
             this.charInfo.ogColor,
             this.charInfo.colorRange,
             "Skins",
             this.randomImg
-        );
-        this.scBrowserSrc = await this.getBrowserSrc(
+        ));
+        promises.push(this.getBrowserSrc(
             this.char, this.skin, "Skins", this.randomImg
-        );
+        ));
+        await Promise.all(promises).then( (value) => {
+            this.scSrc = value[0];
+            this.scBrowserSrc = value[1];
+        });
     }
 
     /** Sets the VS Screen image depending on recolors and settings */
     async setVsImg() {
         if (settings.isHDChecked()) {
+            const promises = [];
             const skinName = this.skin.name.includes("LoA") && !settings.isNoLoAChecked() ? "LoA HD" : "HD";
-            this.vsSrc = await getRecolorImage(this.char, {name: skinName}, "Skins", this.randomImg);
-            this.vsBrowserSrc = await this.getBrowserSrc(this.char, {name: skinName}, "Skins/", this.randomImg);
+            promises.push(getRecolorImage(this.char, {name: skinName}, "Skins", this.randomImg));
+            promises.push(this.getBrowserSrc(this.char, {name: skinName}, "Skins/", this.randomImg));
             this.vsSkin = {name: skinName};
+            await Promise.all(promises).then( (value) => {
+                this.vsSrc = value[0];
+                this.vsBrowserSrc = value[1];
+            })
         } else { // if no HD, just use the scoreboard image
             this.vsSrc = this.scSrc;
             this.vsBrowserSrc = this.scBrowserSrc;

@@ -14,6 +14,7 @@ import { saveSimpleTexts } from './File System.mjs';
 
 const updateDiv = document.getElementById('updateRegion');
 const updateText = updateDiv.getElementsByClassName("botText")[0];
+const updateRegion = document.getElementById('updateRegion');
 
 // bottom bar update button
 updateDiv.addEventListener("click", () => {
@@ -36,6 +37,12 @@ export function readyToUpdate(state) {
 
 /** Generates an object with game data, then sends it */
 export async function writeScoreboard() {
+
+    // if this is a remote browser, display some visual feedback
+    if (!inside.electron) {
+        updateText.innerHTML = "SENDING DATA...";
+        updateRegion.removeEventListener("click", () => {writeScoreboard()});
+    }
 
     // this is what's going to be sent to the browsers
     const scoreboardJson = {

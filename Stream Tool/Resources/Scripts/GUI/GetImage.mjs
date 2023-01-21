@@ -32,7 +32,7 @@ export async function getRecolorImage(char, skin, colIn, colRan, imgType, failPa
     } else if (await fileExists(`${stPath.char}/${char}/${imgType}/Default.png`)) {
 
         if (skin.hex) {
-            return getRoARecolor(
+            return await getRoARecolor(
                 char,
                 `${stPath.char}/${char}/${imgType}/Default.png`,
                 colIn,
@@ -65,7 +65,7 @@ export async function getTrailImage(char, skin, color) {
     if (await fileExists(`${stPath.char}/${char}/Skins/${skin}.png`)) {
 
         // if the requested skin exists as a separate image
-        return getRoARecolor(
+        return await getRoARecolor(
             "Trail",
             `${stPath.char}/${char}/Skins/${skin}.png`,
             [127, 127, 127, 1, 0,0,0,0], // any color would do
@@ -76,7 +76,7 @@ export async function getTrailImage(char, skin, color) {
     } else if (await fileExists(`${stPath.char}/${char}/Skins/Default.png`)) {
 
         // else, use the default skin image
-        return getRoARecolor(
+        return await getRoARecolor(
             "Trail",
             `${stPath.char}/${char}/Skins/Default.png`,
             [127, 127, 127, 1, 0,0,0,0],

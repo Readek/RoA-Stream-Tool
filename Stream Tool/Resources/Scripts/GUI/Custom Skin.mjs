@@ -51,7 +51,7 @@ function hideCustomSkin() {
  * Reads the color code input to change the skin of a player
  * @param {String} hex - Optional color code forcing
  */
-export function customChange(hex) {
+export async function customChange(hex) {
 
     // get the color code from input element
     let skinHex = codeInput.value;
@@ -67,7 +67,7 @@ export function customChange(hex) {
         hex: skinHex
     };
     
-    curPlayer.skinChange(skin);
+    await curPlayer.skinChange(skin);
     hideCustomSkin();
 
 }

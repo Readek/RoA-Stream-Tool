@@ -1,6 +1,6 @@
 import { bestOf } from "./BestOf.mjs";
 import { casters } from "./Caster/Casters.mjs";
-import { updateColor } from "./Colors.mjs";
+import { currentColors, updateColor } from "./Colors.mjs";
 import { customChange, setCurrentPlayer } from "./Custom Skin.mjs";
 import { gamemode } from "./Gamemode Change.mjs";
 import { displayNotif } from "./Notifications.mjs";
@@ -19,8 +19,12 @@ import { wl } from "./WinnersLosers.mjs";
 export async function updateGUI(data) {
 
     // set the gamemode and scoremode
-    gamemode.changeGamemode(data.gamemode);
-    bestOf.setBo(data.bestOf);
+    if (data.gamemode != gamemode.getGm) {
+        gamemode.changeGamemode(data.gamemode);
+    }
+    if (data.bestOf != bestOf.getBo) {
+        bestOf.setBo(data.bestOf);
+    }
 
     // set the settings
     settings.setIntro(data.allowIntro);
@@ -57,12 +61,14 @@ export async function updateGUI(data) {
         players[i].yt = data.player[i].yt;
 
         // player character and skin
-        await players[i].charChange(data.player[i].char, true);
-        if (data.player[i].skin == "Custom") {
-            setCurrentPlayer(players[i]);
-            customChange(data.player[i].skinHex);
-        } else {
-            await players[i].skinChange(players[i].findSkin(data.player[i].skin));
+        if (data.player[i].char != players[i].char || data.player[i].skin != players[i].skin.name) {
+            await players[i].charChange(data.player[i].char, true);
+            if (data.player[i].skin == "Custom") {
+                setCurrentPlayer(players[i]);
+                await customChange(data.player[i].skinHex);
+            } else {
+                await players[i].skinChange(players[i].findSkin(data.player[i].skin));
+            }
         }
 
     };
@@ -71,7 +77,9 @@ export async function updateGUI(data) {
     for (let i = 0; i < 2; i++) {
         scores[i].setScore(data.score[i]);
         teams[i].setName(data.teamName[i]);
-        await updateColor(i, data.color[i]);
+        if (currentColors[i].name != data.color[i].name) {
+            await updateColor(i, data.color[i]);
+        }
     }
 
     // round info

@@ -115,16 +115,21 @@ export class Player {
 
     /** Checks if an icon for the current skin exists, recolors the icon if it doesnt */
     async setIconImg() {
-        this.iconSrc = await getRecolorImage(
+        const promises = [];
+        promises.push(getRecolorImage(
             this.char,
             this.skin,
             this.charInfo.ogColor,
             this.charInfo.colorRange,
             "Icons",
             "Icon"
-        );
-        this.charSel.children[0].src = this.iconSrc;
-        this.iconBrowserSrc = await this.getBrowserSrc(this.char, this.skin, "Icons", "Icon");
+        ));
+        promises.push(this.getBrowserSrc(this.char, this.skin, "Icons", "Icon"));
+        await Promise.all(promises).then( (value) => {
+            this.iconSrc = value[0];
+            this.iconBrowserSrc = value[1];
+            this.charSel.children[0].src = this.iconSrc;
+        })
     }
 
     /** Creates list entries so the Skin Finder can get them when called */

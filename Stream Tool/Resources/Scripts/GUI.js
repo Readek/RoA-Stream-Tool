@@ -31,6 +31,8 @@ init();
 /** It all starts here */
 async function init() {
 
+    const promises = [];
+
     // we need to set the current char path
     stPath.char = settings.isWsChecked() ? stPath.charWork : stPath.charBase;
 
@@ -44,12 +46,12 @@ async function init() {
     players.push(new PlayerGame(4, pInfoEls[3], cInfoEls[3]));
     // also set an initial character value
     for (let i = 0; i < players.length; i++) {
-        await players[i].charChange("Random");
+        promises.push(players[i].charChange("Random"));
     }
 
     
     // initialize the character list
-    await charFinder.loadCharacters();
+    promises.push(charFinder.loadCharacters());
 
 
     // initialize that score class
@@ -73,6 +75,10 @@ async function init() {
     );
 
 
+    // get those keybinds running
+    loadKeybinds();
+
+    await Promise.all(promises);
     // update the GUI on startup so we have something to send to browsers
     if (inside.electron) { // not on remote GUIs
         writeScoreboard();
@@ -81,9 +87,5 @@ async function init() {
         const remote = await import("./GUI/Remote Requests.mjs");
         remote.startWebsocket();
     }
-
-
-    // get those keybinds running
-    loadKeybinds();
 
 }

@@ -72,9 +72,11 @@ class GuiSettings {
         // and update it all!
         this.#introCheck.checked = guiSettings.allowIntro;
         this.#altArtCheck.checked = guiSettings.forceAlt;
-        if (guiSettings.forceHD) this.#HDCheck.click();
+        this.#HDCheck.checked = guiSettings.forceHD;
+        if (guiSettings.forceHD) this.#noLoACheck.disabled = false;
         this.#noLoACheck.checked = guiSettings.noLoAHD;
-        if (guiSettings.workshop) this.#wsCheck.click();
+        this.#wsCheck.checked = guiSettings.workshop;
+        if (guiSettings.workshop) this.#altArtCheck.disabled = false;
         if (guiSettings.forceWL) this.#forceWLCheck.click();
         this.#scoreAutoCheck.checked = guiSettings.scoreAutoUpdate;
         this.#invertScoreCheck.checked = guiSettings.invertScore;
@@ -138,14 +140,17 @@ class GuiSettings {
         }
 
         // to update character images
+        const promises = [];
         for (let i = 0; i < players.length; i++) {
-            await players[i].setVsImg();
-            await players[i].setVsBg();
-            await players[i].setTrailImage();
+            promises.push(players[i].setVsImg());
+            promises.push(players[i].setVsBg());
+            promises.push(players[i].setTrailImage());
         }
 
         // save current checkbox value to the settings file
         this.save("forceHD", this.isHDChecked());
+
+        await Promise.all(promises);
 
     }
 
@@ -158,11 +163,13 @@ class GuiSettings {
     async toggleNoLoA() {
 
         // to update character images
+        const promises = [];
         for (let i = 0; i < players.length; i++) {
-            await players[i].setVsImg();
-            await players[i].setVsBg();
-            await players[i].setTrailImage();
+            promises.push(players[i].setVsImg());
+            promises.push(players[i].setVsBg());
+            promises.push(players[i].setTrailImage());
         }
+        await Promise.all(promises);
 
         // save current checkbox value to the settings file
         this.save("noLoAHD", this.isNoLoAChecked());

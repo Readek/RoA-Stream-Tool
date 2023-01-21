@@ -4,6 +4,7 @@ import { writeScoreboard } from "./Write Scoreboard.mjs";
 
 let webSocket;
 const updateButtText = document.getElementsByClassName("botText")[0];
+const updateRegion = document.getElementById('updateRegion');
 
 export function startWebsocket() {
     
@@ -12,17 +13,12 @@ export function startWebsocket() {
 	webSocket = new WebSocket("ws://"+window.location.hostname+":8080?id=remoteGUI");
 	webSocket.onopen = () => { // if it connects successfully
         
-        updateButtText.textContent = "UPDATE";
-		
         // everything will update everytime we get data from the server (the GUI)
 		webSocket.onmessage = function (event) {
 			getData(JSON.parse(event.data));
 		}
 
         // request current data to the GUI
-        const objecto = {
-            id: "RemoteRequestData"
-        }
         sendRemoteData(JSON.stringify({id: "RemoteRequestData"}));
 
 	}
@@ -31,23 +27,25 @@ export function startWebsocket() {
 	webSocket.onclose = () => {
         displayNotif("Connection error, please reconnect.")
         updateButtText.textContent = "RECONNECT";
-        document.getElementById('updateRegion').removeEventListener("click", () => {writeScoreboard()})
-        document.getElementById('updateRegion').addEventListener("click", () => {startWebsocket()})
+        updateRegion.removeEventListener("click", () => {writeScoreboard()})
+        updateRegion.addEventListener("click", () => {startWebsocket()})
         
     }
 	// if connection fails for any reason
 	webSocket.onerror = () => {
         displayNotif("Connection error, please reconnect.")
         updateButtText.textContent = "RECONNECT";
-        document.getElementById('updateRegion').removeEventListener("click", () => {writeScoreboard()})
-        document.getElementById('updateRegion').addEventListener("click", () => {startWebsocket()})
+        updateRegion.removeEventListener("click", () => {writeScoreboard()})
+        updateRegion.addEventListener("click", () => {startWebsocket()})
     }
 
 }
 
 async function getData(data) {
-    if (data.gamemode) { // check if GUI update
+    if (data.gamemode) { // demand a GUI update
         await updateGUI(data);
+        updateButtText.innerHTML = "UPDATE";
+        updateRegion.addEventListener("click", () => {writeScoreboard()})
     }
 }
 
