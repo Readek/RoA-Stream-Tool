@@ -1,6 +1,5 @@
 import { Finder } from "./Finder.mjs";
-import { getJson, getPresetList } from '../File System.mjs';
-import { stPath } from "../Globals.mjs";
+import { getPresetList } from '../File System.mjs';
 
 
 class CommFinder extends Finder {

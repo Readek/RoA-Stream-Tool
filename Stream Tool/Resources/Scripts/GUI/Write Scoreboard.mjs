@@ -133,7 +133,7 @@ export async function writeScoreboard() {
         const ipc = await import("./IPC.mjs");
         ipc.updateGameData(JSON.stringify(scoreboardJson, null, 2));
         ipc.sendGameData();
-        ipc.sendRemoteData();
+        ipc.sendRemoteGameData();
 
         //simple .txt files
         saveSimpleTexts();
@@ -141,8 +141,9 @@ export async function writeScoreboard() {
     } else { // remote update stuff
 
         const remote = await import("./Remote Requests.mjs");
-        scoreboardJson.id = "RemoteUpdateGUI";
-        remote.sendRemoteData(JSON.stringify(scoreboardJson, null, 2));
+        scoreboardJson.id = "";
+        scoreboardJson.message = "RemoteUpdateGUI";
+        remote.sendRemoteData(scoreboardJson);
 
     }
 

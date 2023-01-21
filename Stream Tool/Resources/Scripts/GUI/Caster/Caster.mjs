@@ -111,7 +111,7 @@ export class Caster {
         };
 
         // use this object to create a json file
-        saveJson(`${stPath.text}/Commentator Info/${this.getName()}`, preset);
+        saveJson(`/Commentator Info/${this.getName()}`, preset);
 
         displayNotif("Commentator preset has been saved");
 

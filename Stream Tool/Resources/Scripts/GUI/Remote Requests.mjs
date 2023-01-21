@@ -1,3 +1,5 @@
+import { commFinder } from "./Finder/Comm Finder.mjs";
+import { playerFinder } from "./Finder/Player Finder.mjs";
 import { displayNotif } from "./Notifications.mjs";
 import { updateGUI } from "./Remote Update.mjs";
 import { writeScoreboard } from "./Write Scoreboard.mjs";
@@ -19,7 +21,7 @@ export function startWebsocket() {
 		}
 
         // request current data to the GUI
-        sendRemoteData(JSON.stringify({id: "RemoteRequestData"}));
+        sendRemoteData({message: "RemoteRequestData"});
 
 	}
 
@@ -42,13 +44,16 @@ export function startWebsocket() {
 }
 
 async function getData(data) {
-    if (data.gamemode) { // demand a GUI update
+    if (data.gamemode) { // if this is a GUI update
         await updateGUI(data);
         updateButtText.innerHTML = "UPDATE";
         updateRegion.addEventListener("click", () => {writeScoreboard()})
+    } else if (data.message == "updatePresets") {
+        playerFinder.setPlayerPresets();
+        commFinder.setCasterPresets();
     }
 }
 
 export function sendRemoteData(data) {
-    webSocket.send(data);
+    webSocket.send(JSON.stringify(data, null, 2));
 }

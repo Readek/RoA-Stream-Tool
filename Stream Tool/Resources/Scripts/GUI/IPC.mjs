@@ -1,3 +1,7 @@
+import { saveJson } from './File System.mjs';
+import { commFinder } from './Finder/Comm Finder.mjs';
+import { playerFinder } from './Finder/Player Finder.mjs';
+import { stPath } from './Globals.mjs';
 import { updateGUI } from './Remote Update.mjs';
 import { writeScoreboard } from './Write Scoreboard.mjs';
 
@@ -41,9 +45,12 @@ export function updateBracketData(data) {
     bracketData = data;
 }
 
-/** Sends current data to remote GUIs */
-export function sendRemoteData() {
+/** Sends current game data to remote GUIs */
+export function sendRemoteGameData() {
     ipc.send("sendData", JSON.stringify(remoteID(gameData), null, 2));
+}
+/** Sends current bracket data to remote GUIs */
+export function sendRemoteBracketData() {
     ipc.send("sendData", JSON.stringify(remoteID(bracketData), null, 2));
 }
 /**
@@ -71,11 +78,33 @@ ipc.on('remoteGuiData', async (event, data) => {
 
     const jsonData = JSON.parse(data);
     
-    if (jsonData.id == "RemoteUpdateGUI") {
+    if (jsonData.message == "RemoteUpdateGUI") {
+        // when we get data from remote GUIs
         await updateGUI(jsonData);
         writeScoreboard();
-    } else if (jsonData.id == "RemoteRequestData") {
-        sendRemoteData();
+    } else if (jsonData.message == "RemoteRequestData") {
+        // when remote GUIs request data
+        sendRemoteGameData();
+        sendRemoteBracketData();
+    } else if (jsonData.message == "RemoteSaveJson") {
+
+        // when remote GUIs request a file save
+        const filePath = jsonData.path;
+        delete jsonData.path;
+        delete jsonData.message;
+
+        // save locally
+        saveJson(filePath, jsonData);
+
+        // update current presets
+        await playerFinder.setPlayerPresets();
+        await commFinder.setCasterPresets();
+        
     }
 
 });
+
+/** Sends a signal to remote GUIs so their update their preset lists */
+export function updateRemotePresets() {
+    ipc.send("sendData", JSON.stringify({id: "remoteGUI", message: "updatePresets"}, null, 2));
+}

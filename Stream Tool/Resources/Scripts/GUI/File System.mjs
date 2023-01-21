@@ -27,7 +27,7 @@ export async function getJson(jPath) {
 
         // the browser version
         try {
-            return await (await fetch(jPath + ".json")).json();
+            return await (await fetch(jPath + ".json", {cache: "no-store"})).json();
         } catch (e) {
             return null;
         }
@@ -80,7 +80,7 @@ export async function getCharacterList() {
         characterList.push("Random");
 
         // save the data for the remote gui
-        saveJson(`${stPath.text}/Character List`, characterList);
+        saveJson(`/Character List`, characterList);
 
         return characterList;
 
@@ -112,7 +112,7 @@ export async function getPresetList(folderName) {
         }
 
         // save for remote gui
-        saveJson(`${stPath.text}/${folderName}`, jsonList);
+        saveJson(`/${folderName}`, jsonList);
 
         return jsonList;
 
@@ -129,9 +129,25 @@ export async function getPresetList(folderName) {
  * @param {String} path - Path where the file will be saved
  * @param {Object} data - Data to be saved
  */
-export function saveJson(path, data) {
-    const fs = require('fs');
-    fs.writeFileSync(`${path}.json`, JSON.stringify(data, null, 2));
+export async function saveJson(path, data) {
+
+    if (inside.electron) {
+
+        // save the file
+        const fs = require('fs');
+        fs.writeFileSync(`${stPath.text}${path}.json`, JSON.stringify(data, null, 2));
+        
+        // send signal to update remote GUIs
+        const ipc = await import("./IPC.mjs");
+        ipc.updateRemotePresets();
+
+    } else {
+        const remote = await import("./Remote Requests.mjs");
+        data.message = "RemoteSaveJson";
+        data.path = path;
+        remote.sendRemoteData(data);
+    }
+    
 }
 
 /** Saves simple text files to a folder, to be read by other programs */

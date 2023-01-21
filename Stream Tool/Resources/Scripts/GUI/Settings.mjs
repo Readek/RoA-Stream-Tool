@@ -98,7 +98,7 @@ class GuiSettings {
         guiSettings[name] = value;
 
         // save the file
-        saveJson(`${stPath.text}/GUI Settings`, guiSettings);
+        saveJson(`/GUI Settings`, guiSettings);
 
     }
 

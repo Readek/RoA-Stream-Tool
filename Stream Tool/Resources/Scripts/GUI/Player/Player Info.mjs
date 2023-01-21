@@ -143,7 +143,7 @@ class PlayerInfo {
     
         }
     
-        saveJson(`${stPath.text}/Player Info/${this.#nameInp.value}`, preset);
+        saveJson(`/Player Info/${this.#nameInp.value}`, preset);
     
         displayNotif("Player preset has been saved");
 
