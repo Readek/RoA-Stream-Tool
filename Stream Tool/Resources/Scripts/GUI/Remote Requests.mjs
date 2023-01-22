@@ -2,6 +2,7 @@ import { commFinder } from "./Finder/Comm Finder.mjs";
 import { playerFinder } from "./Finder/Player Finder.mjs";
 import { displayNotif } from "./Notifications.mjs";
 import { updateGUI } from "./Remote Update.mjs";
+import { settings } from "./Settings.mjs";
 import { changeUpdateText, writeScoreboard } from "./Write Scoreboard.mjs";
 
 let webSocket;
@@ -44,6 +45,7 @@ export function startWebsocket() {
 }
 
 async function getData(data) {
+    console.log(data);
     if (data.gamemode) { // if this is a GUI update
         await updateGUI(data);
         changeUpdateText("UPDATE");
@@ -51,6 +53,8 @@ async function getData(data) {
     } else if (data.message == "updatePresets") {
         playerFinder.setPlayerPresets();
         commFinder.setCasterPresets();
+    } else if (data.message == "toggleWs") {
+        settings.toggleWs();
     }
 }
 

@@ -2,6 +2,7 @@ import { saveJson } from './File System.mjs';
 import { commFinder } from './Finder/Comm Finder.mjs';
 import { playerFinder } from './Finder/Player Finder.mjs';
 import { updateGUI } from './Remote Update.mjs';
+import { settings } from './Settings.mjs';
 import { writeScoreboard } from './Write Scoreboard.mjs';
 
 const ipc = require('electron').ipcRenderer;
@@ -99,6 +100,11 @@ ipc.on('remoteGuiData', async (event, data) => {
         await playerFinder.setPlayerPresets();
         await commFinder.setCasterPresets();
         
+    } else if (jsonData.message == "toggleWs") {
+        // when a remote GUI clicks on the workshop toggle
+        settings.setWs(jsonData.value);
+        await settings.toggleWs();
+        ipc.send("sendData", JSON.stringify({id: "remoteGUI", message: "toggleWs"}, null, 2));
     }
 
 });

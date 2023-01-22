@@ -34,7 +34,13 @@ class GuiSettings {
         this.#noLoACheck.addEventListener("click", () => {this.toggleNoLoA()});
 
         // gui settings listeners
-        this.#wsCheck.addEventListener("click", () => {this.toggleWs()});
+        this.#wsCheck.addEventListener("click", () => {
+            if (inside.electron) {
+                this.toggleWs();
+            } else {
+                this.sendWsToggle();
+            }            
+        });
         this.#forceWLCheck.addEventListener("click", () => {this.toggleForceWL()});
         this.#scoreAutoCheck.addEventListener("click", () => {
             this.save("scoreAutoUpdate", this.isScoreAutoChecked())
@@ -91,14 +97,16 @@ class GuiSettings {
      */
     async save(name, value) {
     
-        // read the file
-        const guiSettings = await getJson(`${stPath.text}/GUI Settings`);
+        if (inside.electron) {
+            // read the file
+            const guiSettings = await getJson(`${stPath.text}/GUI Settings`);
 
-        // update the setting's value
-        guiSettings[name] = value;
+            // update the setting's value
+            guiSettings[name] = value;
 
-        // save the file
-        saveJson(`/GUI Settings`, guiSettings);
+            // save the file
+            saveJson(`/GUI Settings`, guiSettings);
+        }
 
     }
 
@@ -182,16 +190,16 @@ class GuiSettings {
     isWsChecked() {
         return this.#wsCheck.checked;
     }
-    toggleWs() {
+    async toggleWs() {
 
         // set a new character path
         stPath.char = this.isWsChecked() ? stPath.charWork : stPath.charBase;
 
         // reload character lists
-        charFinder.loadCharacters();
+        await charFinder.loadCharacters();
         // clear current character lists
         for (let i = 0; i < players.length; i++) {
-            players[i].charChange("Random");
+            await players[i].charChange("Random");
         }
 
         // disable or enable alt arts checkbox
@@ -204,6 +212,11 @@ class GuiSettings {
         // save current checkbox value to the settings file
         this.save("workshop", this.isWsChecked());
 
+    }
+    /** Will send a signal to the GUI to toggle current WS values */
+    async sendWsToggle() {
+        const remote = await import("./Remote Requests.mjs");
+        remote.sendRemoteData({message: "toggleWs", value: this.isWsChecked()});
     }
 
     setForceWL(value) {
