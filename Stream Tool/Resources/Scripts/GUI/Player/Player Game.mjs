@@ -89,9 +89,6 @@ export class PlayerGame extends Player {
         promises.push(this.setScImg());
         promises.push(this.setVsBg());
 
-        // set up a trail for the vs screen
-        promises.push(this.setTrailImage());
-
         // store color code for remote gui shenanigans
         this.skinHex = skin.hex;
 
@@ -100,6 +97,8 @@ export class PlayerGame extends Player {
 
         // this depends on sc image
         await this.setVsImg();
+        // set up a trail for the vs screen
+        await this.setTrailImage();
 
         // change the background character image (if first 2 players)
         if (this.pNum-1 < 2) {
@@ -116,22 +115,36 @@ export class PlayerGame extends Player {
 
     /** Sets the Scoreboard image depening on recolors */
     async setScImg() {
+
         const promises = [];
+
+        // determine which folder is going to be used
+        let folder;
+        if (settings.isAltArtChecked() && this.charInfo.scoreboard.alt) {
+            folder = "AltArt";
+        } else {
+            folder = "Skins";
+        }
+
+        // get us a valid image
         promises.push(getRecolorImage(
             this.char,
             this.skin,
             this.charInfo.ogColor,
             this.charInfo.colorRange,
-            "Skins",
+            folder,
             this.randomImg
         ));
         promises.push(this.getBrowserSrc(
-            this.char, this.skin, "Skins", this.randomImg
+            this.char, this.skin, folder, this.randomImg
         ));
+
+        // when those finish loading, set the image values
         await Promise.all(promises).then( (value) => {
             this.scSrc = value[0];
             this.scBrowserSrc = value[1];
         });
+
     }
 
     /** Sets the VS Screen image depending on recolors and settings */
@@ -147,9 +160,32 @@ export class PlayerGame extends Player {
                 this.vsBrowserSrc = value[1];
             })
         } else { // if no HD, just use the scoreboard image
-            this.vsSrc = this.scSrc;
-            this.vsBrowserSrc = this.scBrowserSrc;
-            this.vsSkin = this.skin;
+            if (settings.isAltArtChecked() && this.charInfo.scoreboard.alt) {
+                // if the character is using alt art, we need to generate a new image
+                const promises = [];
+                promises.push(getRecolorImage(
+                    this.char,
+                    this.skin,
+                    this.charInfo.ogColor,
+                    this.charInfo.colorRange,
+                    "Skins",
+                    this.randomImg
+                ));
+                promises.push(this.getBrowserSrc(
+                    this.char, this.skin, "Skins", this.randomImg
+                ));
+
+                // when those finish loading, set the image values
+                await Promise.all(promises).then( (value) => {
+                    this.vsSrc = value[0];
+                    this.vsBrowserSrc = value[1];
+                });
+            } else {
+                // by default, use the scoreboard image
+                this.vsSrc = this.scSrc;
+                this.vsBrowserSrc = this.scBrowserSrc;
+            }
+            this.vsSkin = this.skin;            
         }
     }
 
@@ -198,7 +234,7 @@ export class PlayerGame extends Player {
     getScCharPos() {
         const scCharPos = [];
         const charPos = this.charInfo;
-        if (charPos.scoreboard) {
+        if (charPos.scoreboard.neutral) {
             if (charPos.scoreboard[this.skin.name]) {
                 // if the skin has a specific position
                 scCharPos[0] = charPos.scoreboard[this.skin.name].x;

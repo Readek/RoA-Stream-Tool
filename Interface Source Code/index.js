@@ -39,7 +39,7 @@ try {
 
 // start an http server on boot for remote update
 http.createServer((request, response) => {
-    if (request.method === "GET") {
+    if (request.method === "GET") { // TODO HEAD
         let fname;
         if (request.url == "/") { // main remote update page
             fname = resourcesPath + "/GUI.html";

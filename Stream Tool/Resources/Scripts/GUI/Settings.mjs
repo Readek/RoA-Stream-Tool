@@ -123,12 +123,18 @@ class GuiSettings {
     isAltArtChecked() {
         return this.#altArtCheck.checked;
     }
-    toggleAltArt() {
+    async toggleAltArt() {
 
-        // TODO
+        // to update character images
+        const promises = [];
+        for (let i = 0; i < players.length; i++) {
+            promises.push(players[i].setScImg());
+        }
 
         // save current checkbox value to the settings file
         this.save("forceAlt", this.isAltArtChecked());
+
+        await Promise.all(promises);
 
     }
 

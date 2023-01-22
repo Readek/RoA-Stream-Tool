@@ -45,7 +45,6 @@ export function startWebsocket() {
 }
 
 async function getData(data) {
-    console.log(data);
     if (data.gamemode) { // if this is a GUI update
         await updateGUI(data);
         changeUpdateText("UPDATE");

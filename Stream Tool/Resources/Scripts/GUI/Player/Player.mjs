@@ -87,7 +87,8 @@ export class Player {
         if (this.charInfo === null) {
             this.charInfo = {
                 skinList : [{name: "Default"}],
-                gui : []
+                gui : [],
+                scoreboard : [],
             }
         }
 

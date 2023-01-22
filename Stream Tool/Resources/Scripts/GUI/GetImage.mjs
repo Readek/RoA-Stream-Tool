@@ -32,9 +32,16 @@ export async function getRecolorImage(char, skin, colIn, colRan, imgType, failPa
     } else if (await fileExists(`${stPath.char}/${char}/${imgType}/Default.png`)) {
 
         if (skin.hex) {
+            // if the skin wants to force a recolor, check if the file exists first
+            let charImgPath;
+            if (skin.force && await fileExists(`${stPath.char}/${char}/${imgType}/${skin.name}.png`)) {
+                charImgPath = `${stPath.char}/${char}/${imgType}/${skin.name}.png`;
+            } else {
+                charImgPath = `${stPath.char}/${char}/${imgType}/Default.png`;
+            }
             return await getRoARecolor(
                 char,
-                `${stPath.char}/${char}/${imgType}/Default.png`,
+                charImgPath,
                 colIn,
                 colRan,
                 skin
