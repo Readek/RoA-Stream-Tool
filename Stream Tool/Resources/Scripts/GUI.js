@@ -70,8 +70,8 @@ async function init() {
 
     // start up those team classes
     teams.push(
-        new Team(document.getElementsByClassName("side")[0]),
-        new Team(document.getElementsByClassName("side")[1]),
+        new Team(document.getElementsByClassName("side")[0], 1),
+        new Team(document.getElementsByClassName("side")[1], 2),
     );
 
 

@@ -28,11 +28,15 @@ updateDiv.addEventListener("click", () => {
 export function readyToUpdate(state) {
     if (state) {
         if (playersReady()) {
-            updateText.innerHTML = "UPDATE";
+            changeUpdateText("UPDATE");
         }
     } else {
-        updateText.innerHTML = "LOADING CHARACTERS...";
+        changeUpdateText("LOADING CHARACTERS...");
     }
+}
+
+export function changeUpdateText(text) {
+    updateText.innerHTML = text;
 }
 
 /** Generates an object with game data, then sends it */
@@ -40,7 +44,7 @@ export async function writeScoreboard() {
 
     // if this is a remote browser, display some visual feedback
     if (!inside.electron) {
-        updateText.innerHTML = "SENDING DATA...";
+        changeUpdateText("SENDING DATA...");
         updateRegion.removeEventListener("click", () => {writeScoreboard()});
     }
 

@@ -75,17 +75,18 @@ export async function updateGUI(data) {
 
     // stuff for each side
     for (let i = 0; i < 2; i++) {
-        scores[i].setScore(data.score[i]);
-        teams[i].setName(data.teamName[i]);
         if (currentColors[i].name != data.color[i].name) {
             await updateColor(i, data.color[i]);
         }
+        scores[i].setScore(data.score[i]);
+        teams[i].setName(data.teamName[i]);
     }
 
     // round info
+    round.setText(data.round);
+    round.checkGrands();
     wl.setLeft(data.wl[0]);
     wl.setRight(data.wl[1]);
-    round.setText(data.round);
     tournament.setText(data.tournamentName);
 
     // and finally, casters

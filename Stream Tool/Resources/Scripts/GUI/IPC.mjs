@@ -1,7 +1,6 @@
 import { saveJson } from './File System.mjs';
 import { commFinder } from './Finder/Comm Finder.mjs';
 import { playerFinder } from './Finder/Player Finder.mjs';
-import { stPath } from './Globals.mjs';
 import { updateGUI } from './Remote Update.mjs';
 import { writeScoreboard } from './Write Scoreboard.mjs';
 

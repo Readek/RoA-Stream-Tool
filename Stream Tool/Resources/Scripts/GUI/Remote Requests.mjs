@@ -2,7 +2,7 @@ import { commFinder } from "./Finder/Comm Finder.mjs";
 import { playerFinder } from "./Finder/Player Finder.mjs";
 import { displayNotif } from "./Notifications.mjs";
 import { updateGUI } from "./Remote Update.mjs";
-import { writeScoreboard } from "./Write Scoreboard.mjs";
+import { changeUpdateText, writeScoreboard } from "./Write Scoreboard.mjs";
 
 let webSocket;
 const updateButtText = document.getElementsByClassName("botText")[0];
@@ -10,7 +10,7 @@ const updateRegion = document.getElementById('updateRegion');
 
 export function startWebsocket() {
     
-    updateButtText.textContent = "RECONNECTING";
+    changeUpdateText("RECONNECTING");
 	// we need to connect to the websocket server
 	webSocket = new WebSocket("ws://"+window.location.hostname+":8080?id=remoteGUI");
 	webSocket.onopen = () => { // if it connects successfully
@@ -28,7 +28,7 @@ export function startWebsocket() {
 	// if the GUI closes, wait for it to reopen
 	webSocket.onclose = () => {
         displayNotif("Connection error, please reconnect.")
-        updateButtText.textContent = "RECONNECT";
+        changeUpdateText("RECONNECT");
         updateRegion.removeEventListener("click", () => {writeScoreboard()})
         updateRegion.addEventListener("click", () => {startWebsocket()})
         
@@ -46,7 +46,7 @@ export function startWebsocket() {
 async function getData(data) {
     if (data.gamemode) { // if this is a GUI update
         await updateGUI(data);
-        updateButtText.innerHTML = "UPDATE";
+        changeUpdateText("UPDATE");
         updateRegion.addEventListener("click", () => {writeScoreboard()})
     } else if (data.message == "updatePresets") {
         playerFinder.setPlayerPresets();

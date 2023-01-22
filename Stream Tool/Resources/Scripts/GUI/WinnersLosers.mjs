@@ -12,10 +12,10 @@ class WinnersLosers {
     constructor() {
 
         // set click listeners for the [W] and [L] buttons
-        this.leftW.addEventListener("click", (e) => {this.setLeft(e.target)});
-        this.leftL.addEventListener("click", (e) => {this.setLeft(e.target)});
-        this.rightW.addEventListener("click", (e) => {this.setRight(e.target)});
-        this.rightL.addEventListener("click", (e) => {this.setRight(e.target)});
+        this.leftW.addEventListener("click", (e) => {this.setLeft("W")});
+        this.leftL.addEventListener("click", (e) => {this.setLeft("L")});
+        this.rightW.addEventListener("click", (e) => {this.setRight("W")});
+        this.rightL.addEventListener("click", (e) => {this.setRight("L")});
 
     }
 
@@ -25,25 +25,23 @@ class WinnersLosers {
     getLeft() {
         return this.#currentLeft;
     }
-    setLeft(el) {
-        if (el == this.leftW) {
-            this.#currentLeft = "W";
-            this.#styleButtons(el, this.leftL);
-        } else if (el == this.leftW) {
-            this.#currentLeft = "L";
-            this.#styleButtons(el, this.leftW);
+    setLeft(value) {
+        this.#currentLeft = value;
+        if (value == "W") {
+            this.#styleButtons(this.leftW, this.leftL);
+        } else if (value == "L") {
+            this.#styleButtons(this.leftL, this.leftW);
         }
     }
     getRight() {
         return this.#currentRight;
     }
-    setRight(el) {
-        if (el == this.rightW) {
-            this.#currentRight = "W";
-            this.#styleButtons(el, this.rightL);
-        } else if (el == this.rightW) {
-            this.#currentRight = "L";
-            this.#styleButtons(el, this.rightW);
+    setRight(value) {
+        this.#currentRight = value;
+        if (value == "W") {
+            this.#styleButtons(this.rightW, this.rightL);
+        } else if (value == "L") {
+            this.#styleButtons(this.rightL, this.rightW);
         }
     }
 
