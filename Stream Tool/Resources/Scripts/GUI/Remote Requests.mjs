@@ -1,3 +1,4 @@
+import { replaceBracket } from "./Bracket.mjs";
 import { commFinder } from "./Finder/Comm Finder.mjs";
 import { playerFinder } from "./Finder/Player Finder.mjs";
 import { displayNotif } from "./Notifications.mjs";
@@ -45,16 +46,28 @@ export function startWebsocket() {
 }
 
 async function getData(data) {
+
     if (data.gamemode) { // if this is a GUI update
+        
         await updateGUI(data);
         changeUpdateText("UPDATE");
         updateRegion.addEventListener("click", () => {writeScoreboard()})
+
     } else if (data.message == "updatePresets") {
+
         playerFinder.setPlayerPresets();
         commFinder.setCasterPresets();
+
     } else if (data.message == "toggleWs") {
+
         settings.toggleWs();
+
+    } else if (data.GrandFinals) { // if this is bracket data
+
+        replaceBracket(data);
+
     }
+
 }
 
 export function sendRemoteData(data) {

@@ -1,3 +1,4 @@
+import { replaceBracket, updateBracket } from './Bracket.mjs';
 import { saveJson } from './File System.mjs';
 import { commFinder } from './Finder/Comm Finder.mjs';
 import { playerFinder } from './Finder/Player Finder.mjs';
@@ -79,13 +80,17 @@ ipc.on('remoteGuiData', async (event, data) => {
     const jsonData = JSON.parse(data);
     
     if (jsonData.message == "RemoteUpdateGUI") {
+
         // when we get data from remote GUIs
         await updateGUI(jsonData);
         writeScoreboard();
+
     } else if (jsonData.message == "RemoteRequestData") {
+
         // when remote GUIs request data
         sendRemoteGameData();
         sendRemoteBracketData();
+        
     } else if (jsonData.message == "RemoteSaveJson") {
 
         // when remote GUIs request a file save
@@ -101,10 +106,18 @@ ipc.on('remoteGuiData', async (event, data) => {
         await commFinder.setCasterPresets();
         
     } else if (jsonData.message == "toggleWs") {
+
         // when a remote GUI clicks on the workshop toggle
         settings.setWs(jsonData.value);
         await settings.toggleWs();
         ipc.send("sendData", JSON.stringify({id: "remoteGUI", message: "toggleWs"}, null, 2));
+    
+    } else if (jsonData.message == "remoteBracket") {
+
+        // yep you guessed it
+        await replaceBracket(jsonData);
+        updateBracket(true);
+
     }
 
 });

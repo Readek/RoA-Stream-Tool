@@ -5,14 +5,6 @@ import { displayNotif } from './Notifications.mjs';
 import { scores } from './Score/Scores.mjs';
 import { inside } from './Globals.mjs';
 
-// only electron can call ipc
-let ipc;
-if (inside.electron) {
-    ipc = await import("./IPC.mjs");
-} else {
-    
-}
-
 const bRoundSelect = document.getElementById('bracketRoundSelect');
 const bEncountersDiv = document.getElementById('bracketEncounters');
 
@@ -33,8 +25,7 @@ let bracketData = {
     "LosersTop8" : [blankPlayerData, blankPlayerData, blankPlayerData, blankPlayerData],
     "LosersQuarters" : [blankPlayerData, blankPlayerData, blankPlayerData, blankPlayerData],
     "LosersSemis" : [blankPlayerData, blankPlayerData],
-    "LosersFinals" : [blankPlayerData, blankPlayerData],
-    id : "bracket"
+    "LosersFinals" : [blankPlayerData, blankPlayerData]
 }
 
 let previousRound;
@@ -42,25 +33,28 @@ let previousRound;
 
 // its always good to listen closely
 document.getElementById('botBarBracket').addEventListener("click", () => {viewport.toBracket()});
-bRoundSelect.addEventListener("change", createEncounters);
+bRoundSelect.addEventListener("change", () => {createEncounters()});
 document.getElementById('bracketGoBack').addEventListener("click", () => {viewport.toCenter()});
-document.getElementById('bracketUpdate').addEventListener("click", updateBracket);
+document.getElementById('bracketUpdate').addEventListener("click", () => {updateBracket()});
 // force change event for initial creation of encounters
 bRoundSelect.dispatchEvent(new Event('change'));
 
 
-/** Creates encounter divs for the bracket section when changing round */
-async function createEncounters() {
+/**
+ * Creates encounter divs for the bracket section when changing round
+ * @param {Boolean} - If we're on the same round as before
+ */
+async function createEncounters(sameRound) {
 
     // first of all, save current contents to object
-    if (bracketPlayers[0]) { // not on the first run
+    if (!sameRound && bracketPlayers[0]) { // not same as previous round and not first run
         updateLocalBracket(true);
     }
 
     bEncountersDiv.innerHTML = "";
     bracketPlayers.length = 0;
     
-    for (let i = 0; i < bracketData[this.value].length; i++) {
+    for (let i = 0; i < bracketData[bRoundSelect.value].length; i++) {
 
         bracketPlayers.push(new PlayerBracket(i));
         
@@ -101,11 +95,11 @@ async function createEncounters() {
         newEnc.appendChild(scoreInp);
 
         // set the current bracket data
-        bracketPlayers[i].setName(bracketData[this.value][i].name);
-        bracketPlayers[i].setTag(bracketData[this.value][i].tag);
-        bracketPlayers[i].setScore(bracketData[this.value][i].score);
-        await bracketPlayers[i].charChange(bracketData[this.value][i].character);
-        bracketPlayers[i].skinChange(bracketData[this.value][i].skin);
+        bracketPlayers[i].setName(bracketData[bRoundSelect.value][i].name);
+        bracketPlayers[i].setTag(bracketData[bRoundSelect.value][i].tag);
+        bracketPlayers[i].setScore(bracketData[bRoundSelect.value][i].score);
+        await bracketPlayers[i].charChange(bracketData[bRoundSelect.value][i].character);
+        bracketPlayers[i].skinChange(bracketData[bRoundSelect.value][i].skin);
         bracketPlayers[i].setFinderListeners();
 
         if (i%2 == 0) {
@@ -164,16 +158,35 @@ async function copyFromGameToBracket() {
  * Updates the bracket with current data, then sends it
  * @param {Boolean} startup - Won't show a "bracket updated" notification if true
  */
-export function updateBracket(startup) {
+export async function updateBracket(startup) {
     
     // save the current info
     updateLocalBracket();
 
     // time to send it away
     if (inside.electron) {
+
+        // clear possibly remote data
+        bracketData.id = "bracket";
+        bracketData.message = "";
+
+        // update data and send it
+        const ipc = await import("./IPC.mjs");
         ipc.updateBracketData(JSON.stringify(bracketData, null, 2));
         ipc.sendBracketData();
+        ipc.sendRemoteBracketData();
         if (!startup) displayNotif("Bracket has been updated");
+
+    } else {
+
+        // add remote data
+        bracketData.id = "";
+        bracketData.message = "remoteBracket";
+
+        // annnnd send it
+        const remote = await import("./Remote Requests.mjs");
+        remote.sendRemoteData(bracketData);
+
     }
 
 }
@@ -206,7 +219,12 @@ function updateLocalBracket(previous) {
  * Replaces current bracket object with the one recieved remotely
  * @param {Object} newBracket - Data to replace current bracket
 */
-function replaceBracket(newBracket) {
+export async function replaceBracket(newBracket) {
+
     bracketData = newBracket;
+
+    await createEncounters(true);
+
     displayNotif("Bracket was remotely updated");
+
 }
