@@ -50,7 +50,7 @@ export async function fileExists(filePath) {
         
     } else {
 
-        return (await fetch(filePath)).ok;
+        return (await fetch(filePath, {method: "HEAD"})).ok;
     
     }
 

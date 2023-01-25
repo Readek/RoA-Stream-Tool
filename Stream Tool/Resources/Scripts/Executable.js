@@ -46,7 +46,7 @@ module.exports = function initExec(rPath, nPath, wSocket) {
 function initHttpServer() {
     // start an http server on boot for remote update
     http.createServer((request, response) => {
-        if (request.method === "GET") { // TODO HEAD
+        if (request.method === "GET" || request.method === "HEAD") {
             let fname;
             if (request.url == "/") { // main remote update page
                 fname = resourcesPath + "/GUI.html";
@@ -55,24 +55,32 @@ function initHttpServer() {
             }
             try {
                 fname = fname.replaceAll("%20", " ");
-                fs.readFile(fname, (err, data) => {
-                    if (err) {
-                        response.writeHead(404);
-                        response.end();
-                    } else {
-                        if (fname.endsWith(".html")) {
-                            response.writeHead(200, {'Content-Type': 'text/html'});
-                        } else if (fname.endsWith(".js") || fname.endsWith(".mjs")) {
-                            response.writeHead(200, {'Content-Type': 'text/javascript'});
-                        } else if (fname.endsWith(".css")) {
-                            response.writeHead(200, {'Content-Type': 'text/css'});
+                if (request.method === "GET") {
+                    fs.readFile(fname, (err, data) => {
+                        if (err) {
+                            response.writeHead(404);
                         } else {
-                            response.writeHead(200, {'Content-Type': 'text'});
+                            if (fname.endsWith(".html")) {
+                                response.writeHead(200, {'Content-Type': 'text/html'});
+                            } else if (fname.endsWith(".js") || fname.endsWith(".mjs")) {
+                                response.writeHead(200, {'Content-Type': 'text/javascript'});
+                            } else if (fname.endsWith(".css")) {
+                                response.writeHead(200, {'Content-Type': 'text/css'});
+                            } else {
+                                response.writeHead(200, {'Content-Type': 'text'});
+                            }
+                            response.write(data);
                         }
-                        response.write(data);
                         response.end();
+                    });
+                } else if (request.method === "HEAD") {
+                    if (fs.existsSync(fname)) {
+                        response.writeHead(200);
+                    } else {
+                        response.writeHead(404);
                     }
-                });
+                    response.end();
+                }
             } catch (e) {
                 response.writeHead(404);
                 response.end();
@@ -165,8 +173,9 @@ function createWindow() {
 
     // when the GUI is ready to send data to browsers
     ipcMain.on('sendData', (event, data) => {
-        sockets.forEach(socket => { // TODO optimize this
-            if (JSON.parse(data).id == socket.id) {
+        const jsonData = JSON.parse(data);
+        sockets.forEach(socket => {
+            if (jsonData.id == socket.id) {
                 socket.ws.send(data)
             }
         })
