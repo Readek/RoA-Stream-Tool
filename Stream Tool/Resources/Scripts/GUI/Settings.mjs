@@ -150,7 +150,7 @@ class GuiSettings {
         this.#noLoACheck.disabled = !this.isHDChecked();
         if (this.#noLoACheck.disabled) {
             this.#noLoACheck.checked = false;
-            this.save("noLoAHD", false);
+            await this.save("noLoAHD", false);
         }
 
         // to update character images
@@ -162,7 +162,7 @@ class GuiSettings {
         }
 
         // save current checkbox value to the settings file
-        this.save("forceHD", this.isHDChecked());
+        await this.save("forceHD", this.isHDChecked());
 
         await Promise.all(promises);
 
@@ -212,11 +212,11 @@ class GuiSettings {
         this.#altArtCheck.disabled = !this.isWsChecked();
         if (this.#altArtCheck.disabled) {
             this.#altArtCheck.checked = false;
-            this.save("forceAlt", false);
+            await this.save("forceAlt", false);
         }
 
         // save current checkbox value to the settings file
-        this.save("workshop", this.isWsChecked());
+        await this.save("workshop", this.isWsChecked());
 
     }
     /** Will send a signal to the GUI to toggle current WS values */

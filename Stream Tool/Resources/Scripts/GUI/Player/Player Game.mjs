@@ -130,8 +130,8 @@ export class PlayerGame extends Player {
         promises.push(getRecolorImage(
             this.char,
             this.skin,
-            this.charInfo.ogColor,
-            this.charInfo.colorRange,
+            this.charInfo.colorData.Default.ogColor,
+            this.charInfo.colorData.Default.colorRange,
             folder,
             this.randomImg
         ));
@@ -166,8 +166,8 @@ export class PlayerGame extends Player {
                 promises.push(getRecolorImage(
                     this.char,
                     this.skin,
-                    this.charInfo.ogColor,
-                    this.charInfo.colorRange,
+                    this.charInfo.colorData.Default.ogColor,
+                    this.charInfo.colorData.Default.colorRange,
                     "Skins",
                     this.randomImg
                 ));

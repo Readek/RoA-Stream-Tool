@@ -39,8 +39,8 @@ class CharFinder extends FinderSelect {
             let skin = { name: "Default" }, ogColor, colorRange;
             if (charInfo) {
                 skin = charInfo.skinList[0];
-                ogColor = charInfo.ogColor;
-                colorRange = charInfo.colorRange;
+                ogColor = charInfo.colorData.Default.ogColor;
+                colorRange = charInfo.colorData.Default.colorRange;
             }
             // this will get us the true default icon for any character
             getRecolorImage(

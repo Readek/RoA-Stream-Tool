@@ -87,6 +87,7 @@ export class Player {
         if (this.charInfo === null) {
             this.charInfo = {
                 skinList : [{name: "Default"}],
+                colorData : {Default : {}},
                 gui : [],
                 scoreboard : [],
             }
@@ -120,8 +121,8 @@ export class Player {
         promises.push(getRecolorImage(
             this.char,
             this.skin,
-            this.charInfo.ogColor,
-            this.charInfo.colorRange,
+            this.charInfo.colorData.Default.ogColor,
+            this.charInfo.colorData.Default.colorRange,
             "Icons",
             "Icon"
         ));
@@ -200,8 +201,8 @@ export class Player {
                     finalImg.src = await getRecolorImage(
                         this.char,
                         this.charInfo.skinList[i],
-                        this.charInfo.ogColor,
-                        this.charInfo.colorRange,
+                        this.charInfo.colorData.Default.ogColor,
+                        this.charInfo.colorData.Default.colorRange,
                         "Skins",
                         "P2"
                     );
