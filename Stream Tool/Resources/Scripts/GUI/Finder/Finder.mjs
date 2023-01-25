@@ -45,9 +45,9 @@ export class Finder {
             this._finderEl.style.left = "100%";
         }
         // horizontal check
-        /* if (selectPos.right + finderPos.width > window.innerWidth) {
-            this._finderEl.style.left = `calc(100% + ${window.innerWidth + finderPos.right + 5}px)`;
-        } */
+        if (selectPos.left + finderPos.width > window.innerWidth) {
+            this._finderEl.style.left = `calc(${window.innerWidth - (selectPos.left + finderPos.width) - 5}px)`;
+        }
 
     }
 
