@@ -1,0 +1,24 @@
+<svg viewBox="0 0 32.0 32.0">
+  <g>
+    <path
+       style="fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1;stroke-dasharray:none"
+       d="m 16,4 v 8 h 8 v 8 h 4 v 8"
+       id="path440"
+       sodipodi:nodetypes="cccccc" />
+    <path
+       style="fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1;stroke-dasharray:none"
+       d="m 16,4 v 8 H 8 v 8 H 4 v 8"
+       id="path442"
+       sodipodi:nodetypes="cccccc" />
+    <path
+       style="fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1;stroke-dasharray:none"
+       d="m 16,4 v 8 H 8 v 8 h 4 v 8"
+       id="path444"
+       sodipodi:nodetypes="cccccc" />
+    <path
+       style="fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1;stroke-dasharray:none"
+       d="m 16,4 v 8 h 8 v 8 h -4 v 8"
+       id="path446"
+       sodipodi:nodetypes="cccccc" />
+  </g>
+</svg>
