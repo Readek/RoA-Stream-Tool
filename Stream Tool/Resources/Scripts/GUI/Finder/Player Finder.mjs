@@ -65,7 +65,12 @@ class PlayerFinder extends Finder {
             let skin;
             if (skinImgs[i].charJson) {
                 if (skinImgs[i].skin == "Custom") {
-                    skin = {name: "Custom", hex: skinImgs[i].hex}
+                    skin = {
+                        name: "Custom",
+                        hex: skinImgs[i].hex,
+                        customImg: skinImgs[i].customImg,
+                        force: true
+                    }
                 } else {
                     for (let j = 0; j < skinImgs[i].charJson.skinList.length; j++) {
                         if (skinImgs[i].charJson.skinList[j].name == skinImgs[i].skin) {
@@ -163,10 +168,11 @@ class PlayerFinder extends Finder {
                         charJson : charJson,
                         char : preset.characters[i].character,
                         skin : preset.characters[i].skin,
-                        hex : preset.characters[i].hex
+                        hex : preset.characters[i].hex,
+                        customImg : preset.characters[i].customImg,
                     });
                     // we have to position it
-                    this.positionCharImg(preset.characters[i].skin, charImg, charJson);
+                    this.positionCharImg(pData.customImg || preset.characters[i].skin, charImg, charJson);
                     // and add it to the mask
                     charImgBox.appendChild(charImg);
 

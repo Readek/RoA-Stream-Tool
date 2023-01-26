@@ -227,7 +227,7 @@ export class PlayerGame extends Player {
     /** Generates a new trail image for this player */
     async setTrailImage() {
         const color = currentColors[(this.pNum-1)%2].hex.substring(1);
-        this.trailSrc = await getTrailImage(this.char, this.vsSkin.name, color);
+        this.trailSrc = await getTrailImage(this.char, this.skin.customImg || this.vsSkin.name, color);
     }
 
     /**

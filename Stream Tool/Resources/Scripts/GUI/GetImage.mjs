@@ -39,7 +39,7 @@ export async function getRecolorImage(char, skin, colorData, imgType, failPath) 
         } else {
             charImgPath = `${stPath.char}/${char}/${imgType}/Default.png`;
         }
-        const trueColorData = colorData[skin] || colorData.Default;
+        const trueColorData = colorData[skin.customImg] || colorData.Default;
         return await getRoARecolor(
             char,
             charImgPath,

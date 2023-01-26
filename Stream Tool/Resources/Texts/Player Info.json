@@ -106,37 +106,5 @@
         "skin": "Default"
       }
     ]
-  },
-  {
-    "name": "TorgaBalls",
-    "tag": "",
-    "pronouns": "",
-    "twitter": "readeku",
-    "twitch": "Readek",
-    "yt": "Readek",
-    "characters": [
-      {
-        "character": "Torga",
-        "skin": "Custom",
-        "hex": "EEEC-EB3E-845E-A6C8-E6CC-EDFF-DF9C-57E6-E6E6-5800",
-        "customImg": "Default"
-      }
-    ]
-  },
-  {
-    "name": "TorgaDeezNuts",
-    "tag": "",
-    "pronouns": "",
-    "twitter": "readeku",
-    "twitch": "Readek",
-    "yt": "Readek",
-    "characters": [
-      {
-        "character": "Torga",
-        "skin": "Custom",
-        "hex": "FFFF-FEFF-4704-D8D5-3DFF-FFFE-262A-2BFF-6D00-1A00",
-        "customImg": "Guile"
-      }
-    ]
   }
 ]

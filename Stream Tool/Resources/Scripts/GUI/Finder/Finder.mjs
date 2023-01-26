@@ -96,7 +96,6 @@ export class Finder {
      * @param {Object} pos - Character position data
      */
     positionCharImg(skin, charEL, pos) {
-
         //               x, y, scale
         const charPos = [0, 0, 1];
         //now, check if the character and skin exist in the database down there
