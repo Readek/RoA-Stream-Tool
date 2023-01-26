@@ -9,12 +9,14 @@
     {
       "character": "Maypul",
       "skin": "Custom",
-      "hex": "445C-46F5-F5F5-6E23-2342-1515-345B-3065"
+      "hex": "445C-46F5-F5F5-6E23-2342-1515-345B-3065",
+      "customImg": "Default"
     },
     {
       "character": "Ori and Sein",
       "skin": "Custom",
-      "hex": "3B3B-3BC4-FFC4-0000-006F-91FF-62FF-8387"
+      "hex": "3B3B-3BC4-FFC4-0000-006F-91FF-62FF-8387",
+      "customImg": "Default"
     }
   ]
 }

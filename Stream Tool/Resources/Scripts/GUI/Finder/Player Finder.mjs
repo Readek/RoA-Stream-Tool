@@ -140,7 +140,8 @@ class PlayerFinder extends Finder {
                         yt : preset.yt,
                         char : preset.characters[i].character,
                         skin : preset.characters[i].skin,
-                        hex : preset.characters[i].hex
+                        hex : preset.characters[i].hex,
+                        customImg : preset.characters[i].customImg
                     }
 
                     // add them to the div we created before
@@ -211,7 +212,7 @@ class PlayerFinder extends Finder {
         await player.charChange(pData.char, true);
         if (pData.skin == "Custom") {
             setCurrentPlayer(player);
-            customChange(pData.hex);
+            customChange(pData.hex, pData.customImg);
         } else { // search for all skins for name matches
             player.skinChange(player.findSkin(pData.skin));
         }
