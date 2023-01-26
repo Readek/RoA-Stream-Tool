@@ -65,7 +65,7 @@ export async function updateGUI(data) {
             await players[i].charChange(data.player[i].char, true);
             if (data.player[i].skin == "Custom") {
                 setCurrentPlayer(players[i]);
-                await customChange(data.player[i].skinHex);
+                await customChange(data.player[i].skinHex, data.player[i].customImg);
             } else {
                 await players[i].skinChange(players[i].findSkin(data.player[i].skin));
             }

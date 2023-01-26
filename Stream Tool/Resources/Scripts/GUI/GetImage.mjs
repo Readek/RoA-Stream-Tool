@@ -4,10 +4,11 @@ import { fileExists } from './File System.mjs';
 
 /**
  * @typedef {Object} Skin
- * @property {String} code - The skin color code to be used
+ * @property {String} hex - The skin color code to be used
  * @property {Boolean} blend - Makes the image have "Early Access" shading
  * @property {Array} alpha - Set the transparency for each part (for example: [1, 0.75, 0.5, 1])
  * @property {Boolean} golden - Adds golden shading to the character's black pixels
+ * @property {Boolean} force - Forces recoloring of the image with the given hex code
 */
 
 /**
@@ -17,38 +18,35 @@ import { fileExists } from './File System.mjs';
  * Returns the random image if a default skin image can't be found.
  * @param {String} char - Character name
  * @param {Skin} skin - Skin data
- * @param {Array} colorIn - Character's original colors for shader data
- * @param {Array} colorRan - Character's color ranges for shader data
+ * @param {Array} colorData - Character's original colors and ranges for shader data
  * @param {String} imgType - To determine which folder to look for
  * @param {String} failPath - To determine which image to use in case of fail
  * @returns {String} - Image src
 */
-export async function getRecolorImage(char, skin, colIn, colRan, imgType, failPath) {
+export async function getRecolorImage(char, skin, colorData, imgType, failPath) {
 
-    if (await fileExists(`${stPath.char}/${char}/${imgType}/${skin.name}.png`) && !skin.force) {
+    if (!skin.force && await fileExists(`${stPath.char}/${char}/${imgType}/${skin.name}.png`)) {
 
+        // if the image exists and we are not forcing a recolor, send an unmodified image
         return `${stPath.char}/${char}/${imgType}/${skin.name}.png`;
 
     } else if (await fileExists(`${stPath.char}/${char}/${imgType}/Default.png`)) {
 
-        if (skin.hex) {
-            // if the skin wants to force a recolor, check if the file exists first
-            let charImgPath;
-            if (skin.force && await fileExists(`${stPath.char}/${char}/${imgType}/${skin.name}.png`)) {
-                charImgPath = `${stPath.char}/${char}/${imgType}/${skin.name}.png`;
-            } else {
-                charImgPath = `${stPath.char}/${char}/${imgType}/Default.png`;
-            }
-            return await getRoARecolor(
-                char,
-                charImgPath,
-                colIn,
-                colRan,
-                skin
-            );
+        // if the skin wants to force a recolor, check if the file exists first
+        let charImgPath;
+        if (skin.force && await fileExists(`${stPath.char}/${char}/${imgType}/${skin.customImg || skin.name}.png`)) {
+            charImgPath = `${stPath.char}/${char}/${imgType}/${skin.customImg || skin.name}.png`;
         } else {
-            return `${stPath.char}/${char}/${imgType}/Default.png`;
+            charImgPath = `${stPath.char}/${char}/${imgType}/Default.png`;
         }
+        const trueColorData = colorData[skin] || colorData.Default;
+        return await getRoARecolor(
+            char,
+            charImgPath,
+            trueColorData.ogColor,
+            trueColorData.colorRange,
+            skin
+        );
 
     } else {
         return `${stPath.charRandom}/${failPath}.png`;

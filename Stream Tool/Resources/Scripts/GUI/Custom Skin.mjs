@@ -1,3 +1,4 @@
+import { Player } from "./Player/Player.mjs";
 import { viewport } from "./Viewport.mjs";
 
 // set listeners for the custom skins menu
@@ -8,6 +9,7 @@ document.getElementById("customSkinApplyButt").addEventListener("click", () => {
 const customSkinDiv = document.getElementById("customSkinDiv");
 const codeInput = document.getElementById("customSkinInput");
 const charSpan = document.getElementById("customSkinCharSpan");
+const customSkinSelect = document.getElementById("customSkinSelect");
 
 // reference to the active player
 let curPlayer;
@@ -31,6 +33,9 @@ export function showCustomSkin(player) {
     // show us which character is this for
     charSpan.innerHTML = curPlayer.char;
 
+    // update the custom skin select
+    updateCustomSelect();
+
     // show the custom color div
     customSkinDiv.style.pointerEvents = "auto";
     customSkinDiv.style.opacity = 1;
@@ -47,31 +52,69 @@ function hideCustomSkin() {
     viewport.opacity("1");
 }
 
+/** Updates the custom skin dropdown with current character data */
+function updateCustomSelect() {
+
+    // clear current data
+    customSkinSelect.innerHTML = "";
+
+    // add new entries
+    addCustomEntry("Default");
+
+    // for each skin that has a different recolorable image
+    const skinList = curPlayer.charInfo.skinList;
+    for (let i = 0; i < skinList.length; i++) {
+        if (skinList[i].force && skinList[i].name != "Default") {
+            addCustomEntry(skinList[i].name);
+        }
+    }
+
+    if (customSkinSelect.length <= 1) {
+        customSkinSelect.style.display = "none";
+    } else {
+        customSkinSelect.style.display = "block";
+    }
+
+}
+
+/**
+ * Adds a new value to the custom skin select
+ * @param {String} text - Entry text
+ */
+function addCustomEntry(text) {
+    const entry = document.createElement("option");
+    entry.text = text;
+    entry.value = text;
+    customSkinSelect.add(entry);
+}
+
 /**
  * Reads the color code input to change the skin of a player
  * @param {String} hex - Optional color code forcing
+ * @param {String} customImg - Optional custom img forcing
  */
-export async function customChange(hex) {
+export async function customChange(hex, customImg) {
 
-    // get the color code from input element
-    let skinHex = codeInput.value;
-
-    // but use a the sent color code if we have one
-    if (hex) {
-        skinHex = hex;
-    }
-
-    // skin data
+    // set that skin data
     const skin = {
         name: "Custom",
-        hex: skinHex
+        hex: hex || codeInput.value,
+        customImg: customImg || customSkinSelect.value,
+        force: true
     };
     
+    // aaaaand change it
     await curPlayer.skinChange(skin);
+
+    // we no longer want to see this menu
     hideCustomSkin();
 
 }
 
+/**
+ * Sets the current player to add a custom skin to
+ * @param {Player} player - Player to use
+ */
 export function setCurrentPlayer(player) {
     curPlayer = player;
 }

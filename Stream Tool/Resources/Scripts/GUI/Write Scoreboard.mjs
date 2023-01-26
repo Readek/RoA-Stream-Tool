@@ -103,7 +103,8 @@ export async function writeScoreboard() {
             // these are just for remote updating
             char: players[i].char,
             skin: players[i].skin.name,
-            skinHex: players[i].skinHex
+            skinHex: players[i].skinHex,
+            customImg: players[i].customImg
         })
 
     }

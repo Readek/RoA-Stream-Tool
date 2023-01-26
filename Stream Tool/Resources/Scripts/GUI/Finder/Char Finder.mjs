@@ -36,18 +36,16 @@ class CharFinder extends FinderSelect {
             const imgIcon = document.createElement('img');
             imgIcon.className = "fIconImg";
             // check if the character exists
-            let skin = { name: "Default" }, ogColor, colorRange;
+            let skin = { name: "Default" }, colorData;
             if (charInfo) {
                 skin = charInfo.skinList[0];
-                ogColor = charInfo.colorData.Default.ogColor;
-                colorRange = charInfo.colorData.Default.colorRange;
+                colorData = charInfo.colorData;
             }
             // this will get us the true default icon for any character
             getRecolorImage(
                 this.#charList[i],
                 skin,
-                ogColor,
-                colorRange,
+                colorData,
                 "Icons",
                 "Icon"
             ).then((imgSrc) => {

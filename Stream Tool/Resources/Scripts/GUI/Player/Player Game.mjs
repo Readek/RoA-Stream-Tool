@@ -89,8 +89,9 @@ export class PlayerGame extends Player {
         promises.push(this.setScImg());
         promises.push(this.setVsBg());
 
-        // store color code for remote gui shenanigans
+        // store custom data for remote gui shenanigans
         this.skinHex = skin.hex;
+        this.customImg = skin.customImg;
 
         // and when all images have finished loading
         await Promise.all(promises);
@@ -130,8 +131,7 @@ export class PlayerGame extends Player {
         promises.push(getRecolorImage(
             this.char,
             this.skin,
-            this.charInfo.colorData.Default.ogColor,
-            this.charInfo.colorData.Default.colorRange,
+            this.charInfo.colorData,
             folder,
             this.randomImg
         ));
@@ -152,7 +152,7 @@ export class PlayerGame extends Player {
         if (settings.isHDChecked()) {
             const promises = [];
             const skinName = this.skin.name.includes("LoA") && !settings.isNoLoAChecked() ? "LoA HD" : "HD";
-            promises.push(getRecolorImage(this.char, {name: skinName}, "Skins", this.randomImg));
+            promises.push(getRecolorImage(this.char, {name: skinName}, null, "Skins", this.randomImg));
             promises.push(this.getBrowserSrc(this.char, {name: skinName}, "Skins/", this.randomImg));
             this.vsSkin = {name: skinName};
             await Promise.all(promises).then( (value) => {
@@ -166,8 +166,7 @@ export class PlayerGame extends Player {
                 promises.push(getRecolorImage(
                     this.char,
                     this.skin,
-                    this.charInfo.colorData.Default.ogColor,
-                    this.charInfo.colorData.Default.colorRange,
+                    this.charInfo.colorData,
                     "Skins",
                     this.randomImg
                 ));

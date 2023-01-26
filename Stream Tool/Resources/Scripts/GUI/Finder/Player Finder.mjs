@@ -77,17 +77,14 @@ class PlayerFinder extends Finder {
                 skin = {name: skinImgs[i].skin}
             }
             
-            let finalColIn = null;
-            let finalColRan = null;
+            let finalColorData = null;
             if (skinImgs[i].charJson) {
-                finalColIn = skinImgs[i].charJson.colorData.Default.ogColor;
-                finalColRan = skinImgs[i].charJson.colorData.Default.colorRange;
+                finalColorData = skinImgs[i].charJson.colorData;
             }
             const finalSrc = await getRecolorImage(
                 skinImgs[i].char,
                 skin,
-                finalColIn,
-                finalColRan,
+                finalColorData,
                 "Skins",
                 "P2"
             );

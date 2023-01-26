@@ -97,6 +97,26 @@ button:hover {
   cursor: pointer;
 }
 
+/* selects can be a bit pretty sometimes */
+.selectDropDown {
+  outline: none;
+  height: 25px;
+  color: var(--text1);
+  background: var(--bg4);
+  border: 1px solid var(--focused);
+  transition: border-color 100ms;
+  padding: 0px 5px;
+  box-sizing: border-box;
+  border-radius: 5px;
+}
+.selectDropDown:hover {
+  border-color: var(--selected);
+}
+.selectDropDown:active {
+  background-color: var(--bg2);
+}
+
+
 /* main viewport */
 #viewport {
   position: relative;
@@ -936,25 +956,6 @@ button:hover {
   padding: 3px;
   text-transform: uppercase;
 }
-
-#bracketRoundSelect {
-  outline: none;
-  height: 25px;
-  color: var(--text1);
-  background: var(--bg4);
-  border: 1px solid var(--focused);
-  transition: border-color 100ms;
-  padding: 0px 5px;
-  box-sizing: border-box;
-  border-radius: 5px;
-}
-#bracketRoundSelect:hover {
-  border-color: var(--selected);
-}
-#bracketRoundSelect:active {
-  background-color: var(--bg2);
-}
-
 
 #bracketEncounters {
   display: flex;

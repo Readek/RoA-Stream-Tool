@@ -121,8 +121,7 @@ export class Player {
         promises.push(getRecolorImage(
             this.char,
             this.skin,
-            this.charInfo.colorData.Default.ogColor,
-            this.charInfo.colorData.Default.colorRange,
+            this.charInfo.colorData,
             "Icons",
             "Icon"
         ));
@@ -201,8 +200,7 @@ export class Player {
                     finalImg.src = await getRecolorImage(
                         this.char,
                         this.charInfo.skinList[i],
-                        this.charInfo.colorData.Default.ogColor,
-                        this.charInfo.colorData.Default.colorRange,
+                        this.charInfo.colorData,
                         "Skins",
                         "P2"
                     );

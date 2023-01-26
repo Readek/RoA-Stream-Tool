@@ -391,7 +391,7 @@ They will always appear when typing 'Grand' in the round box.">
 
   <div id="bracket">
     <div id="bracketTitle">Top 8 Bracket Editor</div>
-    <select id="bracketRoundSelect">
+    <select id="bracketRoundSelect" class="selectDropDown">
       <option value="WinnersSemis">Winners Semis</option>
       <option value="WinnersFinals">Winners Finals</option>
       <option value="GrandFinals">Grand Finals</option>
@@ -522,8 +522,9 @@ They will always appear when typing 'Grand' in the round box.">
 </div>
 
 <div id="customSkinDiv">
-  <div class="pInfoTitle">Set your custom <span id="customSkinCharSpan"></span> skin code</div>
+  <div class="pInfoTitle">Set your custom <span id="customSkinCharSpan"></span> skin</div>
   <input type="text" class="textInput mousetrap pInfoInput" id="customSkinInput" placeholder="0000-0000-0000-0000-0000-0000...." spellcheck="false">
+  <select id="customSkinSelect" class="selectDropDown"></select>
   <div class="pInfoRow">
     <button class="pInfoBotButt" id="customSkinBackButt">
       <div class="pInfoIconCont">

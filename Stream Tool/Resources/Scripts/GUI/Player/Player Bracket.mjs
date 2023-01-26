@@ -113,6 +113,10 @@ export class PlayerBracket extends Player {
         // check if an icon for this skin exists, recolor if not
         await this.setIconImg();
 
+        // store custom data for remote gui shenanigans
+        this.skinHex = skin.hex;
+        this.customImg = skin.customImg;
+
         // notify the user that we done here
         this.setReady(true);
 
