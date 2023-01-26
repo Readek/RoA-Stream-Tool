@@ -216,7 +216,11 @@ export class PlayerGame extends Player {
         if (!await fileExists(`${trueBGPath}/${vsBG}`)) {
             this.vsBgSrc = "Resources/Characters/BG.webm";
         } else {
-            this.vsBgSrc = `${trueBGPath}/${vsBG}`;
+            if (settings.isWsChecked()) {
+                this.vsBgSrc = `Resources/Characters/_Workshop/${vsBG}`;
+            } else {
+                this.vsBgSrc = `Resources/Characters/${vsBG}`;
+            }
         }
 
     }

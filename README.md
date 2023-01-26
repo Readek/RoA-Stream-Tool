@@ -31,7 +31,7 @@ So you want to do a Rivals of Aether stream, huh? Well, today is your lucky day,
 These are instructions for regular OBS Studio, but I imagine you can do the same with other streaming software:
 - Get the [latest release](https://github.com/Readek/RoA-Stream-Control/releases).
 - Extract somewhere.
-- Drag and drop `RoA Scoreboard.htlm` into OBS, or add a new browser source in OBS pointing at the local file.
+- Drag and drop `RoA Scoreboard.html` into OBS, or add a new browser source in OBS pointing at the local file.
   - If the source looks weird, manually set the source's properties to 1920 width and 1080 height, or set your OBS canvas resolution to 1080p, or make the source fit the screen.
 - In the source's properties, change *Use custom frame rate* -> `60` (if streaming at 60fps of course).
 - **Also tick `Refresh browser when scene becomes active`**. With it, the intro animation of the html will play each time we swap to this scene.

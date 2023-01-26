@@ -52,10 +52,16 @@ export class Score {
 
     setScore(score) {
 
-        // just for safety, dont let it drop to negative numbers
         let actualScore;
         if (score <= 0) {
+            // just for safety, dont let it drop to negative numbers
             actualScore = 0;
+        } else if (bestOf.getBo() == 5 && score > 3) {
+            // best of 5 matches have a score max of 3
+            actualScore = 3;
+        } else if (bestOf.getBo() == 3 && score > 2) {
+            // best of 3 matches have a score max of 2
+            actualScore = 2;
         } else {
             actualScore = score;
         }
