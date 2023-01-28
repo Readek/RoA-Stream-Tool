@@ -57,14 +57,14 @@ class GuiSettings {
         }
 
         // dont forget about the copy match to clipboard button
-        document.getElementById("copyMatch").addEventListener("click", () => {this.copyMatch()});
+        document.getElementById("copyMatch").addEventListener("click", () => {
+            this.copyMatch();
+        });
 
         // clicking the settings button will bring up the menu
         document.getElementById('settingsRegion').addEventListener("click", () => {
-            viewport.toSettings()
+            viewport.toSettings();
         });
-
-        this.load();
 
     }
 
@@ -72,7 +72,6 @@ class GuiSettings {
     async load() {
 
         // get us the json file
-        
         const guiSettings = await getJson(`${stPath.text}/GUI Settings`);
 
         // and update it all!
@@ -86,7 +85,6 @@ class GuiSettings {
         if (guiSettings.forceWL) this.#forceWLCheck.click();
         this.#scoreAutoCheck.checked = guiSettings.scoreAutoUpdate;
         this.#invertScoreCheck.checked = guiSettings.invertScore;
-        this.#alwaysOnTopCheck.checked = guiSettings.alwaysOnTop;
 
     }
 

@@ -31,9 +31,12 @@ init();
 /** It all starts here */
 async function init() {
 
+    // this will allow us to load functions asynchronously
     const promises = [];
 
+    
     // we need to set the current char path
+    await settings.load();
     stPath.char = settings.isWsChecked() ? stPath.charWork : stPath.charBase;
 
 
@@ -78,12 +81,13 @@ async function init() {
     // get those keybinds running
     loadKeybinds();
 
+    // when all functions have finished
     await Promise.all(promises);
     // update the GUI on startup so we have something to send to browsers
-    if (inside.electron) { // not on remote GUIs
+    if (inside.electron) {
         writeScoreboard();
         updateBracket(true);
-    } else {
+    } else { // remote GUIs will ask about the current main GUI state
         const remote = await import("./GUI/Remote Requests.mjs");
         remote.startWebsocket();
     }

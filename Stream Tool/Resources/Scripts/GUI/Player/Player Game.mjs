@@ -238,11 +238,11 @@ export class PlayerGame extends Player {
         const scCharPos = [];
         const charPos = this.charInfo;
         if (charPos.scoreboard.neutral) {
-            if (charPos.scoreboard[this.skin.name]) {
+            if (charPos.scoreboard[this.skin.customImg || this.skin.name]) {
                 // if the skin has a specific position
-                scCharPos[0] = charPos.scoreboard[this.skin.name].x;
-                scCharPos[1] = charPos.scoreboard[this.skin.name].y;
-                scCharPos[2] = charPos.scoreboard[this.skin.name].scale;
+                scCharPos[0] = charPos.scoreboard[this.skin.customImg || this.skin.name].x;
+                scCharPos[1] = charPos.scoreboard[this.skin.customImg || this.skin.name].y;
+                scCharPos[2] = charPos.scoreboard[this.skin.customImg || this.skin.name].scale;
             } else if (settings.isAltArtChecked() && charPos.scoreboard.alt) {
                 // for workshop alternative art
                 scCharPos[0] = charPos.scoreboard.alt.x;
@@ -273,10 +273,10 @@ export class PlayerGame extends Player {
         const charPos = this.charInfo;
         // get the character positions
         if (charPos.vsScreen) {
-            if (charPos.vsScreen[this.vsSkin.name]) { // if the skin has a specific position
-                vsCharPos[0] = charPos.vsScreen[this.vsSkin.name].x;
-                vsCharPos[1] = charPos.vsScreen[this.vsSkin.name].y;
-                vsCharPos[2] = charPos.vsScreen[this.vsSkin.name].scale;
+            if (charPos.vsScreen[this.skin.customImg || this.vsSkin.name]) { // if the skin has a specific position
+                vsCharPos[0] = charPos.vsScreen[this.skin.customImg || this.vsSkin.name].x;
+                vsCharPos[1] = charPos.vsScreen[this.skin.customImg || this.vsSkin.name].y;
+                vsCharPos[2] = charPos.vsScreen[this.skin.customImg || this.vsSkin.name].scale;
             } else { //if not, use a default position
                 vsCharPos[0] = charPos.vsScreen.neutral.x;
                 vsCharPos[1] = charPos.vsScreen.neutral.y;
