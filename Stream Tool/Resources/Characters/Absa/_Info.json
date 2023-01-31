@@ -17,7 +17,7 @@
         {"name": "Abyss", "hex": "745E-8776-73B9-DC71-FFDC-71FF-A6AC-D60C"},
         {"name": "Early Access", "hex": "A7BA-4A53-7A3E-D3E2-9AD3-E29A-D3E2-9AA7", "ea": true},
         {"name": "Penguin", "hex": "3F3F-3F4D-83FF-E742-FFFF-DD55-FFFF-FFD2"},
-        {"name": "LoA", "hex": "7879-A1D0-809D-417E-8CA4-9780-D6D7-F497", "force": true},
+        {"name": "LoA", "hex": "7879-A1E7-79B9-82AD-B196-7870-D6D7-F4B5", "force": true},
         {"name": "Golden", "hex": "FFDD-1EFF-F2BA-FCD5-35E3-A40A-FFF7-CAD7", "golden": true},
         {"name": "Ranked", "hex": "FFCC-0083-83B0-FFFF-FFFF-8700-E4E4-F045"},
         {"name": "Steampunk", "hex": "30DA-A5A2-5D34-0FFF-EB59-423D-D3F8-ECA5"},
@@ -45,17 +45,17 @@
         "LoA" : {
             "ogColor" : [
                 120, 121, 161, 1,
-                208, 128, 157, 1,
-                65, 126, 140, 1,
-                164, 151, 128, 1,
+                231, 121, 185, 1,
+                130, 173, 177, 1,
+                150, 120, 112, 1,
                 214, 215, 244, 1
             ],
             "colorRange" : [
-                8, 8, 48, 1,
-                9, 8, 38, 1,
-                12, 13, 24, 1,
-                49, 38, 27, 1,
-                4, 14, 11, 1
+                8, 20, 80, 1,
+                54, 15, 60, 1,
+                18, 30, 50, 1,
+                31.968, 34, 40, 1,
+                18, 15, 15, 1
             ]
         }
     },
