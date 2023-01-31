@@ -12,11 +12,11 @@
         {"name": "Summer", "hex": "59CC-E945-9272-FFA6-28C9-F5FF-FFF6-8CD3"},
         {"name": "Default Custom 1", "hex": "3939-31AD-3131-CE7B-29C6-B573-FFC6-5A9E"},
         {"name": "Default Custom 2", "hex": "FFFF-FFEF-5A9C-FAD8-5AFF-C6CF-E6DA-196F"},
-        {"name": "Spangled", "hex": "B222-343C-3B6E-FFFF-FFFF-FFFF-E6DA-19A1"},
+        {"name": "Spangled", "hex": "B222-343C-3B6E-FFFF-FFFF-FFFF-E6DA-19A1", "force": true},
         {"name": "Champion", "hex": "2926-21FF-FFFF-B2FF-D058-544E-9692-8CE7", "alpha": [1,0.5,1,1,1]},
         {"name": "Abyss", "hex": "5654-924F-3D5E-DC71-FFA6-ACD6-A6AC-D6B4"},
         {"name": "Early Access", "hex": "A7BA-4A53-7A3E-D3E2-9AD3-E29A-D3E2-9AA7", "ea": true},
-        {"name": "Bradshaw"},
+        {"name": "Bradshaw", "hex": "2475-792C-4874-E6DA-19BB-E7C8-5952-5329", "force": true},
         {"name": "Collegiate", "hex": "324D-BBFF-CA07-F7FC-FFC0-DAFF-FFCA-07DD"},
         {"name": "Golden", "hex": "FFDD-1EFC-D535-FCFC-FCFF-F7CA-FFF2-AB4D", "golden": true},
         {"name": "Ranked", "hex": "E4E4-F0FF-CC00-FF87-00F9-E1BE-FFD8-3D1E"},
@@ -39,6 +39,22 @@
                 18, 15, 30, 1,
                 27, 30, 50, 1,
                 18, 5, 40, 1,
+                18, 5, 60, 1
+            ]
+        },
+        "Bradshaw" : {
+            "ogColor" : [
+                36, 117, 121, 1,
+                44, 72, 116, 1,
+                230, 218, 25, 1,
+                187, 231, 200, 1,
+                89, 82, 83, 1
+            ],
+            "colorRange" : [
+                28.08, 22, 50, 1,
+                18, 15, 30, 1,
+                27, 30, 50, 1,
+                56.16, 38, 40, 1,
                 18, 5, 60, 1
             ]
         }

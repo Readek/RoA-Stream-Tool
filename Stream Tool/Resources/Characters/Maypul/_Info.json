@@ -18,7 +18,7 @@
         {"name": "Arcade Pink", "hex": "413E-37D9-87CD-F1C3-F341-3E37-D987-CD95"},
         {"name": "Abyss", "hex": "5654-92A6-ACD6-DC71-FF4F-3D5E-4F3D-5E6B"},
         {"name": "Early Access", "hex": "5378-3ED3-E29A-A7BA-4A53-7A40-D3E2-9AEB", "ea": true},
-        {"name": "Ragnir"},
+        {"name": "Ragnir", "hex": "E94E-48D1-A376-4E45-5059-4140-FBF2-3608", "force": true},
         {"name": "Golden", "hex": "FFDC-1EFF-FFFF-FFDC-1EFF-DC1E-FFE6-1E04", "golden": true},
         {"name": "Champion", "hex": "5252-52D0-DFDE-B2FF-D03F-3F46-C9C9-DC5D", "alpha": [1,0.5,1,1,1]},
         {"name": "Ranked", "hex": "FFCC-00E4-E4F0-E4E4-F000-0117-FFBA-279A"},
@@ -42,6 +42,23 @@
                 54, 15, 35, 1,
                 15, 25, 55, 1
             ]
+        },
+        "Ragnir" : {
+            "ogColor" : [
+                233, 78, 72, 1,
+                209, 163, 118, 1,
+                78, 69, 80, 1,
+                89, 65, 64, 1,
+                251, 242, 54, 1
+            ],
+            "colorRange" : [
+                45, 33, 80, 1,
+                8.28, 21, 60, 1,
+                71, 66, 28, 1,
+                2.88, 1, 10, 1,
+                33.84, 15, 55, 1
+            ],
+            "comment": "Actual 3rd color range is 75.6, 15, 41, 1; TODO replicate game shader behavior"
         }
     },
     "scoreboard": {

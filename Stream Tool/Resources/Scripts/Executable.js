@@ -143,11 +143,7 @@ function createWindow() {
 
     // always on top toggle from the GUI
     ipcMain.on('alwaysOnTop', (event, arg) => {
-        if (arg) {
-            win.setAlwaysOnTop(true)
-        } else {
-            win.setAlwaysOnTop(false)
-        }
+        win.setAlwaysOnTop(arg)
     })
 
     wsServer.on('connection', (socket, req) => {

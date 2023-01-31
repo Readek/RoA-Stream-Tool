@@ -16,9 +16,9 @@
         {"name": "Golden", "hex": "FDFB-F4FF-DC1E-4344-5791", "golden": true},
         {"name": "Abyss", "hex": "A6AC-D674-5E87-5654-929E"},
         {"name": "Early Access", "hex": "D3E2-9A53-7A3E-2343-31FF", "ea": true},
-        {"name": "Panda"},
+        {"name": "Panda", "hex": "FBFA-FC7F-EF67-4344-57E6", "force": true},
         {"name": "Genesis", "hex": "4644-44E0-0B00-F6EF-EFD8"},
-        {"name": "Pool Party"},
+        {"name": "Pool Party", "hex": "DAA4-F5A6-B7FE-4344-5785", "force": true},
         {"name": "Ranked", "hex": "FFCC-00E4-E4F0-FF87-0068"},
         {"name": "HD"},
         {"name": "LoA HD"}

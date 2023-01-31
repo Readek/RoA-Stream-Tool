@@ -15,7 +15,7 @@
         {"name": "Arcade Green", "hex": "413F-368C-DE5E-FFFF-FFFF-FFFF-FFFF-FF41-3F36-1900"},
         {"name": "Arcade Pink", "hex": "413F-36D9-87CD-FFFF-FFFF-FFFF-FFFF-FF41-3F36-DE00"},
         {"name": "Arcade Blue", "hex": "413F-3691-D2F3-FFFF-FFFF-FFFF-FFFF-FF41-3F36-CB00"},
-        {"name": "Ayala"},
+        {"name": "Ayala", "hex": "D580-5796-9C91-BEA6-849D-D454-89C6-C250-5D74-3600", "force": true},
         {"name": "Abyss", "hex": "4F3D-5EA6-ACD6-DC71-FF92-3BCE-4E17-8D4E-178D-3D00"},
         {"name": "Early Access", "hex": "537A-3ED3-E29A-D3E2-9AA7-BA4A-537A-3E53-7A3E-7F00", "ea": true},
         {"name": "Infamous", "hex": "5653-AAD4-45FE-37EA-FF00-FFA8-FFFF-FF33-3741-0900"},
@@ -40,6 +40,24 @@
                 15, 27, 41, 1,
                 16, 28, 45, 1,
                 11, 24, 23, 1,
+                20, 29, 60, 1,
+                8, 23, 19, 1,
+                17, 4, 11, 1
+            ]
+        },
+        "Ayala" : {
+            "ogColor" : [
+                213, 128, 87, 1,
+                150, 156, 145, 1,
+                190, 166, 132, 1,
+                157, 212, 84, 1,
+                137, 198, 194, 1,
+                80, 93, 116, 1
+            ],
+            "colorRange" : [
+                15, 27, 41, 1,
+                16, 28, 45, 1,
+                2.16, 24, 23, 1,
                 20, 29, 60, 1,
                 8, 23, 19, 1,
                 17, 4, 11, 1

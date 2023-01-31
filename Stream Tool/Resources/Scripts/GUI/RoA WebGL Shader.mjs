@@ -57,6 +57,7 @@ uniform vec4 colorIn[maxcolors];        // color to replace
 uniform vec4 colorOut[maxcolors];       // desired color
 uniform vec4 colorTolerance[maxcolors]; // HSVA tolerances
 uniform vec4 blend[maxcolors];          // 1 = regular shading, 0 = EA shading
+uniform int special;                    // certain skins use a modified shared logic
 
 
 vec3 rgb_to_hsv(vec3 col)
@@ -137,6 +138,53 @@ void main() {
 
       // this is our desired color
       vec4 tColorOut = colorOut[i];
+
+      if (special == 8) { // THE SUMMIT KRAGG EXPERIENCE
+        
+        if (i == 0) { // for the first part (Kraggs rock)
+  
+          // this is the point in absolute pixels where the fade happens
+          float effectY = 900.0/1292.0;
+  
+          if (effectY > v_texCoord.y){
+  
+            // all pixels above that will be white-ish
+            tColorOut.r = 0.81960;
+            tColorOut.g = 0.83529;
+            tColorOut.b = 0.86667;
+  
+          } else if (v_texCoord.y < effectY + 16.0 / 1292.0){
+  
+            // pixels below will be as normal, but with a faded dithered transition
+  
+            // current coordinates in absolute pixels
+            float corx = 1044.0 - v_texCoord.x * 1044.0;
+            float cory = 1292.0 - v_texCoord.y * 1292.0;
+  
+            // some weird math for the dither effect idk
+            float t_y = floor(cory * 0.25) * 4.0;
+            float t_a = (t_y - 900.0)*0.125;
+            float t_dither = (t_a * 4.0);
+            float t_x = floor(corx * 0.5) + mod(t_dither, 4.0);
+  
+            // determines the color blend for the gradient
+            t_y = floor((1292.0 - cory) * 0.25) * 4.0;
+            t_a = (t_y - 900.0)*0.0625;
+  
+            // final colors of the pixel
+            if (mod(t_x, 4.0) < 2.0){
+                tColorOut.r = mix(0.81960,colorOut[i].r,t_a);
+                tColorOut.g = mix(0.83529,colorOut[i].g,t_a);
+                tColorOut.b = mix(0.86667,colorOut[i].b,t_a);
+            }
+            
+          }
+
+        }
+
+      }
+      
+
       vec4 colorOutHSV = vec4( rgb_to_hsv( tColorOut.rgb ), tColorOut.a);
     
       // we will add the hsv difference to the desired color
@@ -175,7 +223,7 @@ void main() {
 // time to create our recolored character!
 class RoaRecolor {
 
-  constructor(char, colIn, colRan, golden) {
+  constructor(char, colIn, colRan, golden, special) {
 
     this.colorIn = [...colIn];
     this.colorTolerance = [...colRan];
@@ -205,6 +253,8 @@ class RoaRecolor {
       this.colorTolerance.push(0, 0, 0, 1);
       this.blend.push(1, 1, 1, 1);
     }
+
+    this.special = special;
 
   }
 
@@ -239,6 +289,7 @@ class RoaRecolor {
     const colorOutLoc = gl.getUniformLocation(program, "colorOut");
     const colorToleranceLoc = gl.getUniformLocation(program, "colorTolerance");
     const blendLoc = gl.getUniformLocation(program, "blend");
+    const specialLoc = gl.getUniformLocation(program, "special");
 
     // Create a vertex array object (attribute state)
     const vao = gl.createVertexArray();
@@ -328,6 +379,7 @@ class RoaRecolor {
     gl.uniform4fv(colorInLoc, div255(this.colorIn));
     gl.uniform4fv(colorToleranceLoc, divHSV(this.colorTolerance));
     gl.uniform4fv(blendLoc, this.blend);
+    gl.uniform1i(specialLoc, this.special);
 
     // Bind the position buffer so gl.bufferData that will be called
     // in setRectangle puts data in the position buffer
@@ -520,7 +572,7 @@ function hexDecode(hex) {
 
 /**
  * @typedef {Object} Skin
- * @property {String} code - The skin color code to be used
+ * @property {String} hex - The skin color code to be used
  * @property {Boolean} blend - Makes the image have "Early Access" shading
  * @property {Array} alpha - Set the transparency for each part (for example: [1, 0.75, 0.5, 1])
  * @property {Boolean} golden - Adds golden shading to the character's black pixels
@@ -551,8 +603,16 @@ export async function getRoARecolor(charName, imgSrc, colIn, colRan, skin) {
     }
   }
 
+  // some skins use a special shader
+  let special;
+  if (skin.customImg == "Summit" || skin.name == "Summit") {
+    special = 8;
+  } else {
+    special = 0; // cant be null
+  }
+
   // initialize our lovely recolor
-  const roaRecolor = new RoaRecolor(charName, colIn, colRan, skin.golden);
+  const roaRecolor = new RoaRecolor(charName, colIn, colRan, skin.golden, special);
 
   // additional stuff
   await roaRecolor.addImage(recolorCanvas, imgSrc);

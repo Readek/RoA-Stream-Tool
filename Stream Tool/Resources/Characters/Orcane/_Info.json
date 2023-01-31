@@ -16,7 +16,7 @@
         {"name": "Summit", "hex": "3A3B-53DA-193C-1400"},
         {"name": "Abyss", "hex": "4F3D-5EA6-ACD6-9300"},
         {"name": "Early Access", "hex": "537A-3ED3-E29A-DD00", "ea": true},
-        {"name": "Pool Party", "hex": "FFF6-E7FF-F6E7-FC00"},
+        {"name": "Pool Party", "hex": "FFF6-E7FF-F6E7-FC00", "force": true},
         {"name": "Champion", "hex": "3F3F-46D0-DFDE-E800", "alpha": [1,0.5,1,1]},
         {"name": "Steampunk", "hex": "A25D-3430-DAA5-C200"},
         {"name": "Ranked", "hex": "FFCC-00E4-E4F0-F700"},
