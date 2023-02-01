@@ -223,7 +223,7 @@ void main() {
 // time to create our recolored character!
 class RoaRecolor {
 
-  constructor(char, colIn, colRan, golden, special) {
+  constructor(char, colIn, colRan, special) {
 
     this.colorIn = [...colIn];
     this.colorTolerance = [...colRan];
@@ -247,13 +247,13 @@ class RoaRecolor {
       this.blend = Array(this.colorIn.length).fill(1);
     }
 
-    // if this is a golden skin, black pixels are altered
-    if (golden) {
-      this.colorIn.push(0, 0, 0, 1);
-      this.colorTolerance.push(0, 0, 0, 1);
-      this.blend.push(1, 1, 1, 1);
-    }
+    // black pixels are forced to be black after all other colors have been recolored
+    // also used for golden skins
+    this.colorIn.push(0, 0, 0, 1);
+    this.colorTolerance.push(0, 0, 0, 1);
+    this.blend.push(1, 1, 1, 1);
 
+    // determines if special shader logic will be used
     this.special = special;
 
   }
@@ -612,13 +612,17 @@ export async function getRoARecolor(charName, imgSrc, colIn, colRan, skin) {
   }
 
   // initialize our lovely recolor
-  const roaRecolor = new RoaRecolor(charName, colIn, colRan, skin.golden, special);
+  const roaRecolor = new RoaRecolor(charName, colIn, colRan, special);
 
   // additional stuff
   await roaRecolor.addImage(recolorCanvas, imgSrc);
+
+  // early access skins will just set a flag for the shaders
   if (skin.ea) {
     roaRecolor.changeBlend();
   }
+
+  // if transparency, add the data to the 4th value of each color
   if (skin.alpha) {
     for (let i = 0; i < recolorRgb.length; i++) {
       if ((i+1)%4 == 0) {
@@ -626,8 +630,12 @@ export async function getRoARecolor(charName, imgSrc, colIn, colRan, skin) {
       }
     }
   }
+
+  // golden skins have a predefined color for black pixels
   if (skin.golden) {
     recolorRgb.push(76, 53, 0, 1);
+  } else { // ingame shader forces recolor for black pixels after all other colors
+    recolorRgb.push(0, 0, 0, 1);
   }
 
   // render the actual image
