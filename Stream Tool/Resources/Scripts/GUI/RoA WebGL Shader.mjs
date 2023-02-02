@@ -605,7 +605,7 @@ export async function getRoARecolor(charName, imgSrc, colIn, colRan, skin) {
 
   // some skins use a special shader
   let special;
-  if (skin.customImg == "Summit" || skin.name == "Summit") {
+  if ((skin.customImg == "Summit" || skin.name == "Summit") && charName == "Kragg") {
     special = 8;
   } else {
     special = 0; // cant be null
