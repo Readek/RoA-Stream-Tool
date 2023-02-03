@@ -249,9 +249,11 @@ class RoaRecolor {
 
     // black pixels are forced to be black after all other colors have been recolored
     // also used for golden skins
-    this.colorIn.push(0, 0, 0, 1);
-    this.colorTolerance.push(0, 0, 0, 1);
-    this.blend.push(1, 1, 1, 1);
+    if (char != "Trail") { // dont do this for trail images
+      this.colorIn.push(0, 0, 0, 1);
+      this.colorTolerance.push(0, 0, 0, 1);
+      this.blend.push(1, 1, 1, 1);
+    }
 
     // determines if special shader logic will be used
     this.special = special;
