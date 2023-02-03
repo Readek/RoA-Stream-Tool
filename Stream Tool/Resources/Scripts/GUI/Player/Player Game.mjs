@@ -227,7 +227,13 @@ export class PlayerGame extends Player {
     /** Generates a new trail image for this player */
     async setTrailImage() {
         const color = currentColors[(this.pNum-1)%2].hex.substring(1);
-        this.trailSrc = await getTrailImage(this.char, this.skin.customImg || this.vsSkin.name, color);
+        let skinName;
+        if (settings.isHDChecked() || settings.isNoLoAChecked()) {
+            skinName = this.vsSkin.name;
+        } else {
+            skinName = this.skin.customImg || this.vsSkin.name;
+        }
+        this.trailSrc = await getTrailImage(this.char, skinName, color);
     }
 
     /**
