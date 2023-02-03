@@ -36,6 +36,9 @@ export function showCustomSkin(player) {
     // update the custom skin select
     updateCustomSelect();
 
+    // resize select
+    resizeCustomSelect();
+
     // show the custom color div
     customSkinDiv.style.pointerEvents = "auto";
     customSkinDiv.style.opacity = 1;
@@ -95,13 +98,11 @@ function addCustomEntry(text) {
  */
 export async function customChange(hex, customImg) {
 
-    // set that skin data
-    const skin = {
-        name: "Custom",
-        hex: hex || codeInput.value,
-        customImg: customImg || customSkinSelect.value,
-        force: true
-    };
+    // grab the original skin's values and change them up
+    const skin = structuredClone(curPlayer.findSkin(customImg || customSkinSelect.value));
+    skin.name = "Custom";
+    skin.hex = hex || codeInput.value;
+    skin.customImg = customImg || customSkinSelect.value;
     
     // aaaaand change it
     await curPlayer.skinChange(skin);
@@ -117,4 +118,20 @@ export async function customChange(hex, customImg) {
  */
 export function setCurrentPlayer(player) {
     curPlayer = player;
+}
+
+customSkinSelect.addEventListener("change", () => {resizeCustomSelect()});
+/** Determines the width of only the current selected value */
+function resizeCustomSelect() {
+    const tempOption = document.createElement('option');
+    tempOption.textContent = customSkinSelect.value;
+
+    const tempSelect = document.createElement('select');
+    tempSelect.style.visibility = "hidden";
+    tempSelect.style.position = "fixed"
+    tempSelect.appendChild(tempOption);
+    
+    customSkinSelect.after(tempSelect);
+    customSkinSelect.style.width = `${+tempSelect.clientWidth + 12}px`;
+    tempSelect.remove();
 }

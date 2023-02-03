@@ -15,7 +15,7 @@
         {"name": "Genesis", "hex": "3435-3756-5656-FAF7-F7B5-B5B5-FF39-3FFF-CEE1-FE2F-3536"},
         {"name": "Hero", "hex": "4136-50FE-FED8-6096-61A0-7857-8B61-4943-A4D6-FAD4-3EAC"},
         {"name": "Abyss", "hex": "4F3D-5E56-5492-DC71-FFA6-ACD6-903B-CEA6-ACD6-DC71-FFF9"},
-        {"name": "Early Access", "hex": "A9BA-4A23-4331-537A-3ED3-E29A-D3E2-9AA7-BA4A-2343-314A", "ea": true},
+        {"name": "Early Access", "hex": "A9BA-4A23-4331-537A-3ED3-E29A-D3E2-9AA7-BA4A-2343-314A", "ea": true, "force": true},
         {"name": "Arcade Green", "hex": "FFFF-FF41-3F36-8CDE-5E41-3F36-C6CB-2FD4-D4D4-7AEC-3AA7"},
         {"name": "Arcade Pink", "hex": "FFFF-FF41-3F36-D987-CD41-3F36-C6CB-2FD4-D4D4-FE6A-E83B"},
         {"name": "Arcade Blue", "hex": "FFFF-FF41-3F36-91D2-F341-3F36-C6CB-2FD4-D4D4-6DCE-FFB1"},

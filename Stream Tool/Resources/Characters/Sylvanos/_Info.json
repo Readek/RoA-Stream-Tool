@@ -15,7 +15,7 @@
         {"name": "Genesis", "hex": "3435-379E-2317-FAF7-F7FF-3941-FF39-41A0"},
         {"name": "Infamous", "hex": "3337-4100-FFA8-5653-AAD4-45FE-37EA-FFB6"},
         {"name": "Abyss", "hex": "4F3D-5EDC-71FF-5654-92A6-ACD6-903B-CECE"},
-        {"name": "Early Access", "hex": "2343-31A7-BA4A-537A-3ED3-E29A-A7BA-4AAA", "ea": true},
+        {"name": "Early Access", "hex": "2343-31A7-BA4A-537A-3ED3-E29A-A7BA-4AAA", "ea": true, "force": true},
         {"name": "Golden", "hex": "FFDD-1EFF-E762-FFDD-1EFF-DD1E-FFF6-CF66", "golden": true},
         {"name": "Champion", "hex": "3F3F-46B2-FFD0-C9C9-DCD0-DFDE-B2FF-D052", "alpha": [1,1,1,0.5,1]},
         {"name": "Ranked", "hex": "FFCC-00FF-8700-E4E4-F0FF-F4E0-FF87-0083"},

@@ -17,7 +17,7 @@
         {"name": "Arcade Green", "hex": "413E-378C-DE5E-E4F2-7C41-3E37-8CDE-5EEA"},
         {"name": "Arcade Pink", "hex": "413E-37D9-87CD-F1C3-F341-3E37-D987-CD95"},
         {"name": "Abyss", "hex": "5654-92A6-ACD6-DC71-FF4F-3D5E-4F3D-5E6B"},
-        {"name": "Early Access", "hex": "5378-3ED3-E29A-A7BA-4A53-7A40-D3E2-9AEB", "ea": true},
+        {"name": "Early Access", "hex": "5378-3ED3-E29A-A7BA-4A53-7A40-D3E2-9AEB", "ea": true, "force": true},
         {"name": "Ragnir", "hex": "E94E-48D1-A376-4E45-5059-4140-FBF2-3608", "force": true},
         {"name": "Golden", "hex": "FFDC-1EFF-FFFF-FFDC-1EFF-DC1E-FFE6-1E04", "golden": true},
         {"name": "Champion", "hex": "5252-52D0-DFDE-B2FF-D03F-3F46-C9C9-DC5D", "alpha": [1,0.5,1,1,1]},

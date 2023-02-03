@@ -15,7 +15,7 @@
         {"name": "Spangled", "hex": "B222-343C-3B6E-FFFF-FFFF-FFFF-E6DA-19A1", "force": true},
         {"name": "Champion", "hex": "2926-21FF-FFFF-B2FF-D058-544E-9692-8CE7", "alpha": [1,0.5,1,1,1]},
         {"name": "Abyss", "hex": "5654-924F-3D5E-DC71-FFA6-ACD6-A6AC-D6B4"},
-        {"name": "Early Access", "hex": "A7BA-4A53-7A3E-D3E2-9AD3-E29A-D3E2-9AA7", "ea": true},
+        {"name": "Early Access", "hex": "A7BA-4A53-7A3E-D3E2-9AD3-E29A-D3E2-9AA7", "ea": true, "force": true},
         {"name": "Bradshaw", "hex": "2475-792C-4874-E6DA-19BB-E7C8-5952-5329", "force": true},
         {"name": "Collegiate", "hex": "324D-BBFF-CA07-F7FC-FFC0-DAFF-FFCA-07DD"},
         {"name": "Golden", "hex": "FFDD-1EFC-D535-FCFC-FCFF-F7CA-FFF2-AB4D", "golden": true},

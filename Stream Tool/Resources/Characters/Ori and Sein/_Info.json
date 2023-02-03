@@ -15,7 +15,7 @@
         {"name": "Infamous", "hex": "5552-AA37-E9FF-D445-FE00-FFA8-D445-FE35"},
         {"name": "Champion", "hex": "3F3F-46D0-DFDE-0000-00B2-FFD0-5252-52CB", "alpha": [1,0.5,1,1,1]},
         {"name": "Abyss", "hex": "4E3D-5D4E-3D5D-FF7F-00DC-71FF-FF7F-0093"},
-        {"name": "Early Access", "hex": "D3E2-9AD3-E29A-0000-0052-7A3E-A7B9-4ADE", "ea": true},
+        {"name": "Early Access", "hex": "D3E2-9AD3-E29A-0000-0052-7A3E-A7B9-4ADE", "ea": true, "force": true},
         {"name": "Ranked", "hex": "FFCC-00E4-E4F0-0000-00FF-8700-BE57-2383"},
         {"name": "HD", "hex": "F8F5-FCF8-F5FC-0000-005D-CBF1-FFC8-21A4"}
     ],

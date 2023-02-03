@@ -15,7 +15,7 @@
         {"name": "Twitch", "hex": "6441-A5ED-DEFF-937E-B8FF-DFC3-FFFF-FF71"},
         {"name": "Champion", "hex": "3F3F-46B2-FFD0-F5FE-FFFF-FFFF-C6C6-D411", "alpha": [1,1,1,0.5,1]},
         {"name": "Abyss", "hex": "745E-8776-73B9-DC71-FFDC-71FF-A6AC-D60C"},
-        {"name": "Early Access", "hex": "A7BA-4A53-7A3E-D3E2-9AD3-E29A-D3E2-9AA7", "ea": true},
+        {"name": "Early Access", "hex": "A7BA-4A53-7A3E-D3E2-9AD3-E29A-D3E2-9AA7", "ea": true, "force": true},
         {"name": "Penguin", "hex": "3F3F-3F4D-83FF-E742-FFFF-DD55-FFFF-FFD2"},
         {"name": "LoA", "hex": "7879-A1E7-79B9-82AD-B196-7870-D6D7-F4B5", "force": true},
         {"name": "Golden", "hex": "FFDD-1EFF-F2BA-FCD5-35E3-A40A-FFF7-CAD7", "golden": true},

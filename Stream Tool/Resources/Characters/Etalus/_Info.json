@@ -15,7 +15,7 @@
         {"name": "Champion", "hex": "D0DF-DE5A-5A5A-FFFF-FFA6", "alpha": [0.8,1,1]},
         {"name": "Golden", "hex": "FDFB-F4FF-DC1E-4344-5791", "golden": true},
         {"name": "Abyss", "hex": "A6AC-D674-5E87-5654-929E"},
-        {"name": "Early Access", "hex": "D3E2-9A53-7A3E-2343-31FF", "ea": true},
+        {"name": "Early Access", "hex": "D3E2-9A53-7A3E-2343-31FF", "ea": true, "force": true},
         {"name": "Panda", "hex": "FBFA-FC7F-EF67-4344-57E6", "force": true},
         {"name": "Genesis", "hex": "4644-44E0-0B00-F6EF-EFD8"},
         {"name": "Pool Party", "hex": "DAA4-F5A6-B7FE-4344-5785", "force": true},

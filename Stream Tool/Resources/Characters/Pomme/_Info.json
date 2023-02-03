@@ -14,7 +14,7 @@
         {"name": "Default Custom 2", "hex": "CEBB-BB35-2A2A-5100-0040-0000-9129-29ED-9B87-2500"},
         {"name": "Pool Party", "hex": "E0B3-7FD2-4C3E-1FD9-F842-BAB3-F67C-3AEE-605D-3000"},
         {"name": "Abyss", "hex": "5654-9291-3BCE-4F3D-5E4E-178D-A6AC-D6F4-D4FF-EF00"},
-        {"name": "Early Access", "hex": "D3E2-9A53-7A3E-2343-3123-4331-A7BA-4AD3-E29A-3900", "ea": true},
+        {"name": "Early Access", "hex": "D3E2-9A53-7A3E-2343-3123-4331-A7BA-4AD3-E29A-3900", "ea": true, "force": true},
         {"name": "Ranked", "hex": "FAEF-D3FF-EC52-FFB5-47FF-9403-9C5F-A0DD-CE00-3700"},
         {"name": "HD"}
     ],

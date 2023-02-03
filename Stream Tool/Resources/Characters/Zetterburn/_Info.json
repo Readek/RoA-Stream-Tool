@@ -15,7 +15,7 @@
         {"name": "Champion", "hex": "5252-5252-5252-FFFF-FFD0-DFDE-D0DF-DE19", "alpha": [1,1,0.75,0.75,0.75]},
         {"name": "Excaliburn", "hex": "3C36-20A9-2E2E-1306-0413-0604-B635-35E6"},
         {"name": "Abyss", "hex": "4F3D-5EA6-ACD6-DC71-FF92-3BCE-4E17-8DD8"},
-        {"name": "Early Access", "hex": "537A-3ED3-E29A-D3E2-9AA7-BA4A-537A-3EFB", "ea": true},
+        {"name": "Early Access", "hex": "537A-3ED3-E29A-D3E2-9AA7-BA4A-537A-3EFB", "ea": true, "force": true},
         {"name": "Shine", "hex": "DCCB-69E5-E1AF-A0FF-FF22-A5E7-FFF9-F940"},
         {"name": "Golden", "hex": "F1CC-3FF0-D94F-FFFF-FFFD-FFFC-FFF8-C46F", "golden": true},
         {"name": "LoA", "hex": "7A5A-4ED5-BD7E-FFE9-00D7-401D-8703-2C55", "force": true},

@@ -15,7 +15,7 @@
         {"name": "Genesis", "hex": "FAF7-F73E-3F3F-FF39-3FFF-393F-FF39-3FC1-B1B1-FAF7-F7AD"},
         {"name": "Heatwave", "hex": "0400-A330-2F23-FFEF-3BCF-5E17-A400-00BF-8700-FFFF-FFFD"},
         {"name": "Abyss", "hex": "4F3D-5E56-5492-DC71-FF92-3BCE-4E17-8D15-0F1B-E4F6-FFF2"},
-        {"name": "Early Access", "hex": "537A-3EA7-BA4A-D3E2-9AA7-BA4A-2343-3123-4331-D3E2-9A3C", "ea": true},
+        {"name": "Early Access", "hex": "537A-3EA7-BA4A-D3E2-9AA7-BA4A-2343-3123-4331-D3E2-9A3C", "ea": true, "force": true},
         {"name": "Champion", "hex": "B2FF-D041-3E37-FFFF-FFD0-DFDE-D0DF-DE67-9378-FFFF-E4C3", "alpha": [1,1,0.75,0.4,0.4,1]},
         {"name": "Dreamscape", "hex": "0C11-6F8C-8B9B-5328-EB8E-0AB4-262F-A600-0000-FFFF-E4E0", "force": true},
         {"name": "LoA", "hex": "9889-8480-601C-FFE9-00FF-7F00-AA00-0024-2224-D0C4-AB11", "force": true},
