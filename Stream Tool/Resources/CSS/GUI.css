@@ -897,6 +897,7 @@ button:hover {
   padding: 2px 0px 2px 5px;
   display: flex;
   outline: none;
+  justify-content: center;
 }
 .settingBox:hover {
   background-color: var(--bg2);
@@ -916,7 +917,7 @@ button:hover {
   justify-content: center;
   margin: 5px 0px;
 }
-#copyMatch {
+.settingsButton {
   padding: 2px 5px;
   box-sizing: border-box;
   font-size: 14px;
@@ -934,6 +935,24 @@ button:hover {
   filter: brightness(.8);
 }
 
+#zoomDiv {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+#zoomText {
+  padding: 0px 5px;
+}
+#zoomButtonsDiv {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.zoomButton {
+  width: 24px;
+  height: 24px;
+}
 
 /* Bracket section */
 #bracket {

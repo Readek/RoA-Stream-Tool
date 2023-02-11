@@ -104,9 +104,11 @@ function createWindow() {
 
         width: guiWidth,
         height: guiHeight,
-
         resizable: false,
 
+        backgroundColor: "#383838",
+
+        title: "RoA Stream Tool v9", // will get overwitten by gui html title
         icon: path.join(nodePath, 'icon.png'),
 
         webPreferences: {
@@ -146,6 +148,11 @@ function createWindow() {
         win.setAlwaysOnTop(arg)
     })
 
+    // window settings
+    ipcMain.on('resizable', (event, arg) => {
+        win.setResizable(arg)
+    })
+
     wsServer.on('connection', (socket, req) => {
 
 
@@ -176,6 +183,12 @@ function createWindow() {
             }
         })
     })
+
+    win.on("close", () => {
+        // save current window dimensions
+        guiWidth = win.getBounds().width;
+        guiHeight = win.getBounds().height;
+    })
     
 }
 
@@ -186,7 +199,15 @@ app.whenReady().then(() => {
 
 // close electron when all windows close (for Windows and Linux)
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit()
+    if (process.platform !== 'darwin') {
+        // save current window dimensions
+        const data = JSON.parse(fs.readFileSync(`${resourcesPath}/Texts/GUI Settings.json`));
+        data.guiWidth = guiWidth;
+        data.guiHeight = guiHeight;
+        fs.writeFileSync(`${resourcesPath}/Texts/GUI Settings.json`, JSON.stringify(data, null, 2));
+        // and good bye
+        app.quit()
+    }
 });
 
 // todo close electron for mac, if there ever is support for it that is

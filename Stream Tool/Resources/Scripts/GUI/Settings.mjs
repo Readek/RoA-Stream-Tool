@@ -19,7 +19,9 @@ class GuiSettings {
     #forceWLCheck = document.getElementById('forceWLToggle');
     #scoreAutoCheck = document.getElementById("scoreAutoUpdate");
     #invertScoreCheck = document.getElementById("invertScore");
+
     #alwaysOnTopCheck = document.getElementById("alwaysOnTop");
+    #resizableCheck = document.getElementById("resizableWindow");
 
     constructor() {
 
@@ -49,17 +51,19 @@ class GuiSettings {
             this.save("invertScore", this.isInvertScoreChecked())
         });
 
-        // always on top is electron only
-        if (inside.electron) {
-            this.#setAlwaysOnTopListener();
-        } else {
-            this.#alwaysOnTopCheck.disabled = true;
-        }
-
         // dont forget about the copy match to clipboard button
         document.getElementById("copyMatch").addEventListener("click", () => {
             this.copyMatch();
         });
+
+        // always on top is electron only
+        if (inside.electron) {
+            this.#setAlwaysOnTopListener();
+            this.#setResizableListener();
+        } else {
+            this.#alwaysOnTopCheck.disabled = true;
+            this.#resizableCheck.disabled = true;
+        }
 
         // clicking the settings button will bring up the menu
         document.getElementById('settingsRegion').addEventListener("click", () => {
@@ -86,6 +90,13 @@ class GuiSettings {
         this.#scoreAutoCheck.checked = guiSettings.scoreAutoUpdate;
         this.#invertScoreCheck.checked = guiSettings.invertScore;
 
+        if (inside.electron) {
+            this.#alwaysOnTopCheck.checked = guiSettings.alwaysOnTop;
+            this.toggleAlwaysOnTop();
+            this.#resizableCheck.checked = guiSettings.resizable;
+            this.toggleResizable();
+        }
+        
     }
 
     /**
@@ -251,14 +262,6 @@ class GuiSettings {
         return this.#invertScoreCheck.checked;
     }
 
-    async #setAlwaysOnTopListener() {
-        const ipc = await import("./IPC.mjs");
-        this.#alwaysOnTopCheck.addEventListener("click", () => {
-            ipc.alwaysOnTop(this.#alwaysOnTopCheck.checked);
-            this.save("alwaysOnTop", this.#alwaysOnTopCheck.checked);
-        });
-    }
-
     /**
      * Will copy the current match info to the clipboard
      * Format: "Tournament Name - Round - Player1 (Character1) VS Player2 (Character2)"
@@ -285,6 +288,28 @@ class GuiSettings {
         // send the string to the user's clipboard
         navigator.clipboard.writeText(copiedText);
 
+    }
+
+    #setAlwaysOnTopListener() {
+        this.#alwaysOnTopCheck.addEventListener("click", () => {
+            this.toggleAlwaysOnTop();
+        });
+    }
+    async toggleAlwaysOnTop() {
+        const ipc = await import("./IPC.mjs");
+        ipc.alwaysOnTop(this.#alwaysOnTopCheck.checked);
+        this.save("alwaysOnTop", this.#alwaysOnTopCheck.checked);
+    }
+
+    #setResizableListener() {
+        this.#resizableCheck.addEventListener("click", () => {
+            this.toggleResizable();
+        });
+    }
+    async toggleResizable() {
+        const ipc = await import("./IPC.mjs");
+        ipc.resizable(this.#resizableCheck.checked);
+        this.save("resizable", this.#resizableCheck.checked);
     }
 
 }

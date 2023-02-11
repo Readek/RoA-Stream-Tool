@@ -74,6 +74,14 @@ export function alwaysOnTop(value) {
     ipc.send('alwaysOnTop', value);
 }
 
+/**
+ * Sends the signal to Electron to unlock window resizing
+ * @param {Boolean} value - Si o No
+ */
+export function resizable(value) {
+    ipc.send('resizable', value);
+}
+
 // when we get data remotely, update GUI
 ipc.on('remoteGuiData', async (event, data) => {
 
