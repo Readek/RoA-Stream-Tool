@@ -153,6 +153,11 @@ function createWindow() {
         win.setResizable(arg)
     })
 
+    // restore default window dimensions
+    ipcMain.on('defaultWindow', (event) => {
+        win.setBounds({width: 600, height: 300});
+    })
+
     wsServer.on('connection', (socket, req) => {
 
 

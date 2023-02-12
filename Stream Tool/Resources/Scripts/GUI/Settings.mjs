@@ -26,6 +26,7 @@ class GuiSettings {
     #moreZoomButt = document.getElementById("moreZoomButt");
     #zoomTextValue = document.getElementById("zoomTextValue");
     #zoomValue = 100;
+    #restoreWindowButt = document.getElementById("restoreWindowButt");
 
     constructor() {
 
@@ -66,6 +67,9 @@ class GuiSettings {
             this.#setResizableListener();
             this.#lessZoomButt.addEventListener("click", () => {this.#lessZoom()})
             this.#moreZoomButt.addEventListener("click", () => {this.#moreZoom()})
+            this.#restoreWindowButt.addEventListener("click", () => {
+                this.#restoreWindowDefaults()
+            });
         } else {
             
         }
@@ -336,6 +340,15 @@ class GuiSettings {
         webFrame.setZoomFactor(this.#zoomValue / 100);
         this.#zoomTextValue.innerHTML = `${this.#zoomValue}%`;
         this.save("zoom", this.#zoomValue);
+    }
+
+    async #restoreWindowDefaults() {
+        this.#resizableCheck.checked = false;
+        this.toggleResizable();
+        this.#zoomValue = 100;
+        this.#changeZoom();
+        const ipc = await import("./IPC.mjs");
+        ipc.defaultWindowDimensions();
     }
 
 }

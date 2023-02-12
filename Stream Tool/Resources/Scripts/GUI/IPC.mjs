@@ -82,6 +82,11 @@ export function resizable(value) {
     ipc.send('resizable', value);
 }
 
+/** Sends the signal to Electron to restore window dimensions */
+export function defaultWindowDimensions() {
+    ipc.send('defaultWindow');
+}
+
 // when we get data remotely, update GUI
 ipc.on('remoteGuiData', async (event, data) => {
 
