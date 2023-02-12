@@ -325,13 +325,13 @@ class GuiSettings {
 
     #lessZoom() {
         if (this.#zoomValue > 100) {
-            this.#zoomValue -= 25;
+            this.#zoomValue -= 10;
             this.#changeZoom();
         }
     }
     #moreZoom() {
         if (this.#zoomValue < 400) {
-            this.#zoomValue += 25;
+            this.#zoomValue += 10;
             this.#changeZoom();
         }
     }

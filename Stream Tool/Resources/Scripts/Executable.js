@@ -22,7 +22,8 @@ module.exports = function initExec(rPath, nPath, wSocket) {
         guiWidth = guiSettings.guiWidth;
         guiHeight = guiSettings.guiHeight;
         if (process.platform == "win32") {
-            guiHeight = guiHeight + 29; // windows why cant you be normal
+            guiHeight = guiHeight + 4; // windows why cant you be normal
+            guiHeight = guiHeight + 30;
         }
 
         // initialize them servers
@@ -155,7 +156,12 @@ function createWindow() {
 
     // restore default window dimensions
     ipcMain.on('defaultWindow', (event) => {
-        win.setBounds({width: 600, height: 300});
+        // windows includes flame borders on the window dimensions and i hate it
+        if (process.platform == "win32") {
+            win.setBounds({width: 604, height: 330});
+        } else {
+            win.setBounds({width: 600, height: 300});
+        }
     })
 
     wsServer.on('connection', (socket, req) => {
@@ -207,8 +213,13 @@ app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         // save current window dimensions
         const data = JSON.parse(fs.readFileSync(`${resourcesPath}/Texts/GUI Settings.json`));
-        data.guiWidth = guiWidth;
-        data.guiHeight = guiHeight;
+        if (process.platform == "win32") {
+            data.guiWidth = guiWidth - 4;
+            data.guiHeight = guiHeight - 30;
+        } else {
+            data.guiWidth = guiWidth;
+            data.guiHeight = guiHeight;
+        }
         fs.writeFileSync(`${resourcesPath}/Texts/GUI Settings.json`, JSON.stringify(data, null, 2));
         // and good bye
         app.quit()
