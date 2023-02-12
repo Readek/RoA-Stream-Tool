@@ -71,7 +71,7 @@ class GuiSettings {
                 this.#restoreWindowDefaults()
             });
         } else {
-            
+            document.getElementById("settingsElectron").style.display = "none";
         }
 
         // clicking the settings button will bring up the menu

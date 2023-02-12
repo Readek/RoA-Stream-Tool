@@ -935,6 +935,11 @@ button:hover {
   filter: brightness(.8);
 }
 
+#settingsElectron {
+  border-top: solid 3px var(--bg4);
+  margin-top: 10px;
+}
+
 #zoomDiv {
   width: 100%;
   display: flex;
