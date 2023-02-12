@@ -22,6 +22,10 @@ class GuiSettings {
 
     #alwaysOnTopCheck = document.getElementById("alwaysOnTop");
     #resizableCheck = document.getElementById("resizableWindow");
+    #lessZoomButt = document.getElementById("lessZoomButt");
+    #moreZoomButt = document.getElementById("moreZoomButt");
+    #zoomTextValue = document.getElementById("zoomTextValue");
+    #zoomValue = 100;
 
     constructor() {
 
@@ -56,13 +60,14 @@ class GuiSettings {
             this.copyMatch();
         });
 
-        // always on top is electron only
+        // only electron cares about this
         if (inside.electron) {
             this.#setAlwaysOnTopListener();
             this.#setResizableListener();
+            this.#lessZoomButt.addEventListener("click", () => {this.#lessZoom()})
+            this.#moreZoomButt.addEventListener("click", () => {this.#moreZoom()})
         } else {
-            this.#alwaysOnTopCheck.disabled = true;
-            this.#resizableCheck.disabled = true;
+            
         }
 
         // clicking the settings button will bring up the menu
@@ -95,6 +100,8 @@ class GuiSettings {
             this.toggleAlwaysOnTop();
             this.#resizableCheck.checked = guiSettings.resizable;
             this.toggleResizable();
+            this.#zoomValue = guiSettings.zoom;
+            this.#changeZoom();
         }
         
     }
@@ -310,6 +317,25 @@ class GuiSettings {
         const ipc = await import("./IPC.mjs");
         ipc.resizable(this.#resizableCheck.checked);
         this.save("resizable", this.#resizableCheck.checked);
+    }
+
+    #lessZoom() {
+        if (this.#zoomValue > 100) {
+            this.#zoomValue -= 25;
+            this.#changeZoom();
+        }
+    }
+    #moreZoom() {
+        if (this.#zoomValue < 400) {
+            this.#zoomValue += 25;
+            this.#changeZoom();
+        }
+    }
+    #changeZoom() {
+        const { webFrame } = require('electron');
+        webFrame.setZoomFactor(this.#zoomValue / 100);
+        this.#zoomTextValue.innerHTML = `${this.#zoomValue}%`;
+        this.save("zoom", this.#zoomValue);
     }
 
 }
