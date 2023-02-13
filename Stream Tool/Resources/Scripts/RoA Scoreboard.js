@@ -23,6 +23,9 @@ let bestOfPrev, gamemodePrev;
 let maxPlayers = 2;
 const maxSides = 2;
 
+// this will connect us to the GUI
+let webSocket;
+
 let startup = true;
 
 
@@ -68,16 +71,16 @@ function startWebsocket() {
 		document.getElementById('connErrorDiv').style.display = 'none';
 	}
 
-	// if the GUI closes, wait for it to reopen
+	// if the connection closes, wait for it to reopen
 	webSocket.onclose = () => {errorWebsocket()}
-	// if connection fails for any reason
-	webSocket.onerror = () => {errorWebsocket()}
 
 }
 function errorWebsocket() {
 
 	// show error message
 	document.getElementById('connErrorDiv').style.display = 'flex';
+	// delete current webSocket
+	webSocket = null;
 	// we will attempt to reconect every 5 seconds
 	setTimeout(() => {
 		startWebsocket();

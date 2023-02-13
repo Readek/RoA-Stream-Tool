@@ -4,8 +4,9 @@ let bracketData;
 let playerData = [];
 const playerSize = '28px';
 const tagSize = '16px';
-const fadeOutTime = .3
-const fadeInTime = .3
+const fadeOutTime = .3;
+const fadeInTime = .3;
+let webSocket;
 
 class BracketPlayer {
 
@@ -152,26 +153,26 @@ startWebsocket();
 function startWebsocket() {
 
 	// change this to the IP of where the GUI is being used for remote control
-	const webSocket = new WebSocket("ws://localhost:8080?id=bracket");
+	webSocket = new WebSocket("ws://localhost:8080?id=bracket");
 	webSocket.onopen = () => { // if it connects successfully
 		// everything will update everytime we get data from the server (the GUI)
 		webSocket.onmessage = function (event) {
-            updateData(JSON.parse(event.data));
+			updateData(JSON.parse(event.data));
 		}
 		// hide error message in case it was up
 		document.getElementById('connErrorDiv').style.display = 'none';
 	}
 
-	// if the GUI closes, wait for it to reopen
+	// if the connection closes, wait for it to reopen
 	webSocket.onclose = () => {errorWebsocket()}
-	// if connection fails for any reason
-	webSocket.onerror = () => {errorWebsocket()}
 
 }
 function errorWebsocket() {
 
 	// show error message
 	document.getElementById('connErrorDiv').style.display = 'flex';
+	// delete current webSocket
+	webSocket = null;
 	// we will attempt to reconect every 5 seconds
 	setTimeout(() => {
 		startWebsocket();

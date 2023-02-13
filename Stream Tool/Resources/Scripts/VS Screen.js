@@ -40,6 +40,9 @@ const socialInterval = 7000; // time in miliseconds for each change
 let maxPlayers = 2; //will change when doubles comes
 const maxSides = 2;
 
+// this will connect us to the GUI
+let webSocket;
+
 let startup = true;
 
 
@@ -163,7 +166,7 @@ startWebsocket();
 function startWebsocket() {
 
 	// change this to the IP of where the GUI is being used for remote control
-	const webSocket = new WebSocket("ws://localhost:8080?id=gameData");
+	webSocket = new WebSocket("ws://localhost:8080?id=gameData");
 	webSocket.onopen = () => { // if it connects successfully
 		// everything will update everytime we get data from the server (the GUI)
 		webSocket.onmessage = function (event) {
@@ -173,16 +176,16 @@ function startWebsocket() {
 		document.getElementById('connErrorDiv').style.display = 'none';
 	}
 
-	// if the GUI closes, wait for it to reopen
+	// if the connection closes, wait for it to reopen
 	webSocket.onclose = () => {errorWebsocket()}
-	// if connection fails for any reason
-	webSocket.onerror = () => {errorWebsocket()}
 
 }
 function errorWebsocket() {
 
 	// show error message
 	document.getElementById('connErrorDiv').style.display = 'flex';
+	// delete current webSocket
+	webSocket = null;
 	// we will attempt to reconect every 5 seconds
 	setTimeout(() => {
 		startWebsocket();
