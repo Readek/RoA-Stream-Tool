@@ -61,7 +61,7 @@ export async function updateColor(side, color) {
 
     // generate new trails for existing characters
     for (let i = 0; i < players.length; i+=2) {
-        if (side == "l") {
+        if (side % 2 == 0) {
             promises.push(players[i].setTrailImage());
         } else {
             promises.push(players[i+1].setTrailImage());
