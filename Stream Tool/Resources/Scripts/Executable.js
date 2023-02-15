@@ -22,7 +22,7 @@ module.exports = function initExec(rPath, nPath, wSocket) {
         guiWidth = guiSettings.guiWidth;
         guiHeight = guiSettings.guiHeight;
         if (process.platform == "win32") {
-            guiHeight = guiHeight + 4; // windows why cant you be normal
+            guiWidth = guiWidth + 4; // windows why cant you be normal
             guiHeight = guiHeight + 30;
         }
 
