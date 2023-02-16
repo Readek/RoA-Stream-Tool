@@ -429,6 +429,7 @@ button:hover {
 .fIconImg {
   width: 24px;
   height: 24px;
+  object-fit: contain;
   padding-left: 4px;
 }
 
@@ -928,10 +929,10 @@ button:hover {
   color: var(--text2);
   outline: none;
 }
-#copyMatch:hover {
+.settingsButton:hover {
   filter: brightness(1.4);
 }
-#copyMatch:active {
+.settingsButton:active {
   filter: brightness(.8);
 }
 
