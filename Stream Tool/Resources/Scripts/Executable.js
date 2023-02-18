@@ -105,6 +105,8 @@ function createWindow() {
 
         width: guiWidth,
         height: guiHeight,
+        minHeight: 250,
+        minWidth: 350,
         resizable: false,
 
         backgroundColor: "#383838",
