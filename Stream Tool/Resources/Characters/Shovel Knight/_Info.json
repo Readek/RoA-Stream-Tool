@@ -1,24 +1,84 @@
 {
     "skinList": [
-        {"name": "Default"},
-        {"name": "Cyan", "hex": "B2F0-DC4D-380B-9F9D-60FA-FFFF-EA00"},
-        {"name": "Red", "hex": "CE48-2856-443C-FFFF-00C2-A996-7C00"},
-        {"name": "Green", "hex": "52B7-4E04-5300-FFFF-00ED-D9B7-E300"},
-        {"name": "Grey", "hex": "6A6A-6A29-2929-DE2A-12E6-6756-4000"},
-        {"name": "Purple", "hex": "9B7E-DE7C-0E73-E679-83E8-B1A6-7100"},
-        {"name": "Halloween", "hex": "BD00-0057-5757-D190-3BFF-EDB3-4900"},
-        {"name": "Christmas", "hex": "FF22-2232-B50F-FFFF-FFFF-FFFF-3900"},
-        {"name": "Valentines", "hex": "FF99-D2B7-0070-E34B-4BFF-F3FB-3A00"},
-        {"name": "Summer", "hex": "FFF6-8C59-CCE9-4592-72FF-A628-3800"},
-        {"name": "Default Custom 1", "hex": "DE6C-2561-3131-B466-3B46-1B00-5800"},
-        {"name": "Default Custom 2", "hex": "FFFF-FF61-83A5-BDAA-D52C-1B4E-E800"},
-        {"name": "Golden", "hex": "FCD5-3575-5C00-FCFC-FCFF-FFFE-BA00", "golden": true},
-        {"name": "Infamous", "hex": "00FF-A856-53AA-D445-FE37-EAFF-5500"},
-        {"name": "Abyss", "hex": "5654-924F-3D5E-DC71-FFA6-ACD6-F400"},
-        {"name": "Early Access", "hex": "537A-3ED3-E29A-D3E2-9AA7-BA4A-8200", "ea": true, "force": true},
-        {"name": "Champion", "hex": "6A6A-6A41-3F37-B2FF-D0D0-DFDE-B400", "alpha": [1,1,1,0.5]},
-        {"name": "Ranked", "hex": "FFCC-0079-7AC3-FF87-00E4-E4F0-5C00"},
-        {"name": "HD"}
+        {
+            "name": "Default"
+        },
+        {
+            "name": "Cyan",
+            "hex": "B2F0-DC4D-380B-9F9D-60FA-FFFF-EA00"
+        },
+        {
+            "name": "Red",
+            "hex": "CE48-2856-443C-FFFF-00C2-A996-7C00"
+        },
+        {
+            "name": "Green",
+            "hex": "52B7-4E04-5300-FFFF-00ED-D9B7-E300"
+        },
+        {
+            "name": "Grey",
+            "hex": "6A6A-6A29-2929-DE2A-12E6-6756-4000"
+        },
+        {
+            "name": "Purple",
+            "hex": "9B7E-DE7C-0E73-E679-83E8-B1A6-7100"
+        },
+        {
+            "name": "Halloween",
+            "hex": "BD00-0057-5757-D190-3BFF-EDB3-4900"
+        },
+        {
+            "name": "Christmas",
+            "hex": "FF22-2232-B50F-FFFF-FFFF-FFFF-3900"
+        },
+        {
+            "name": "Valentines",
+            "hex": "FF99-D2B7-0070-E34B-4BFF-F3FB-3A00"
+        },
+        {
+            "name": "Summer",
+            "hex": "FFF6-8C59-CCE9-4592-72FF-A628-3800"
+        },
+        {
+            "name": "Default Custom 1",
+            "hex": "DE6C-2561-3131-B466-3B46-1B00-5800"
+        },
+        {
+            "name": "Default Custom 2",
+            "hex": "FFFF-FF61-83A5-BDAA-D52C-1B4E-E800"
+        },
+        {
+            "name": "Golden",
+            "hex": "FCD5-3575-5C00-FCFC-FCFF-FFFE-BA00",
+            "golden": true
+        },
+        {
+            "name": "Infamous",
+            "hex": "00FF-A856-53AA-D445-FE37-EAFF-5500"
+        },
+        {
+            "name": "Abyss",
+            "hex": "5654-924F-3D5E-DC71-FFA6-ACD6-F400"
+        },
+        {
+            "name": "Early Access",
+            "hex": "537A-3ED3-E29A-D3E2-9AA7-BA4A-8200",
+            "ea": true,
+            "force": true
+        },
+        {
+            "name": "Champion",
+            "hex": "6A6A-6A41-3F37-B2FF-D0D0-DFDE-B400",
+            "alpha": [1, 1, 1, 0.5],
+            "force": true
+        },
+        {
+            "name": "Ranked",
+            "hex": "FFCC-0079-7AC3-FF87-00E4-E4F0-5C00"
+        },
+        {
+            "name": "HD"
+        }
     ],
     "colorData" : {
         "Default" : {

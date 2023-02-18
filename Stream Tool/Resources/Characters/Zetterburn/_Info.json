@@ -1,29 +1,103 @@
 {
     "skinList": [
-        {"name": "Default"},
-        {"name": "Blue", "hex": "4B5F-C0FA-FDFF-A9FF-DA3F-B1EB-0030-77CD"},
-        {"name": "Red", "hex": "CE30-30FD-F724-FFBA-87FF-5F5F-A001-2A8A"},
-        {"name": "Green", "hex": "237A-35BD-FFA6-D2FF-001F-DD00-007F-0F43"},
-        {"name": "Grey", "hex": "393A-3CFF-FFFF-D5D6-D983-8588-4040-412C"},
-        {"name": "Purple", "hex": "FAFD-FFDC-CB69-9D87-C36F-5EA6-3C30-3CF6"},
-        {"name": "Halloween", "hex": "6156-45FF-DEB8-FF7D-00A7-3E85-7729-5D59"},
-        {"name": "Christmas", "hex": "DE48-48FD-F4AB-FFFF-FFFD-E5E7-EDC4-BE9A"},
-        {"name": "Valentines", "hex": "FF95-D3FF-D9ED-FFAC-FEF7-4CD5-D700-8EF5"},
-        {"name": "Summer", "hex": "59CC-E9FF-F68C-FFD8-A1FF-A628-AC51-004E"},
-        {"name": "Default Custom 1", "hex": "FA94-0CDC-B97F-FFFF-3CF7-C00A-EB88-00D9"},
-        {"name": "Default Custom 2", "hex": "2C3A-6D9C-6E69-3C3C-3C23-2323-0C0C-0C7E"},
-        {"name": "Champion", "hex": "5252-5252-5252-FFFF-FFD0-DFDE-D0DF-DE19", "alpha": [1,1,0.75,0.75,0.75]},
-        {"name": "Excaliburn", "hex": "3C36-20A9-2E2E-1306-0413-0604-B635-35E6"},
-        {"name": "Abyss", "hex": "4F3D-5EA6-ACD6-DC71-FF92-3BCE-4E17-8DD8"},
-        {"name": "Early Access", "hex": "537A-3ED3-E29A-D3E2-9AA7-BA4A-537A-3EFB", "ea": true, "force": true},
-        {"name": "Shine", "hex": "DCCB-69E5-E1AF-A0FF-FF22-A5E7-FFF9-F940"},
-        {"name": "Golden", "hex": "F1CC-3FF0-D94F-FFFF-FFFD-FFFC-FFF8-C46F", "golden": true},
-        {"name": "LoA", "hex": "7A5A-4ED5-BD7E-FFE9-00D7-401D-8703-2C55", "force": true},
-        {"name": "Ranked", "hex": "FFCC-00F9-E1BE-FFD8-3DE4-E4F0-0000-00B2"},
-        {"name": "Steampunk", "hex": "5252-52E4-923F-30D9-A312-9477-0257-552E"},
-        {"name": "HD"},
-        {"name": "LoA HD"},
-        {"name": "LoA 1 HD"}
+        {
+            "name": "Default"
+        },
+        {
+            "name": "Blue",
+            "hex": "4B5F-C0FA-FDFF-A9FF-DA3F-B1EB-0030-77CD"
+        },
+        {
+            "name": "Red",
+            "hex": "CE30-30FD-F724-FFBA-87FF-5F5F-A001-2A8A"
+        },
+        {
+            "name": "Green",
+            "hex": "237A-35BD-FFA6-D2FF-001F-DD00-007F-0F43"
+        },
+        {
+            "name": "Grey",
+            "hex": "393A-3CFF-FFFF-D5D6-D983-8588-4040-412C"
+        },
+        {
+            "name": "Purple",
+            "hex": "FAFD-FFDC-CB69-9D87-C36F-5EA6-3C30-3CF6"
+        },
+        {
+            "name": "Halloween",
+            "hex": "6156-45FF-DEB8-FF7D-00A7-3E85-7729-5D59"
+        },
+        {
+            "name": "Christmas",
+            "hex": "DE48-48FD-F4AB-FFFF-FFFD-E5E7-EDC4-BE9A"
+        },
+        {
+            "name": "Valentines",
+            "hex": "FF95-D3FF-D9ED-FFAC-FEF7-4CD5-D700-8EF5"
+        },
+        {
+            "name": "Summer",
+            "hex": "59CC-E9FF-F68C-FFD8-A1FF-A628-AC51-004E"
+        },
+        {
+            "name": "Default Custom 1",
+            "hex": "FA94-0CDC-B97F-FFFF-3CF7-C00A-EB88-00D9"
+        },
+        {
+            "name": "Default Custom 2",
+            "hex": "2C3A-6D9C-6E69-3C3C-3C23-2323-0C0C-0C7E"
+        },
+        {
+            "name": "Champion",
+            "hex": "5252-5252-5252-FFFF-FFD0-DFDE-D0DF-DE19",
+            "alpha": [1, 1, 0.75, 0.75, 0.75],
+            "force": true
+        },
+        {
+            "name": "Excaliburn",
+            "hex": "3C36-20A9-2E2E-1306-0413-0604-B635-35E6"
+        },
+        {
+            "name": "Abyss",
+            "hex": "4F3D-5EA6-ACD6-DC71-FF92-3BCE-4E17-8DD8"
+        },
+        {
+            "name": "Early Access",
+            "hex": "537A-3ED3-E29A-D3E2-9AA7-BA4A-537A-3EFB",
+            "ea": true,
+            "force": true
+        },
+        {
+            "name": "Shine",
+            "hex": "DCCB-69E5-E1AF-A0FF-FF22-A5E7-FFF9-F940"
+        },
+        {
+            "name": "Golden",
+            "hex": "F1CC-3FF0-D94F-FFFF-FFFD-FFFC-FFF8-C46F",
+            "golden": true
+        },
+        {
+            "name": "LoA",
+            "hex": "7A5A-4ED5-BD7E-FFE9-00D7-401D-8703-2C55",
+            "force": true
+        },
+        {
+            "name": "Ranked",
+            "hex": "FFCC-00F9-E1BE-FFD8-3DE4-E4F0-0000-00B2"
+        },
+        {
+            "name": "Steampunk",
+            "hex": "5252-52E4-923F-30D9-A312-9477-0257-552E"
+        },
+        {
+            "name": "HD"
+        },
+        {
+            "name": "LoA HD"
+        },
+        {
+            "name": "LoA 1 HD"
+        }
     ],
     "colorData" : {
         "Default" : {

@@ -1,28 +1,99 @@
 {
     "skinList": [
-        {"name": "Default"},
-        {"name": "Blue", "hex": "526A-A86E-C4C5-DBD5-DD1C-3B4D-A500"},
-        {"name": "Pink", "hex": "AA49-68CA-8E61-FFE1-684F-183D-E100"},
-        {"name": "Green", "hex": "4181-42A5-7575-D7DD-D51A-2D12-1100"},
-        {"name": "Grey", "hex": "6379-8159-5959-DCDA-D61E-2E2D-2300"},
-        {"name": "Purple", "hex": "675D-88AD-6483-D9E7-D51D-1F34-5600"},
-        {"name": "Halloween", "hex": "B16D-2361-5645-A3E7-9E3C-2424-E700"},
-        {"name": "Christmas", "hex": "FFEB-EBE1-4141-6DC2-5373-0000-6D00"},
-        {"name": "Valentines", "hex": "FF82-CBFF-C1FF-FFEC-F7BA-2A24-6700"},
-        {"name": "Summer", "hex": "D0C6-4959-CCE9-9BF9-D45C-571F-E300"},
-        {"name": "Default Custom 1", "hex": "DE6C-2561-3131-B466-3B46-1B00-5800"},
-        {"name": "Default Custom 2", "hex": "FFFF-FF61-83A5-BDAA-D52C-1B4E-E800"},
-        {"name": "Summit", "hex": "AC08-274B-5068-BCC2-CE1E-2432-A900", "force": true},
-        {"name": "Champion", "hex": "82AD-B141-3E37-5E56-4D39-3F4B-0300", "alpha": [0.75,1,1,1]},
-        {"name": "Abyss", "hex": "4F3D-5E56-5492-DC71-FF15-0F1B-8B00"},
-        {"name": "Early Access", "hex": "537A-3EA7-BA4A-D3E2-9A23-4331-9900", "ea": true, "force": true},
-        {"name": "Burrito", "hex": "AA95-3ADB-4C53-A9F5-7C32-333E-9E00"},
-        {"name": "Golden", "hex": "FFBB-00FF-FFFF-FFFD-FB6B-4E1C-4A00", "golden": true},
-        {"name": "Ranked", "hex": "FFCC-005C-6160-C4FF-F662-4C00-E800"},
-        {"name": "Genesis", "hex": "302B-2DF8-5C69-D6DF-EA16-1415-2B00"},
-        {"name": "HD"},
-        {"name": "LoA HD"},
-        {"name": "LoA 1 HD"}
+        {
+            "name": "Default"
+        },
+        {
+            "name": "Blue",
+            "hex": "526A-A86E-C4C5-DBD5-DD1C-3B4D-A500"
+        },
+        {
+            "name": "Pink",
+            "hex": "AA49-68CA-8E61-FFE1-684F-183D-E100"
+        },
+        {
+            "name": "Green",
+            "hex": "4181-42A5-7575-D7DD-D51A-2D12-1100"
+        },
+        {
+            "name": "Grey",
+            "hex": "6379-8159-5959-DCDA-D61E-2E2D-2300"
+        },
+        {
+            "name": "Purple",
+            "hex": "675D-88AD-6483-D9E7-D51D-1F34-5600"
+        },
+        {
+            "name": "Halloween",
+            "hex": "B16D-2361-5645-A3E7-9E3C-2424-E700"
+        },
+        {
+            "name": "Christmas",
+            "hex": "FFEB-EBE1-4141-6DC2-5373-0000-6D00"
+        },
+        {
+            "name": "Valentines",
+            "hex": "FF82-CBFF-C1FF-FFEC-F7BA-2A24-6700"
+        },
+        {
+            "name": "Summer",
+            "hex": "D0C6-4959-CCE9-9BF9-D45C-571F-E300"
+        },
+        {
+            "name": "Default Custom 1",
+            "hex": "DE6C-2561-3131-B466-3B46-1B00-5800"
+        },
+        {
+            "name": "Default Custom 2",
+            "hex": "FFFF-FF61-83A5-BDAA-D52C-1B4E-E800"
+        },
+        {
+            "name": "Summit",
+            "hex": "AC08-274B-5068-BCC2-CE1E-2432-A900",
+            "force": true
+        },
+        {
+            "name": "Champion",
+            "hex": "82AD-B141-3E37-5E56-4D39-3F4B-0300",
+            "alpha": [0.75, 1, 1, 1],
+            "force": true
+        },
+        {
+            "name": "Abyss",
+            "hex": "4F3D-5E56-5492-DC71-FF15-0F1B-8B00"
+        },
+        {
+            "name": "Early Access",
+            "hex": "537A-3EA7-BA4A-D3E2-9A23-4331-9900",
+            "ea": true,
+            "force": true
+        },
+        {
+            "name": "Burrito",
+            "hex": "AA95-3ADB-4C53-A9F5-7C32-333E-9E00"
+        },
+        {
+            "name": "Golden",
+            "hex": "FFBB-00FF-FFFF-FFFD-FB6B-4E1C-4A00",
+            "golden": true
+        },
+        {
+            "name": "Ranked",
+            "hex": "FFCC-005C-6160-C4FF-F662-4C00-E800"
+        },
+        {
+            "name": "Genesis",
+            "hex": "302B-2DF8-5C69-D6DF-EA16-1415-2B00"
+        },
+        {
+            "name": "HD"
+        },
+        {
+            "name": "LoA HD"
+        },
+        {
+            "name": "LoA 1 HD"
+        }
     ],
     "colorData" : {
         "Default" : {

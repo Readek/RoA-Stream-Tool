@@ -1,32 +1,114 @@
 {
     "skinList": [
-        {"name": "Default"},
-        {"name": "Blue", "hex": "4136-5045-4559-4076-FFB5-B5B5-FFE6-6346-00C6-00ED-FCC0"},
-        {"name": "Orange", "hex": "4136-5045-4559-FF64-40B5-B5B5-FFE6-63DC-8700-FF00-0040"},
-        {"name": "Green", "hex": "4136-5045-4559-40FF-40B5-B5B5-FFE6-6300-DC5E-FCFF-00C9"},        
-        {"name": "Purple", "hex": "5425-5D83-6D9B-483D-4BC5-C0D2-FFAF-51B0-3FFF-FFA8-1FEA"},
-        {"name": "White", "hex": "96A3-A46D-8D9B-FFFF-FFEF-E9FF-FF2F-2F00-CBC4-FF35-3501"},
-        {"name": "Halloween", "hex": "A3E7-9E7E-7E7D-9683-5BAA-A598-6156-45A7-3E86-FF77-00C8"},
-        {"name": "Christmas", "hex": "F6E8-E825-2525-0CAA-00FF-4848-FFFF-FFE1-0000-00FF-1E99"},
-        {"name": "Valentines", "hex": "E4E4-E477-3E3E-FF9A-E4A7-7C99-FF7D-A8EF-71BB-E34B-4BE9"},
-        {"name": "Summer", "hex": "FFA6-2859-CCE9-FFF6-8CFF-FDE5-FFA6-28FF-D820-59CC-E90E"},
-        {"name": "Default Custom 1", "hex": "3E54-3B37-4F34-8998-7A38-6B45-9A77-1A2A-A857-FFBE-00F7"},
-        {"name": "Default Custom 2", "hex": "3A3A-4672-7F92-53E0-FB35-61AC-203D-6914-0E10-FFFF-E442"},
-        {"name": "Genesis", "hex": "3435-3756-5656-FAF7-F7B5-B5B5-FF39-3FFF-CEE1-FE2F-3536"},
-        {"name": "Hero", "hex": "4136-50FE-FED8-6096-61A0-7857-8B61-4943-A4D6-FAD4-3EAC"},
-        {"name": "Abyss", "hex": "4F3D-5E56-5492-DC71-FFA6-ACD6-903B-CEA6-ACD6-DC71-FFF9"},
-        {"name": "Early Access", "hex": "A9BA-4A23-4331-537A-3ED3-E29A-D3E2-9AA7-BA4A-2343-314A", "ea": true, "force": true},
-        {"name": "Arcade Green", "hex": "FFFF-FF41-3F36-8CDE-5E41-3F36-C6CB-2FD4-D4D4-7AEC-3AA7"},
-        {"name": "Arcade Pink", "hex": "FFFF-FF41-3F36-D987-CD41-3F36-C6CB-2FD4-D4D4-FE6A-E83B"},
-        {"name": "Arcade Blue", "hex": "FFFF-FF41-3F36-91D2-F341-3F36-C6CB-2FD4-D4D4-6DCE-FFB1"},
-        {"name": "Infamous", "hex": "5653-AA33-3741-37EA-FFF6-FFFF-D445-FED4-45FE-00FF-A8B9"},
-        {"name": "Champion", "hex": "413E-3752-5252-B2FF-D0D0-DFDE-B2FF-D0D0-DFDE-7FFF-B168", "alpha": [1,1,1,0.5,1,0.5,1]},
-        {"name": "Ranked", "hex": "FFCC-00FF-8700-E4E4-F079-7AC3-F3FC-FFBE-5723-FFD8-3D9D"},
-        {"name": "Golden", "hex": "FCFC-FC75-5C00-FFDD-1EFC-D535-FFDD-1EA9-A9A9-FFDD-1E5B", "golden": true},
-        {"name": "Heat Wave", "hex": "302F-238F-1212-1E0A-A3A4-6D39-CDB8-39C5-0000-FFD7-5A78"},
-        {"name": "HD"},
-        {"name": "LoA HD"},
-        {"name": "LoA 1 HD"}
+        {
+            "name": "Default"
+        },
+        {
+            "name": "Blue",
+            "hex": "4136-5045-4559-4076-FFB5-B5B5-FFE6-6346-00C6-00ED-FCC0"
+        },
+        {
+            "name": "Orange",
+            "hex": "4136-5045-4559-FF64-40B5-B5B5-FFE6-63DC-8700-FF00-0040"
+        },
+        {
+            "name": "Green",
+            "hex": "4136-5045-4559-40FF-40B5-B5B5-FFE6-6300-DC5E-FCFF-00C9"
+        },
+        {
+            "name": "Purple",
+            "hex": "5425-5D83-6D9B-483D-4BC5-C0D2-FFAF-51B0-3FFF-FFA8-1FEA"
+        },
+        {
+            "name": "White",
+            "hex": "96A3-A46D-8D9B-FFFF-FFEF-E9FF-FF2F-2F00-CBC4-FF35-3501"
+        },
+        {
+            "name": "Halloween",
+            "hex": "A3E7-9E7E-7E7D-9683-5BAA-A598-6156-45A7-3E86-FF77-00C8"
+        },
+        {
+            "name": "Christmas",
+            "hex": "F6E8-E825-2525-0CAA-00FF-4848-FFFF-FFE1-0000-00FF-1E99"
+        },
+        {
+            "name": "Valentines",
+            "hex": "E4E4-E477-3E3E-FF9A-E4A7-7C99-FF7D-A8EF-71BB-E34B-4BE9"
+        },
+        {
+            "name": "Summer",
+            "hex": "FFA6-2859-CCE9-FFF6-8CFF-FDE5-FFA6-28FF-D820-59CC-E90E"
+        },
+        {
+            "name": "Default Custom 1",
+            "hex": "3E54-3B37-4F34-8998-7A38-6B45-9A77-1A2A-A857-FFBE-00F7"
+        },
+        {
+            "name": "Default Custom 2",
+            "hex": "3A3A-4672-7F92-53E0-FB35-61AC-203D-6914-0E10-FFFF-E442"
+        },
+        {
+            "name": "Genesis",
+            "hex": "3435-3756-5656-FAF7-F7B5-B5B5-FF39-3FFF-CEE1-FE2F-3536"
+        },
+        {
+            "name": "Hero",
+            "hex": "4136-50FE-FED8-6096-61A0-7857-8B61-4943-A4D6-FAD4-3EAC"
+        },
+        {
+            "name": "Abyss",
+            "hex": "4F3D-5E56-5492-DC71-FFA6-ACD6-903B-CEA6-ACD6-DC71-FFF9"
+        },
+        {
+            "name": "Early Access",
+            "hex": "A9BA-4A23-4331-537A-3ED3-E29A-D3E2-9AA7-BA4A-2343-314A",
+            "ea": true,
+            "force": true
+        },
+        {
+            "name": "Arcade Green",
+            "hex": "FFFF-FF41-3F36-8CDE-5E41-3F36-C6CB-2FD4-D4D4-7AEC-3AA7"
+        },
+        {
+            "name": "Arcade Pink",
+            "hex": "FFFF-FF41-3F36-D987-CD41-3F36-C6CB-2FD4-D4D4-FE6A-E83B"
+        },
+        {
+            "name": "Arcade Blue",
+            "hex": "FFFF-FF41-3F36-91D2-F341-3F36-C6CB-2FD4-D4D4-6DCE-FFB1"
+        },
+        {
+            "name": "Infamous",
+            "hex": "5653-AA33-3741-37EA-FFF6-FFFF-D445-FED4-45FE-00FF-A8B9"
+        },
+        {
+            "name": "Champion",
+            "hex": "413E-3752-5252-B2FF-D0D0-DFDE-B2FF-D0D0-DFDE-7FFF-B168",
+            "alpha": [1, 1, 1, 0.5, 1, 0.5, 1],
+            "force": true
+        },
+        {
+            "name": "Ranked",
+            "hex": "FFCC-00FF-8700-E4E4-F079-7AC3-F3FC-FFBE-5723-FFD8-3D9D"
+        },
+        {
+            "name": "Golden",
+            "hex": "FCFC-FC75-5C00-FFDD-1EFC-D535-FFDD-1EA9-A9A9-FFDD-1E5B",
+            "golden": true
+        },
+        {
+            "name": "Heat Wave",
+            "hex": "302F-238F-1212-1E0A-A3A4-6D39-CDB8-39C5-0000-FFD7-5A78"
+        },
+        {
+            "name": "HD"
+        },
+        {
+            "name": "LoA HD"
+        },
+        {
+            "name": "LoA 1 HD"
+        }
     ],
     "colorData" : {
         "Default" : {

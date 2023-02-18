@@ -1,12 +1,34 @@
 {
     "skinList": [
-        {"name": "Default"},
-        {"name": "Blue", "hex": "416f99-a9c4de-abb6b9-00"},
-        {"name": "Red", "hex": "922c2c-d8afaf-5e524f-00"},
-        {"name": "Yellow", "hex": "7c7313-cdcc98-6f856c-00"},
-        {"name": "Grey", "hex": "5d5d5d-cdcdcd-6b3939-00"},
-        {"name": "Purple", "hex": "523366-bb98cd-306270-00"},
-        {"name": "Ghost", "hex": "92cdc7-c1d2d0-799794-00", "alpha": [0.7,0.7,0.7], "ea": true}
+        {
+            "name": "Default"
+        },
+        {
+            "name": "Blue",
+            "hex": "416f99-a9c4de-abb6b9-00"
+        },
+        {
+            "name": "Red",
+            "hex": "922c2c-d8afaf-5e524f-00"
+        },
+        {
+            "name": "Yellow",
+            "hex": "7c7313-cdcc98-6f856c-00"
+        },
+        {
+            "name": "Grey",
+            "hex": "5d5d5d-cdcdcd-6b3939-00"
+        },
+        {
+            "name": "Purple",
+            "hex": "523366-bb98cd-306270-00"
+        },
+        {
+            "name": "Ghost",
+            "hex": "92cdc7-c1d2d0-799794-00",
+            "alpha": [0.7,0.7,0.7],
+            "ea": true
+        }
     ],
     "colorData" : {
         "Default" : {

@@ -1,27 +1,95 @@
 {
     "skinList": [
-        {"name": "Default"},
-        {"name": "Blue", "hex": "3B3B-758B-D5FF-807A-76BC-D5FF-FFFF-FF14"},
-        {"name": "Red", "hex": "7529-29FF-9566-9B6E-6ED0-1515-FFC1-55FD"},
-        {"name": "Green", "hex": "2F87-65B9-FF8E-859F-79EF-FF83-FFAC-AC53"},
-        {"name": "White", "hex": "3D3D-3DFF-FFFF-9393-93D9-5775-FFFF-FFE8"},
-        {"name": "Purple", "hex": "5D34-60B1-8EFF-9D85-9FFF-83CC-7750-6950"},
-        {"name": "Halloween", "hex": "1A3D-56AD-FF91-9CAB-92B1-41D6-E58A-E8ED"},
-        {"name": "Christmas", "hex": "FFFF-FF69-BA4A-E836-36FF-FFFF-FF3E-3EEA"},
-        {"name": "Valentines", "hex": "FFFF-FFFF-99D2-FFD9-EDB7-0070-E34B-4B77"},
-        {"name": "Summer", "hex": "FFF6-8CFF-A628-59CC-E959-CCE9-FFFD-E535"},
-        {"name": "Default Custom 1", "hex": "FFAE-445F-554C-CBB6-B6FF-F4E0-5D56-569A"},
-        {"name": "Default Custom 2", "hex": "79AD-6488-685D-D5D8-DD3C-2424-79AD-64EA"},
-        {"name": "Genesis", "hex": "3435-379E-2317-FAF7-F7FF-3941-FF39-41A0"},
-        {"name": "Infamous", "hex": "3337-4100-FFA8-5653-AAD4-45FE-37EA-FFB6"},
-        {"name": "Abyss", "hex": "4F3D-5EDC-71FF-5654-92A6-ACD6-903B-CECE"},
-        {"name": "Early Access", "hex": "2343-31A7-BA4A-537A-3ED3-E29A-A7BA-4AAA", "ea": true, "force": true},
-        {"name": "Golden", "hex": "FFDD-1EFF-E762-FFDD-1EFF-DD1E-FFF6-CF66", "golden": true},
-        {"name": "Champion", "hex": "3F3F-46B2-FFD0-C9C9-DCD0-DFDE-B2FF-D052", "alpha": [1,1,1,0.5,1]},
-        {"name": "Ranked", "hex": "FFCC-00FF-8700-E4E4-F0FF-F4E0-FF87-0083"},
-        {"name": "Steampunk", "hex": "5252-52A2-5D34-30DA-A58A-8A8A-FFFF-FF38"},
-        {"name": "HD"},
-        {"name": "LoA HD"}
+        {
+            "name": "Default"
+        },
+        {
+            "name": "Blue",
+            "hex": "3B3B-758B-D5FF-807A-76BC-D5FF-FFFF-FF14"
+        },
+        {
+            "name": "Red",
+            "hex": "7529-29FF-9566-9B6E-6ED0-1515-FFC1-55FD"
+        },
+        {
+            "name": "Green",
+            "hex": "2F87-65B9-FF8E-859F-79EF-FF83-FFAC-AC53"
+        },
+        {
+            "name": "White",
+            "hex": "3D3D-3DFF-FFFF-9393-93D9-5775-FFFF-FFE8"
+        },
+        {
+            "name": "Purple",
+            "hex": "5D34-60B1-8EFF-9D85-9FFF-83CC-7750-6950"
+        },
+        {
+            "name": "Halloween",
+            "hex": "1A3D-56AD-FF91-9CAB-92B1-41D6-E58A-E8ED"
+        },
+        {
+            "name": "Christmas",
+            "hex": "FFFF-FF69-BA4A-E836-36FF-FFFF-FF3E-3EEA"
+        },
+        {
+            "name": "Valentines",
+            "hex": "FFFF-FFFF-99D2-FFD9-EDB7-0070-E34B-4B77"
+        },
+        {
+            "name": "Summer",
+            "hex": "FFF6-8CFF-A628-59CC-E959-CCE9-FFFD-E535"
+        },
+        {
+            "name": "Default Custom 1",
+            "hex": "FFAE-445F-554C-CBB6-B6FF-F4E0-5D56-569A"
+        },
+        {
+            "name": "Default Custom 2",
+            "hex": "79AD-6488-685D-D5D8-DD3C-2424-79AD-64EA"
+        },
+        {
+            "name": "Genesis",
+            "hex": "3435-379E-2317-FAF7-F7FF-3941-FF39-41A0"
+        },
+        {
+            "name": "Infamous",
+            "hex": "3337-4100-FFA8-5653-AAD4-45FE-37EA-FFB6"
+        },
+        {
+            "name": "Abyss",
+            "hex": "4F3D-5EDC-71FF-5654-92A6-ACD6-903B-CECE"
+        },
+        {
+            "name": "Early Access",
+            "hex": "2343-31A7-BA4A-537A-3ED3-E29A-A7BA-4AAA",
+            "ea": true,
+            "force": true
+        },
+        {
+            "name": "Golden",
+            "hex": "FFDD-1EFF-E762-FFDD-1EFF-DD1E-FFF6-CF66",
+            "golden": true
+        },
+        {
+            "name": "Champion",
+            "hex": "3F3F-46B2-FFD0-C9C9-DCD0-DFDE-B2FF-D052",
+            "alpha": [1, 1, 1, 0.5, 1],
+            "force": true
+        },
+        {
+            "name": "Ranked",
+            "hex": "FFCC-00FF-8700-E4E4-F0FF-F4E0-FF87-0083"
+        },
+        {
+            "name": "Steampunk",
+            "hex": "5252-52A2-5D34-30DA-A58A-8A8A-FFFF-FF38"
+        },
+        {
+            "name": "HD"
+        },
+        {
+            "name": "LoA HD"
+        }
     ],
     "colorData" : {
         "Default" : {
