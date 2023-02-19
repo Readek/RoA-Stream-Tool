@@ -99,6 +99,7 @@ export async function writeScoreboard() {
                 charPos: players[i].getVsCharPos(),
                 trailImg: players[i].trailSrc,
                 bgVid: players[i].vsBgSrc,
+                skin: players[i].vsSkin.name
             },
             // these are just for remote updating
             char: players[i].char,

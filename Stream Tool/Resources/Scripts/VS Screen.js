@@ -969,7 +969,7 @@ async function updateChar(charInfo, pNum) {
 	trailEL.style.transform = `translate(${charPos[0]}px, ${charPos[1]}px) scale(${charPos[2]})`;
 
 	//to decide scalling
-	if (charInfo.charImg.includes("HD")) {
+	if (charInfo.skin.includes("HD")) {
 		charEL.style.imageRendering = "auto"; // default scalling
 		trailEL.style.imageRendering = "auto";
 	} else {
