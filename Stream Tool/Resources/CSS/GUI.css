@@ -971,6 +971,7 @@ button:hover {
   flex-direction: column;
   gap: 10px;
   background-color: var(--bg5);
+  overflow: hidden;
 }
 
 
