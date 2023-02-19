@@ -239,7 +239,8 @@ class RoaRecolor {
       for (let i = 0; i < this.colorIn.length; i++) {
         if (i < 4) {
           if (char == "Kragg") {
-            // some kragg skins use 1.2 blend, most (and custom skin) use 1.1
+            // some kragg skins use 1.2 blend, but most of them (including custom
+            // skin) use 1.1 so thats what we will use for all of them
             this.blend.push(1.1);
           } else if (char == "Absa") {
             this.blend.push(1.2);
@@ -612,7 +613,7 @@ export async function getRoARecolor(charName, imgSrc, colIn, colRan, skin) {
 
   // some skins use a special shader
   let special;
-  if ((skin.customImg == "Summit" || skin.name == "Summit") && charName == "Kragg") {
+  if (skin.name == "Summit" && charName == "Kragg") {
     special = 8;
   } else {
     special = 0; // cant be null

@@ -63,19 +63,32 @@ class PlayerFinder extends Finder {
             }
 
             let skin;
-            if (skinImgs[i].charJson) {
-                if (skinImgs[i].skin == "Custom") {
-                    skin = {
-                        name: "Custom",
-                        hex: skinImgs[i].hex,
-                        customImg: skinImgs[i].customImg,
-                        force: true
-                    }
-                } else {
-                    for (let j = 0; j < skinImgs[i].charJson.skinList.length; j++) {
-                        if (skinImgs[i].charJson.skinList[j].name == skinImgs[i].skin) {
-                            skin = skinImgs[i].charJson.skinList[j];
+            if (skinImgs[i].charJson) { // if a character is found
+                for (let j = 0; j < skinImgs[i].charJson.skinList.length; j++) {
+
+                    // cicle through the skin list to find the one
+                    if (skinImgs[i].charJson.skinList[j].name == skinImgs[i].skin) {
+                        
+                        // get us that skin data
+                        skin = skinImgs[i].charJson.skinList[j];
+
+                        // if we got a custom skin
+                        if (skinImgs[i].customImg) {
+
+                            // clone to not modify original
+                            skin = structuredClone(skin);
+
+                            // add in custom data
+                            skin = {
+                                hex: skinImgs[i].hex,
+                                force: true
+                            }
+
                         }
+
+                        // we dont need to look for more
+                        break;
+
                     }
                 }
             } else {
@@ -86,6 +99,7 @@ class PlayerFinder extends Finder {
             if (skinImgs[i].charJson) {
                 finalColorData = skinImgs[i].charJson.colorData;
             }
+
             const finalSrc = await getRecolorImage(
                 skinImgs[i].char,
                 skin,
@@ -172,7 +186,7 @@ class PlayerFinder extends Finder {
                         customImg : preset.characters[i].customImg,
                     });
                     // we have to position it
-                    this.positionCharImg(pData.customImg || preset.characters[i].skin, charImg, charJson);
+                    this.positionCharImg(preset.characters[i].skin, charImg, charJson);
                     // and add it to the mask
                     charImgBox.appendChild(charImg);
 
@@ -216,9 +230,9 @@ class PlayerFinder extends Finder {
 
         // character change
         await player.charChange(pData.char, true);
-        if (pData.skin == "Custom") {
+        if (pData.customImg) {
             setCurrentPlayer(player);
-            customChange(pData.hex, pData.customImg);
+            customChange(pData.hex, pData.skin);
         } else { // search for all skins for name matches
             player.skinChange(player.findSkin(pData.skin));
         }

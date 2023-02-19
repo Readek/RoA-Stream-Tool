@@ -108,7 +108,11 @@ export class PlayerBracket extends Player {
         this.skin = skin;
 
         // update the text of the skin selector
-        this.skinSel.innerHTML = skin.name;
+        if (skin.customImg) {
+            this.skinSel.innerHTML = "Custom " + skin.name;
+        } else {
+            this.skinSel.innerHTML = skin.name;
+        }
 
         // check if an icon for this skin exists, recolor if not
         await this.setIconImg();

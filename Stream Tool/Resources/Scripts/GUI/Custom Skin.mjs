@@ -94,15 +94,16 @@ function addCustomEntry(text) {
 /**
  * Reads the color code input to change the skin of a player
  * @param {String} hex - Optional color code forcing
- * @param {String} customImg - Optional custom img forcing
+ * @param {String} skinName - Optional custom img forcing
  */
-export async function customChange(hex, customImg) {
+export async function customChange(hex, skinName) {
 
     // grab the original skin's values and change them up
-    const skin = structuredClone(curPlayer.findSkin(customImg || customSkinSelect.value));
-    skin.name = "Custom";
+    const skin = structuredClone(curPlayer.findSkin(skinName || customSkinSelect.value));
+    skin.name = skinName || customSkinSelect.value;
     skin.hex = hex || codeInput.value;
-    skin.customImg = customImg || customSkinSelect.value;
+    skin.customImg = true;
+    skin.force = true;
     
     // aaaaand change it
     await curPlayer.skinChange(skin);

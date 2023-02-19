@@ -126,9 +126,9 @@ class PlayerInfo {
                 skin: this.#curPlayer.skin.name
             }]
         }
-        if (this.#curPlayer.skin.name == "Custom") {
+        if (this.#curPlayer.customImg) {
             preset.characters[0].hex = this.#curPlayer.skin.hex;
-            preset.characters[0].customImg = this.#curPlayer.customImg;
+            preset.characters[0].customImg = true;
         }
     
         // if a player preset for this player exists, add already existing characters
