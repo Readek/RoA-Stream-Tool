@@ -21,7 +21,6 @@ export class Finder {
     /**
      * Opens the finder below the element that invoked it
      * @param {HTMLElement} callEl - Element that calls the finder
-     * @param {Number} pNum - Currently active player
      */
     open(callEl) {
 

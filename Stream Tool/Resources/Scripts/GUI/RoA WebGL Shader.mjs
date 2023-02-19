@@ -235,10 +235,15 @@ class RoaRecolor {
     // apparently, the game will also use this value for some character's parts
     // if 0, the color will have no shading
     this.blend = [];
-    if (char.name == "Kragg" || char.name == "Absa") {
+    if (char == "Kragg" || char == "Absa") {
       for (let i = 0; i < this.colorIn.length; i++) {
         if (i < 4) {
-          this.blend.push(1.1);
+          if (char == "Kragg") {
+            // some kragg skins use 1.2 blend, most (and custom skin) use 1.1
+            this.blend.push(1.1);
+          } else if (char == "Absa") {
+            this.blend.push(1.2);
+          }
         } else {
           this.blend.push(1);
         }

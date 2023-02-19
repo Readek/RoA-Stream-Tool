@@ -52,12 +52,12 @@ export class Player {
 
         // set listeners that will trigger when character or skin changes
         this.charSel.addEventListener("click", () => {
-            charFinder.open(this.charSel, this.pNum-1);
+            charFinder.open(this.charSel);
             charFinder.setCurrentPlayer(this);
             charFinder.focusFilter();
         });
         this.skinSel.addEventListener("click", () => {
-            skinFinder.open(this.skinSel, this.pNum-1);
+            skinFinder.open(this.skinSel);
             skinFinder.fillSkinList(this);
             skinFinder.focusFilter();
         });
