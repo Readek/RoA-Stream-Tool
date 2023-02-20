@@ -28,9 +28,11 @@ export function readyToUpdate(state) {
     if (state) {
         if (playersReady()) {
             changeUpdateText("UPDATE");
+            updateDiv.style.pointerEvents = "auto";
         }
     } else {
         changeUpdateText("LOADING CHARACTERS...");
+        updateDiv.style.pointerEvents = "none";
     }
 }
 

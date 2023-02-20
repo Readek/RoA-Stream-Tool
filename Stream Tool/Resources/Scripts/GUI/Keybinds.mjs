@@ -6,6 +6,7 @@ import { playerFinder } from './Finder/Player Finder.mjs';
 import { skinFinder } from './Finder/Skin Finder.mjs';
 import { current, inside } from './Globals.mjs';
 import { playerInfo } from './Player/Player Info.mjs';
+import { playersReady } from './Player/Players.mjs';
 import { scores } from './Score/Scores.mjs';
 import { settings } from './Settings.mjs';
 import { viewport } from './Viewport.mjs';
@@ -34,8 +35,10 @@ export function loadKeybinds() {
             updateBracket();
         } else {
             // update scoreboard info (updates botBar color for visual feedback)
-            writeScoreboard();
-            document.getElementById('botBar').style.backgroundColor = "var(--bg3)";
+            if (playersReady()) {
+                writeScoreboard();
+                document.getElementById('botBar').style.backgroundColor = "var(--bg3)";   
+            }
         }
 
     }, 'keydown');
