@@ -1,5 +1,6 @@
 import { Finder } from "./Finder.mjs";
 import { getPresetList } from '../File System.mjs';
+import { current } from "../Globals.mjs";
 
 
 class CommFinder extends Finder {
@@ -86,6 +87,9 @@ class CommFinder extends Finder {
      * @param {Caster} caster - Commentator to be updated
      */
     #entryClick(cData, caster) {
+
+        // reset current focus
+        current.focus = -1;
 
         caster.setName(cData.name);
         caster.setTwitter(cData.twitter);

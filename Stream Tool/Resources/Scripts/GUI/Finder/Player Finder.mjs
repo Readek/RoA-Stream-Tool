@@ -225,6 +225,9 @@ class PlayerFinder extends Finder {
      */
     async #entryClick(pData, player) {
 
+        // reset current focus
+        current.focus = -1;
+
         // all them player data
         player.setName(pData.name);
         player.setTag(pData.tag);
