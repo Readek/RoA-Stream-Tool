@@ -30,13 +30,25 @@ export class Finder {
         // set up some global variables for other functions
         current.focus = -1;
 
+        // position the dropdown
+        this.positionFinder();
+
+    }
+
+    /** Positions the finder avoiding going out of view */
+    positionFinder() {
+
         // reset the dropdown position
         this._finderEl.style.top = "100%";
         this._finderEl.style.left = "0";
 
         // get some data to calculate if it goes offscreen
-        const finderPos = this._finderEl.getBoundingClientRect();
         const selectPos = this._finderEl.parentElement.getBoundingClientRect();
+        let finderPos = this._finderEl.getBoundingClientRect();
+        // text finders will report their height values as 0
+        if (finderPos.height === 0) {
+            finderPos = this._finderEl.firstElementChild.getBoundingClientRect();
+        }
 
         // vertical check
         if (selectPos.bottom + finderPos.height > window.innerHeight) {

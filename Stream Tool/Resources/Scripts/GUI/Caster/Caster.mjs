@@ -32,6 +32,9 @@ export class Caster {
             // check if theres an existing caster preset
             commFinder.fillFinderPresets(this);
 
+            // position the finder dropdown depending on contents
+            commFinder.positionFinder();
+
         });
 
         // if we click on the name text input

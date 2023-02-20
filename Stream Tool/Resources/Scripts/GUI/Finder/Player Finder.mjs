@@ -36,8 +36,6 @@ class PlayerFinder extends Finder {
         // check for later
         let skinImgs = [];
 
-        let currentPresName;
-
         // if we typed at least 3 letters
         if (player.getName().length >= 3) {
 
@@ -53,63 +51,7 @@ class PlayerFinder extends Finder {
             this._finderEl.style.display = "none";
         }
 
-        // now lets add those images to each entry
-        currentPresName = this.#presName;
-        for (let i = 0; i < skinImgs.length; i++) {
-
-            // if the list isnt being shown, break the cycle
-            if (this.#presName != currentPresName || !this.isVisible()) {
-                break;
-            }
-
-            let skin;
-            if (skinImgs[i].charJson) { // if a character is found
-                for (let j = 0; j < skinImgs[i].charJson.skinList.length; j++) {
-
-                    // cicle through the skin list to find the one
-                    if (skinImgs[i].charJson.skinList[j].name == skinImgs[i].skin) {
-                        
-                        // get us that skin data
-                        skin = skinImgs[i].charJson.skinList[j];
-
-                        // if we got a custom skin
-                        if (skinImgs[i].customImg) {
-
-                            // clone to not modify original
-                            skin = structuredClone(skin);
-
-                            // add in custom data
-                            skin = {
-                                hex: skinImgs[i].hex,
-                                force: true
-                            }
-
-                        }
-
-                        // we dont need to look for more
-                        break;
-
-                    }
-                }
-            } else {
-                skin = {name: skinImgs[i].skin}
-            }
-            
-            let finalColorData = null;
-            if (skinImgs[i].charJson) {
-                finalColorData = skinImgs[i].charJson.colorData;
-            }
-
-            const finalSrc = await getRecolorImage(
-                skinImgs[i].char,
-                skin,
-                finalColorData,
-                "Skins",
-                "P2"
-            );
-            skinImgs[i].el.setAttribute('src', finalSrc);
-
-        }
+        return skinImgs;
 
     }
 
@@ -211,6 +153,69 @@ class PlayerFinder extends Finder {
         }
 
         return skinImgs;
+    }
+
+    /** Loads character images for each finder entry */
+    async loadFinderImgs(skinImgs) {
+
+        // now lets add those images to each entry
+        const currentPresName = this.#presName;
+        for (let i = 0; i < skinImgs.length; i++) {
+
+            // if the list isnt being shown, break the cycle
+            if (this.#presName != currentPresName || !this.isVisible()) {
+                break;
+            }
+
+            let skin;
+            if (skinImgs[i].charJson) { // if a character is found
+                for (let j = 0; j < skinImgs[i].charJson.skinList.length; j++) {
+
+                    // cicle through the skin list to find the one
+                    if (skinImgs[i].charJson.skinList[j].name == skinImgs[i].skin) {
+                        
+                        // get us that skin data
+                        skin = skinImgs[i].charJson.skinList[j];
+
+                        // if we got a custom skin
+                        if (skinImgs[i].customImg) {
+
+                            // clone to not modify original
+                            skin = structuredClone(skin);
+
+                            // add in custom data
+                            skin = {
+                                hex: skinImgs[i].hex,
+                                force: true
+                            }
+
+                        }
+
+                        // we dont need to look for more
+                        break;
+
+                    }
+                }
+            } else {
+                skin = {name: skinImgs[i].skin}
+            }
+            
+            let finalColorData = null;
+            if (skinImgs[i].charJson) {
+                finalColorData = skinImgs[i].charJson.colorData;
+            }
+
+            const finalSrc = await getRecolorImage(
+                skinImgs[i].char,
+                skin,
+                finalColorData,
+                "Skins",
+                "P2"
+            );
+            skinImgs[i].el.setAttribute('src', finalSrc);
+
+        }
+
     }
 
     /**

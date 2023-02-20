@@ -35,12 +35,16 @@ export class Player {
     setFinderListeners() {
 
         // check if theres a player preset every time we type or click in the player box
-        this.nameInp.addEventListener("input", () => {
-            playerFinder.fillFinderPresets(this);
+        this.nameInp.addEventListener("input", async () => {
+            const skinImgs = await playerFinder.fillFinderPresets(this);
+            playerFinder.positionFinder();
+            playerFinder.loadFinderImgs(skinImgs);
         });
-        this.nameInp.addEventListener("focusin", () => {
-            playerFinder.fillFinderPresets(this);
+        this.nameInp.addEventListener("focusin", async () => {
+            const skinImgs = await playerFinder.fillFinderPresets(this);
             playerFinder.open(this.nameInp.parentElement);
+            playerFinder.positionFinder();
+            playerFinder.loadFinderImgs(skinImgs);
         });
 
         // hide the player presets menu if text input loses focus
