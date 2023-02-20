@@ -7,12 +7,14 @@ import { settings } from "./Settings.mjs";
 import { changeUpdateText, writeScoreboard } from "./Write Scoreboard.mjs";
 
 let webSocket;
-const updateButtText = document.getElementsByClassName("botText")[0];
 const updateRegion = document.getElementById('updateRegion');
 
 export function startWebsocket() {
     
     changeUpdateText("RECONNECTING");
+    // remove the reconnect click listener
+    updateRegion.removeEventListener("click", startWebsocket);
+    
 	// we need to connect to the websocket server
 	webSocket = new WebSocket("ws://"+window.location.hostname+":8080?id=remoteGUI");
 	webSocket.onopen = () => { // if it connects successfully
@@ -27,21 +29,20 @@ export function startWebsocket() {
 
 	}
 
-	// if the GUI closes, wait for it to reopen
-	webSocket.onclose = () => {
-        displayNotif("Connection error, please reconnect.")
-        changeUpdateText("RECONNECT");
-        updateRegion.removeEventListener("click", () => {writeScoreboard()})
-        updateRegion.addEventListener("click", () => {startWebsocket()})
-        
-    }
-	// if connection fails for any reason
-	webSocket.onerror = () => {
-        displayNotif("Connection error, please reconnect.")
-        updateButtText.textContent = "RECONNECT";
-        updateRegion.removeEventListener("click", () => {writeScoreboard()})
-        updateRegion.addEventListener("click", () => {startWebsocket()})
-    }
+	// if the connection closes
+	webSocket.onclose = () => {errorWebsocket()};
+
+}
+function errorWebsocket() {
+
+    // show error message
+    displayNotif("Connection error, please reconnect.");
+    // delete current websocket
+    webSocket = null;
+    // change the update button to a reconnect buttion
+    changeUpdateText("RECONNECT");
+    updateRegion.removeEventListener("click", writeScoreboard);
+    updateRegion.addEventListener("click", startWebsocket);
 
 }
 
@@ -51,7 +52,7 @@ async function getData(data) {
         
         await updateGUI(data);
         changeUpdateText("UPDATE");
-        updateRegion.addEventListener("click", () => {writeScoreboard()})
+        updateRegion.addEventListener("click", writeScoreboard)
 
     } else if (data.message == "updatePresets") {
 

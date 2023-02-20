@@ -17,9 +17,8 @@ const updateText = updateDiv.getElementsByClassName("botText")[0];
 const updateRegion = document.getElementById('updateRegion');
 
 // bottom bar update button
-updateDiv.addEventListener("click", () => {
-    writeScoreboard();
-});
+updateDiv.addEventListener("click", writeScoreboard);
+
 
 /**
  * Warns the user that a player is not ready to update yet
@@ -35,6 +34,7 @@ export function readyToUpdate(state) {
     }
 }
 
+/** Changes the text displayed on the update button */
 export function changeUpdateText(text) {
     updateText.innerHTML = text;
 }
@@ -45,7 +45,7 @@ export async function writeScoreboard() {
     // if this is a remote browser, display some visual feedback
     if (!inside.electron) {
         changeUpdateText("SENDING DATA...");
-        updateRegion.removeEventListener("click", () => {writeScoreboard()});
+        updateRegion.removeEventListener("click", writeScoreboard);
     }
 
     // this is what's going to be sent to the browsers
