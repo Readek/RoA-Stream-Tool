@@ -156,7 +156,7 @@ class PlayerFinder extends Finder {
     }
 
     /** Loads character images for each finder entry */
-    async loadFinderImgs(skinImgs) {
+    async loadFinderImgs(skinImgs, player) {
 
         // now lets add those images to each entry
         const currentPresName = this.#presName;
@@ -206,6 +206,7 @@ class PlayerFinder extends Finder {
             }
 
             const finalSrc = await getRecolorImage(
+                null,
                 skinImgs[i].char,
                 skin,
                 finalColorData,

@@ -42,15 +42,14 @@ class CharFinder extends FinderSelect {
                 colorData = charInfo.colorData;
             }
             // this will get us the true default icon for any character
-            getRecolorImage(
+            imgIcon.src = await getRecolorImage(
+                false,
                 this.#charList[i],
                 skin,
                 colorData,
                 "Icons",
                 "Icon"
-            ).then((imgSrc) => {
-                imgIcon.src = imgSrc;
-            });
+            )
 
             // character name
             const spanName = document.createElement('span');

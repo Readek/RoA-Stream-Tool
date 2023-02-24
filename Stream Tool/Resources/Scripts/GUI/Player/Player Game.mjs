@@ -73,7 +73,6 @@ export class PlayerGame extends Player {
     async skinChange(skin) {
 
         this.setReady(false);
-        let promises = [];
 
         // remove focus from the skin list so it auto hides
         document.activeElement.blur();
@@ -93,22 +92,15 @@ export class PlayerGame extends Player {
         this.customImg = skin.customImg;
 
         // update all images!
-        promises.push(this.setIconImg());
-        promises.push(this.setScImg());
-
-        // and when all images have finished loading
-        await Promise.all(promises);
-
+        await this.setIconImg();
+        await this.setScImg();
         // this depends on sc image
         await this.setVsImg();
-        
-        promises = [];
         // update the VS BG based on the vs img
-        promises.push(this.setVsBg());
+        await this.setVsBg();
         // set up a trail for the vs screen
-        promises.push(this.setTrailImage());
+        await this.setTrailImage();
 
-        await Promise.all(promises);
 
         // change the background character image (if first 2 players)
         if (this.pNum-1 < 2) {
@@ -138,6 +130,7 @@ export class PlayerGame extends Player {
 
         // get us a valid image
         promises.push(getRecolorImage(
+            this.shader,
             this.char,
             this.skin,
             this.charInfo.colorData,
@@ -161,7 +154,7 @@ export class PlayerGame extends Player {
         if (settings.isHDChecked()) {
             const promises = [];
             const skinName = this.skin.name.includes("LoA") && !settings.isNoLoAChecked() ? "LoA HD" : "HD";
-            promises.push(getRecolorImage(this.char, {name: skinName}, null, "Skins", this.randomImg));
+            promises.push(getRecolorImage(this.shader, this.char, {name: skinName}, null, "Skins", this.randomImg));
             promises.push(this.getBrowserSrc(this.char, {name: skinName}, "Skins/", this.randomImg));
             this.vsSkin = {name: skinName};
             await Promise.all(promises).then( (value) => {
@@ -173,6 +166,7 @@ export class PlayerGame extends Player {
                 // if the character is using alt art, we need to generate a new image
                 const promises = [];
                 promises.push(getRecolorImage(
+                    this.shader,
                     this.char,
                     this.skin,
                     this.charInfo.colorData,
@@ -236,7 +230,7 @@ export class PlayerGame extends Player {
     /** Generates a new trail image for this player */
     async setTrailImage() {
         const color = currentColors[(this.pNum-1)%2].hex.substring(1);
-        this.trailSrc = await getTrailImage(this.char, this.vsSkin.name, color);
+        this.trailSrc = await getTrailImage(this.shader, this.char, this.vsSkin.name, color);
     }
 
     /**

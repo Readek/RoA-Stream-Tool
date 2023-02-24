@@ -4,6 +4,7 @@ import { playerFinder } from "../Finder/Player Finder.mjs";
 import { skinFinder } from "../Finder/Skin Finder.mjs";
 import { getRecolorImage } from "../GetImage.mjs";
 import { inside, stPath } from "../Globals.mjs";
+import { RoaRecolor } from "../RoA WebGL Shader.mjs";
 import { settings } from "../Settings.mjs";
 import { readyToUpdate } from "../Write Scoreboard.mjs";
 
@@ -28,6 +29,8 @@ export class Player {
     constructor(id) {
 
         this.pNum = id;
+        // will generate all images for the character
+        this.shader = new RoaRecolor;
 
     }
 
@@ -38,13 +41,13 @@ export class Player {
         this.nameInp.addEventListener("input", async () => {
             const skinImgs = await playerFinder.fillFinderPresets(this);
             playerFinder.positionFinder();
-            playerFinder.loadFinderImgs(skinImgs);
+            playerFinder.loadFinderImgs(skinImgs, this);
         });
         this.nameInp.addEventListener("focusin", async () => {
             const skinImgs = await playerFinder.fillFinderPresets(this);
             playerFinder.open(this.nameInp.parentElement);
             playerFinder.positionFinder();
-            playerFinder.loadFinderImgs(skinImgs);
+            playerFinder.loadFinderImgs(skinImgs, this);
         });
 
         // hide the player presets menu if text input loses focus
@@ -123,6 +126,7 @@ export class Player {
     async setIconImg() {
         const promises = [];
         promises.push(getRecolorImage(
+            this.shader,
             this.char,
             this.skin,
             this.charInfo.colorData,
@@ -202,6 +206,7 @@ export class Player {
                     const finalImg = new Image();
                     finalImg.className = "pfCharImg";
                     finalImg.src = await getRecolorImage(
+                        this.shaderFinder,
                         this.char,
                         this.charInfo.skinList[i],
                         this.charInfo.colorData,

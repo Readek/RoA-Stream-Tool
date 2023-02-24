@@ -221,64 +221,28 @@ void main() {
 
 
 // time to create our recolored character!
-class RoaRecolor {
+export class RoaRecolor {
 
-  constructor(char, colIn, colRan, special) {
+  char;
 
-    this.colorIn = [...colIn];
-    this.colorTolerance = [...colRan];
+  gl;
+  positionBuffer;
+  offset;
 
-    // this will store whatever image you want to add in
-    this.charImg;
+  constructor() {
 
-    // this is a variable that the shader will use for Early Access colors
-    // apparently, the game will also use this value for some character's parts
-    // if 0, the color will have no shading
-    this.blend = [];
-    if (char == "Kragg" || char == "Absa") {
-      for (let i = 0; i < this.colorIn.length; i++) {
-        if (i < 4) {
-          if (char == "Kragg") {
-            // some kragg skins use 1.2 blend, but most of them (including custom
-            // skin) use 1.1 so thats what we will use for all of them
-            this.blend.push(1.1);
-          } else if (char == "Absa") {
-            this.blend.push(1.2);
-          }
-        } else {
-          this.blend.push(1);
-        }
-      }
-    } else {
-      this.blend = Array(this.colorIn.length).fill(1);
-    }
-
-    // black pixels are forced to be black after all other colors have been recolored
-    // also used for golden skins
-    if (char != "Trail") { // dont do this for trail images
-      this.colorIn.push(0, 0, 0, 1);
-      this.colorTolerance.push(0, 0, 0, 1);
-      this.blend.push(1, 1, 1, 1);
-    }
-
-    // determines if special shader logic will be used
-    this.special = special;
+    // initialize stuff
+    this.canvas = document.createElement("canvas");
+    this.glLocs = {};
+    this.initializeShader();
 
   }
 
-
-  async addImage(canvas, imgPath) {
-
-    const skinImg = new Image();
-    skinImg.src = imgPath;  // MUST BE SAME DOMAIN!!!
-    await skinImg.decode(); // wait for the image to be loaded
-
-    canvas.width = skinImg.width;
-    canvas.height = skinImg.height;
-    
+  /** Starts up the shader values */
+  initializeShader() {
 
     // it's WebGL time, get ready to not understand anything (don't worry i dont either)
-    const gl = canvas.getContext("webgl2", { premultipliedAlpha: false });
+    const gl = this.canvas.getContext("webgl2", { premultipliedAlpha: false });
 
     // create the shader with the text above, then create the program
     const vertexShader = compileShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
@@ -290,14 +254,14 @@ class RoaRecolor {
     const texCoordAttributeLocation = gl.getAttribLocation(program, "a_texCoord");
 
     // lookup uniforms
-    const resolutionLocation = gl.getUniformLocation(program, "u_resolution");
-    const imageLocation = gl.getUniformLocation(program, "u_image");
+    this.glLocs.resolutionLoc = gl.getUniformLocation(program, "u_resolution");
+    this.glLocs.imageLocation = gl.getUniformLocation(program, "u_image");
     // RoA specific uniforms
-    const colorInLoc = gl.getUniformLocation(program, "colorIn");
-    const colorOutLoc = gl.getUniformLocation(program, "colorOut");
-    const colorToleranceLoc = gl.getUniformLocation(program, "colorTolerance");
-    const blendLoc = gl.getUniformLocation(program, "blend");
-    const specialLoc = gl.getUniformLocation(program, "special");
+    this.glLocs.colorInLoc = gl.getUniformLocation(program, "colorIn");
+    this.glLocs.colorOutLoc = gl.getUniformLocation(program, "colorOut");
+    this.glLocs.colorToleranceLoc = gl.getUniformLocation(program, "colorTolerance");
+    this.glLocs.blendLoc = gl.getUniformLocation(program, "blend");
+    this.glLocs.specialLoc = gl.getUniformLocation(program, "special");
 
     // Create a vertex array object (attribute state)
     const vao = gl.createVertexArray();
@@ -356,6 +320,116 @@ class RoaRecolor {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 
+    // Tell it to use our program (pair of shaders)
+    gl.useProgram(program);
+
+    // Bind the attribute/buffer set we want.
+    gl.bindVertexArray(vao);
+
+    // store to be used outside this function
+    this.gl = gl;
+    this.positionBuffer = positionBuffer;
+    this.offset = offset;
+
+  }
+
+
+  updateData(char, colIn, colRan, blend, special) {
+
+    this.char = char;
+    this.updateColorData(colIn, colRan);
+    this.updateBlend(blend);
+    this.updateSpecial(special);
+
+  }
+
+  /**
+   * Updates the shader color data values
+   * @param {Array} colIn - Incoming original color data
+   * @param {Array} colRan - Character's color ranges
+   */
+  updateColorData(colIn, colRan) {
+
+    // create new arrays with the provided data
+    const ogCols = Array(36).fill(0); // max of 9 parts * 4 because of rgba
+    const colTol = Array(36).fill(0);
+
+    // add in the new colors
+    for (let i = 0; i < colIn.length; i++) {
+      ogCols[i] = colIn[i];
+    }
+    // adds in the black border recolor
+    if (this.char != "Trail") {
+      ogCols[colIn.length + 3] = 1;
+    }
+    for (let i = 0; i < colRan.length; i++) {
+      colTol[i] = colRan[i];
+    }
+
+    // update the shader values
+    this.gl.uniform4fv(this.glLocs.colorInLoc, div255(ogCols));
+    this.gl.uniform4fv(this.glLocs.colorToleranceLoc, divHSV(colTol));
+
+  }
+
+  /**
+   * Determines shading blend
+   * @param {Boolean} blend - False for regular shading, true for retro
+   */
+  updateBlend(blend) {
+
+    let finalBlend = [];
+
+    // this is a variable that the shader will use for Early Access colors
+    // apparently, the game will also use this value for some character's parts
+    // if 0, the color will have no shading
+    if (blend) {
+      finalBlend = Array(36).fill(0);
+    } else {
+      finalBlend = Array(36).fill(1);
+      if (this.char == "Kragg" || this.char == "Absa") {
+        for (let i = 0; i < 4; i++) {
+          if (i < 4) {
+            if (this.char == "Kragg") {
+              // some kragg skins use 1.2 blend, but most of them (including custom
+              // skin) use 1.1 so thats what we will use for all of them
+              finalBlend[i] = 1.1;
+            } else if (this.char == "Absa") {
+              finalBlend[i] = 1.2;
+            }
+          }
+        }
+      }
+    }
+
+    // aaaand make it happen
+    this.gl.uniform4fv(this.glLocs.blendLoc, finalBlend);
+    
+  }
+
+  /**
+   * Determines if special shader logic will be used
+   * @param {Number} number - Special code
+   */
+  updateSpecial(number) {
+    this.gl.uniform1i(this.glLocs.specialLoc, number);
+  }
+
+  /**
+   * Updates the shader image to be used
+   * @param {String} imgPath - Path to the image to add
+   */
+  async addImage(imgPath) {
+
+    const skinImg = new Image();
+    skinImg.src = imgPath;  // MUST BE SAME DOMAIN!!!
+    await skinImg.decode(); // wait for the image to be loaded
+
+    this.canvas.width = skinImg.width;
+    this.canvas.height = skinImg.height;
+
+    const gl = this.gl;
+
     // Upload the image into the texture
     const mipLevel = 0;               // the largest mip
     const internalFormat = gl.RGBA;   // format we want in the texture
@@ -370,50 +444,20 @@ class RoaRecolor {
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    // Tell it to use our program (pair of shaders)
-    gl.useProgram(program);
-
-    // Bind the attribute/buffer set we want.
-    gl.bindVertexArray(vao);
-
     // Pass in the canvas resolution so we can convert from
     // pixels to clipspace in the shader
-    gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height);
+    gl.uniform2f(this.glLocs.resolutionLoc, gl.canvas.width, gl.canvas.height);
 
     // Tell the shader to get the texture from texture unit 0
-    gl.uniform1i(imageLocation, 0);
-
-    // Pass in the uniforms to the shader
-    gl.uniform4fv(colorInLoc, div255(this.colorIn));
-    gl.uniform4fv(colorToleranceLoc, divHSV(this.colorTolerance));
-    gl.uniform4fv(blendLoc, this.blend);
-    gl.uniform1i(specialLoc, this.special);
+    gl.uniform1i(this.imageLocation, 0);
 
     // Bind the position buffer so gl.bufferData that will be called
     // in setRectangle puts data in the position buffer
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
 
     // Set a rectangle the same size as the image.
     setRectangle(gl, 0, 0, skinImg.width, skinImg.height);
 
-
-    // store everything we just generated
-    this.charImg = {
-      canvas : canvas,
-      gl : gl,
-      colorInLoc : colorInLoc,
-      colorToleranceLoc : colorToleranceLoc,
-      blendLoc : blendLoc,
-      colorOutLoc : colorOutLoc,
-      offset : offset,
-    }
-
-  }
-
-  // to hot-change retro shading
-  changeBlend() {
-    this.blend = Array(this.colorIn.length).fill(0);
-    this.charImg.gl.uniform4fv(this.charImg.blendLoc, this.blend);
   }
 
   // this will be called on each paint
@@ -422,21 +466,97 @@ class RoaRecolor {
     // if no code is sent, use the original colors
     const finalOut = colorOut ? colorOut : this.colorIn;
 
-    // get what we loaded on startup
-    const gl = this.charImg.gl;
+    // this is to clean up remaining values from previous codes
+    const actualFinalOut = Array(36).fill(0);
+    for (let i = 0; i < finalOut.length; i++) {
+      actualFinalOut[i] = finalOut[i];
+    }
+    actualFinalOut[finalOut.length + 3] = 1; // alpha for last value
     
     // Pass in the uniform to the shader
-    gl.uniform4fv(this.charImg.colorOutLoc, div255(finalOut));
+    this.gl.uniform4fv(this.glLocs.colorOutLoc, div255(actualFinalOut));
 
     // Draw the rectangle.
-    const primitiveType = gl.TRIANGLES;
+    const primitiveType = this.gl.TRIANGLES;
     const count = 6;
-    gl.drawArrays(primitiveType, this.charImg.offset, count);
+    this.gl.drawArrays(primitiveType, this.offset, count);
 
     // to take an image out of a gl canvas, you need to capture it before
     // the main thread has finished, so it can only be done here
-    return this.charImg.canvas.toDataURL();
+    return this.canvas.toDataURL();
 
+  }
+
+  
+  /**
+   * @typedef {Object} Skin
+   * @property {String} hex - The skin color code to be used
+   * @property {Boolean} blend - Makes the image have "Early Access" shading
+   * @property {Array} alpha - Set the transparency for each part (for example: [1, 0.75, 0.5, 1])
+   * @property {Boolean} golden - Adds golden shading to the character's black pixels
+  */
+  /**
+   * Takes an image, then returns it in a different color with the provided color code
+   * @param {String} charName - The name of the character to recolor
+   * @param {String} imgSrc - The source image to be recolored
+   * @param {Array} colIn - The original image colors to be recolored
+   * @param {Array} colRan - The color range for color variations
+   * @param {Skin} skin - Skin data
+   * @returns {String} Image data to be used in a .src atribute
+  */
+  async getRoARecolor(char, imgSrc, colIn, colRan, skin) {
+  
+    // some skins use a special shader
+    let special;
+    if (skin.name == "Summit" && char == "Kragg") {
+      special = 8;
+    } else {
+      special = 0; // cant be null
+    }
+
+    // at the image and wait for it to be added
+    await this.addImage(imgSrc);
+
+    // add a one to the final range so it recolors black borders
+    const finalRan = [...colRan];
+    if (char != "Trail") {
+      finalRan.push(0, 0, 0, 1);
+    }
+
+    // update the shader data
+    this.updateData(char, colIn, finalRan, skin.ea, special);
+  
+    // translate the hex into array
+    const recolorRgb = hexDecode(skin.hex);
+
+    if (char == "Orcane") { // orcane has green and yellow hidden parts
+      for (let i = 0; i < 8; i++) {
+        if (skin.golden) { // orcane is a very special boi
+          recolorRgb[i+8] = 255;
+        } else {
+          // add the 1st colors as the 3rd colors, 2nd to 4th
+          recolorRgb[i+8] = recolorRgb[i];
+        }
+      }
+    }
+  
+    // if transparency, add the data to the 4th value of each color
+    if (skin.alpha) {
+      for (let i = 0; i < recolorRgb.length; i++) {
+        if ((i+1)%4 == 0) {
+          recolorRgb[i] = skin.alpha[[((i+1) / 4) - 1]];
+        }
+      }
+    }
+  
+    // golden skins have a predefined color for black pixels
+    if (skin.golden) {
+      recolorRgb.push(76, 53, 0, 1);
+    }
+  
+    // render the actual image
+    return this.recolor(recolorRgb);
+    
   }
   
 }
@@ -575,78 +695,5 @@ function hexDecode(hex) {
   charRGB.splice(charRGB.length-4);
   
   return charRGB;
-
-}
-
-/**
- * @typedef {Object} Skin
- * @property {String} hex - The skin color code to be used
- * @property {Boolean} blend - Makes the image have "Early Access" shading
- * @property {Array} alpha - Set the transparency for each part (for example: [1, 0.75, 0.5, 1])
- * @property {Boolean} golden - Adds golden shading to the character's black pixels
-*/
-// and finally, what we will use from the outside
-/**
- * Takes an image, then returns it in a different color with the provided color code
- * @param {String} charName - The name of the character to recolor
- * @param {String} imgSrc - The source image to be recolored
- * @param {Array} colIn - The original image colors to be recolored
- * @param {Array} colRan - The color range for color variations
- * @param {Skin} skin - Skin data
- * @returns {String} Image data to be used in a .src atribute
-*/
-export async function getRoARecolor(charName, imgSrc, colIn, colRan, skin) {
-
-  const recolorCanvas = document.createElement("canvas");
-  const recolorRgb = hexDecode(skin.hex);
-
-  if (charName == "Orcane") { // orcane has green and yellow hidden parts
-    for (let i = 0; i < 8; i++) {
-      if (skin.golden) { // orcane is a very special boi
-        recolorRgb[i+8] = 255;
-      } else {
-        // add the 1st colors as the 3rd colors, 2nd to 4th
-        recolorRgb[i+8] = recolorRgb[i];
-      }
-    }
-  }
-
-  // some skins use a special shader
-  let special;
-  if (skin.name == "Summit" && charName == "Kragg") {
-    special = 8;
-  } else {
-    special = 0; // cant be null
-  }
-
-  // initialize our lovely recolor
-  const roaRecolor = new RoaRecolor(charName, colIn, colRan, special);
-
-  // additional stuff
-  await roaRecolor.addImage(recolorCanvas, imgSrc);
-
-  // early access skins will just set a flag for the shaders
-  if (skin.ea) {
-    roaRecolor.changeBlend();
-  }
-
-  // if transparency, add the data to the 4th value of each color
-  if (skin.alpha) {
-    for (let i = 0; i < recolorRgb.length; i++) {
-      if ((i+1)%4 == 0) {
-        recolorRgb[i] = skin.alpha[[((i+1) / 4) - 1]];
-      }
-    }
-  }
-
-  // golden skins have a predefined color for black pixels
-  if (skin.golden) {
-    recolorRgb.push(76, 53, 0, 1);
-  } else { // ingame shader forces recolor for black pixels after all other colors
-    recolorRgb.push(0, 0, 0, 1);
-  }
-
-  // render the actual image
-  return roaRecolor.recolor(recolorRgb);
 
 }

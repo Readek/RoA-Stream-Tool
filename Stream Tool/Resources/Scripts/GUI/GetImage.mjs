@@ -1,6 +1,9 @@
 import { stPath } from './Globals.mjs';
-import { getRoARecolor } from './RoA WebGL Shader.mjs';
 import { fileExists } from './File System.mjs';
+import { Player } from './Player/Player.mjs';
+import { RoaRecolor } from './RoA WebGL Shader.mjs';
+
+const anonShader = new RoaRecolor;
 
 /**
  * @typedef {Object} Skin
@@ -16,6 +19,7 @@ import { fileExists } from './File System.mjs';
  * Returns a recolored image src if skin data for it exists.
  * Returns the default skin image if skin data or image file can't be found.
  * Returns the random image if a default skin image can't be found.
+ * @param {Player} shader - Player that will use the recolor shader if needed
  * @param {String} char - Character name
  * @param {Skin} skin - Skin data
  * @param {Array} colorData - Character's original colors and ranges for shader data
@@ -23,7 +27,7 @@ import { fileExists } from './File System.mjs';
  * @param {String} failPath - To determine which image to use in case of fail
  * @returns {String} - Image src
 */
-export async function getRecolorImage(char, skin, colorData, imgType, failPath) {
+export async function getRecolorImage(shader, char, skin, colorData, imgType, failPath) {
 
     if (!skin.force && await fileExists(`${stPath.char}/${char}/${imgType}/${skin.name}.png`)) {
 
@@ -41,7 +45,8 @@ export async function getRecolorImage(char, skin, colorData, imgType, failPath) 
                 charImgPath = `${stPath.char}/${char}/${imgType}/Default.png`;
             }
             const trueColorData = colorData[skin.name] || colorData.Default;
-            return await getRoARecolor(
+            const shaderToUse = shader || anonShader;
+            return await shaderToUse.getRoARecolor(
                 char,
                 charImgPath,
                 trueColorData.ogColor,
@@ -62,43 +67,42 @@ export async function getRecolorImage(char, skin, colorData, imgType, failPath) 
 /**
  * Returns a monocolor image src preserving alpha of the requested character+skin.
  * If an image can't be found, it returns a 1x1 transparent pixer src.
+ * @param {Player} shader - Player that will use the recolor shader
  * @param {String} char Character name
  * @param {Skin} skin - Skin data
  * @param {String} color - Desired out color
  * @returns {String} - Image src
  */
-export async function getTrailImage(char, skin, color) {
+export async function getTrailImage(shader, char, skin, color) {
 
     // we add "FFFFFF" to the color to avoid shader issues when using only 1 color
     color += "FFFFFF";
 
+    let filePath;
+
     if (await fileExists(`${stPath.char}/${char}/Skins/${skin}.png`)) {
 
         // if the requested skin exists as a separate image
-        return await getRoARecolor(
-            "Trail",
-            `${stPath.char}/${char}/Skins/${skin}.png`,
-            [127, 127, 127, 1, 0,0,0,0], // any color would do
-            [360, 100, 100, 1, 0,0,0,0], // range picks up all colors
-            {hex : color, ea : true}, // with blend true, only 1 color will be applied to everything
-        )
+        filePath = `${stPath.char}/${char}/Skins/${skin}.png`;
 
     } else if (await fileExists(`${stPath.char}/${char}/Skins/Default.png`)) {
 
         // else, use the default skin image
-        return await getRoARecolor(
+        filePath = `${stPath.char}/${char}/Skins/Default.png`;
+
+    }
+    
+    if (filePath) {
+        return await shader.getRoARecolor(
             "Trail",
-            `${stPath.char}/${char}/Skins/Default.png`,
-            [127, 127, 127, 1, 0,0,0,0],
-            [360, 100, 100, 1, 0,0,0,0],
-            {hex : color, ea : true},
+            filePath,
+            [127, 127, 127, 1], // any color would do
+            [360, 100, 100, 1], // range picks up all colors
+            {hex : color, ea : true}, // with blend true, only 1 color will be applied to everything
         )
-
     } else {
-
         // if an image can't be found, return a 1x1 transparent pixel
         return 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
-
     }
 
 }
