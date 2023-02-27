@@ -156,7 +156,7 @@ class PlayerFinder extends Finder {
     }
 
     /** Loads character images for each finder entry */
-    async loadFinderImgs(skinImgs, player) {
+    async loadFinderImgs(skinImgs) {
 
         // now lets add those images to each entry
         const currentPresName = this.#presName;
@@ -173,21 +173,16 @@ class PlayerFinder extends Finder {
 
                     // cicle through the skin list to find the one
                     if (skinImgs[i].charJson.skinList[j].name == skinImgs[i].skin) {
-                        
-                        // get us that skin data
-                        skin = skinImgs[i].charJson.skinList[j];
 
                         // if we got a custom skin
                         if (skinImgs[i].customImg) {
 
                             // clone to not modify original
-                            skin = structuredClone(skin);
+                            skin = structuredClone(skinImgs[i].charJson.skinList[j]);
 
                             // add in custom data
-                            skin = {
-                                hex: skinImgs[i].hex,
-                                force: true
-                            }
+                            skin.hex = skinImgs[i].hex;
+                            skin.force = true;
 
                         }
 
