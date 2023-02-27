@@ -5,6 +5,9 @@ import { wl } from "./WinnersLosers.mjs";
 import { inside, stPath } from "./Globals.mjs";
 import { getJson, saveJson } from "./File System.mjs";
 import { gamemode } from "./Gamemode Change.mjs";
+import { tournament } from "./Tournament.mjs";
+import { round } from "./Round.mjs";
+import { teams } from "./Team/Teams.mjs";
 
 
 class GuiSettings {
@@ -280,7 +283,7 @@ class GuiSettings {
     copyMatch() {
 
         // initialize the string
-        let copiedText = tournamentInp.value + " - " + roundInp.value + " - ";
+        let copiedText = tournament.getText() + " - " + round.getText() + " - ";
 
         if (gamemode.getGm() == 1) { // for singles matches
             // check if the player has a tag to add
@@ -293,7 +296,7 @@ class GuiSettings {
             }
             copiedText += players[1].getName() + " (" +  players[1].char +")";
         } else { // for team matches
-            copiedText += tNameInps[0].value + " VS " + tNameInps[1].value;
+            copiedText += teams[0].getName() + " VS " + teams[1].getName();
         }
 
         // send the string to the user's clipboard
