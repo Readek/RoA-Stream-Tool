@@ -139,7 +139,7 @@ function createWindow() {
         if (input.key === 'F5') { // refresh the page
             win.reload()
             event.preventDefault()
-        } else if (input.key === 'F6') { // web console
+        } else if (input.key === 'F12') { // web console
             win.webContents.openDevTools()
             win.setResizable(true)
             event.preventDefault()
