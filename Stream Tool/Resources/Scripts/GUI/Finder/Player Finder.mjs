@@ -174,11 +174,11 @@ class PlayerFinder extends Finder {
                     // cicle through the skin list to find the one
                     if (skinImgs[i].charJson.skinList[j].name == skinImgs[i].skin) {
 
+                        // clone to not modify original
+                        skin = structuredClone(skinImgs[i].charJson.skinList[j]);
+
                         // if we got a custom skin
                         if (skinImgs[i].customImg) {
-
-                            // clone to not modify original
-                            skin = structuredClone(skinImgs[i].charJson.skinList[j]);
 
                             // add in custom data
                             skin.hex = skinImgs[i].hex;
@@ -200,6 +200,7 @@ class PlayerFinder extends Finder {
                 finalColorData = skinImgs[i].charJson.colorData;
             }
 
+            console.log(skin);
             const finalSrc = await getRecolorImage(
                 null,
                 skinImgs[i].char,
