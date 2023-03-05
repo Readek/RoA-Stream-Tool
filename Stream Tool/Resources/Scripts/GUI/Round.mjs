@@ -22,6 +22,10 @@ class Round {
             const roundOption = document.createElement('option');
             roundOption.value = roundList[i].name;
             roundOption.innerHTML = roundList[i].name;
+            roundOption.style.backgroundColor = "var(--bg5)";
+            if (roundList[i].showNumber) {
+                roundOption.style.backgroundColor = "var(--bg2)";
+            }
             this.#roundSelect.appendChild(roundOption);
         }
 
