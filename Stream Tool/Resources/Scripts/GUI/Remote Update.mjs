@@ -44,7 +44,7 @@ export async function updateGUI(data) {
         settings.setWs(data.workshop);
         await settings.toggleWs();
     }
-    if (data.customRound != settings.useCustomRound()) {
+    if (data.customRound != settings.isCustomRoundChecked()) {
         settings.setCustomRound(data.customRound);
         settings.toggleCustomRound();
     }
@@ -87,7 +87,7 @@ export async function updateGUI(data) {
     }
 
     // round info
-    round.setText(data.round);
+    round.setText(data.round, data.roundIndex, data.roundNumber);
     round.checkGrands();
     wl.setLeft(data.wl[0]);
     wl.setRight(data.wl[1]);

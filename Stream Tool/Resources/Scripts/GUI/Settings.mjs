@@ -262,18 +262,18 @@ class GuiSettings {
         this.#customRound.checked = value;
     }
 
-    useCustomRound () {
+    isCustomRoundChecked () {
         return this.#customRound.checked;
     }
 
     toggleCustomRound () {
-        if (this.useCustomRound()) {
+        if (this.isCustomRoundChecked()) {
             round.showTextInput();
         } else {
             round.hideTextInput();
         }
 
-        this.save("customRound", this.useCustomRound());
+        this.save("customRound", this.isCustomRoundChecked());
 
     }
 

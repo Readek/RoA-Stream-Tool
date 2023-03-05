@@ -74,11 +74,13 @@ export async function writeScoreboard() {
         allowIntro: settings.isIntroChecked(),
         // this is just for remote updating
         altSkin: settings.isAltArtChecked(),
-        customRound: settings.useCustomRound(),
+        customRound: settings.isCustomRoundChecked(),
         forceHD: settings.isHDChecked(),
         noLoAHD: settings.isNoLoAChecked(),
         workshop: settings.isWsChecked(),
         forceWL: settings.isForceWLChecked(),
+        roundIndex: round.getIndex(),
+        roundNumber: round.getNumber(),
         id : "gameData"
     };
 

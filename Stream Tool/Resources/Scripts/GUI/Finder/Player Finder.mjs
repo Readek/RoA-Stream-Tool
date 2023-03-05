@@ -200,7 +200,6 @@ class PlayerFinder extends Finder {
                 finalColorData = skinImgs[i].charJson.colorData;
             }
 
-            console.log(skin);
             const finalSrc = await getRecolorImage(
                 null,
                 skinImgs[i].char,
