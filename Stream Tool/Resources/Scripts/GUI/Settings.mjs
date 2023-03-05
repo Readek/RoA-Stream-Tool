@@ -19,6 +19,7 @@ class GuiSettings {
     #noLoACheck = document.getElementById('noLoAHD');
 
     #wsCheck = document.getElementById('workshopToggle');
+    #customRound = document.getElementById('customRound');
     #forceWLCheck = document.getElementById('forceWLToggle');
     #scoreAutoCheck = document.getElementById("scoreAutoUpdate");
     #invertScoreCheck = document.getElementById("invertScore");
@@ -51,6 +52,7 @@ class GuiSettings {
                 this.sendWsToggle();
             }            
         });
+        this.#customRound.addEventListener("click", () => {this.toggleCustomRound()});
         this.#forceWLCheck.addEventListener("click", () => {this.toggleForceWL()});
         this.#scoreAutoCheck.addEventListener("click", () => {
             this.save("scoreAutoUpdate", this.isScoreAutoChecked())
@@ -98,6 +100,7 @@ class GuiSettings {
         this.#noLoACheck.checked = guiSettings.noLoAHD;
         this.#wsCheck.checked = guiSettings.workshop;
         if (guiSettings.workshop) this.#altArtCheck.disabled = false;
+        if (guiSettings.customRound) this.#customRound.click();
         if (guiSettings.forceWL) this.#forceWLCheck.click();
         this.#scoreAutoCheck.checked = guiSettings.scoreAutoUpdate;
         this.#invertScoreCheck.checked = guiSettings.invertScore;
@@ -119,7 +122,7 @@ class GuiSettings {
      * @param {} value - Value to add to the variable
      */
     async save(name, value) {
-    
+   
         if (inside.electron) {
             // read the file
             const guiSettings = await getJson(`${stPath.text}/GUI Settings`);
@@ -254,6 +257,26 @@ class GuiSettings {
     isForceWLChecked() {
         return this.#forceWLCheck.checked;
     }
+
+    setCustomRound(value) {
+        this.#customRound.checked = value;
+    }
+
+    useCustomRound () {
+        return this.#customRound.checked;
+    }
+
+    toggleCustomRound () {
+        if (this.useCustomRound()) {
+            round.show();
+        } else {
+            round.hide();
+        }
+
+        this.save("customRound", this.useCustomRound());
+
+    }
+
     toggleForceWL() {
 
         // forces the W/L buttons to appear, or unforces them

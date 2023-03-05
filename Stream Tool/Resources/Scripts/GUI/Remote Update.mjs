@@ -44,6 +44,10 @@ export async function updateGUI(data) {
         settings.setWs(data.workshop);
         await settings.toggleWs();
     }
+    if (data.customRound != settings.useCustomRound()) {
+        settings.setCustomRound(data.customRound);
+        settings.toggleCustomRound();
+    }
     if (data.forceWL != settings.isForceWLChecked()) {
         settings.setForceWL(data.forceWL);
         settings.toggleForceWL();

@@ -74,6 +74,7 @@ export async function writeScoreboard() {
         allowIntro: settings.isIntroChecked(),
         // this is just for remote updating
         altSkin: settings.isAltArtChecked(),
+        customRound: settings.useCustomRound(),
         forceHD: settings.isHDChecked(),
         noLoAHD: settings.isNoLoAChecked(),
         workshop: settings.isWsChecked(),

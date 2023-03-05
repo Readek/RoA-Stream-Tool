@@ -217,8 +217,14 @@
 
         <div id="bestOf" title="Click to change the scoring to Best of 3">Best of 5</div>
 
-        <input type="text" id="roundName" class="textInput mousetrap" placeholder="Current Round" spellcheck="false" tabindex="4">
-        <input type="text" id="tournamentName" class="textInput mousetrap" placeholder="Tournament Name" spellcheck="false" tabindex="4">  
+        <input type="text" id="roundName" class="textInput mousetrap" placeholder="Current Round" spellcheck="false" tabindex="4" style="display: none">
+        <select id="roundNameSelect" class="textInput mousetrap" placeholder="Current Round" spellcheck="false" tabindex="4">
+          <option value=""></option>
+        </select>
+        <input type="number" id="roundNameNumber" class="textInput mousetrap" placeholder="Num" spellcheck="false" tabindex="4" min="0" style="display: none">
+
+        <input type="text" id="tournamentName" class="textInput mousetrap" placeholder="Tournament Name" spellcheck="false" tabindex="4">
+         
 
         <div id="gamemode" title="Change the gamemode to Doubles">1v1</div>
 
@@ -353,6 +359,11 @@ VS Screen even when LoA skins are selected.">
         <div class="settingBox" title="Changes the character list to the workshop one.">
           <input type="checkbox" id="workshopToggle" class="settingsCheck" tabindex="-1">
           <label for="workshopToggle" class="settingsText">Use Workshop characters</span>
+        </div>
+
+        <div class="settingBox" title="Allows for entering a custom Round Name">
+          <input type="checkbox" id="customRound" class="settingsCheck" tabindex="-1">
+          <label for="customRound" class="settingsText">Use Custom Round</span>
         </div>
         
         <div class="settingBox" title="Forces the [W]/[L] buttons to appear on the interface.
