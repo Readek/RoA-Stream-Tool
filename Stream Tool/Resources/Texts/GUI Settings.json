@@ -1,7 +1,7 @@
 {
-  "guiWidth": 729,
-  "guiHeight": 412,
-  "allowIntro": true,
+  "guiWidth": 600,
+  "guiHeight": 300,
+  "allowIntro": false,
   "workshop": false,
   "forceAlt": false,
   "forceHD": false,
@@ -11,7 +11,7 @@
   "invertScore": false,
   "scoreAutoUpdate": false,
   "alwaysOnTop": false,
-  "resizable": true,
+  "resizable": false,
   "zoom": 100,
   "remoteUpdatePort": 1111,
   "webSocketPort": 8080
