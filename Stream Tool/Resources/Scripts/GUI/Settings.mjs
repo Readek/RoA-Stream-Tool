@@ -268,9 +268,9 @@ class GuiSettings {
 
     toggleCustomRound () {
         if (this.useCustomRound()) {
-            round.show();
+            round.showTextInput();
         } else {
-            round.hide();
+            round.hideTextInput();
         }
 
         this.save("customRound", this.useCustomRound());
