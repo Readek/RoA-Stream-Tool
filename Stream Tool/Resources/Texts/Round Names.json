@@ -46,7 +46,8 @@
     },
     {
         "name": "First to",
-        "showNumber": true
+        "showNumber": true,
+        "forceBestOf": "X"
     },
     {
         "name": "Friendlies"

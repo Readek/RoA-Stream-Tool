@@ -2,6 +2,7 @@ import { stPath } from './Globals.mjs';
 import { settings } from "./Settings.mjs";
 import { wl } from "./WinnersLosers.mjs";
 import { getJson } from './File System.mjs';
+import { bestOf } from './BestOf.mjs';
 
 const roundList = await getJson(stPath.text + "/Round Names");
 
@@ -19,14 +20,19 @@ class Round {
         
         // create the round select list
         for (let i = 0; i < roundList.length; i++) {
+
             const roundOption = document.createElement('option');
             roundOption.value = roundList[i].name;
             roundOption.innerHTML = roundList[i].name;
+
+            // add colors to the list
             roundOption.style.backgroundColor = "var(--bg5)";
             if (roundList[i].showNumber) {
                 roundOption.style.backgroundColor = "var(--bg2)";
             }
+
             this.#roundSelect.appendChild(roundOption);
+
         }
 
         this.#roundSelect.addEventListener("change", () => {this.updateSelect()});
@@ -90,6 +96,11 @@ class Round {
             this.showNumberInput();
         } else {
             this.hideNumberInput();
+        }
+
+        // check if the round forces a bestOf state
+        if (roundList[this.#roundSelect.selectedIndex].forceBestOf) {
+            bestOf.setBo(roundList[this.#roundSelect.selectedIndex].forceBestOf);
         }
 
         // of course, check for grands
