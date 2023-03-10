@@ -11,9 +11,10 @@ const realPath = inside.electron ? __dirname : ""; // local file path if in exec
 export const stPath = {
     char : "",
     charRandom : realPath + '/Characters/Random',
-    text : realPath + '/Texts',
     charBase : realPath + '/Characters',
-    charWork : realPath + '/Characters/_Workshop'
+    charWork : realPath + '/Characters/_Workshop',
+    text : realPath + '/Texts',
+    scripts: realPath + '/Scripts'
 };
 
 /** Current values for stuff */

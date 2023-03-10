@@ -13,6 +13,7 @@ import { loadKeybinds } from './GUI/Keybinds.mjs';
 import { updateBracket } from './GUI/Bracket.mjs';
 import { inside, stPath } from './GUI/Globals.mjs';
 import { Score } from './GUI/Score/Score.mjs';
+import { getPluginList } from './GUI/File System.mjs';
 
 // this is a weird way to have file svg's that can be recolored by css
 customElements.define("load-svg", class extends HTMLElement {
@@ -90,6 +91,13 @@ async function init() {
     } else { // remote GUIs will ask about the current main GUI state
         const remote = await import("./GUI/Remote Requests.mjs");
         remote.startWebsocket();
+    }
+
+
+    // add in any plugins found on the plugins folder:
+    const pluginNames = await getPluginList();
+    for (let i = 0; i < pluginNames.length; i++) {
+        import("./GUI Plugins/" + pluginNames[i]);        
     }
 
 }
