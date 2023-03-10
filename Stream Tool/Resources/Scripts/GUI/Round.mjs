@@ -35,6 +35,12 @@ class Round {
 
         }
 
+        // add in additional options
+        const noneOption = document.createElement('option');
+        noneOption.value = "";
+        noneOption.innerHTML = "(none)";
+        noneOption.style.backgroundColor = "var(--bg5)";
+        this.#roundSelect.appendChild(noneOption);
         this.#roundSelect.addEventListener("change", () => {this.updateSelect()});
         
     }
@@ -74,6 +80,7 @@ class Round {
             // update the select and number values
             this.#roundSelect.selectedIndex = index;
             this.#roundNumber.value = number;
+            this.updateSelect();
 
         }
         
@@ -88,19 +95,28 @@ class Round {
 
     updateSelect() {
 
-        // set the new name
-        this.#roundSelect.value = roundList[this.#roundSelect.selectedIndex].name;
+        if (this.#roundSelect.selectedIndex == roundList.length) {
+            
+            // set the new name
+            this.#roundSelect.value = "";
+
+        } else {
+
+            // set the new name
+            this.#roundSelect.value = roundList[this.#roundSelect.selectedIndex].name;
+
+            // check if the round forces a bestOf state
+            if (roundList[this.#roundSelect.selectedIndex].forceBestOf) {
+                bestOf.setBo(roundList[this.#roundSelect.selectedIndex].forceBestOf);
+            }
+
+        }
 
         // show, or not, the round number input
         if (this.isNumberNeeded()) {
             this.showNumberInput();
         } else {
             this.hideNumberInput();
-        }
-
-        // check if the round forces a bestOf state
-        if (roundList[this.#roundSelect.selectedIndex].forceBestOf) {
-            bestOf.setBo(roundList[this.#roundSelect.selectedIndex].forceBestOf);
         }
 
         // of course, check for grands
@@ -136,7 +152,11 @@ class Round {
      * @returns {Boolean}
      */
     isNumberNeeded() {
-        return roundList[this.#roundSelect.selectedIndex].showNumber;
+        if (this.#roundSelect.selectedIndex < roundList.length - 1) {
+            return roundList[this.#roundSelect.selectedIndex].showNumber;
+        } else {
+            return false;
+        }        
     }
 
     /** Checks if the round text contains "Grands" so it shows/hides W/L buttons */
