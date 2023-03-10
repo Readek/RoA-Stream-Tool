@@ -3,6 +3,7 @@ import { settings } from "./Settings.mjs";
 import { wl } from "./WinnersLosers.mjs";
 import { getJson } from './File System.mjs';
 import { bestOf } from './BestOf.mjs';
+import { displayNotif } from './Notifications.mjs';
 
 const roundList = await getJson(stPath.text + "/Round Names");
 
@@ -35,12 +36,20 @@ class Round {
 
         }
 
-        // add in additional options
+        // add in additional custom and none options
+        const customOption = document.createElement('option');
+        customOption.value = "";
+        customOption.innerHTML = "(custom text)";
+        customOption.style.backgroundColor = "var(--bg5)";
+        this.#roundSelect.appendChild(customOption);
+
         const noneOption = document.createElement('option');
         noneOption.value = "";
         noneOption.innerHTML = "(none)";
         noneOption.style.backgroundColor = "var(--bg5)";
         this.#roundSelect.appendChild(noneOption);
+
+        // function to call when selecting an option
         this.#roundSelect.addEventListener("change", () => {this.updateSelect()});
         
     }
@@ -57,8 +66,6 @@ class Round {
             if (this.isNumberNeeded()) {
                 roundName += " " + this.#roundNumber.value;
             }
-            // update the hidden text input
-            this.#roundInp.value = roundName;
 
         }
 
@@ -95,32 +102,33 @@ class Round {
 
     updateSelect() {
 
-        if (this.#roundSelect.selectedIndex == roundList.length) {
+        if (this.#roundSelect.selectedIndex == roundList.length) { // custom text
+            displayNotif("You can restore round select in settings");
+            settings.setCustomRound(true);
+            settings.toggleCustomRound();
+            this.#roundSelect.selectedIndex = 0; // to avoid bugs later
+        } else {
             
-            // set the new name
-            this.#roundSelect.value = "";
-
-        } else {
-
-            // set the new name
-            this.#roundSelect.value = roundList[this.#roundSelect.selectedIndex].name;
-
-            // check if the round forces a bestOf state
-            if (roundList[this.#roundSelect.selectedIndex].forceBestOf) {
-                bestOf.setBo(roundList[this.#roundSelect.selectedIndex].forceBestOf);
+            if (this.#roundSelect.selectedIndex < roundList.length) {
+    
+                // check if the round forces a bestOf state
+                if (roundList[this.#roundSelect.selectedIndex].forceBestOf) {
+                    bestOf.setBo(roundList[this.#roundSelect.selectedIndex].forceBestOf);
+                }
+    
             }
+    
+            // show, or not, the round number input
+            if (this.isNumberNeeded()) {
+                this.showNumberInput();
+            } else {
+                this.hideNumberInput();
+            }
+    
+            // of course, check for grands
+            this.checkGrands();
 
         }
-
-        // show, or not, the round number input
-        if (this.isNumberNeeded()) {
-            this.showNumberInput();
-        } else {
-            this.hideNumberInput();
-        }
-
-        // of course, check for grands
-        this.checkGrands();
 
     }
 
