@@ -3,6 +3,7 @@ import { getJson, getPresetList } from '../File System.mjs';
 import { getRecolorImage } from "../GetImage.mjs";
 import { customChange, setCurrentPlayer } from "../Custom Skin.mjs";
 import { current, stPath } from "../Globals.mjs";
+import { charFinder } from "./Char Finder.mjs";
 
 class PlayerFinder extends Finder {
 
@@ -69,82 +70,88 @@ class PlayerFinder extends Finder {
                 // for each character that player plays
                 for (let i = 0; i < preset.characters.length; i++) {
                     
-                    // this will be the div to click
-                    const newDiv = document.createElement('div');
-                    newDiv.className = "finderEntry";
-                    
-                    //create the texts for the div, starting with the tag
-                    const spanTag = document.createElement('span');
-                    //if the tag is empty, dont do anything
-                    if (preset.tag != "") {
-                        spanTag.innerHTML = preset.tag;
-                        spanTag.className = "pfTag";
+                    // only do all of this if the char is present on the current list
+                    if (charFinder.isCharOnList(preset.characters[i].character)) {
+                        
+                        // this will be the div to click
+                        const newDiv = document.createElement('div');
+                        newDiv.className = "finderEntry";
+                        
+                        //create the texts for the div, starting with the tag
+                        const spanTag = document.createElement('span');
+                        //if the tag is empty, dont do anything
+                        if (preset.tag != "") {
+                            spanTag.innerHTML = preset.tag;
+                            spanTag.className = "pfTag";
+                        }
+
+                        // player name
+                        const spanName = document.createElement('span');
+                        spanName.innerHTML = preset.name;
+                        spanName.className = "pfName";
+
+                        // plapDatayer character
+                        const spanChar = document.createElement('span');
+                        spanChar.innerHTML = preset.characters[i].character;
+                        spanChar.className = "pfChar";
+
+                        // data to be accessed when clicked
+                        const pData = {
+                            name : preset.name,
+                            tag : preset.tag,
+                            pronouns : preset.pronouns,
+                            twitter : preset.twitter,
+                            twitch : preset.twitch,
+                            yt : preset.yt,
+                            char : preset.characters[i].character,
+                            skin : preset.characters[i].skin,
+                            hex : preset.characters[i].hex,
+                            customImg : preset.characters[i].customImg
+                        }
+
+                        // add them to the div we created before
+                        newDiv.appendChild(spanTag);
+                        newDiv.appendChild(spanName);
+                        newDiv.appendChild(spanChar);
+
+                        // now for the character image, this is the mask/mirror div
+                        const charImgBox = document.createElement("div");
+                        charImgBox.className = "pfCharImgBox";
+
+                        // actual image
+                        const charImg = document.createElement('img');
+                        charImg.className = "pfCharImg";
+                        const charJson = await getJson(`${stPath.char}/${preset.characters[i].character}/_Info`);
+                        // we will store this for later
+                        skinImgs.push({
+                            el : charImg,
+                            charJson : charJson,
+                            char : preset.characters[i].character,
+                            skin : preset.characters[i].skin,
+                            hex : preset.characters[i].hex,
+                            customImg : preset.characters[i].customImg,
+                        });
+                        // we have to position it
+                        this.positionCharImg(preset.characters[i].skin, charImg, charJson);
+                        // and add it to the mask
+                        charImgBox.appendChild(charImg);
+
+                        //add it to the main div
+                        newDiv.appendChild(charImgBox);
+
+                        // before we go, add a click listener
+                        newDiv.addEventListener("click", () => {
+                            this.#entryClick(pData, player)
+                        });
+
+                        //and now add the div to the actual interface
+                        this.addEntry(newDiv);
+
+                        // we need this to know which cycle we're in
+                        this.#presName = player.getName();
+
                     }
 
-                    // player name
-                    const spanName = document.createElement('span');
-                    spanName.innerHTML = preset.name;
-                    spanName.className = "pfName";
-
-                    // plapDatayer character
-                    const spanChar = document.createElement('span');
-                    spanChar.innerHTML = preset.characters[i].character;
-                    spanChar.className = "pfChar";
-
-                    // data to be accessed when clicked
-                    const pData = {
-                        name : preset.name,
-                        tag : preset.tag,
-                        pronouns : preset.pronouns,
-                        twitter : preset.twitter,
-                        twitch : preset.twitch,
-                        yt : preset.yt,
-                        char : preset.characters[i].character,
-                        skin : preset.characters[i].skin,
-                        hex : preset.characters[i].hex,
-                        customImg : preset.characters[i].customImg
-                    }
-
-                    // add them to the div we created before
-                    newDiv.appendChild(spanTag);
-                    newDiv.appendChild(spanName);
-                    newDiv.appendChild(spanChar);
-
-                    // now for the character image, this is the mask/mirror div
-                    const charImgBox = document.createElement("div");
-                    charImgBox.className = "pfCharImgBox";
-
-                    // actual image
-                    const charImg = document.createElement('img');
-                    charImg.className = "pfCharImg";
-                    const charJson = await getJson(`${stPath.char}/${preset.characters[i].character}/_Info`);
-                    // we will store this for later
-                    skinImgs.push({
-                        el : charImg,
-                        charJson : charJson,
-                        char : preset.characters[i].character,
-                        skin : preset.characters[i].skin,
-                        hex : preset.characters[i].hex,
-                        customImg : preset.characters[i].customImg,
-                    });
-                    // we have to position it
-                    this.positionCharImg(preset.characters[i].skin, charImg, charJson);
-                    // and add it to the mask
-                    charImgBox.appendChild(charImg);
-
-                    //add it to the main div
-                    newDiv.appendChild(charImgBox);
-
-                    // before we go, add a click listener
-                    newDiv.addEventListener("click", () => {
-                        this.#entryClick(pData, player)
-                    });
-
-                    //and now add the div to the actual interface
-                    this.addEntry(newDiv);
-
-                    // we need this to know which cycle we're in
-                    this.#presName = player.getName();
 
                 }
 

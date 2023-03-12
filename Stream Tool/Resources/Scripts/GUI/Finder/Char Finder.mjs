@@ -87,6 +87,20 @@ class CharFinder extends FinderSelect {
         this.#curPlayer = player;
     }
 
+    /**
+     * Checks if the provided character is on the current character list
+     * @param {String} char - Name of the character
+     * @returns {Boolean} True if found
+     */
+    isCharOnList(char) {
+        for (let i = 0; i < this.#charList.length; i++) {
+            if (this.#charList[i] == char) {
+                return true;
+            }    
+        }
+        return false;
+    }
+
 }
 
 export const charFinder = new CharFinder;
