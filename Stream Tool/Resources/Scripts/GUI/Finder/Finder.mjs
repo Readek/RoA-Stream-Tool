@@ -122,7 +122,7 @@ export class Finder {
             }
         } else { //if the character isnt on the database, set positions for the "?" image
             charPos[0] = 0;
-            charPos[1] = 0;
+            charPos[1] = -5;
             charPos[2] = 1.2;
         }
     

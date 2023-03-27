@@ -59,6 +59,7 @@ class PlayerFinder extends Finder {
     async #generatePresetList(player) {
 
         const skinImgs = [];
+        let presetOnList;
 
         for (let i = 0; i < this.#playerPresets.length; i++) {
 
@@ -72,6 +73,8 @@ class PlayerFinder extends Finder {
                     
                     // only do all of this if the char is present on the current list
                     if (charFinder.isCharOnList(preset.characters[i].character)) {
+
+                        presetOnList = true;
                         
                         // this will be the div to click
                         const newDiv = document.createElement('div');
@@ -90,7 +93,7 @@ class PlayerFinder extends Finder {
                         spanName.innerHTML = preset.name;
                         spanName.className = "pfName";
 
-                        // plapDatayer character
+                        // player character
                         const spanChar = document.createElement('span');
                         spanChar.innerHTML = preset.characters[i].character;
                         spanChar.className = "pfChar";
@@ -153,6 +156,58 @@ class PlayerFinder extends Finder {
                     }
 
 
+                }
+
+                // if a preset was found, but no entries had characters from the current list
+                if (!presetOnList) {
+                    
+                    // push an entry with no character so player info is easy to set up
+                    // same code as before
+                    const newDiv = document.createElement('div');
+                    newDiv.className = "finderEntry";
+                    const spanTag = document.createElement('span');
+                    if (preset.tag != "") {
+                        spanTag.innerHTML = preset.tag;
+                        spanTag.className = "pfTag";
+                    }
+                    const spanName = document.createElement('span');
+                    spanName.innerHTML = preset.name;
+                    spanName.className = "pfName";
+                    const spanChar = document.createElement('span');
+                    spanChar.innerHTML = "Random";
+                    spanChar.className = "pfChar";
+                    const pData = {
+                        name : preset.name,
+                        tag : preset.tag,
+                        pronouns : preset.pronouns,
+                        twitter : preset.twitter,
+                        twitch : preset.twitch,
+                        yt : preset.yt,
+                        char : "Random",
+                        skin : {name: "Default"}
+                    }
+                    newDiv.appendChild(spanTag);
+                    newDiv.appendChild(spanName);
+                    newDiv.appendChild(spanChar);
+                    const charImgBox = document.createElement("div");
+                    charImgBox.className = "pfCharImgBox";
+                    const charImg = document.createElement('img');
+                    charImg.className = "pfCharImg";
+                    const charJson = null;
+                    skinImgs.push({
+                        el : charImg,
+                        charJson : charJson,
+                        char : "Random",
+                        skin : {name: "Random"}
+                    });
+                    this.positionCharImg(null, charImg, charJson);
+                    charImgBox.appendChild(charImg);
+                    newDiv.appendChild(charImgBox);
+                    newDiv.addEventListener("click", () => {
+                        this.#entryClick(pData, player)
+                    });
+                    this.addEntry(newDiv);
+                    this.#presName = player.getName();
                 }
 
             }

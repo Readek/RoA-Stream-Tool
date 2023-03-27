@@ -268,6 +268,8 @@ export class Player {
                 return this.charInfo.skinList[i];
             }
         }
+        // if nothing was found just return random placeholder
+        return {name: "Random"}
     }
 
     /**

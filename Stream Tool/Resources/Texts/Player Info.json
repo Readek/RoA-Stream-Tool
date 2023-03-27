@@ -15,12 +15,16 @@
   },
   {
     "name": "Readek",
-    "pronouns": "",
     "tag": "",
+    "pronouns": "",
     "twitter": "readeku",
     "twitch": "Readek",
     "yt": "Readek",
     "characters": [
+      {
+        "character": "Guadua",
+        "skin": "Red"
+      },
       {
         "character": "Maypul",
         "skin": "Default",
