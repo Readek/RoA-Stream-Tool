@@ -51,7 +51,7 @@ class PlayerInfo {
     show(player) {
 
         // update player number text
-        this.#pNumSpan.textContent = player.pNum + 1;
+        this.#pNumSpan.textContent = player.pNum;
 
         // display the current info for this player
         this.#pronounsInp.value = player.pronouns;
