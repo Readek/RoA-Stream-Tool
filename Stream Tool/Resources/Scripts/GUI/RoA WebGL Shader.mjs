@@ -370,6 +370,9 @@ export class RoaRecolor {
     this.gl.uniform4fv(this.glLocs.colorInLoc, div255(ogCols));
     this.gl.uniform4fv(this.glLocs.colorToleranceLoc, divHSV(colTol));
 
+    // store for later, just in case
+    this.colorIn = colIn;
+
   }
 
   /**
