@@ -14,6 +14,78 @@
     ]
   },
   {
+    "name": "Eta Test",
+    "tag": "",
+    "pronouns": "",
+    "twitter": "",
+    "twitch": "",
+    "yt": "",
+    "characters": [
+      {
+        "character": "Etalus",
+        "skin": "Green"
+      }
+    ]
+  },
+  {
+    "name": "Fors Test",
+    "tag": "",
+    "pronouns": "",
+    "twitter": "",
+    "twitch": "",
+    "yt": "",
+    "characters": [
+      {
+        "character": "Forsburn",
+        "skin": "Abyss"
+      }
+    ]
+  },
+  {
+    "name": "Krag Test",
+    "tag": "",
+    "pronouns": "",
+    "twitter": "",
+    "twitch": "",
+    "yt": "",
+    "characters": [
+      {
+        "character": "Kragg",
+        "skin": "Champion"
+      }
+    ]
+  },
+  {
+    "name": "May Test",
+    "tag": "",
+    "pronouns": "",
+    "twitter": "",
+    "twitch": "",
+    "yt": "",
+    "characters": [
+      {
+        "character": "Maypul",
+        "skin": "Red"
+      }
+    ]
+  },
+  {
+    "name": "Orca Test",
+    "tag": "",
+    "pronouns": "",
+    "twitter": "",
+    "twitch": "",
+    "yt": "",
+    "characters": [
+      {
+        "character": "Orcane",
+        "skin": "Default",
+        "hex": "6441-A5FF-FFFF-8800",
+        "customImg": true
+      }
+    ]
+  },
+  {
     "name": "Readek",
     "tag": "",
     "pronouns": "",
@@ -122,6 +194,20 @@
       {
         "character": "Error",
         "skin": "Default"
+      }
+    ]
+  },
+  {
+    "name": "Wrast Test",
+    "tag": "",
+    "pronouns": "",
+    "twitter": "",
+    "twitch": "",
+    "yt": "",
+    "characters": [
+      {
+        "character": "Wrastor",
+        "skin": "Bradshaw"
       }
     ]
   }

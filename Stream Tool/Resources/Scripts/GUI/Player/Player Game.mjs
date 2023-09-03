@@ -5,7 +5,7 @@ import { updateBgCharImg } from "./BG Char Image.mjs";
 import { currentColors } from "../Colors.mjs";
 import { settings } from "../Settings.mjs";
 import { playerInfo } from "./Player Info.mjs";
-import { stPath } from "../Globals.mjs";
+import { current, stPath } from "../Globals.mjs";
 import { gamemode } from "../Gamemode Change.mjs";
 
 export class PlayerGame extends Player {
@@ -151,16 +151,37 @@ export class PlayerGame extends Player {
 
     /** Sets the VS Screen image depending on recolors and settings */
     async setVsImg() {
+
         if (settings.isHDChecked()) {
+
             const promises = [];
             const skinName = this.skin.name.includes("LoA") && !settings.isNoLoAChecked() ? "LoA HD" : "HD";
-            promises.push(getRecolorImage(this.shader, this.char, {name: skinName}, null, "Skins", this.randomImg));
-            promises.push(this.getBrowserSrc(this.char, {name: skinName}, "Skins/", this.randomImg));
+
+            // for HD images that have recolors
+            let hdSkin = {};
+            hdSkin.name = skinName;
+            // only do this if not default skin (unless its a cutsom color)
+            if ((this.skin.name != "Default" || this.skin.customImg) && this.skin.hex && !this.skin.name.includes("LoA") &&
+                await fileExists(`${stPath.char}/${this.char}/Skins/HD Recolor.png`)) {
+
+                hdSkin = structuredClone(this.skin);
+                hdSkin.name = "HD Recolor";
+                hdSkin.force = true;
+
+            }
+
+            promises.push(getRecolorImage(
+                this.shader, this.char, hdSkin, this.charInfo.colorData, "Skins", this.randomImg));
+            promises.push(this.getBrowserSrc(
+                this.char, hdSkin, "Skins/", this.randomImg));
+            
             this.vsSkin = {name: skinName};
+            
             await Promise.all(promises).then( (value) => {
                 this.vsSrc = value[0];
                 this.vsBrowserSrc = value[1];
             })
+
         } else { // if no HD, just use the scoreboard image
             if (settings.isAltArtChecked() && this.charInfo.scoreboard.alt) {
                 // if the character is using alt art, we need to generate a new image
@@ -189,6 +210,7 @@ export class PlayerGame extends Player {
             }
             this.vsSkin = this.skin;            
         }
+
     }
 
     /** Sets the player's VS Screen background video src */
