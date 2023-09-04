@@ -74,6 +74,7 @@
         {
             "name": "Dreamscape",
             "hex": "0C11-6F8C-8B9B-5328-EB8E-0AB4-262F-A600-0000-FFFF-E4E0",
+            "special": 12,
             "force": true
         },
         {
