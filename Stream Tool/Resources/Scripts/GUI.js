@@ -67,8 +67,8 @@ async function init() {
 
     // initialize the commentators
     casters.push(
-        new Caster(document.getElementById("caster1")),
-        new Caster(document.getElementById("caster2")),
+        new Caster(),
+        new Caster(),
     );
 
 

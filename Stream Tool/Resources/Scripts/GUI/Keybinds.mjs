@@ -5,7 +5,7 @@ import { commFinder } from './Finder/Comm Finder.mjs';
 import { playerFinder } from './Finder/Player Finder.mjs';
 import { skinFinder } from './Finder/Skin Finder.mjs';
 import { current, inside } from './Globals.mjs';
-import { playerInfo } from './Player/Player Info.mjs';
+import { profileInfo } from './Profile Info.mjs';
 import { playersReady } from './Player/Players.mjs';
 import { scores } from './Score/Scores.mjs';
 import { settings } from './Settings.mjs';
@@ -28,9 +28,9 @@ export function loadKeybinds() {
             } else if (commFinder.isVisible()) {
                 commFinder.getFinderEntries()[current.focus].click();
             }
-        } else if (playerInfo.isVisible()) { // if player info menu is up
-            playerInfo.apply();
-            playerInfo.hide();
+        } else if (profileInfo.isVisible()) { // if player info menu is up
+            profileInfo.apply();
+            profileInfo.hide();
         } else if (inside.bracket) {
             updateBracket();
         } else {
@@ -54,7 +54,7 @@ export function loadKeybinds() {
         } else if (charFinder.isVisible() || skinFinder.isVisible()
         || commFinder.isVisible() || playerFinder.isVisible()) {
             document.activeElement.blur();
-        } else if (playerInfo.isVisible()) { // if player info menu is up
+        } else if (profileInfo.isVisible()) { // if player info menu is up
             document.getElementById("pInfoBackButt").click();
         } else {
             clear(); // by default, clear player info

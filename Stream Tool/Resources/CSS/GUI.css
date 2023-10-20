@@ -175,7 +175,7 @@ button:hover {
   display: flex;
 }
 
-.pInfoButt {
+.pInfoButt, .cInfoButt, .cDeleteButt {
   width: 30px;
   background-color: var(--bg4);
   border-radius: 3px;
@@ -187,10 +187,10 @@ button:hover {
   justify-content: center;
   align-items: center;
 }
-.pInfoButt:hover {
+.pInfoButt:hover, .cInfoButt:hover, .cDeleteButt:hover {
   border-color: var(--selected);
 }
-.pInfoButt:focus {
+.pInfoButt:focus, .cInfoButt:focus, .cDeleteButt:focus {
   border-color: var(--focused);
 }
 .pInfoButtIcon {
@@ -686,17 +686,20 @@ button:hover {
 
 /* caster region */
 #casterInfo {
-  height: 60px;
-  padding: 10px;
-  padding: 8px 10px 12px 10px;
+  padding: 5px 10px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+#casterDiv {
+  display: flex;
+  gap: 10px;
 }
 
 .casterIcon {
   height: 20px;
   width: 20px;
-  margin-left: -5px;
-  margin-top: 5px;
-  margin-right: 3px;
   fill: var(--iconFill);
   display: inline-block;
   flex-shrink: 0;
@@ -734,7 +737,32 @@ button:hover {
 }
 
 .cName {
-  width: 100%;
+  width: 100px;
+  border-radius: 0;
+}
+
+.cDeleteButt {
+  width: 25px;
+  border-radius: 0;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
+
+#addCasterButt {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--focused);
+  border-radius: 3px;
+  transition: border-color 100ms, opacity 100ms;
+  background-color: var(--bg4);
+  padding: 1px 2px 1px 5px;
+}
+#addCasterButt:hover {
+  border-color: var(--selected);
+}
+#addCasterButt:active {
+  background-color: var(--bg2);
 }
 
 .casterInput {
@@ -751,7 +779,6 @@ button:hover {
   margin-left: 6px;
   transition: border-color 100ms, opacity 100ms;
   background-color: var(--bg4);
-
 }
 .saveCasterButt:hover {
   border-color: var(--selected);
@@ -783,7 +810,7 @@ button:hover {
   height: auto;
 }
 .cFinderPosition {
-  width: 100%;
+  width: 100px;
 }
 
 
@@ -1242,4 +1269,9 @@ button:hover {
     flex-direction: column;
   }
 
+}
+
+
+#caster1, #caster2 {
+  display: none;
 }

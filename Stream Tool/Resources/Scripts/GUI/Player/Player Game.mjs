@@ -4,11 +4,13 @@ import { getRecolorImage, getTrailImage } from "../GetImage.mjs";
 import { updateBgCharImg } from "./BG Char Image.mjs";
 import { currentColors } from "../Colors.mjs";
 import { settings } from "../Settings.mjs";
-import { playerInfo } from "./Player Info.mjs";
-import { current, stPath } from "../Globals.mjs";
+import { profileInfo } from "../Profile Info.mjs";
+import { stPath } from "../Globals.mjs";
 import { gamemode } from "../Gamemode Change.mjs";
 
 export class PlayerGame extends Player {
+
+    profileType = "player";
 
     tag = "";
     pronouns = "";
@@ -42,7 +44,7 @@ export class PlayerGame extends Player {
 
         // open player info menu if clicking on the icon
         pInfoEl.getElementsByClassName("pInfoButt")[0].addEventListener("click", () => {
-            playerInfo.show(this);
+            profileInfo.show(this);
         });
 
         this.pInfoDiv = pInfoEl;
@@ -58,11 +60,35 @@ export class PlayerGame extends Player {
         this.nameInp.value = name;
         this.resizeInput();
     }
+    getPronouns() {
+        return this.pronouns;
+    }
+    setPronouns(text) {
+        this.pronouns = text;
+    }
     getTag() {
         return this.tag;
     }
     setTag(tag) {
         this.tag = tag;
+    }
+    getTwitter() {
+        return this.twitter;
+    }
+    setTwitter(text) {
+        this.twitter = text;
+    }
+    getTwitch() {
+        return this.twitch;
+    }
+    setTwitch(text) {
+        this.twitch = text;
+    }
+    getYt() {
+            return this.yt;
+    }
+    setYt(text) {
+        this.yt = text;
     }
 
 

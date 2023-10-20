@@ -132,6 +132,8 @@ export async function writeScoreboard() {
     for (let i = 0; i < casters.length; i++) {
         scoreboardJson.caster.push({
             name: casters[i].getName(),
+            pronouns : casters[i].getPronouns(),
+            tag : casters[i].getTag(),
             twitter: casters[i].getTwitter(),
             twitch: casters[i].getTwitch(),
             yt: casters[i].getYt(),

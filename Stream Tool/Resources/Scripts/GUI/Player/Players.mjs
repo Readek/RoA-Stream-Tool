@@ -1,5 +1,6 @@
-import { PlayerBracket } from "./Player Bracket.mjs";
-import { PlayerGame } from "./Player Game.mjs";
+/* import { PlayerBracket } from "./Player Bracket.mjs";
+import { PlayerGame } from "./Player Game.mjs"; */
+// TODO this breaks everything for some reason ??
 
 /** @type {PlayerGame[]} */
 export const players = [];

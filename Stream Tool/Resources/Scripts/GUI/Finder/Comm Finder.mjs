@@ -57,6 +57,8 @@ class CommFinder extends Finder {
                     // data to be accessed when clicked
                     const cData = {
                         name : preset.name,
+                        pronouns : preset.pronouns,
+                        tag : preset.tag,
                         twitter : preset.twitter,
                         twitch : preset.twitch,
                         yt : preset.yt
@@ -92,6 +94,8 @@ class CommFinder extends Finder {
         current.focus = -1;
 
         caster.setName(cData.name);
+        caster.setPronouns(cData.pronouns);
+        caster.setTag(cData.tag);
         caster.setTwitter(cData.twitter);
         caster.setTwitch(cData.twitch);
         caster.setYt(cData.yt);

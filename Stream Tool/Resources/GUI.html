@@ -231,69 +231,11 @@
 
       <div id=casterInfo>
 
-        <div id=caster1 class="caster">
+        <div id="casterDiv"></div>
 
-          <div class="casterGroup casterNameG">
-            <load-svg src="SVGs/Mic.svg" class="casterIcon"></load-svg>
-            <div class="finderPosition cFinderPosition">
-              <input type="text" class="cName textInput mousetrap" placeholder="Caster name" spellcheck="false">
-            </div>
-          </div>
-          
-          <div class="casterGroup casterSocialG">
-            <load-svg src="SVGs/Twitter.svg" class="casterIcon twitterIcon"></load-svg>
-            <input type="text" class="cTwitter casterInput textInput mousetrap" placeholder="Caster Twitter" spellcheck="false">
-          </div>
-          
-          <div class="casterGroup casterSocialG">
-            <load-svg src="SVGs/Twitch.svg" class="casterIcon twitchIcon"></load-svg>
-            <input type="text" class="cTwitch casterInput textInput mousetrap" placeholder="Caster Twitch" spellcheck="false">
-          </div>
-
-          <div class="casterGroup casterSocialG">
-            <load-svg src="SVGs/Youtube.svg" class="casterIcon ytIcon"></load-svg>
-            <input type="text" class="cYt casterInput textInput mousetrap" placeholder="Caster Youtube" spellcheck="false">
-          </div>
-
-          <button class="saveCasterButt" tabindex="-1" disabled title="Save current commentator info to preset">
-            <div class="pInfoIconCont">
-              <load-svg src="SVGs/Save.svg" class="saveCasterIcon"></load-svg>
-            </div>
-          </button>
-
-        </div>
-
-        <div id=caster2 class="caster">
-
-          <div class="casterGroup casterNameG">
-            <load-svg src="SVGs/Mic.svg" class="casterIcon"></load-svg>
-            <div class="finderPosition cFinderPosition">
-              <input type="text" class="cName textInput mousetrap" placeholder="Caster name" spellcheck="false">
-            </div>
-          </div>
-          
-          <div class="casterGroup casterSocialG">
-            <load-svg src="SVGs/Twitter.svg" class="casterIcon twitterIcon"></load-svg>
-            <input type="text" class="cTwitter casterInput textInput mousetrap" placeholder="Caster Twitter" spellcheck="false">
-          </div>
-        
-          <div class="casterGroup casterSocialG">
-            <load-svg src="SVGs/Twitch.svg" class="casterIcon twitchIcon"></load-svg>
-            <input type="text" class="cTwitch casterInput textInput mousetrap" placeholder="Caster Twitch" spellcheck="false">
-          </div>
-
-          <div class="casterGroup casterSocialG">
-            <load-svg src="SVGs/Youtube.svg" class="casterIcon ytIcon"></load-svg>
-            <input type="text" class="cYt casterInput textInput mousetrap" placeholder="Caster Youtube" spellcheck="false">
-          </div>
-
-          <button class="saveCasterButt" tabindex="-1" disabled title="Save current commentator info to preset">
-            <div class="pInfoIconCont">
-              <load-svg src="SVGs/Save.svg" class="saveCasterIcon"></load-svg>
-            </div>
-          </button>
-
-        </div>
+        <button id="addCasterButt" title="Add commentator">
+          + <load-svg src="SVGs/Mic.svg" class="casterIcon"></load-svg>
+        </button>
 
       </div>
       
@@ -463,7 +405,7 @@ They will always appear when typing 'Grand' in the round box.">
 <!-- stuff that will get overlayed on the entire screen -->
 <div id="pInfoDiv">
 
-  <div class="pInfoTitle">Editing player info for player <span id="pInfoPNum"></span></div>
+  <div class="pInfoTitle">Editing <span id="pInfoType"></span> info</div>
 
   <div id="pInfoStuff">
 
@@ -474,7 +416,7 @@ They will always appear when typing 'Grand' in the round box.">
           <div class="pInfoIconCont">
             <load-svg src="SVGs/Person.svg" class="pInfoIcon"></load-svg>
           </div>
-          <input type="text" id="pInfoInputPronouns" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Pronouns" title="Type the player's pronouns here" spellcheck="false">
+          <input type="text" id="pInfoInputPronouns" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Pronouns" title="Type them pronouns here" spellcheck="false">
 
         </div>
 
@@ -483,7 +425,7 @@ They will always appear when typing 'Grand' in the round box.">
           <div class="pInfoIconCont">
             <load-svg src="SVGs/Tag.svg" class="pInfoIcon"></load-svg>
           </div>
-          <input type="text" id="pInfoInputTag" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Tag/Sponsor" title="Type the player's tag/sponsor here" spellcheck="false">
+          <input type="text" id="pInfoInputTag" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Tag/Sponsor" title="Type the tag/sponsor here" spellcheck="false">
 
         </div>
 
@@ -492,7 +434,7 @@ They will always appear when typing 'Grand' in the round box.">
           <div class="pInfoIconCont">
             <load-svg src="SVGs/Person.svg" class="pInfoIcon"></load-svg>
           </div>
-          <input type="text" id="pInfoInputName" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Player name" title="Type the player's name here" spellcheck="false">
+          <input type="text" id="pInfoInputName" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Name" title="Type the name here" spellcheck="false">
 
         </div>
 
@@ -505,7 +447,7 @@ They will always appear when typing 'Grand' in the round box.">
         <div class="pInfoIconCont">
           <load-svg src="SVGs/Twitter.svg" class="pInfoIcon"></load-svg>
         </div>
-        <input type="text" id="pInfoInputTwitter" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Twitter" title="Type the player's twitter here" spellcheck="false">
+        <input type="text" id="pInfoInputTwitter" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Twitter" spellcheck="false">
 
       </div>
 
@@ -514,7 +456,7 @@ They will always appear when typing 'Grand' in the round box.">
         <div class="pInfoIconCont">
           <load-svg src="SVGs/Twitch.svg" class="pInfoIcon"></load-svg>
         </div>
-        <input type="text" id="pInfoInputTwitch" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Twitch" title="Type the player's twitch channel here" spellcheck="false">
+        <input type="text" id="pInfoInputTwitch" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Twitch" spellcheck="false">
 
       </div>
 
@@ -523,7 +465,7 @@ They will always appear when typing 'Grand' in the round box.">
         <div class="pInfoIconCont">
           <load-svg src="SVGs/Youtube.svg" class="pInfoIcon"></load-svg>
         </div>
-        <input type="text" id="pInfoInputYt" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Youtube" title="Type the player's youtube channel here" spellcheck="false">
+        <input type="text" id="pInfoInputYt" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Youtube" spellcheck="false">
 
       </div>
 

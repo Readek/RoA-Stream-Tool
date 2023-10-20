@@ -1,33 +1,29 @@
 import { saveJson } from "../File System.mjs";
 import { commFinder } from "../Finder/Comm Finder.mjs";
-import { inside, stPath } from "../Globals.mjs";
+import { inside } from "../Globals.mjs";
 import { displayNotif } from "../Notifications.mjs";
+import { profileInfo } from "../Profile Info.mjs";
 
 export class Caster {
 
-    #nameEl;
-    #twitterEl;
-    #twitchEl;
-    #ytEl;
-    #saveEl;
+    profileType = "commentator"
 
-    constructor(el) {
+    tag = "";
+    pronouns = "";
+    twitter = "";
+    twitch = "";
+    yt = "";
+
+    #nameEl;
+
+    constructor() {
+
+        const el = this.#createElements();
 
         this.#nameEl = el.getElementsByClassName(`cName`)[0];
-        this.#twitterEl = el.getElementsByClassName(`cTwitter`)[0];
-        this.#twitchEl = el.getElementsByClassName(`cTwitch`)[0];
-        this.#ytEl = el.getElementsByClassName(`cYt`)[0];
-        this.#saveEl = el.getElementsByClassName(`saveCasterButt`)[0];
 
         // every time we type on name
         this.#nameEl.addEventListener("input", () => {
-
-            // check to disable or enable save button
-            if (this.getName()) {
-                this.#saveEl.disabled = false;
-            } else {
-                this.#saveEl.disabled = true;
-            }
 
             // check if theres an existing caster preset
             commFinder.fillFinderPresets(this);
@@ -49,47 +45,63 @@ export class Caster {
             }
         });
 
-        // every time we click on the save button
-        this.#saveEl.addEventListener("click", () => {this.#savePreset()});
+        // open player info menu if clicking on the icon
+        el.getElementsByClassName("pInfoButt")[0].addEventListener("click", () => {
+            profileInfo.show(this);
+        });
 
     }
 
+    
     getName() {
         return this.#nameEl.value;
-    }
-    getTwitter() {
-        if (this.#twitterEl.value == "") {
-            return "-";
-        } else {
-            return this.#twitterEl.value;
-        }
-    }
-    getTwitch() {
-        if (this.#twitchEl.value == "") {
-            return "-";
-        } else {
-            return this.#twitchEl.value;
-        }
-    }
-    getYt() {
-        if (this.#ytEl.value == "") {
-            return "-";
-        } else {
-            return this.#ytEl.value;
-        }
     }
     setName(text) {
         this.#nameEl.value = this.#checkText(text);
     }
+    getPronouns() {
+        return this.pronouns;
+    }
+    setPronouns(text) {
+        this.pronouns = text;
+    }
+    getTag() {
+        return this.tag;
+    }
+    setTag(text) {
+        this.tag = text;
+    }
+    getTwitter() {
+        if (this.twitter == "") {
+            return "-";
+        } else {
+            return this.twitter;
+        }
+    }
     setTwitter(text) {
-        this.#twitterEl.value = this.#checkText(text);
+        this.twitter = this.#checkText(text);
+    }
+    getTwitch() {
+        if (this.twitch == "") {
+            return "-";
+        } else {
+            return this.twitch;
+        }
     }
     setTwitch(text) {
-        this.#twitchEl.value = this.#checkText(text);
+        this.twitch = this.#checkText(text);
+    }
+    getYt() {
+        if (this.yt == "") {
+            return "-";
+        } else {
+            return this.yt;
+        }
     }
     setYt(text) {
-        this.#ytEl.value = this.#checkText(text);
+        this.yt = this.#checkText(text);
     }
+
     /**
      * Checks if the text is a simple "-" to be able to return nothing
      * @param {String} text String to check
@@ -102,24 +114,28 @@ export class Caster {
         return text;
     }
 
-    /** Saves a commentator local json as a preset */
-    #savePreset() {
+    /** Creates the HTML elements on the GUI */
+    #createElements() {
 
-        // save current info to an object
-        const preset = {
-            name: this.getName(),
-            twitter: this.getTwitter(),
-            twitch: this.getTwitch(),
-            yt: this.getYt()
-        };
+        const newDiv = document.createElement("div");
+        newDiv.innerHTML = `
+            <div class="caster">
 
-        // use this object to create a json file
-        saveJson(`/Commentator Info/${this.getName()}`, preset);
+            <button class="pInfoButt" title="Edit commentator info" tabindex="-1">
+            <load-svg src="SVGs/Mic.svg" class="casterIcon"></load-svg>
+            </button>
 
-        displayNotif("Commentator preset has been saved");
+            <div class="finderPosition cFinderPosition">
+            <input type="text" class="cName textInput mousetrap" placeholder="Caster name" spellcheck="false">
+            </div>
 
-        // generate a new presets list
-        commFinder.setCasterPresets();
+            <button class="cDeleteButt" title="Remove commentator">-</button>
+
+            </div>
+        `
+
+        document.getElementById("casterDiv").appendChild(newDiv);
+        return newDiv;
 
     }
 
