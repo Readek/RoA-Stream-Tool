@@ -596,6 +596,11 @@ export class RoaRecolor {
     return this.recolor(recolorRgb);
     
   }
+
+  /** Bracket players will love this feature! */
+  killContext() {
+    this.gl.getExtension('WEBGL_lose_context').loseContext();
+  }
   
 }
 

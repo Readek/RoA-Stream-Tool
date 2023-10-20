@@ -51,6 +51,11 @@ async function createEncounters(sameRound) {
         updateLocalBracket(true);
     }
 
+    // garbage collector does not unload shaders for some reason
+    for (let i = 0; i < bracketPlayers.length; i++) {
+        bracketPlayers[i].unloadShader();
+    }
+
     bEncountersDiv.innerHTML = "";
     bracketPlayers.length = 0;
     

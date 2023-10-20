@@ -126,4 +126,9 @@ export class PlayerBracket extends Player {
 
     }
 
+    /** Frees up the player's shader from memory */
+    unloadShader() {
+        this.shader.killContext();
+    }
+
 }
