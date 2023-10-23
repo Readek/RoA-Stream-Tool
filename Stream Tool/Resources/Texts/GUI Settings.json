@@ -10,6 +10,7 @@
   "customRound": false,
   "invertScore": false,
   "scoreAutoUpdate": false,
+  "simpleTexts": false,
   "alwaysOnTop": false,
   "resizable": false,
   "zoom": 100,

@@ -145,7 +145,9 @@ export async function writeScoreboard() {
         ipc.sendRemoteGameData();
 
         //simple .txt files
-        saveSimpleTexts();
+        if (settings.isSimpleTextsChecked()) {
+            saveSimpleTexts();
+        }
 
     } else { // remote update stuff
 

@@ -23,6 +23,7 @@ class GuiSettings {
     #forceWLCheck = document.getElementById('forceWLToggle');
     #scoreAutoCheck = document.getElementById("scoreAutoUpdate");
     #invertScoreCheck = document.getElementById("invertScore");
+    #simpleTextsCheck = document.getElementById("simpleTexts")
 
     #alwaysOnTopCheck = document.getElementById("alwaysOnTop");
     #resizableCheck = document.getElementById("resizableWindow");
@@ -60,6 +61,9 @@ class GuiSettings {
         this.#invertScoreCheck.addEventListener("click", () => {
             this.save("invertScore", this.isInvertScoreChecked())
         });
+        this.#simpleTextsCheck.addEventListener("click", () => {
+            this.save("simpleTexts", this.isSimpleTextsChecked())
+        });
 
         // dont forget about the copy match to clipboard button
         document.getElementById("copyMatch").addEventListener("click", () => {
@@ -95,15 +99,18 @@ class GuiSettings {
         // and update it all!
         this.#introCheck.checked = guiSettings.allowIntro;
         this.#altArtCheck.checked = guiSettings.forceAlt;
+
         this.#HDCheck.checked = guiSettings.forceHD;
         if (guiSettings.forceHD) this.#noLoACheck.disabled = false;
         this.#noLoACheck.checked = guiSettings.noLoAHD;
+
         this.#wsCheck.checked = guiSettings.workshop;
         if (guiSettings.workshop) this.#altArtCheck.disabled = false;
         if (guiSettings.customRound) this.#customRound.click();
         if (guiSettings.forceWL) this.#forceWLCheck.click();
         this.#scoreAutoCheck.checked = guiSettings.scoreAutoUpdate;
         this.#invertScoreCheck.checked = guiSettings.invertScore;
+        this.#simpleTextsCheck.checked = guiSettings.simpleTexts;
 
         if (inside.electron) {
             this.#alwaysOnTopCheck.checked = guiSettings.alwaysOnTop;
@@ -297,6 +304,10 @@ class GuiSettings {
 
     isInvertScoreChecked() {
         return this.#invertScoreCheck.checked;
+    }
+
+    isSimpleTextsChecked() {
+        return this.#simpleTextsCheck.checked;
     }
 
     /**
