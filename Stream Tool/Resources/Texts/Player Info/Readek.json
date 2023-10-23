@@ -2,9 +2,11 @@
   "name": "Readek",
   "tag": "",
   "pronouns": "",
-  "twitter": "readeku",
-  "twitch": "Readek",
-  "yt": "Readek",
+  "socials": {
+    "twitter": "",
+    "twitch": "Readek",
+    "yt": "Readek"
+  },
   "characters": [
     {
       "character": "Guadua",

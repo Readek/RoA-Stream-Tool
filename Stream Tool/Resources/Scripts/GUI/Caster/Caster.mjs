@@ -1,7 +1,5 @@
-import { saveJson } from "../File System.mjs";
 import { commFinder } from "../Finder/Comm Finder.mjs";
 import { inside } from "../Globals.mjs";
-import { displayNotif } from "../Notifications.mjs";
 import { profileInfo } from "../Profile Info.mjs";
 
 export class Caster {
@@ -10,9 +8,7 @@ export class Caster {
 
     tag = "";
     pronouns = "";
-    twitter = "";
-    twitch = "";
-    yt = "";
+    socials = {};
 
     #nameEl;
 
@@ -57,7 +53,7 @@ export class Caster {
         return this.#nameEl.value;
     }
     setName(text) {
-        this.#nameEl.value = this.#checkText(text);
+        this.#nameEl.value = text;
     }
     getPronouns() {
         return this.pronouns;
@@ -71,48 +67,13 @@ export class Caster {
     setTag(text) {
         this.tag = text;
     }
-    getTwitter() {
-        if (this.twitter == "") {
-            return "-";
-        } else {
-            return this.twitter;
-        }
+    getSocials() {
+        return this.socials;
     }
-    setTwitter(text) {
-        this.twitter = this.#checkText(text);
-    }
-    getTwitch() {
-        if (this.twitch == "") {
-            return "-";
-        } else {
-            return this.twitch;
-        }
-    }
-    setTwitch(text) {
-        this.twitch = this.#checkText(text);
-    }
-    getYt() {
-        if (this.yt == "") {
-            return "-";
-        } else {
-            return this.yt;
-        }
-    }
-    setYt(text) {
-        this.yt = this.#checkText(text);
+    setSocials(socials) {
+        this.socials = socials;
     }
 
-    /**
-     * Checks if the text is a simple "-" to be able to return nothing
-     * @param {String} text String to check
-     * @returns {String} Final text
-     */
-    #checkText(text) {
-        if (text == "-") {
-            return "";
-        }
-        return text;
-    }
 
     /** Creates the HTML elements on the GUI */
     #createElements() {

@@ -59,9 +59,7 @@ class CommFinder extends Finder {
                         name : preset.name,
                         pronouns : preset.pronouns,
                         tag : preset.tag,
-                        twitter : preset.twitter,
-                        twitch : preset.twitch,
-                        yt : preset.yt
+                        socials : preset.socials
                     }
 
                     // when the div is clicked, update caster
@@ -96,9 +94,7 @@ class CommFinder extends Finder {
         caster.setName(cData.name);
         caster.setPronouns(cData.pronouns);
         caster.setTag(cData.tag);
-        caster.setTwitter(cData.twitter);
-        caster.setTwitch(cData.twitch);
-        caster.setYt(cData.yt);
+        caster.setSocials(cData.socials);
 
         this.hide();
 

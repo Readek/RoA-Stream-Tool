@@ -14,9 +14,7 @@ export class PlayerGame extends Player {
 
     tag = "";
     pronouns = "";
-    twitter = "";
-    twitch = "";
-    yt = "";
+    socials = {};
 
     vsSkin;
     scSrc;
@@ -72,23 +70,11 @@ export class PlayerGame extends Player {
     setTag(tag) {
         this.tag = tag;
     }
-    getTwitter() {
-        return this.twitter;
+    getSocials() {
+        return this.socials;
     }
-    setTwitter(text) {
-        this.twitter = text;
-    }
-    getTwitch() {
-        return this.twitch;
-    }
-    setTwitch(text) {
-        this.twitch = text;
-    }
-    getYt() {
-            return this.yt;
-    }
-    setYt(text) {
-        this.yt = text;
+    setSocials(socials) {
+        this.socials = socials;
     }
 
 

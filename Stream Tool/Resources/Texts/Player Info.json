@@ -3,9 +3,11 @@
     "name": "Ateozc",
     "tag": "",
     "pronouns": "He/Him",
-    "twitter": "Ateozc",
-    "twitch": "Ateozc",
-    "yt": "Ateozc",
+    "socials": {
+      "twitter": "Ateozc",
+      "twitch": "Ateozc",
+      "yt": "Ateozc"
+    },
     "characters": [
       {
         "character": "Absa",
@@ -17,9 +19,11 @@
     "name": "Readek",
     "tag": "",
     "pronouns": "",
-    "twitter": "readeku",
-    "twitch": "Readek",
-    "yt": "Readek",
+    "socials": {
+      "twitter": "",
+      "twitch": "Readek",
+      "yt": "Readek"
+    },
     "characters": [
       {
         "character": "Guadua",
@@ -43,9 +47,7 @@
     "name": "Test",
     "pronouns": "",
     "tag": "One",
-    "twitter": "",
-    "twitch": "",
-    "yt": "",
+    "socials": {},
     "characters": [
       {
         "character": "Absa",

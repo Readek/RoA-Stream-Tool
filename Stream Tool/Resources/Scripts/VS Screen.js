@@ -81,9 +81,9 @@ class Caster {
 
 		// set all the texts on startup
 		this.setName(data.name);
-		this.setTwitter(data.twitter);
-		this.setTwitch(data.twitch);
-		this.setYt(data.yt);
+		this.setTwitter(data.socials.twitter);
+		this.setTwitch(data.socials.twitch);
+		this.setYt(data.socials.yt);
 
 	}
 
@@ -124,35 +124,35 @@ class Caster {
 		}
 
 		// but for the rest
-		if (this.getTwitter() != data.twitter) {
+		if (this.getTwitter() != data.socials.twitter) {
 			// only animate the change if its visible
 			if (window.getComputedStyle(this.cTwitter.parentElement).getPropertyValue("opacity") == 1) {
 				fadeOut(this.cTwitter.parentElement).then( () => {
-					this.setTwitter(data.twitter);
+					this.setTwitter(data.socials.twitter);
 					fadeIn(this.cTwitter.parentElement, .2);
 				});
 			} else {
-				this.setTwitter(data.twitter);
+				this.setTwitter(data.socials.twitter);
 			}
 		}
-		if (this.getTwitch() != data.twitch) {
+		if (this.getTwitch() != data.socials.twitch) {
 			if (window.getComputedStyle(this.cTwitch.parentElement).getPropertyValue("opacity") == 1) {
 				fadeOut(this.cTwitch.parentElement).then( () => {
-					this.setTwitch(data.twitch);
+					this.setTwitch(data.socials.twitch);
 					fadeIn(this.cTwitch.parentElement, .2);
 				});
 			} else {
-				this.setTwitch(data.twitch);
+				this.setTwitch(data.socials.twitch);
 			}
 		}
-		if (this.getYt() != data.yt) {
+		if (this.getYt() != data.socials.yt) {
 			if (window.getComputedStyle(this.cYt.parentElement).getPropertyValue("opacity") == 1) {
 				fadeOut(this.cYt.parentElement).then( () => {
-					this.setYt(data.yt);
+					this.setYt(data.socials.yt);
 					fadeIn(this.cYt.parentElement, .2);
 				});
 			} else {
-				this.setYt(data.yt);
+				this.setYt(data.socials.yt);
 			}
 		}
 

@@ -3,8 +3,20 @@
     "name": "Readek",
     "tag": "",
     "pronouns": "",
-    "twitter": "readeku",
-    "twitch": "Readek",
-    "yt": "Readek"
+    "socials": {
+      "twitter": "",
+      "twitch": "Readek",
+      "yt": "Readek"
+    }
+  },
+  {
+    "name": "Test",
+    "tag": "",
+    "pronouns": "",
+    "socials": {
+      "twitter": "Twittest",
+      "twitch": "Twitchest",
+      "yt": "Youtubest"
+    }
   }
 ]

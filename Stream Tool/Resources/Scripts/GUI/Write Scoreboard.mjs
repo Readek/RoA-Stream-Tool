@@ -92,9 +92,7 @@ export async function writeScoreboard() {
             pronouns: players[i].pronouns,
             tag: players[i].tag,
             name: players[i].getName(),
-            twitter: players[i].twitter,
-            twitch: players[i].twitch,
-            yt: players[i].yt,
+            socials: players[i].getSocials(),
             sc : {
                 charImg: players[i].scBrowserSrc || players[i].scSrc,
                 charPos: players[i].getScCharPos(),
@@ -134,9 +132,7 @@ export async function writeScoreboard() {
             name: casters[i].getName(),
             pronouns : casters[i].getPronouns(),
             tag : casters[i].getTag(),
-            twitter: casters[i].getTwitter(),
-            twitch: casters[i].getTwitch(),
-            yt: casters[i].getYt(),
+            socials : casters[i].getSocials()
         })
     }
 

@@ -2,9 +2,7 @@
     "name": "Test",
     "pronouns": "",
     "tag": "One",
-    "twitter": "",
-    "twitch": "",
-    "yt": "",
+    "socials": {},
     "characters": [
         {
             "character": "Absa",  "skin": "Default"

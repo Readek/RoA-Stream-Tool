@@ -103,9 +103,7 @@ class PlayerFinder extends Finder {
                             name : preset.name,
                             tag : preset.tag,
                             pronouns : preset.pronouns,
-                            twitter : preset.twitter,
-                            twitch : preset.twitch,
-                            yt : preset.yt,
+                            socials : preset.socials,
                             char : preset.characters[i].character,
                             skin : preset.characters[i].skin,
                             hex : preset.characters[i].hex,
@@ -180,9 +178,7 @@ class PlayerFinder extends Finder {
                         name : preset.name,
                         tag : preset.tag,
                         pronouns : preset.pronouns,
-                        twitter : preset.twitter,
-                        twitch : preset.twitch,
-                        yt : preset.yt,
+                        socials : preset.socials,
                         char : "Random",
                         skin : {name: "Default"}
                     }
@@ -289,10 +285,8 @@ class PlayerFinder extends Finder {
         // all them player data
         player.setName(pData.name);
         player.setTag(pData.tag);
-        player.pronouns = pData.pronouns;
-        player.twitter = pData.twitter;
-        player.twitch = pData.twitch;
-        player.yt = pData.yt;
+        player.setPronouns(pData.pronouns);
+        player.setSocials(pData.socials);
 
         // character change
         await player.charChange(pData.char, true);

@@ -58,9 +58,10 @@ class ProfileInfo {
         this.#pronounsInp.value = profile.getPronouns();
         this.#tagInp.value = profile.getTag();
         this.#nameInp.value = profile.getName();
-        this.#twitterInp.value = profile.getTwitter();
-        this.#twitchInp.value = profile.getTwitch();
-        this.#ytInp.value = profile.getYt();
+        const socials = profile.getSocials() || [];
+        this.#twitterInp.value = socials.twitter || "";
+        this.#twitchInp.value = socials.twitch || "";
+        this.#ytInp.value = socials.yt || "";
 
         // give tab index so we can jump from input to input with the keyboard
         this.#setTabIndex(0);
@@ -107,9 +108,13 @@ class ProfileInfo {
         this.#curProfile.pronouns = this.#pronounsInp.value;
         this.#curProfile.setTag(this.#tagInp.value);
         this.#curProfile.setName(this.#nameInp.value);
-        this.#curProfile.twitter = this.#twitterInp.value;
-        this.#curProfile.twitch = this.#twitchInp.value;
-        this.#curProfile.yt = this.#ytInp.value;
+
+        const socials = {
+            twitter : this.#twitterInp.value,
+            twitch : this.#twitchInp.value,
+            yt : this.#ytInp.value
+        }
+        this.#curProfile.setSocials(socials);
         
     }
 
@@ -119,9 +124,7 @@ class ProfileInfo {
             name: this.#curProfile.getName(),
             tag: this.#curProfile.getTag(),
             pronouns: this.#curProfile.getPronouns(),
-            twitter: this.#curProfile.getTwitter(),
-            twitch: this.#curProfile.getTwitch(),
-            yt: this.#curProfile.getYt(),
+            socials: this.#curProfile.getSocials(),
         }
         if (this.#curProfile.profileType == "player") {
 
