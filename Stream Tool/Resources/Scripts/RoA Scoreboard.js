@@ -1,4 +1,5 @@
-'use strict';
+import { resizeText } from "./Utils/Resize Text.mjs";
+import { updateText } from "./Utils/Update Text.mjs";
 
 //animation stuff
 const fadeInTime = .3; //(seconds)
@@ -6,14 +7,14 @@ const fadeOutTime = .2;
 let introDelay = .5; //all animations will get this delay when the html loads (use this so it times with your transition)
 
 //max text sizes (used when resizing back)
-const introSize = "85px";
-const nameSize = "24px";
-const tagSize = "17px";
-const nameSizeDubs = "22px";
-const tagSizeDubs = "15px";
-const teamSize = "22px";
-let numSize = "36px"
-const roundSize = "19px";
+const introSize = 85;
+const nameSize = 24;
+const tagSize = 17;
+const nameSizeDubs = 22;
+const tagSizeDubs = 15;
+const teamSize = 22;
+let numSize = 36;
+const roundSize = 19;
 
 //to avoid the code constantly running the same method over and over
 const pCharPrev = [], scorePrev = [], colorPrev = [], wlPrev = [], topBarMoved = [];
@@ -158,7 +159,7 @@ async function updateData(scInfo) {
 						}
 					}
 
-					pIntroEL.style.fontSize = introSize; //resize the font to its max size
+					pIntroEL.style.fontSize = introSize + "px"; //resize the font to its max size
 					resizeText(pIntroEL); //resize the text if its too large
 
 					//change the color of the player text shadows
@@ -264,6 +265,7 @@ async function updateData(scInfo) {
 			//set the team names if not singles
 			if (gamemode != 1) {
 				updateText(teamNames[i], teamName[i], teamSize);
+				resizeText(teamNames[i]);
 				fadeInMove(teamNames[i], introDelay, null, side);
 			}
 
@@ -295,6 +297,7 @@ async function updateData(scInfo) {
 
 		//update the round text	and fade it in
 		updateText(textRound, round, roundSize);
+		resizeText(textRound);
 		if (round) { // but only if theres any text to display
 			fadeIn(textRound.parentElement, introDelay);
 		}
@@ -388,6 +391,7 @@ async function updateData(scInfo) {
 				if (teamNames[i].textContent != teamName[i]) {
 					fadeOutMove(teamNames[i], null, side).then( () => {
 						updateText(teamNames[i], teamName[i], teamSize);
+						resizeText(teamNames[i]);
 						fadeInMove(teamNames[i], 0, null, side);
 					});
 				}
@@ -444,6 +448,7 @@ async function updateData(scInfo) {
 		if (textRound.textContent != round){
 			fadeOut(textRound).then( () => {
 				updateText(textRound, round, roundSize);
+				resizeText(textRound);
 				fadeIn(textRound);
 			});
 			// if theres no text, hide everything
@@ -477,8 +482,8 @@ function changeGM(gm) {
 			pWrapper[i].classList.remove("wrappersSingles");
 			pWrapper[i].classList.add("wrappersDubs");
 			//update the text size and resize it if it overflows
-			pName[i].style.fontSize = nameSizeDubs;
-			pTag[i].style.fontSize = tagSizeDubs;
+			pName[i].style.fontSize = nameSizeDubs + "px";
+			pTag[i].style.fontSize = tagSizeDubs + "px";
 			resizeText(pWrapper[i]);
 		}
 		pWrapper[0].style.left = "257px";
@@ -503,7 +508,7 @@ function changeGM(gm) {
 		scoreNums[1].style.left = "225px";
 		scoreNums[0].style.top = "23px";
 		scoreNums[1].style.top = "23px";
-		numSize = "30px";
+		numSize = 30;
 
 		//show all hidden elements
 		const dubELs = document.getElementsByClassName("dubEL");
@@ -523,8 +528,8 @@ function changeGM(gm) {
 		for (let i = 0; i < 2; i++) {
 			pWrapper[i].classList.remove("wrappersDubs");
 			pWrapper[i].classList.add("wrappersSingles");
-			pName[i].style.fontSize = nameSize;
-			pTag[i].style.fontSize = tagSize;
+			pName[i].style.fontSize = nameSize + "px";
+			pTag[i].style.fontSize = tagSize + "px";
 			resizeText(pWrapper[i]);
 		}
 		pWrapper[0].style.left = "38px";
@@ -546,7 +551,7 @@ function changeGM(gm) {
 		scoreNums[1].style.left = "-12px";
 		scoreNums[0].style.top = "27px";
 		scoreNums[1].style.top = "27px";
-		numSize = "36px";
+		numSize = 36;
 
 		const dubELs = document.getElementsByClassName("dubEL");
 		for (let i = 0; i < dubELs.length; i++) {
@@ -613,22 +618,15 @@ function updateLogo(logoEL, nameLogo) {
 
 function updatePlayerName(pNum, name, tag, gamemode) {
 	if (gamemode == 2) {
-		pName[pNum].style.fontSize = nameSizeDubs; //set original text size
-		pTag[pNum].style.fontSize = tagSizeDubs;
+		pName[pNum].style.fontSize = nameSizeDubs + "px"; //set original text size
+		pTag[pNum].style.fontSize = tagSizeDubs + "px";
 	} else {
-		pName[pNum].style.fontSize = nameSize;
-		pTag[pNum].style.fontSize = tagSize;
+		pName[pNum].style.fontSize = nameSize + "px";
+		pTag[pNum].style.fontSize = tagSize + "px";
 	}
 	pName[pNum].textContent = name; //change the actual text
 	pTag[pNum].textContent = tag;
 	resizeText(pWrapper[pNum]); //resize if it overflows
-}
-
-//generic text changer
-function updateText(textEL, textToType, maxSize) {
-	textEL.style.fontSize = maxSize; //set original text size
-	textEL.textContent = textToType; //change the actual text
-	resizeText(textEL); //resize it if it overflows
 }
 
 function updateWL(pWL, pNum) {
@@ -725,25 +723,6 @@ function fadeInTopBar(el, delay = 0) {
 	el.style.animation = `wlMoveIn .4s ${delay}s both`;
 }
 
-
-//text resize, keeps making the text smaller until it fits
-function resizeText(textEL) {
-	const childrens = textEL.children;
-	while (textEL.scrollWidth > textEL.offsetWidth) {
-		if (childrens.length > 0) { //for tag+player texts
-			Array.from(childrens).forEach((child) => {
-				child.style.fontSize = getFontSize(child);
-			});
-		} else {
-			textEL.style.fontSize = getFontSize(textEL);
-		}
-	}
-}
-
-//returns a smaller fontSize for the given element
-function getFontSize(textElement) {
-	return (parseFloat(textElement.style.fontSize.slice(0, -2)) * .90) + 'px';
-}
 
 // time to change that image!
 async function updateChar(charSrc, charPos, pNum) {

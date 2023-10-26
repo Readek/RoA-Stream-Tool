@@ -1,4 +1,7 @@
-'use strict';
+import { resizeText } from "./Utils/Resize Text.mjs";
+import { updateText } from "./Utils/Update Text.mjs";
+import { round } from "./VS Screen/Round.mjs";
+import { tournament } from "./VS Screen/Tournament.mjs";
 
 // this is a weird way to have file svg's that can be recolored by css
 customElements.define("load-svg", class extends HTMLElement {
@@ -15,15 +18,13 @@ const fadeOutTime = .3;
 const introDelay = .05; //all animations will get this delay when the html loads (use this so it times with your transition)
 
 //max text sizes (used when resizing back)
-const playerSize = '90px';
-const tagSize = '50px';
-const playerSizeDubs = "45px";
-const tagSizeDubs = "25px";
-const teamSize = '72px';
-const roundSize = '30px';
-const tournamentSize = '28px';
-const casterSize = '25px';
-const cSocialSize = '20px';
+const playerSize = 90;
+const tagSize = 50;
+const playerSizeDubs = 45;
+const tagSizeDubs = 25;
+const teamSize = 72;
+const casterSize = 25;
+const cSocialSize = 20;
 
 //to avoid the code constantly running the same method over and over
 const pCharPrev = [], pBgPrev = [], scorePrev = [], colorPrev = [];
@@ -65,8 +66,6 @@ const colorBG = document.getElementsByClassName("colorBG");
 const textBG = document.getElementsByClassName("textBG");
 const scoreOverlay = document.getElementById("scores");
 const scoreBorder = document.getElementById("scoreBorder");
-const roundEL = document.getElementById("round");
-const tournamentEL = document.getElementById("tournament");
 
 
 // commentator class (more classes may be crated on future releases maybe?)
@@ -102,15 +101,19 @@ class Caster {
 	
 	setName(text) {
 		updateText(this.cName, text, casterSize);
+		resizeText(this.cName);
 	}
 	setTwitter(text) {
-		updateSocialText(this.cTwitter, text, cSocialSize, this.cTwitter.parentElement);
+		updateText(this.cTwitter, text, cSocialSize);
+		resizeText(this.cTwitter.parentElement);
 	}
 	setTwitch(text) {
-		updateSocialText(this.cTwitch, text, cSocialSize, this.cTwitch.parentElement);
+		updateText(this.cTwitch, text, cSocialSize);
+		resizeText(this.cTwitch.parentElement);
 	}
 	setYt(text) {
-		updateSocialText(this.cYt, text, cSocialSize, this.cYt.parentElement);
+		updateText(this.cYt, text, cSocialSize);
+		resizeText(this.cYt.parentElement);
 	}
 
 	update(data) {
@@ -194,21 +197,18 @@ function errorWebsocket() {
 }
 
 
-async function updateData(scInfo) {
+async function updateData(data) {
 
-	const player = scInfo.player;
-	const teamName = scInfo.teamName;
+	const player = data.player;
+	const teamName = data.teamName;
 
-	const color = scInfo.color;
-	const score = scInfo.score;
+	const color = data.color;
+	const score = data.score;
 
-	const bestOf = scInfo.bestOf;
-	const gamemode = scInfo.gamemode;
+	const bestOf = data.bestOf;
+	const gamemode = data.gamemode;
 
-	const round = scInfo.round;
-	const tournamentName = scInfo.tournamentName;
-
-	const caster = scInfo.caster;
+	const caster = data.caster;
 
 
 	// first of all, things that will always happen on each cycle
@@ -282,6 +282,7 @@ async function updateData(scInfo) {
 			//update team names (if gamemode is not set to singles)
 			if (gamemode != 1) {
 				updateText(teamNames[i], teamName[i], teamSize);
+				resizeText(teamNames[i]);
 				fadeIn(teamNames[i], introDelay+.15);
 			}
 
@@ -303,9 +304,9 @@ async function updateData(scInfo) {
 
 
 		//set the round text
-		updateText(roundEL, round, roundSize);
+		round.setText(data.round);
 		//set the tournament text
-		updateText(tournamentEL, tournamentName, tournamentSize);
+		tournament.setText(data.tournamentName);
 
 
 		//set the caster info
@@ -382,6 +383,7 @@ async function updateData(scInfo) {
 					fadeOut(teamNames[i]).then( () => {
 						//update the text while nobody can see it
 						updateText(teamNames[i], teamName[i], teamSize);
+						resizeText(teamNames[i]);
 						//and fade it back to normal
 						fadeIn(teamNames[i]);
 					});
@@ -466,18 +468,18 @@ async function updateData(scInfo) {
 		
 
 		//update round text
-		if (roundEL.textContent != round){
-			fadeOut(roundEL).then( () => {
-				updateText(roundEL, round, roundSize);
-				fadeIn(roundEL, .2);
+		if (round.getText() != data.round){
+			fadeOut(round.getElement()).then( () => {
+				round.setText(data.round);
+				fadeIn(round.getElement(), .2);
 			});
 		}
 
 		//update tournament text
-		if (tournamentEL.textContent != tournamentName){
-			fadeOut(tournamentEL).then( () => {
-				updateText(tournamentEL, tournamentName, tournamentSize);
-				fadeIn(tournamentEL, .2);
+		if (tournament.getText() != data.tournamentName){
+			fadeOut(tournament.getElement()).then( () => {
+				tournament.setText(data.tournamentName);
+				fadeIn(tournament.getElement(), .2);
 			});
 		}
 
@@ -532,8 +534,8 @@ function changeGM(gm) {
 			pWrapper[i].classList.remove("p"+(i+1)+"WSingles");
 			pWrapper[i].classList.add("p"+(i+1)+"WDub");
 			//update the text size and resize it if it overflows
-			pName[i].style.fontSize = playerSizeDubs;
-			pTag[i].style.fontSize = tagSizeDubs;
+			pName[i].style.fontSize = playerSizeDubs + "px";
+			pTag[i].style.fontSize = tagSizeDubs + "px";
 			resizeText(pWrapper[i]);
 		};
 
@@ -611,6 +613,7 @@ function updateScore(side, pScore, pColor) {
 
 	// update the numerical score in case we are showing it
 	updateText(scoreNums[side], pScore, "48px");
+	resizeText(scoreNums[side]);
 
 	//if this is the right side, change the number
 	if (side == 1) {
@@ -840,11 +843,11 @@ function fadeInSocials(repeated) {
 //player text change
 function updatePlayerName(pNum, name, tag, gamemode = 1) {
 	if (gamemode == 2) {
-		pName[pNum].style.fontSize = playerSizeDubs; //set original text size
-		pTag[pNum].style.fontSize = tagSizeDubs;
+		pName[pNum].style.fontSize = playerSizeDubs + "px"; //set original text size
+		pTag[pNum].style.fontSize = tagSizeDubs + "px";
 	} else {
-		pName[pNum].style.fontSize = playerSize;
-		pTag[pNum].style.fontSize = tagSize;
+		pName[pNum].style.fontSize = playerSize + "px";
+		pTag[pNum].style.fontSize = tagSize + "px";
 	}
 	pName[pNum].textContent = name; //change the actual text
 	pTag[pNum].textContent = tag;
@@ -882,37 +885,6 @@ function updatePlayerInfo(pNum, pInfo) {
 		pInfoYt[pNum].parentElement.style.display = "none";
 	}
 
-}
-
-//generic text changer
-function updateText(textEL, textToType, maxSize) {
-	textEL.style.fontSize = maxSize; //set original text size
-	textEL.textContent = textToType; //change the actual text
-	resizeText(textEL); //resize it if it overflows
-}
-//social text changer
-function updateSocialText(textEL, textToType, maxSize, wrapperEL) {
-	textEL.style.fontSize = maxSize; //set original text size
-	textEL.textContent = textToType; //change the actual text
-	resizeText(wrapperEL); //resize it if it overflows
-}
-
-//text resize, keeps making the text smaller until it fits
-function resizeText(textEL) {
-	const childrens = textEL.children;
-	while (textEL.scrollWidth > textEL.offsetWidth) {
-		if (childrens.length > 0) { //for tag+player texts
-			Array.from(childrens).forEach((child) => {
-				child.style.fontSize = getFontSize(child);
-			});
-		} else {
-			textEL.style.fontSize = getFontSize(textEL);
-		}
-	}
-}
-//returns a smaller fontSize for the given element
-function getFontSize(textElement) {
-	return (parseFloat(textElement.style.fontSize.slice(0, -2)) * .90) + 'px';
 }
 
 
