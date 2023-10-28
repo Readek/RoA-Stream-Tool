@@ -49,7 +49,8 @@
         },
         {
             "name": "Champion",
-            "hex": "6B6A-68E0-E4E8-B2FF-D041-3E37-B2FF-D0B2-FFD0-110F-0E9F"
+            "hex": "6B6A-68E0-E4E8-B2FF-D041-3E37-B2FF-D0B2-FFD0-110F-0E9F",
+            "alpha": [1,0.5,1,1,1,1,1]
         },
         {
             "name": "Arcade Green",
