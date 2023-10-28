@@ -54,8 +54,9 @@
             "hex": "FBFF-FAFB-FFFA-6B6A-68D4-D4AE-B2FF-D0FF-F9F9-56AB-950B"
         },
         {
-            "name": "Streetwave",
-            "hex": "FF78-00FA-AB14-02A5-BC28-4973-FFE5-00FF-FFFF-6149-FE5A"
+            "name": "Golden",
+            "hex": "FFE9-81FF-E981-FBD4-3475-5B00-F5EA-CAFE-FDFE-A78A-1BCB",
+            "golden": true
         },
         {
             "name": "Abyss",
@@ -66,6 +67,10 @@
             "hex": "D3E2-9AD3-E29A-537A-3EA7-BA4A-D3E2-9AD3-E29A-2343-3105",
             "ea": true,
             "force": true
+        },
+        {
+            "name": "Streetwave",
+            "hex": "FF78-00FA-AB14-02A5-BC28-4973-FFE5-00FF-FFFF-6149-FE5A"
         },
         {
             "name": "Ranked",
