@@ -1,6 +1,6 @@
 import { RoundTournament } from "./Round Tournament.mjs";
 
-class Round extends RoundTournament {
+export class Round extends RoundTournament {
 
     constructor() {
         super()
@@ -9,5 +9,3 @@ class Round extends RoundTournament {
     }
 
 }
-
-export const round = new Round;

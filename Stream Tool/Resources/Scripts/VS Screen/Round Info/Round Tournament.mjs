@@ -1,4 +1,7 @@
-import { updateText } from "../Utils/Update Text.mjs";
+import { fadeIn } from "../../Utils/Fade In.mjs";
+import { fadeOut } from "../../Utils/Fade Out.mjs";
+import { updateText } from "../../Utils/Update Text.mjs";
+import { fadeInTime, fadeOutTime } from "../VsGlobals.mjs";
 
 export class RoundTournament {
 
@@ -22,12 +25,20 @@ export class RoundTournament {
     setText(text) {
 
         this._text = text;
-        updateText(this._element, text, this._fontSize);
+        updateText(this._element, text || "-", this._fontSize);
 
     }
 
     getElement() {
         return this._element;
+    }
+
+    async fadeOut() {
+        await fadeOut(this._element, fadeOutTime);
+    }
+
+    fadeIn() {
+        fadeIn(this._element, fadeInTime, .2);
     }
 
 }

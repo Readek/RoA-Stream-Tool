@@ -1,7 +1,10 @@
+import { fadeIn } from "./Utils/Fade In.mjs";
+import { fadeOut } from "./Utils/Fade Out.mjs";
+import { current } from "./Utils/Globals.mjs";
 import { resizeText } from "./Utils/Resize Text.mjs";
 import { updateText } from "./Utils/Update Text.mjs";
-import { round } from "./VS Screen/Round.mjs";
-import { tournament } from "./VS Screen/Tournament.mjs";
+import { roundInfo } from "./VS Screen/Round Info/Round Info.mjs";
+import { fadeInTime, fadeOutTime } from "./VS Screen/VsGlobals.mjs";
 
 // this is a weird way to have file svg's that can be recolored by css
 customElements.define("load-svg", class extends HTMLElement {
@@ -13,8 +16,6 @@ customElements.define("load-svg", class extends HTMLElement {
 })
 
 //animation stuff
-const fadeInTime = .4; //(seconds)
-const fadeOutTime = .3;
 const introDelay = .05; //all animations will get this delay when the html loads (use this so it times with your transition)
 
 //max text sizes (used when resizing back)
@@ -120,7 +121,7 @@ class Caster {
 
 		// caster name is simple enough
 		if (this.getName() != data.name) {
-			fadeOut(this.cName).then( () => {
+			fadeOut(this.cName, fadeOutTime).then( () => {
 				this.setName(data.name);
 				fadeIn(this.cName, .2);
 			});
@@ -130,9 +131,9 @@ class Caster {
 		if (this.getTwitter() != data.socials.twitter) {
 			// only animate the change if its visible
 			if (window.getComputedStyle(this.cTwitter.parentElement).getPropertyValue("opacity") == 1) {
-				fadeOut(this.cTwitter.parentElement).then( () => {
+				fadeOut(this.cTwitter.parentElement, fadeOutTime).then( () => {
 					this.setTwitter(data.socials.twitter);
-					fadeIn(this.cTwitter.parentElement, .2);
+					fadeIn(this.cTwitter.parentElement, fadeInTime, .2);
 				});
 			} else {
 				this.setTwitter(data.socials.twitter);
@@ -140,9 +141,9 @@ class Caster {
 		}
 		if (this.getTwitch() != data.socials.twitch) {
 			if (window.getComputedStyle(this.cTwitch.parentElement).getPropertyValue("opacity") == 1) {
-				fadeOut(this.cTwitch.parentElement).then( () => {
+				fadeOut(this.cTwitch.parentElement, fadeOutTime).then( () => {
 					this.setTwitch(data.socials.twitch);
-					fadeIn(this.cTwitch.parentElement, .2);
+					fadeIn(this.cTwitch.parentElement, fadeInTime, .2);
 				});
 			} else {
 				this.setTwitch(data.socials.twitch);
@@ -150,9 +151,9 @@ class Caster {
 		}
 		if (this.getYt() != data.socials.yt) {
 			if (window.getComputedStyle(this.cYt.parentElement).getPropertyValue("opacity") == 1) {
-				fadeOut(this.cYt.parentElement).then( () => {
+				fadeOut(this.cYt.parentElement, fadeOutTime).then( () => {
 					this.setYt(data.socials.yt);
-					fadeIn(this.cYt.parentElement, .2);
+					fadeIn(this.cYt.parentElement, fadeInTime, .2);
 				});
 			} else {
 				this.setYt(data.socials.yt);
@@ -246,13 +247,13 @@ async function updateData(data) {
 
 
 			// now lets update all that player info
-			updatePlayerInfo(i, player[i]);
+			updatePlayerInfo(i, player[i].socials);
 
 			// and gradually fade them in
-			fadeIn(pInfoProns[i].parentElement, introDelay+.6);
-			fadeIn(pInfoTwitter[i].parentElement, introDelay+.75);
-			fadeIn(pInfoTwitch[i].parentElement, introDelay+.9);
-			fadeIn(pInfoYt[i].parentElement, introDelay+1.05);
+			fadeIn(pInfoProns[i].parentElement, fadeInTime, introDelay+.6);
+			fadeIn(pInfoTwitter[i].parentElement, fadeInTime, introDelay+.75);
+			fadeIn(pInfoTwitch[i].parentElement, fadeInTime, introDelay+.9);
+			fadeIn(pInfoYt[i].parentElement, fadeInTime, introDelay+1.05);
 
 
 			//change the player's character image, and position it
@@ -283,7 +284,7 @@ async function updateData(data) {
 			if (gamemode != 1) {
 				updateText(teamNames[i], teamName[i], teamSize);
 				resizeText(teamNames[i]);
-				fadeIn(teamNames[i], introDelay+.15);
+				fadeIn(teamNames[i], fadeInTime, introDelay+.15);
 			}
 
 			//set the colors
@@ -304,9 +305,9 @@ async function updateData(data) {
 
 
 		//set the round text
-		round.setText(data.round);
+		roundInfo.updateRound(data.round);
 		//set the tournament text
-		tournament.setText(data.tournamentName);
+		roundInfo.updateTournament(data.tournamentName);
 
 
 		//set the caster info
@@ -328,6 +329,8 @@ async function updateData(data) {
 
 
 		startup = false; //next time we run this function, it will skip all we just did
+		current.startup = false;
+
 	}
 
 	// now things that will happen every other cycle
@@ -367,9 +370,9 @@ async function updateData(data) {
 
 				//if the scores for both sides are 0, hide the thing
 				if (score[0] == 0 && score[1] == 0) {
-					fadeOut(scoreOverlay);
+					fadeOut(scoreOverlay, fadeOutTime);
 				} else if (window.getComputedStyle(scoreOverlay).getPropertyValue("opacity") == 0) {
-					fadeIn(scoreOverlay);
+					fadeIn(scoreOverlay, fadeInTime);
 				}
 
 				scorePrev[i] = score[i];
@@ -380,12 +383,12 @@ async function updateData(data) {
 			if (gamemode != 1) {
 				if (teamNames[i].textContent != teamName[i]) {
 					//hide the text before doing anything
-					fadeOut(teamNames[i]).then( () => {
+					fadeOut(teamNames[i], fadeOutTime).then( () => {
 						//update the text while nobody can see it
 						updateText(teamNames[i], teamName[i], teamSize);
 						resizeText(teamNames[i]);
 						//and fade it back to normal
-						fadeIn(teamNames[i]);
+						fadeIn(teamNames[i], fadeInTime);
 					});
 				}
 			}
@@ -400,11 +403,11 @@ async function updateData(data) {
 			// players name change, if either name or tag have changed
 			if (pName[i].textContent != player[i].name || pTag[i].textContent != player[i].tag) {
 				//fade out the player's text
-				fadeOut(pWrapper[i]).then( () => {
+				fadeOut(pWrapper[i], fadeOutTime).then( () => {
 					//now that nobody is seeing it, change the content of the texts!
 					updatePlayerName(i, player[i].name, player[i].tag, gamemode);
 					//and fade the texts back in
-					fadeIn(pWrapper[i], .2);
+					fadeIn(pWrapper[i], fadeInTime, .2);
 				});
 			};
 
@@ -415,17 +418,17 @@ async function updateData(data) {
 				pInfoYt[i].textContent != player[i].yt) {
 
 				// fade all of them out, we only need to wait for one
-				fadeOut(pInfoProns[i].parentElement);
-				fadeOut(pInfoTwitter[i].parentElement);
-				fadeOut(pInfoTwitch[i].parentElement);
-				fadeOut(pInfoYt[i].parentElement).then( () => {
+				fadeOut(pInfoProns[i].parentElement, fadeOutTime);
+				fadeOut(pInfoTwitter[i].parentElement, fadeOutTime);
+				fadeOut(pInfoTwitch[i].parentElement, fadeOutTime);
+				fadeOut(pInfoYt[i].parentElement, fadeOutTime).then( () => {
 					// update the texts!
-					updatePlayerInfo(i, player[i]);
+					updatePlayerInfo(i, player[i].socials);
 					// but woudnt it be cool if we faded all of them with progression
-					fadeIn(pInfoProns[i].parentElement, .2);
-					fadeIn(pInfoTwitter[i].parentElement, .35);
-					fadeIn(pInfoTwitch[i].parentElement, .5);
-					fadeIn(pInfoYt[i].parentElement, .65);
+					fadeIn(pInfoProns[i].parentElement, fadeInTime, .2);
+					fadeIn(pInfoTwitter[i].parentElement, fadeInTime, .35);
+					fadeIn(pInfoTwitch[i].parentElement, fadeInTime, .5);
+					fadeIn(pInfoYt[i].parentElement, fadeInTime, .65);
 				});
 				
 			}
@@ -451,7 +454,7 @@ async function updateData(data) {
 					//update the bg vid
 					updateBG(pBG[i], player[i].vs.bgVid);
 					//fade it back
-					fadeIn(pBG[i], .3, fadeInTime+.2);
+					fadeIn(pBG[i], .3, fadeInTime, fadeInTime+.2);
 				});
 				pBgPrev[i] = player[i].vs.bgVid;
 			}
@@ -468,20 +471,22 @@ async function updateData(data) {
 		
 
 		//update round text
-		if (round.getText() != data.round){
-			fadeOut(round.getElement()).then( () => {
+		roundInfo.updateRound(data.round);
+		/* if (round.getText() != data.round){
+			fadeOut(round.getElement(), fadeOutTime).then( () => {
 				round.setText(data.round);
-				fadeIn(round.getElement(), .2);
+				fadeIn(round.getElement(), fadeInTime, .2);
 			});
-		}
+		} */
 
 		//update tournament text
-		if (tournament.getText() != data.tournamentName){
-			fadeOut(tournament.getElement()).then( () => {
+		roundInfo.updateTournament(data.tournamentName);
+		/* if (tournament.getText() != data.tournamentName){
+			fadeOut(tournament.getElement(), fadeOutTime).then( () => {
 				tournament.setText(data.tournamentName);
-				fadeIn(tournament.getElement(), .2);
+				fadeIn(tournament.getElement(), fadeInTime, .2);
 			});
-		}
+		} */
 
 
 		//update caster info
@@ -745,11 +750,11 @@ function fadeOutSocials() {
 			
 			for (let i = 0; i < casters.length; i++) {
 				if (sTurn == 1) {
-					fadeOut(casters[i].cTwitter.parentElement);
+					fadeOut(casters[i].cTwitter.parentElement, fadeOutTime);
 				} else if (sTurn == 2) {
-					fadeOut(casters[i].cTwitch.parentElement);
+					fadeOut(casters[i].cTwitch.parentElement), fadeOutTime;
 				} else if (sTurn == 3) {
-					fadeOut(casters[i].cYt.parentElement);
+					fadeOut(casters[i].cYt.parentElement, fadeOutTime);
 				}
 			}
 
@@ -785,7 +790,7 @@ function fadeInSocials(repeated) {
 		if (theresText) {
 			// fade in all caster twitter info
 			for (let i = 0; i < casters.length; i++) {
-				fadeIn(casters[i].cTwitter.parentElement);
+				fadeIn(casters[i].cTwitter.parentElement, fadeInTime);
 			}
 			return; // dont activate the rest of the function
 		} else {
@@ -803,7 +808,7 @@ function fadeInSocials(repeated) {
 		}
 		if (theresText) {
 			for (let i = 0; i < casters.length; i++) {
-				fadeIn(casters[i].cTwitch.parentElement);
+				fadeIn(casters[i].cTwitch.parentElement, fadeInTime);
 			}
 			return;
 		} else {
@@ -819,7 +824,7 @@ function fadeInSocials(repeated) {
 		}
 		if (theresText) {
 			for (let i = 0; i < casters.length; i++) {
-				fadeIn(casters[i].cYt.parentElement);
+				fadeIn(casters[i].cYt.parentElement, fadeInTime);
 			}
 			return;
 		} else {
@@ -887,18 +892,6 @@ function updatePlayerInfo(pNum, pInfo) {
 
 }
 
-
-//fade out
-async function fadeOut(itemID, dur = fadeOutTime) {
-	itemID.style.animation = `fadeOut ${dur}s both`;
-	// this function will return a promise when the animation ends
-	await new Promise(resolve => setTimeout(resolve, dur * 1000)); // translate to miliseconds
-}
-
-//fade in
-function fadeIn(itemID, delay = 0, dur = fadeInTime) {
-	itemID.style.animation = `fadeIn ${dur}s ${delay}s both`;
-}
 
 //fade out for the characters
 async function charaFadeOut(charaEL, trailEL) {

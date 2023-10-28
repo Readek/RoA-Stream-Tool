@@ -1,6 +1,6 @@
-import { RoundTournament } from "./Round Tournament.mjs";
+import { RoundTournament } from "./Round Info/Round Tournament.mjs";
 
-class Tournament extends RoundTournament {
+export class Tournament extends RoundTournament {
 
     constructor() {
         super();
@@ -9,5 +9,3 @@ class Tournament extends RoundTournament {
     }
 
 }
-
-export const tournament = new Tournament;
