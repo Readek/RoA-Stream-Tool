@@ -247,7 +247,7 @@ async function updateData(data) {
 
 
 			// now lets update all that player info
-			updatePlayerInfo(i, player[i].socials);
+			updatePlayerInfo(i, player[i]);
 
 			// and gradually fade them in
 			fadeIn(pInfoProns[i].parentElement, fadeInTime, introDelay+.6);
@@ -413,9 +413,9 @@ async function updateData(data) {
 
 			// all that player info must be updated!
 			if (pInfoProns[i].textContent != player[i].pronouns ||
-				pInfoTwitter[i].textContent != player[i].twitter ||
-				pInfoTwitch[i].textContent != player[i].twitch ||
-				pInfoYt[i].textContent != player[i].yt) {
+				pInfoTwitter[i].textContent != player[i].socials.twitter ||
+				pInfoTwitch[i].textContent != player[i].socials.twitch ||
+				pInfoYt[i].textContent != player[i].socials.yt) {
 
 				// fade all of them out, we only need to wait for one
 				fadeOut(pInfoProns[i].parentElement, fadeOutTime);
@@ -423,7 +423,7 @@ async function updateData(data) {
 				fadeOut(pInfoTwitch[i].parentElement, fadeOutTime);
 				fadeOut(pInfoYt[i].parentElement, fadeOutTime).then( () => {
 					// update the texts!
-					updatePlayerInfo(i, player[i].socials);
+					updatePlayerInfo(i, player[i]);
 					// but woudnt it be cool if we faded all of them with progression
 					fadeIn(pInfoProns[i].parentElement, fadeInTime, .2);
 					fadeIn(pInfoTwitter[i].parentElement, fadeInTime, .35);
@@ -484,7 +484,7 @@ async function updateData(data) {
 			casters[i].update(caster[i]);
 
 		}
-		
+
 	}
 }
 
@@ -853,9 +853,9 @@ function updatePlayerName(pNum, name, tag, gamemode = 1) {
 function updatePlayerInfo(pNum, pInfo) {
 	
 	pInfoProns[pNum].innerText = pInfo.pronouns;
-	pInfoTwitter[pNum].innerText = pInfo.twitter;
-	pInfoTwitch[pNum].innerText = pInfo.twitch;
-	pInfoYt[pNum].innerText = pInfo.yt;
+	pInfoTwitter[pNum].innerText = pInfo.socials.twitter;
+	pInfoTwitch[pNum].innerText = pInfo.socials.twitch;
+	pInfoYt[pNum].innerText = pInfo.socials.yt;
 
 	// there must be a cleaner way to do this right?
 	if (pInfo.pronouns) {
@@ -863,17 +863,17 @@ function updatePlayerInfo(pNum, pInfo) {
 	} else {
 		pInfoProns[pNum].parentElement.style.display = "none";
 	}
-	if (pInfo.twitter) {
+	if (pInfo.socials.twitter) {
 		pInfoTwitter[pNum].parentElement.style.display = "block";
 	} else {
 		pInfoTwitter[pNum].parentElement.style.display = "none";
 	}
-	if (pInfo.twitch) {
+	if (pInfo.socials.twitch) {
 		pInfoTwitch[pNum].parentElement.style.display = "block";
 	} else {
 		pInfoTwitch[pNum].parentElement.style.display = "none";
 	}
-	if (pInfo.yt) {
+	if (pInfo.socials.yt) {
 		pInfoYt[pNum].parentElement.style.display = "block";
 	} else {
 		pInfoYt[pNum].parentElement.style.display = "none";

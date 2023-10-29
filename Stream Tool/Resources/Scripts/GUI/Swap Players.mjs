@@ -26,9 +26,7 @@ export async function swapPlayers() {
         // player info
         [players[i].tag, players[i+1].tag] = [players[i+1].tag, players[i].tag];
         [players[i].pronouns, players[i+1].pronouns] = [players[i+1].pronouns, players[i].pronouns];
-        [players[i].twitter, players[i+1].twitter] = [players[i+1].twitter, players[i].twitter];
-        [players[i].twitch, players[i+1].twitch] = [players[i+1].twitch, players[i].twitch];
-        [players[i].yt, players[i+1].yt] = [players[i+1].yt, players[i].yt]
+        [players[i].socials, players[i+1].socials] = [players[i+1].socials, players[i].socials];
 
         //characters and skins
         const tempP1Char = players[i].char;

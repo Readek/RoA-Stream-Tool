@@ -37,9 +37,7 @@ export function clearPlayers() {
         // clear player info
         players[i].pronouns = "";
         players[i].setTag("");
-        players[i].twitter = "";
-        players[i].twitch = "";
-        players[i].yt = "";
+        players[i].socials = {};
 
         //reset characters to random
         players[i].charChange("Random");
