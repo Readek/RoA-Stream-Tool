@@ -1,9 +1,10 @@
+import { fadeInTime, fadeOutTime } from "./Scoreboard/ScGlobals.mjs";
+import { fadeIn } from "./Utils/Fade In.mjs";
+import { fadeOut } from "./Utils/Fade Out.mjs";
 import { resizeText } from "./Utils/Resize Text.mjs";
 import { updateText } from "./Utils/Update Text.mjs";
 
 //animation stuff
-const fadeInTime = .3; //(seconds)
-const fadeOutTime = .2;
 let introDelay = .5; //all animations will get this delay when the html loads (use this so it times with your transition)
 
 //max text sizes (used when resizing back)
@@ -62,7 +63,7 @@ startWebsocket();
 function startWebsocket() {
 
 	// change this to the IP of where the GUI is being used for remote control
-	const webSocket = new WebSocket("ws://localhost:8080?id=gameData");
+	webSocket = new WebSocket("ws://localhost:8080?id=gameData");
 	webSocket.onopen = () => { // if it connects successfully
 		// everything will update everytime we get data from the server (the GUI)
 		webSocket.onmessage = function (event) {
@@ -191,7 +192,7 @@ async function updateData(scInfo) {
 						
 						//if GF, we dont know if its the last game or not, right?
 						if (round.toLocaleUpperCase() == "GRAND FINALS" && !(wl[0] == "L" && wl[1] == "L")) {
-							fadeIn(document.getElementById("superCoolInterrogation"), introDelay+.5, 1.5);
+							fadeIn(document.getElementById("superCoolInterrogation"), 1.5, introDelay+.5);
 						}
 
 					}
@@ -203,7 +204,7 @@ async function updateData(scInfo) {
 			
 			//round, tournament and VS/GameX text fade in
 			document.querySelectorAll(".textIntro").forEach(el => {
-				fadeIn(el, introDelay-.2, fadeInTime);
+				fadeIn(el, fadeInTime, introDelay-.2);
 			});
 
 			//aaaaand fade out everything
@@ -233,7 +234,7 @@ async function updateData(scInfo) {
 				const side = (i % 2 == 0) ? true : false; //to know direction
 				fadeInMove(pWrapper[i], introDelay, null, side); // fade it in with some movement
 			} else { //if doubles, just fade them in
-				fadeIn(pWrapper[i], introDelay+.15)
+				fadeIn(pWrapper[i], fadeInTime, introDelay+.15)
 			}
 
 			// show player pronouns if any
@@ -299,7 +300,7 @@ async function updateData(scInfo) {
 		updateText(textRound, round, roundSize);
 		resizeText(textRound);
 		if (round) { // but only if theres any text to display
-			fadeIn(textRound.parentElement, introDelay);
+			fadeIn(textRound.parentElement, fadeInTime, introDelay);
 		}
 
 		startup = false; //next time we run this function, it will skip all we just did
@@ -341,9 +342,9 @@ async function updateData(scInfo) {
 						fadeInMove(pWrapper[i], 0, null, side);
 					});
 				} else { //if not singles, dont move the texts
-					fadeOut(pWrapper[i]).then( () => {
+					fadeOut(pWrapper[i], fadeOutTime).then( () => {
 						updatePlayerName(i, player[i].name, player[i].tag, gamemode);
-						fadeIn(pWrapper[i]);
+						fadeIn(pWrapper[i], fadeInTime);
 					}); 
 				}
 				
@@ -427,16 +428,16 @@ async function updateData(scInfo) {
 			//check if we have a logo we can place on the overlay
 			if (gamemode == 1) { //if this is singles, check the player tag
 				if (pTag[i].textContent != player[i].tag) {
-					fadeOut(tLogoImg[i]).then( () => {
+					fadeOut(tLogoImg[i], fadeOutTime).then( () => {
 						updateLogo(tLogoImg[i], player[i].tag);
-						fadeIn(tLogoImg[i]);
+						fadeIn(tLogoImg[i], fadeInTime);
 					});
 				}
 			} else { //if doubles, check the team name
 				if (teamNames[i].textContent != teamName[i]) {
-					fadeOut(tLogoImg[i]).then( () => {
+					fadeOut(tLogoImg[i], fadeOutTime).then( () => {
 						updateLogo(tLogoImg[i], teamName[i]);
-						fadeIn(tLogoImg[i]);
+						fadeIn(tLogoImg[i], fadeInTime);
 					});
 				}
 			}
@@ -446,16 +447,16 @@ async function updateData(scInfo) {
 		
 		//and finally, update the round text
 		if (textRound.textContent != round){
-			fadeOut(textRound).then( () => {
+			fadeOut(textRound, fadeOutTime).then( () => {
 				updateText(textRound, round, roundSize);
 				resizeText(textRound);
-				fadeIn(textRound);
+				fadeIn(textRound, fadeInTime);
 			});
 			// if theres no text, hide everything
 			if (round && textRound.parentElement.style.opacity == 0) {
-				fadeIn(textRound.parentElement, fadeOutTime);
+				fadeIn(textRound.parentElement, fadeInTime, fadeOutTime);
 			} else if (!round) {
-				fadeOut(textRound.parentElement);
+				fadeOut(textRound.parentElement, fadeOutTime);
 			}
 		}
 
@@ -656,14 +657,6 @@ function displayTopBarElement(el) {
 }
 
 
-//fade out
-async function fadeOut(itemID, dur = fadeOutTime, delay = 0) {
-	// actual animation
-	itemID.style.animation = `fadeOut ${dur}s ${delay}s both`;
-	// this function will return a promise when the animation ends
-	await new Promise(resolve => setTimeout(resolve, dur * 1000)); // translate to miliseconds
-}
-
 //fade out but with movement
 async function fadeOutMove(itemID, chara, side) {
 
@@ -690,10 +683,6 @@ async function fadeOutMove(itemID, chara, side) {
 
 }
 
-//fade in
-function fadeIn(itemID, delay = 0, dur = fadeInTime) {
-	itemID.style.animation = `fadeIn ${dur}s ${delay}s both`;
-}
 
 //fade in but with movement
 function fadeInMove(itemID, delay = 0, chara, side) {

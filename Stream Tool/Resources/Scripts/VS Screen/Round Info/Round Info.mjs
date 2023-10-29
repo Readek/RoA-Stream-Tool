@@ -1,7 +1,7 @@
 import { fadeIn } from "../../Utils/Fade In.mjs";
 import { fadeOut } from "../../Utils/Fade Out.mjs";
 import { current } from "../../Utils/Globals.mjs";
-import { Tournament } from "../Tournament.mjs";
+import { Tournament } from "./Tournament.mjs";
 import { fadeInTime, fadeOutTime } from "../VsGlobals.mjs";
 import { Round } from "./Round.mjs";
 
@@ -88,8 +88,8 @@ class RoundInfo {
         // round data gather
         const roundStyle = window.getComputedStyle(roundEl);
         const roundWidth = Number((roundStyle.width).slice(0, -2))
-                            + Number((roundStyle.paddingLeft).slice(0, -2))
-                            + Number((roundStyle.paddingRight).slice(0, -2));
+                            + Number((roundStyle.marginLeft).slice(0, -2))
+                            + Number((roundStyle.marginRight).slice(0, -2));
 
         // final calc
         if (tourWidth > roundWidth) {

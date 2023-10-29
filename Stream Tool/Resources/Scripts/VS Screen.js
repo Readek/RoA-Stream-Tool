@@ -472,21 +472,9 @@ async function updateData(data) {
 
 		//update round text
 		roundInfo.updateRound(data.round);
-		/* if (round.getText() != data.round){
-			fadeOut(round.getElement(), fadeOutTime).then( () => {
-				round.setText(data.round);
-				fadeIn(round.getElement(), fadeInTime, .2);
-			});
-		} */
 
 		//update tournament text
 		roundInfo.updateTournament(data.tournamentName);
-		/* if (tournament.getText() != data.tournamentName){
-			fadeOut(tournament.getElement(), fadeOutTime).then( () => {
-				tournament.setText(data.tournamentName);
-				fadeIn(tournament.getElement(), fadeInTime, .2);
-			});
-		} */
 
 
 		//update caster info
@@ -496,6 +484,7 @@ async function updateData(data) {
 			casters[i].update(caster[i]);
 
 		}
+		
 	}
 }
 

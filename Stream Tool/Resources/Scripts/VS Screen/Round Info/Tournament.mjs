@@ -1,4 +1,4 @@
-import { RoundTournament } from "./Round Info/Round Tournament.mjs";
+import { RoundTournament } from "./Round Tournament.mjs";
 
 export class Tournament extends RoundTournament {
 
