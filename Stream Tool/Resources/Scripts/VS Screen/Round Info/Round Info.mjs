@@ -1,16 +1,13 @@
 import { fadeIn } from "../../Utils/Fade In.mjs";
 import { fadeOut } from "../../Utils/Fade Out.mjs";
 import { current } from "../../Utils/Globals.mjs";
-import { Tournament } from "./Tournament.mjs";
-import { fadeInTime, fadeOutTime } from "../VsGlobals.mjs";
-import { Round } from "./Round.mjs";
+import { fadeInTimeVs, fadeOutTimeVs } from "../VsGlobals.mjs";
+import { RoundTournament } from "./Round Tournament.mjs";
 
 const roundInfoEl = document.getElementById("roundInfo");
-const tournamentEl = document.getElementById("tournament");
-const roundEl = document.getElementById("round");
 
-const tournament = new Tournament;
-const round = new Round;
+const tournament = new RoundTournament(document.getElementById("tournament"), 28);
+const round = new RoundTournament(document.getElementById("round"), 30);
 
 class RoundInfo {
 
@@ -60,12 +57,12 @@ class RoundInfo {
             // if there are no texts, hide the box
             if (!round.getText() && !tournament.getText()) {
 
-                fadeOut(roundInfoEl, fadeOutTime);
+                fadeOut(roundInfoEl, fadeOutTimeVs);
 
             } else {
 
                 // show the box in case it was hidden
-                fadeIn(roundInfoEl, fadeInTime);
+                fadeIn(roundInfoEl, fadeInTimeVs);
                 // fade in the new text!
                 classToUpdate.fadeIn();
 
@@ -79,14 +76,14 @@ class RoundInfo {
     #resizeDiv() {
 
         // tournament data gather
-        const tourStyle = window.getComputedStyle(tournamentEl);
+        const tourStyle = window.getComputedStyle(tournament.getElement());
         // we slice to remove the "px" at the end of the value
         const tourWidth = Number((tourStyle.width).slice(0, -2))
                             + Number((tourStyle.marginLeft).slice(0, -2))
                             + Number((tourStyle.marginRight).slice(0, -2));
         
         // round data gather
-        const roundStyle = window.getComputedStyle(roundEl);
+        const roundStyle = window.getComputedStyle(round.getElement());
         const roundWidth = Number((roundStyle.width).slice(0, -2))
                             + Number((roundStyle.marginLeft).slice(0, -2))
                             + Number((roundStyle.marginRight).slice(0, -2));

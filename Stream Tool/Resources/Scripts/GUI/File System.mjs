@@ -198,7 +198,7 @@ export function saveSimpleTexts() {
         const socials = casters[i].getSocials();
         fs.writeFileSync(`${stPath.text}/Simple Texts/Caster ${i+1} Twitter.txt`, socials.twitter || "");
         fs.writeFileSync(`${stPath.text}/Simple Texts/Caster ${i+1} Twitch.txt`, socials.twitch || "");
-        fs.writeFileSync(`${stPath.text}/Simple Texts/Caster ${i+1} Youtube.txt`, socials.youtube || "");
+        fs.writeFileSync(`${stPath.text}/Simple Texts/Caster ${i+1} Youtube.txt`, socials.yt || "");
     }
     
 }

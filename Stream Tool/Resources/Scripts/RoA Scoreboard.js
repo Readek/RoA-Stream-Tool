@@ -1,4 +1,4 @@
-import { fadeInTime, fadeOutTime } from "./Scoreboard/ScGlobals.mjs";
+import { fadeInTimeSc, fadeOutTimeSc } from "./Scoreboard/ScGlobals.mjs";
 import { fadeIn } from "./Utils/Fade In.mjs";
 import { fadeOut } from "./Utils/Fade Out.mjs";
 import { resizeText } from "./Utils/Resize Text.mjs";
@@ -204,11 +204,11 @@ async function updateData(scInfo) {
 			
 			//round, tournament and VS/GameX text fade in
 			document.querySelectorAll(".textIntro").forEach(el => {
-				fadeIn(el, fadeInTime, introDelay-.2);
+				fadeIn(el, fadeInTimeSc, introDelay-.2);
 			});
 
 			//aaaaand fade out everything
-			fadeOut(document.getElementById("overlayIntro"), fadeInTime+.2, introDelay+1.8)
+			fadeOut(document.getElementById("overlayIntro"), fadeInTimeSc+.2, introDelay+1.8)
 
 			//lets delay everything that comes after this so it shows after the intro
 			introDelay = 2.5;
@@ -234,7 +234,7 @@ async function updateData(scInfo) {
 				const side = (i % 2 == 0) ? true : false; //to know direction
 				fadeInMove(pWrapper[i], introDelay, null, side); // fade it in with some movement
 			} else { //if doubles, just fade them in
-				fadeIn(pWrapper[i], fadeInTime, introDelay+.15)
+				fadeIn(pWrapper[i], fadeInTimeSc, introDelay+.15)
 			}
 
 			// show player pronouns if any
@@ -300,7 +300,7 @@ async function updateData(scInfo) {
 		updateText(textRound, round, roundSize);
 		resizeText(textRound);
 		if (round) { // but only if theres any text to display
-			fadeIn(textRound.parentElement, fadeInTime, introDelay);
+			fadeIn(textRound.parentElement, fadeInTimeSc, introDelay);
 		}
 
 		startup = false; //next time we run this function, it will skip all we just did
@@ -342,9 +342,9 @@ async function updateData(scInfo) {
 						fadeInMove(pWrapper[i], 0, null, side);
 					});
 				} else { //if not singles, dont move the texts
-					fadeOut(pWrapper[i], fadeOutTime).then( () => {
+					fadeOut(pWrapper[i], fadeOutTimeSc).then( () => {
 						updatePlayerName(i, player[i].name, player[i].tag, gamemode);
-						fadeIn(pWrapper[i], fadeInTime);
+						fadeIn(pWrapper[i], fadeInTimeSc);
 					}); 
 				}
 				
@@ -428,16 +428,16 @@ async function updateData(scInfo) {
 			//check if we have a logo we can place on the overlay
 			if (gamemode == 1) { //if this is singles, check the player tag
 				if (pTag[i].textContent != player[i].tag) {
-					fadeOut(tLogoImg[i], fadeOutTime).then( () => {
+					fadeOut(tLogoImg[i], fadeOutTimeSc).then( () => {
 						updateLogo(tLogoImg[i], player[i].tag);
-						fadeIn(tLogoImg[i], fadeInTime);
+						fadeIn(tLogoImg[i], fadeInTimeSc);
 					});
 				}
 			} else { //if doubles, check the team name
 				if (teamNames[i].textContent != teamName[i]) {
-					fadeOut(tLogoImg[i], fadeOutTime).then( () => {
+					fadeOut(tLogoImg[i], fadeOutTimeSc).then( () => {
 						updateLogo(tLogoImg[i], teamName[i]);
-						fadeIn(tLogoImg[i], fadeInTime);
+						fadeIn(tLogoImg[i], fadeInTimeSc);
 					});
 				}
 			}
@@ -447,16 +447,16 @@ async function updateData(scInfo) {
 		
 		//and finally, update the round text
 		if (textRound.textContent != round){
-			fadeOut(textRound, fadeOutTime).then( () => {
+			fadeOut(textRound, fadeOutTimeSc).then( () => {
 				updateText(textRound, round, roundSize);
 				resizeText(textRound);
-				fadeIn(textRound, fadeInTime);
+				fadeIn(textRound, fadeInTimeSc);
 			});
 			// if theres no text, hide everything
 			if (round && textRound.parentElement.style.opacity == 0) {
-				fadeIn(textRound.parentElement, fadeInTime, fadeOutTime);
+				fadeIn(textRound.parentElement, fadeInTimeSc, fadeOutTimeSc);
 			} else if (!round) {
-				fadeOut(textRound.parentElement, fadeOutTime);
+				fadeOut(textRound.parentElement, fadeOutTimeSc);
 			}
 		}
 
@@ -663,23 +663,23 @@ async function fadeOutMove(itemID, chara, side) {
 	if (chara) {
 		// we need to target a different element since chromium
 		// does not support idependent transforms on css yet
-		itemID.parentElement.style.animation = `charaMoveOut ${fadeOutTime}s both
-			,fadeOut ${fadeOutTime}s both`
+		itemID.parentElement.style.animation = `charaMoveOut ${fadeOutTimeSc}s both
+			,fadeOut ${fadeOutTimeSc}s both`
 		;
 	} else {
 		if (side) {
-			itemID.style.animation = `moveOutLeft ${fadeOutTime}s both
-				,fadeOut ${fadeOutTime}s both`
+			itemID.style.animation = `moveOutLeft ${fadeOutTimeSc}s both
+				,fadeOut ${fadeOutTimeSc}s both`
 			;
 		} else {
-			itemID.style.animation = `moveOutRight ${fadeOutTime}s both
-				,fadeOut ${fadeOutTime}s both`
+			itemID.style.animation = `moveOutRight ${fadeOutTimeSc}s both
+				,fadeOut ${fadeOutTimeSc}s both`
 			;
 		}
 		
 	}
 	
-	await new Promise(resolve => setTimeout(resolve, fadeOutTime * 1000));
+	await new Promise(resolve => setTimeout(resolve, fadeOutTimeSc * 1000));
 
 }
 
@@ -687,17 +687,17 @@ async function fadeOutMove(itemID, chara, side) {
 //fade in but with movement
 function fadeInMove(itemID, delay = 0, chara, side) {
 	if (chara) {
-		itemID.parentElement.style.animation = `charaMoveIn ${fadeOutTime}s ${delay}s both
-			, fadeIn ${fadeOutTime}s ${delay}s both`
+		itemID.parentElement.style.animation = `charaMoveIn ${fadeOutTimeSc}s ${delay}s both
+			, fadeIn ${fadeOutTimeSc}s ${delay}s both`
 		;
 	} else {
 		if (side) {
-			itemID.style.animation = `moveInLeft ${fadeInTime}s ${delay}s both
-				, fadeIn ${fadeInTime}s ${delay}s both`
+			itemID.style.animation = `moveInLeft ${fadeInTimeSc}s ${delay}s both
+				, fadeIn ${fadeInTimeSc}s ${delay}s both`
 			;
 		} else {
-			itemID.style.animation = `moveInRight ${fadeInTime}s ${delay}s both
-				, fadeIn ${fadeInTime}s ${delay}s both`
+			itemID.style.animation = `moveInRight ${fadeInTimeSc}s ${delay}s both
+				, fadeIn ${fadeInTimeSc}s ${delay}s both`
 			;
 		}
 	}

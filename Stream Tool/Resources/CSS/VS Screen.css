@@ -312,6 +312,7 @@ body {
     flex-direction: column;
     align-items: center;
     transform: translateY(var(--topMargin));
+    filter: drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.5));
 }
 
 
@@ -330,7 +331,6 @@ body {
     border-image: url('../Overlay/VS\ Screen/Round Border.png') 10 63 fill;
     height: 90px;
     transition: width .5s;
-    filter: drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.5));
 }
 
 #tournament {
@@ -345,70 +345,81 @@ body {
 
 
 #casterInfo {
-    position: absolute;
-    width: 1920px;
-}
-
-.caster {
-    position: absolute;
-    width: 170px;
-    height: 34px;
-    top: 130px;
     text-align: center;
     font-family: "Deansgate";
-    color: black;
-    line-height: 26px;
     white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top: 9px solid;
+    border-bottom: 9px solid;
+    border-left: 54px solid;
+    border-right: 54px solid;
+    border-image: url('../Overlay/VS\ Screen/Caster Border.png') 9 54 fill;
+    height: 76px;
+    transition: width .5s;
+    gap: 30px;
 }
 
-#caster1 {
-    left: 765px;
+.casterDiv {
+    display: flex;
+    flex-direction: column;
+    width: 172px;
+    margin: 0 -5px;
 }
 
-#caster2 {
-    right: 765px;
+.casterNameBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+}
+.casterName {
+    color: black;
 }
 
+.casterSep {
+    width: 100%;
+    height: 2px;
+    background-color: black;
+}
 
 .socialBox {
-    position: absolute;
-    width: 170px;
-    height: 30px;
-    top: 162px;
-    text-align: center;
-    font-family: "Deansgate";
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+}
+.socialText {
     color: rgb(65, 65, 65);
-    line-height: 26px;
-    white-space: nowrap;
-    opacity: 0;
-}
-.socialBoxL {
-    left: 765px;
-}
-.socialBoxR {
-    right: 765px;
 }
 
+.socialIcon {
+    display: inline-block;
+    object-fit: scale-down;
+    fill: rgb(65, 65, 65);
+}
+.micIcon {
+    height: 20px;
+    width: 20px;
+}
 .twitterIcon {
     height: 19px;
     width: 19px;
-    fill: rgb(65, 65, 65);
-    transform: translate(0px, 2px);
-    display: inline-block;
 }
 .twitchIcon {
     height: 17px;
     width: 17px;
-    fill: rgb(65, 65, 65);
-    transform: translate(0px, 1px);
-    display: inline-block;
+    transform: translate(-2px, -1px);
 }
 .ytIcon {
     height: 19px;
     width: 19px;
-    fill: rgb(65, 65, 65);
-    transform: translate(2px, 1px);
-    display: inline-block;
+    transform: translate(-1px, 0px);
+}
+.personIcon {
+    height: 20px;
+    width: 20px;
 }
 
 

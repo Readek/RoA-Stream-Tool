@@ -3,8 +3,9 @@ import { fadeOut } from "./Utils/Fade Out.mjs";
 import { current } from "./Utils/Globals.mjs";
 import { resizeText } from "./Utils/Resize Text.mjs";
 import { updateText } from "./Utils/Update Text.mjs";
+import { casters } from "./VS Screen/Caster/Casters.mjs";
 import { roundInfo } from "./VS Screen/Round Info/Round Info.mjs";
-import { fadeInTime, fadeOutTime } from "./VS Screen/VsGlobals.mjs";
+import { fadeInTimeVs, fadeOutTimeVs, introDelayVs } from "./VS Screen/VsGlobals.mjs";
 
 // this is a weird way to have file svg's that can be recolored by css
 customElements.define("load-svg", class extends HTMLElement {
@@ -15,8 +16,6 @@ customElements.define("load-svg", class extends HTMLElement {
     }
 })
 
-//animation stuff
-const introDelay = .05; //all animations will get this delay when the html loads (use this so it times with your transition)
 
 //max text sizes (used when resizing back)
 const playerSize = 90;
@@ -24,19 +23,10 @@ const tagSize = 50;
 const playerSizeDubs = 45;
 const tagSizeDubs = 25;
 const teamSize = 72;
-const casterSize = 25;
-const cSocialSize = 20;
 
 //to avoid the code constantly running the same method over and over
 const pCharPrev = [], pBgPrev = [], scorePrev = [], colorPrev = [];
 let bestOfPrev, gamemodePrev;
-
-// groups of classes
-const casters = [];
-
-// variables for the commentator social info constant change
-let sTurn = 0;
-const socialInterval = 7000; // time in miliseconds for each change
 
 //to consider how many loops will we do
 let maxPlayers = 2; //will change when doubles comes
@@ -44,8 +34,6 @@ const maxSides = 2;
 
 // this will connect us to the GUI
 let webSocket;
-
-let startup = true;
 
 
 //next, global variables for the html elements
@@ -67,102 +55,6 @@ const colorBG = document.getElementsByClassName("colorBG");
 const textBG = document.getElementsByClassName("textBG");
 const scoreOverlay = document.getElementById("scores");
 const scoreBorder = document.getElementById("scoreBorder");
-
-
-// commentator class (more classes may be crated on future releases maybe?)
-class Caster {
-
-	constructor(num, data) {
-
-		this.cName = document.getElementById("caster"+num);
-		this.cTwitter = document.getElementById("twitter"+num);
-		this.cTwitch = document.getElementById("twitch"+num);
-		this.cYt = document.getElementById("yt"+num);
-
-		// set all the texts on startup
-		this.setName(data.name);
-		this.setTwitter(data.socials.twitter);
-		this.setTwitch(data.socials.twitch);
-		this.setYt(data.socials.yt);
-
-	}
-
-	getName() {
-		return this.cName.innerHTML;
-	}
-	getTwitter() {
-		return this.cTwitter.innerHTML;
-	}
-	getTwitch() {
-		return this.cTwitch.innerHTML;
-	}
-	getYt() {
-		return this.cYt.innerHTML;
-	}
-	
-	setName(text) {
-		updateText(this.cName, text, casterSize);
-		resizeText(this.cName);
-	}
-	setTwitter(text) {
-		updateText(this.cTwitter, text, cSocialSize);
-		resizeText(this.cTwitter.parentElement);
-	}
-	setTwitch(text) {
-		updateText(this.cTwitch, text, cSocialSize);
-		resizeText(this.cTwitch.parentElement);
-	}
-	setYt(text) {
-		updateText(this.cYt, text, cSocialSize);
-		resizeText(this.cYt.parentElement);
-	}
-
-	update(data) {
-
-		// caster name is simple enough
-		if (this.getName() != data.name) {
-			fadeOut(this.cName, fadeOutTime).then( () => {
-				this.setName(data.name);
-				fadeIn(this.cName, .2);
-			});
-		}
-
-		// but for the rest
-		if (this.getTwitter() != data.socials.twitter) {
-			// only animate the change if its visible
-			if (window.getComputedStyle(this.cTwitter.parentElement).getPropertyValue("opacity") == 1) {
-				fadeOut(this.cTwitter.parentElement, fadeOutTime).then( () => {
-					this.setTwitter(data.socials.twitter);
-					fadeIn(this.cTwitter.parentElement, fadeInTime, .2);
-				});
-			} else {
-				this.setTwitter(data.socials.twitter);
-			}
-		}
-		if (this.getTwitch() != data.socials.twitch) {
-			if (window.getComputedStyle(this.cTwitch.parentElement).getPropertyValue("opacity") == 1) {
-				fadeOut(this.cTwitch.parentElement, fadeOutTime).then( () => {
-					this.setTwitch(data.socials.twitch);
-					fadeIn(this.cTwitch.parentElement, fadeInTime, .2);
-				});
-			} else {
-				this.setTwitch(data.socials.twitch);
-			}
-		}
-		if (this.getYt() != data.socials.yt) {
-			if (window.getComputedStyle(this.cYt.parentElement).getPropertyValue("opacity") == 1) {
-				fadeOut(this.cYt.parentElement, fadeOutTime).then( () => {
-					this.setYt(data.socials.yt);
-					fadeIn(this.cYt.parentElement, fadeInTime, .2);
-				});
-			} else {
-				this.setYt(data.socials.yt);
-			}
-		}
-
-	}
-
-}
 
 
 // first we will start by connecting with the GUI with a websocket
@@ -209,9 +101,6 @@ async function updateData(data) {
 	const bestOf = data.bestOf;
 	const gamemode = data.gamemode;
 
-	const caster = data.caster;
-
-
 	// first of all, things that will always happen on each cycle
 
 	// set the max players depending on singles or doubles
@@ -224,7 +113,7 @@ async function updateData(data) {
 	}
 
 	// now, things that will happen only the first time the html loads
-	if (startup) {
+	if (current.startup) {
 
 		//if this isnt a singles match, rearrange stuff
 		if (gamemode != 1) {
@@ -243,17 +132,17 @@ async function updateData(data) {
 			updatePlayerName(i, player[i].name, player[i].tag, gamemode);
 
 			//fade in the player text
-			fadeIn(pWrapper[i], introDelay+.3);
+			fadeIn(pWrapper[i], introDelayVs+.3);
 
 
 			// now lets update all that player info
 			updatePlayerInfo(i, player[i]);
 
 			// and gradually fade them in
-			fadeIn(pInfoProns[i].parentElement, fadeInTime, introDelay+.6);
-			fadeIn(pInfoTwitter[i].parentElement, fadeInTime, introDelay+.75);
-			fadeIn(pInfoTwitch[i].parentElement, fadeInTime, introDelay+.9);
-			fadeIn(pInfoYt[i].parentElement, fadeInTime, introDelay+1.05);
+			fadeIn(pInfoProns[i].parentElement, fadeInTimeVs, introDelayVs+.6);
+			fadeIn(pInfoTwitter[i].parentElement, fadeInTimeVs, introDelayVs+.75);
+			fadeIn(pInfoTwitch[i].parentElement, fadeInTimeVs, introDelayVs+.9);
+			fadeIn(pInfoYt[i].parentElement, fadeInTimeVs, introDelayVs+1.05);
 
 
 			//change the player's character image, and position it
@@ -272,7 +161,7 @@ async function updateData(data) {
 		// now we use that array from earlier to animate all characters at the same time
 		Promise.all(charsLoaded).then( (value) => { // when all images are loaded
 			for (let i = 0; i < value.length; i++) { // for every character loaded
-				charaFadeIn(value[i][0], value[i][1], introDelay); // fade it in
+				charaFadeIn(value[i][0], value[i][1], introDelayVs); // fade it in
 			}
 		})
 
@@ -284,7 +173,7 @@ async function updateData(data) {
 			if (gamemode != 1) {
 				updateText(teamNames[i], teamName[i], teamSize);
 				resizeText(teamNames[i]);
-				fadeIn(teamNames[i], fadeInTime, introDelay+.15);
+				fadeIn(teamNames[i], fadeInTimeVs, introDelayVs+.15);
 			}
 
 			//set the colors
@@ -310,25 +199,15 @@ async function updateData(data) {
 		roundInfo.updateTournament(data.tournamentName);
 
 
-		//set the caster info
-		for (let i = 0; i < caster.length; i++) {
-
-			// add all casters found to the array, all info will initialize there
-			casters.push(new Caster(i+1, caster[i]));
-
+		// for each caster found, create one
+		for (let i = 0; i < data.caster.length; i++) {
+			casters.createCaster();
 		}
-
-		// random number so we start with a random social tag each time
-		sTurn = Math.floor(Math.random() * (3 - 1 + 1) ) + 1;
-		// set an interval to keep changing the commentator social info
-		setInterval(() => {
-			fadeOutSocials();
-		}, socialInterval);
-		// fade in the first batch
-		fadeInSocials();
+		// and update them
+		casters.updateCasters(data.caster);
 
 
-		startup = false; //next time we run this function, it will skip all we just did
+		// next time we run this function, it will skip all we just did
 		current.startup = false;
 
 	}
@@ -370,9 +249,9 @@ async function updateData(data) {
 
 				//if the scores for both sides are 0, hide the thing
 				if (score[0] == 0 && score[1] == 0) {
-					fadeOut(scoreOverlay, fadeOutTime);
+					fadeOut(scoreOverlay, fadeOutTimeVs);
 				} else if (window.getComputedStyle(scoreOverlay).getPropertyValue("opacity") == 0) {
-					fadeIn(scoreOverlay, fadeInTime);
+					fadeIn(scoreOverlay, fadeInTimeVs);
 				}
 
 				scorePrev[i] = score[i];
@@ -383,12 +262,12 @@ async function updateData(data) {
 			if (gamemode != 1) {
 				if (teamNames[i].textContent != teamName[i]) {
 					//hide the text before doing anything
-					fadeOut(teamNames[i], fadeOutTime).then( () => {
+					fadeOut(teamNames[i], fadeOutTimeVs).then( () => {
 						//update the text while nobody can see it
 						updateText(teamNames[i], teamName[i], teamSize);
 						resizeText(teamNames[i]);
 						//and fade it back to normal
-						fadeIn(teamNames[i], fadeInTime);
+						fadeIn(teamNames[i], fadeInTimeVs);
 					});
 				}
 			}
@@ -403,11 +282,11 @@ async function updateData(data) {
 			// players name change, if either name or tag have changed
 			if (pName[i].textContent != player[i].name || pTag[i].textContent != player[i].tag) {
 				//fade out the player's text
-				fadeOut(pWrapper[i], fadeOutTime).then( () => {
+				fadeOut(pWrapper[i], fadeOutTimeVs).then( () => {
 					//now that nobody is seeing it, change the content of the texts!
 					updatePlayerName(i, player[i].name, player[i].tag, gamemode);
 					//and fade the texts back in
-					fadeIn(pWrapper[i], fadeInTime, .2);
+					fadeIn(pWrapper[i], fadeInTimeVs, .2);
 				});
 			};
 
@@ -418,17 +297,17 @@ async function updateData(data) {
 				pInfoYt[i].textContent != player[i].socials.yt) {
 
 				// fade all of them out, we only need to wait for one
-				fadeOut(pInfoProns[i].parentElement, fadeOutTime);
-				fadeOut(pInfoTwitter[i].parentElement, fadeOutTime);
-				fadeOut(pInfoTwitch[i].parentElement, fadeOutTime);
-				fadeOut(pInfoYt[i].parentElement, fadeOutTime).then( () => {
+				fadeOut(pInfoProns[i].parentElement, fadeOutTimeVs);
+				fadeOut(pInfoTwitter[i].parentElement, fadeOutTimeVs);
+				fadeOut(pInfoTwitch[i].parentElement, fadeOutTimeVs);
+				fadeOut(pInfoYt[i].parentElement, fadeOutTimeVs).then( () => {
 					// update the texts!
 					updatePlayerInfo(i, player[i]);
 					// but woudnt it be cool if we faded all of them with progression
-					fadeIn(pInfoProns[i].parentElement, fadeInTime, .2);
-					fadeIn(pInfoTwitter[i].parentElement, fadeInTime, .35);
-					fadeIn(pInfoTwitch[i].parentElement, fadeInTime, .5);
-					fadeIn(pInfoYt[i].parentElement, fadeInTime, .65);
+					fadeIn(pInfoProns[i].parentElement, fadeInTimeVs, .2);
+					fadeIn(pInfoTwitter[i].parentElement, fadeInTimeVs, .35);
+					fadeIn(pInfoTwitch[i].parentElement, fadeInTimeVs, .5);
+					fadeIn(pInfoYt[i].parentElement, fadeInTimeVs, .65);
 				});
 				
 			}
@@ -450,11 +329,11 @@ async function updateData(data) {
 			// background change here!
 			if (pBgPrev[i] != player[i].vs.bgVid) {
 				//fade it out
-				fadeOut(pBG[i], fadeOutTime+.2).then( () => {
+				fadeOut(pBG[i], fadeOutTimeVs+.2).then( () => {
 					//update the bg vid
 					updateBG(pBG[i], player[i].vs.bgVid);
 					//fade it back
-					fadeIn(pBG[i], .3, fadeInTime, fadeInTime+.2);
+					fadeIn(pBG[i], .3, fadeInTimeVs, fadeInTimeVs+.2);
 				});
 				pBgPrev[i] = player[i].vs.bgVid;
 			}
@@ -478,12 +357,7 @@ async function updateData(data) {
 
 
 		//update caster info
-		for (let i = 0; i < caster.length; i++) {
-			
-			// with the magic of javascript classes, we will just do this:
-			casters[i].update(caster[i]);
-
-		}
+		casters.updateCasters(data.caster);
 
 	}
 }
@@ -700,140 +574,6 @@ function updateBo(bestOf) {
 }
 
 
-// the logic bechind the commentator social info constant change
-function fadeOutSocials() {
-
-	if (sTurn == 0) { // if there were no available texts on last check
-		
-		// simply fade in
-		sTurn++;
-		fadeInSocials();
-
-	} else {
-
-		let theresText; // to know if theres... text
-
-		// for all the current casters stored
-		for (let i = 0; i < casters.length; i++) {
-			
-			if (sTurn != 1) { // twitter turn
-				if (casters[i].getTwitter() != "-") {
-					theresText = true;
-				}
-			}
-			if (sTurn != 2) { // twitch turn
-				if (casters[i].getTwitch() != "-") {
-					theresText = true;
-				}
-			}
-			if (sTurn != 3) { // youtube turn
-				if (casters[i].getYt() != "-") {
-					theresText = true;
-				}
-			}
-			
-		}
-
-		// if theres any text to show, its time to fade it in
-		if (theresText) {
-			
-			for (let i = 0; i < casters.length; i++) {
-				if (sTurn == 1) {
-					fadeOut(casters[i].cTwitter.parentElement, fadeOutTime);
-				} else if (sTurn == 2) {
-					fadeOut(casters[i].cTwitch.parentElement), fadeOutTime;
-				} else if (sTurn == 3) {
-					fadeOut(casters[i].cYt.parentElement, fadeOutTime);
-				}
-			}
-
-			// wait for the animations to finish
-			setTimeout(() => {
-				sTurn++;
-				if (sTurn == 4) {sTurn = 1}
-				fadeInSocials();
-			}, fadeOutTime*1000);
-
-		}
-
-	}
-	
-}
-function fadeInSocials(repeated) {
-	
-	if (sTurn == 1) { // twitter turn
-
-		let theresText;
-		
-		// check all existing commentators
-		for (let i = 0; i < casters.length; i++) {
-
-			// if a commentator has text, set the flag
-			if (casters[i].getTwitter() != "-") {
-				theresText = true;
-			}
-			
-		}
-
-		// if text was found on at least one caster
-		if (theresText) {
-			// fade in all caster twitter info
-			for (let i = 0; i < casters.length; i++) {
-				fadeIn(casters[i].cTwitter.parentElement, fadeInTime);
-			}
-			return; // dont activate the rest of the function
-		} else {
-			sTurn++;
-		}
-
-	}
-	if (sTurn == 2) { // twitch turn
-		// same as before
-		let theresText;
-		for (let i = 0; i < casters.length; i++) {
-			if (casters[i].getTwitch() != "-") {
-				theresText = true;
-			}
-		}
-		if (theresText) {
-			for (let i = 0; i < casters.length; i++) {
-				fadeIn(casters[i].cTwitch.parentElement, fadeInTime);
-			}
-			return;
-		} else {
-			sTurn++;
-		}
-	}
-	if (sTurn == 3) { // youtube turn
-		let theresText;
-		for (let i = 0; i < casters.length; i++) {
-			if (casters[i].getYt() != "-") {
-				theresText = true;
-			}
-		}
-		if (theresText) {
-			for (let i = 0; i < casters.length; i++) {
-				fadeIn(casters[i].cYt.parentElement, fadeInTime);
-			}
-			return;
-		} else {
-			sTurn++;
-		}
-	}
-
-	// if nothing had text, set it to 1
-	sTurn = 1;
-
-	// if this is the first time, do another round
-	if (!repeated) {
-		fadeInSocials(true);
-	} else {
-		sTurn = 0;
-	}
-
-}
-
-
 //player text change
 function updatePlayerName(pNum, name, tag, gamemode = 1) {
 	if (gamemode == 2) {
@@ -885,23 +625,23 @@ function updatePlayerInfo(pNum, pInfo) {
 //fade out for the characters
 async function charaFadeOut(charaEL, trailEL) {
 
-	charaEL.style.animation = `charaMoveOut ${fadeOutTime}s both
-		,fadeOut ${fadeOutTime}s both`
+	charaEL.style.animation = `charaMoveOut ${fadeOutTimeVs}s both
+		,fadeOut ${fadeOutTimeVs}s both`
 	;
 	// this is only so the animation change gets activated on fade in
 	trailEL.parentElement.style.animation = `trailMoveOut 0s both`;
 
-	await new Promise(resolve => setTimeout(resolve, fadeOutTime * 1000));
+	await new Promise(resolve => setTimeout(resolve, fadeOutTimeVs * 1000));
 
 }
 
 //fade in characters edition
 function charaFadeIn(charaEL, trailEL, delay = 0) {
-	charaEL.style.animation = `charaMoveIn ${fadeInTime + .1}s ${delay + .2}s both
-		, fadeIn ${fadeInTime + .1}s ${delay + .2}s both`
+	charaEL.style.animation = `charaMoveIn ${fadeInTimeVs + .1}s ${delay + .2}s both
+		, fadeIn ${fadeInTimeVs + .1}s ${delay + .2}s both`
 	;
-	trailEL.parentElement.style.animation = `trailMoveIn ${fadeInTime + .1}s ${delay + .4}s both
-		, fadeIn ${fadeInTime + .1}s ${delay + .4}s both`
+	trailEL.parentElement.style.animation = `trailMoveIn ${fadeInTimeVs + .1}s ${delay + .4}s both
+		, fadeIn ${fadeInTimeVs + .1}s ${delay + .4}s both`
 	;
 }
 

@@ -1,21 +1,28 @@
 import { fadeIn } from "../../Utils/Fade In.mjs";
 import { fadeOut } from "../../Utils/Fade Out.mjs";
 import { updateText } from "../../Utils/Update Text.mjs";
-import { fadeInTime, fadeOutTime } from "../VsGlobals.mjs";
+import { fadeInTimeVs, fadeOutTimeVs } from "../VsGlobals.mjs";
 
 export class RoundTournament {
 
-    /** @protected {HTMLElement} */
-    _element;
+    #element;
+    #fontSize;
+    #text = "";
 
-    /** @protected {Number} */
-    _fontSize;
+    /**
+     * Manages texts related to round info
+     * @param {HTMLElement} element - Element to be modified
+     * @param {Number} fontSize - Max text font size
+     */
+    constructor(element, fontSize) {
 
-    /** @protected {String} */
-    _text;
+        this.#element = element;
+        this.#fontSize = fontSize;
+
+    }
 
     getText() {
-        return this._text;
+        return this.#text;
     }
 
     /**
@@ -24,21 +31,21 @@ export class RoundTournament {
     */
     setText(text) {
 
-        this._text = text;
-        updateText(this._element, text || "-", this._fontSize);
+        this.#text = text;
+        updateText(this.#element, text || "-", this.#fontSize);
 
     }
 
     getElement() {
-        return this._element;
+        return this.#element;
     }
 
     async fadeOut() {
-        await fadeOut(this._element, fadeOutTime);
+        await fadeOut(this.#element, fadeOutTimeVs);
     }
 
     fadeIn() {
-        fadeIn(this._element, fadeInTime, .2);
+        fadeIn(this.#element, fadeInTimeVs, .2);
     }
 
 }
