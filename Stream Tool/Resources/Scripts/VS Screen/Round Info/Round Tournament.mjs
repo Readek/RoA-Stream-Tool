@@ -40,10 +40,12 @@ export class RoundTournament {
         return this.#element;
     }
 
+    /** Fades out the element, returning a promise */
     async fadeOut() {
         await fadeOut(this.#element, fadeOutTimeVs);
     }
 
+    /**Fades in the element */
     fadeIn() {
         fadeIn(this.#element, fadeInTimeVs, .2);
     }

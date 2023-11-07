@@ -345,6 +345,7 @@ body {
 
 
 #casterInfo {
+    position: relative;
     text-align: center;
     font-family: "Deansgate";
     white-space: nowrap;
@@ -359,6 +360,15 @@ body {
     height: 76px;
     transition: width .5s;
     gap: 30px;
+}
+.casterDiv ~ .casterDiv::before {
+    position: absolute;
+    transform: translate(-10.5px, 1px);
+    width: 2px;
+    height: 80%;
+    background-color: black;
+    opacity: .15;
+    content: "";
 }
 
 .casterDiv {

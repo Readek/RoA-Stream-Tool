@@ -49,14 +49,36 @@ class Casters {
            
             // check if the we have is different than the new one
             if (this.#casters[i].getName != data[i].name) {
-                this.#casters[i].setName(data[i].name);
+
+                // if we arent loading the view up, wait for fade out
+                if (!current.startup) {
+                    this.#casters[i].fadeOutName().then(() => {
+                        this.#casters[i].setName(data[i].name);
+                        this.#casters[i].fadeInName();
+                    })
+                } else {
+                    this.#casters[i].setName(data[i].name);
+                    this.#casters[i].fadeInName();
+                }
+            
             };
 
             // same with pronouns and socials
             if (this.#casters[i].haveSocialsChanged(data[i])) {
-                this.#casters[i].setSocials(data[i]);
-                this.#casters[i].updateSocialText(currentSocial);
-                this.#casters[i].updateSocialIcon(currentSocial);
+                if (!current.startup) {
+                    this.#casters[i].fadeOutSocials().then(() => {
+                        this.#casters[i].setSocials(data[i]);
+                        this.#casters[i].updateSocialText(currentSocial);
+                        this.#casters[i].updateSocialIcon(currentSocial);
+                        this.#casters[i].fadeInSocials();
+                    })
+                } else {
+                    this.#casters[i].setSocials(data[i]);
+                    this.#casters[i].updateSocialText(currentSocial);
+                    this.#casters[i].updateSocialIcon(currentSocial);
+                    this.#casters[i].fadeInSocials();
+                }
+                
             }
 
         }
@@ -114,8 +136,12 @@ class Casters {
 
             // and update shown text
             for (let i = 0; i < this.#casters.length && socialsFound; i++) {
-                this.#casters[i].updateSocialText(currentSocial);
-                this.#casters[i].updateSocialIcon(currentSocial);
+                this.#casters[i].fadeOutSocials().then(() => {
+                    this.#casters[i].updateSocialText(currentSocial);
+                    this.#casters[i].updateSocialIcon(currentSocial);
+                    this.#casters[i].fadeInSocials();
+                })
+                
             }
 
         }, socialInterval);

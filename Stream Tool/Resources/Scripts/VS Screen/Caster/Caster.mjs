@@ -1,10 +1,13 @@
+import { fadeIn } from "../../Utils/Fade In.mjs";
+import { fadeOut } from "../../Utils/Fade Out.mjs";
 import { resizeText } from "../../Utils/Resize Text.mjs";
 import { updateText } from "../../Utils/Update Text.mjs";
+import { fadeInTimeVs, fadeOutTimeVs } from "../VsGlobals.mjs";
 
 const casterInfoDiv = document.getElementById("casterInfo"); // TODO remove 2
 
 const nameSize = 25;
-const socialSize = 20;
+const socialSize = 19;
 
 export class Caster {
 
@@ -131,6 +134,24 @@ export class Caster {
         }
     }
 
+    /** Fades out commentator name, returning a promise */
+    async fadeOutName() {
+        await fadeOut(this.#nameEl.parentElement, fadeOutTimeVs);
+    }
+    /**Fades in commentator name */
+    fadeInName() {
+        fadeIn(this.#nameEl.parentElement, fadeInTimeVs, .2);
+    }
+
+    /** Fades out socials, returning a promise */
+    async fadeOutSocials() {
+        await fadeOut(this.#socialBox, fadeOutTimeVs);
+    }
+    /**Fades in commentator socials */
+    fadeInSocials() {
+        fadeIn(this.#socialBox, fadeInTimeVs, .2);
+    }
+
     /**
      * Creates the commentator element and appends it to the caster box
      * @returns {HTMLElement}
@@ -138,17 +159,16 @@ export class Caster {
     #createElement() {
 
         const newEl = document.createElement("div");
+        newEl.classList.add("casterDiv");
         newEl.innerHTML = `
-            <div class="casterDiv">
-                <div class="casterNameBox">
-                    <load-svg src="Resources/SVGs/Mic.svg" class="socialIcon micIcon"></load-svg>
-                    <div class="casterName"></div>
-                </div>
-                <div class="casterSep"></div>
-                <div class="socialBox">
-                    <div></div>
-                    <div class="socialText"></div>
-                </div>
+            <div class="casterNameBox">
+                <load-svg src="Resources/SVGs/Mic.svg" class="socialIcon micIcon"></load-svg>
+                <div class="casterName"></div>
+            </div>
+            <div class="casterSep"></div>
+            <div class="socialBox">
+                <div></div>
+                <div class="socialText"></div>
             </div>
         `;
 
