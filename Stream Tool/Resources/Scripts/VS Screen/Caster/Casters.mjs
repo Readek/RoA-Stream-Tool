@@ -1,6 +1,11 @@
 import { current } from "../../Utils/Globals.mjs";
 import { genRnd } from "../../Utils/Gen Random Num.mjs"
 import { Caster } from "./Caster.mjs";
+import { fadeIn } from "../../Utils/Fade In.mjs";
+import { fadeInTimeVs, fadeOutTimeVs } from "../VsGlobals.mjs";
+import { fadeOut } from "../../Utils/Fade Out.mjs";
+
+const castersDiv = document.getElementById("casterInfo");
 
 const maxSocials = [];
 const socialInterval = 7000; // time in miliseconds for each change
@@ -44,18 +49,21 @@ class Casters {
 
         }
 
+        // in case we are waiting for animations, store promises here
+        const allReady = []
+
         // for each commentator
         for (let i = 0; i < data.length; i++) {
            
             // check if the we have is different than the new one
-            if (this.#casters[i].getName != data[i].name) {
+            if (this.#casters[i].getName() != data[i].name) {
 
                 // if we arent loading the view up, wait for fade out
                 if (!current.startup) {
-                    this.#casters[i].fadeOutName().then(() => {
+                    allReady.push(this.#casters[i].fadeOutName().then(() => {
                         this.#casters[i].setName(data[i].name);
                         this.#casters[i].fadeInName();
-                    })
+                    }))
                 } else {
                     this.#casters[i].setName(data[i].name);
                     this.#casters[i].fadeInName();
@@ -65,13 +73,14 @@ class Casters {
 
             // same with pronouns and socials
             if (this.#casters[i].haveSocialsChanged(data[i])) {
+
                 if (!current.startup) {
-                    this.#casters[i].fadeOutSocials().then(() => {
+                    allReady.push(this.#casters[i].fadeOutSocials().then(() => {
                         this.#casters[i].setSocials(data[i]);
                         this.#casters[i].updateSocialText(currentSocial);
                         this.#casters[i].updateSocialIcon(currentSocial);
                         this.#casters[i].fadeInSocials();
-                    })
+                    }))
                 } else {
                     this.#casters[i].setSocials(data[i]);
                     this.#casters[i].updateSocialText(currentSocial);
@@ -82,6 +91,11 @@ class Casters {
             }
 
         }
+
+        // this will wait for all fade out animations
+        Promise.all(allReady).then(() =>  {
+            this.#checkEmpty();
+        })
 
     }
 
@@ -145,6 +159,25 @@ class Casters {
             }
 
         }, socialInterval);
+
+    }
+
+    /** Fades in or out the entire commentator div if empty or not */
+    #checkEmpty() {
+
+        let notEmpty;
+
+        for (let i = 0; i < this.#casters.length; i++) {
+            if (this.#casters[i].isNotEmpty()) {
+                notEmpty = true;
+            }            
+        }
+
+        if (notEmpty) {
+            fadeIn(castersDiv, fadeInTimeVs);
+        } else {
+            fadeOut(castersDiv, fadeOutTimeVs);
+        }
 
     }
 

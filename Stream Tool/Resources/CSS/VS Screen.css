@@ -363,7 +363,7 @@ body {
 }
 .casterDiv ~ .casterDiv::before {
     position: absolute;
-    transform: translate(-10.5px, 1px);
+    transform: translate(-11px, 1px);
     width: 2px;
     height: 80%;
     background-color: black;

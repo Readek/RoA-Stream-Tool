@@ -7,7 +7,7 @@ export class RoundTournament {
 
     #element;
     #fontSize;
-    #text = "";
+    #text = "-";
 
     /**
      * Manages texts related to round info

@@ -11,7 +11,7 @@ const socialSize = 19;
 
 export class Caster {
 
-    #name = "";
+    #name = "-";
     #tag = "";
     #pronouns = "";
     #socials = [];
@@ -43,7 +43,7 @@ export class Caster {
      */
 	setName(text) {
         this.#name = text;
-		updateText(this.#nameEl, text, nameSize);
+		updateText(this.#nameEl, text || "-", nameSize);
 		resizeText(this.#nameEl.parentElement);
 	}
     
@@ -150,6 +150,28 @@ export class Caster {
     /**Fades in commentator socials */
     fadeInSocials() {
         fadeIn(this.#socialBox, fadeInTimeVs, .2);
+    }
+
+    /**
+     * Checks if commentator has any info at the moment
+     * @returns {Boolean} True if it has data
+     */
+    isNotEmpty() {
+        
+        let hasSomething;
+
+        if (this.#name) hasSomething = true;
+        if (this.#tag) hasSomething = true;
+        if (this.#pronouns) hasSomething = true;
+
+        for (const key in this.#socials) {
+            if (this.#socials[key]) {
+                hasSomething = true;
+            }
+        }
+
+        return hasSomething;
+        
     }
 
     /**

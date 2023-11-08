@@ -8,7 +8,11 @@ export class Caster {
 
     tag = "";
     pronouns = "";
-    socials = {};
+    socials = {
+        twitter: "",
+        twitch: "",
+        yt: ""
+    };
 
     #nameEl;
 
