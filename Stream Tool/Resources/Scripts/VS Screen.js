@@ -480,7 +480,7 @@ function changeGM(gm) {
 function updateScore(side, pScore, pColor) {
 
 	// update the numerical score in case we are showing it
-	updateText(scoreNums[side], pScore, "48px");
+	updateText(scoreNums[side], pScore, 48);
 	resizeText(scoreNums[side]);
 
 	//if this is the right side, change the number
@@ -569,7 +569,7 @@ function updateBo(bestOf) {
 		scoreBorder.src = "Resources/Overlay/VS Screen/Score Border Bo3.png";
 	} else if (bestOf == "X") {
 		scoreTicks.style.display = "none";
-		scoreNumerical.style.display = "flex";		
+		scoreNumerical.style.display = "flex";
 	}
 }
 

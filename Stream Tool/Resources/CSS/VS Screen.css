@@ -324,13 +324,11 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border-top: 10px solid;
-    border-bottom: 10px solid;
-    border-left: 63px solid;
-    border-right: 63px solid;
+    border: solid;
+    border-width: 10px 63px;
     border-image: url('../Overlay/VS\ Screen/Round Border.png') 10 63 fill;
     height: 90px;
-    transition: width .5s;
+    transition: width .5s, height .3s, border-width .3s;
 }
 
 #tournament {
@@ -352,13 +350,11 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-top: 9px solid;
-    border-bottom: 9px solid;
-    border-left: 54px solid;
-    border-right: 54px solid;
+    border: solid;
+    border-width: 9px 54px;
     border-image: url('../Overlay/VS\ Screen/Caster Border.png') 9 54 fill;
     height: 76px;
-    transition: width .5s;
+    transition: width .5s, height .3s, border-width .3s;
     gap: 30px;
 }
 .casterDiv ~ .casterDiv::before {
@@ -434,58 +430,53 @@ body {
 
 
 #scores {
-    position: absolute;
-    width: 1920px;
+    position: relative;
+    margin-top: 8px;
 }
 
 .scoreTick {
     position: absolute;
-    top: 212px;
     fill: #414141;
+    top: 2px;
 }
 
 #scoreL-1 {
-    left: 924px;
+    left: 60px;
 }
 #scoreL-2 {
-    left: 896px;
+    left: 31px;
 }
 #scoreL-3 {
-    left: 866px;
+    left: 4px;
 }
 
 #scoreR-1 {
-    right: 924px;
+    right: 60px;
     transform: scaleX(-1);
 }
 #scoreR-2 {
-    right: 896px;
+    right: 31px;
     transform: scaleX(-1);
 }
 #scoreR-3 {
-    right: 866px;
+    right: 4px;
     transform: scaleX(-1);
 }
 
 #scoreBorder {
-    top: 209px;
-    left: 862px;
+    position: relative;
 }
 
 #scoreNumerical {
-    width: 100%;
     display: flex;
     justify-content: center;
-    position: absolute;
     gap: 12px;
-    top: 182px;
+    margin-top: -28px;
 }
 .scoreNum {
-    width: 50%;
     height: 66px;
-    font-size: 48px;
+    width: 64px;
     font-family: "LemonMilk";
-    width: 60px;
     z-index: 2;
     display: flex;
     justify-content: center;

@@ -58,9 +58,15 @@ class RoundInfo {
             if (!round.getText() && !tournament.getText()) {
 
                 fadeOut(roundInfoEl, fadeOutTimeVs);
+                // adjust element height
+                roundInfoEl.style.height = "0px";
+                roundInfoEl.style.borderWidth = "0px";
 
             } else {
 
+                // adjust element height
+                roundInfoEl.style.height = "90px";
+                roundInfoEl.style.borderWidth = "10px 63px";
                 // show the box in case it was hidden
                 fadeIn(roundInfoEl, fadeInTimeVs);
                 // fade in the new text!

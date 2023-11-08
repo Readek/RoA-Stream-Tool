@@ -174,8 +174,12 @@ class Casters {
         }
 
         if (notEmpty) {
+            castersDiv.style.height = "76px";
+            castersDiv.style.borderWidth = "9px 54px";
             fadeIn(castersDiv, fadeInTimeVs);
         } else {
+            castersDiv.style.height = "0px";
+            castersDiv.style.borderWidth = "0px";
             fadeOut(castersDiv, fadeOutTimeVs);
         }
 
