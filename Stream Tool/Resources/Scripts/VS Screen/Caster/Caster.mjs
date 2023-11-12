@@ -14,7 +14,7 @@ export class Caster {
     #name = "-";
     #tag = "";
     #pronouns = "";
-    #socials = [];
+    #socials = {};
 
     #nameEl;
     #socialTextEl;

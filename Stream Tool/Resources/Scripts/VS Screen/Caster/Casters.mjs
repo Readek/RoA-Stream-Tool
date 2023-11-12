@@ -19,6 +19,23 @@ class Casters {
     #casters = [];
 
 
+    initCasters(socialNames) {
+
+        // pronouns are kinda their own thing
+        maxSocials.push("pronouns");
+
+        // get current possible socials and store them
+        for (let i = 0; i < socialNames.length; i++) {
+            maxSocials.push(socialNames[i]);
+            
+        }
+
+        // lets get rolling
+        this.#initCarrousel();
+
+    }
+
+
     /** Adds in a new commentator */
     createCaster() {
 
@@ -31,23 +48,6 @@ class Casters {
      * @param {Object} data - New data with all commentators
      */
     updateCasters(data) {
-
-
-        // if loading up stuff
-        if (current.startup) {
-
-            // pronouns are kinda their own thing
-            maxSocials.push("pronouns");
-
-            // get current possible socials and store them
-            for (const social in data[0].socials) {
-                maxSocials.push(social);
-            }
-
-            // with that info, lets get rolling
-            this.#initCarrousel();
-
-        }
 
         // in case we are waiting for animations, store promises here
         const allReady = []
@@ -87,6 +87,8 @@ class Casters {
                     this.#casters[i].updateSocialIcon(currentSocial);
                     this.#casters[i].fadeInSocials();
                 }
+
+                this.#rotateSocials();
                 
             }
 
@@ -109,56 +111,62 @@ class Casters {
         // every x seconds
         setInterval(() => {
             
-            socialTurn++;
-            
-            // dont go out of bounds
-            if (socialTurn >= maxSocials.length) {
-                socialTurn = 0;
-            }
-
-            // set the new text
-            currentSocial = maxSocials[socialTurn];
-            let socialsFound;
-
-            // if no one has next social, dont display it
-            let antiLoopCounter = 0;
-            while (!socialsFound && antiLoopCounter < maxSocials.length-1) {
-
-                let someHaveSocial;
-
-                // check if casters have current social
-                for (let i = 0; i < this.#casters.length; i++) {
-                    if (this.#casters[i].hasSocial(currentSocial)) {
-                        socialsFound = true;
-                        someHaveSocial = true;
-                        break;
-                    }
-                }
-
-                // if nothing found, we just proceed to the next one
-                if (!someHaveSocial) {
-                    socialTurn++;
-                    if (socialTurn >= maxSocials.length) {
-                        socialTurn = 0;
-                    }
-                    currentSocial = maxSocials[socialTurn];
-                }
-                
-                antiLoopCounter++;
-    
-            }
-
-            // and update shown text
-            for (let i = 0; i < this.#casters.length && socialsFound; i++) {
-                this.#casters[i].fadeOutSocials().then(() => {
-                    this.#casters[i].updateSocialText(currentSocial);
-                    this.#casters[i].updateSocialIcon(currentSocial);
-                    this.#casters[i].fadeInSocials();
-                })
-                
-            }
+            this.#rotateSocials();
 
         }, socialInterval);
+
+    }
+
+    #rotateSocials() {
+
+        socialTurn++;
+            
+        // dont go out of bounds
+        if (socialTurn >= maxSocials.length) {
+            socialTurn = 0;
+        }
+
+        // set the new text
+        currentSocial = maxSocials[socialTurn];
+        let socialsFound;
+
+        // if no one has next social, dont display it
+        let antiLoopCounter = 0;
+        while (!socialsFound && antiLoopCounter < maxSocials.length-1) {
+
+            let someHaveSocial;
+
+            // check if casters have current social
+            for (let i = 0; i < this.#casters.length; i++) {
+                if (this.#casters[i].hasSocial(currentSocial)) {
+                    socialsFound = true;
+                    someHaveSocial = true;
+                    break;
+                }
+            }
+
+            // if nothing found, we just proceed to the next one
+            if (!someHaveSocial) {
+                socialTurn++;
+                if (socialTurn >= maxSocials.length) {
+                    socialTurn = 0;
+                }
+                currentSocial = maxSocials[socialTurn];
+            }
+            
+            antiLoopCounter++;
+
+        }
+
+        // and update shown text
+        for (let i = 0; i < this.#casters.length && socialsFound; i++) {
+            this.#casters[i].fadeOutSocials().then(() => {
+                this.#casters[i].updateSocialText(currentSocial);
+                this.#casters[i].updateSocialIcon(currentSocial);
+                this.#casters[i].fadeInSocials();
+            })
+            
+        }
 
     }
 

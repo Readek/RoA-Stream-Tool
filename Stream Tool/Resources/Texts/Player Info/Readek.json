@@ -5,18 +5,20 @@
   "socials": {
     "twitter": "",
     "twitch": "Readek",
-    "yt": "Readek"
+    "yt": "Readek",
+    "masto": "Readek",
+    "cohost": "Readek"
   },
   "characters": [
-    {
-      "character": "Guadua",
-      "skin": "Red"
-    },
     {
       "character": "Maypul",
       "skin": "Default",
       "hex": "445C-46F5-F5F5-6E23-2342-1515-345B-3065",
       "customImg": true
+    },
+    {
+      "character": "Guadua",
+      "skin": "Red"
     },
     {
       "character": "Ori and Sein",

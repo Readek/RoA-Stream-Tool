@@ -11,12 +11,16 @@ class ProfileInfo {
 
     #pTypeSpan = document.getElementById("pInfoType");
 
+    #inputs = document.getElementsByClassName("pInfoInput");
+
     #pronounsInp = document.getElementById("pInfoInputPronouns");
     #tagInp = document.getElementById("pInfoInputTag");
     #nameInp = document.getElementById("pInfoInputName");
-    #twitterInp = document.getElementById("pInfoInputTwitter");
     #twitchInp = document.getElementById("pInfoInputTwitch");
     #ytInp = document.getElementById("pInfoInputYt");
+    #twitterInp = document.getElementById("pInfoInputTwitter");
+    #mastoInp = document.getElementById("pInfoInputMasto");
+    #cohostInp = document.getElementById("pInfoInputCohost");
 
     #curProfile;
 
@@ -62,6 +66,8 @@ class ProfileInfo {
         this.#twitterInp.value = socials.twitter || "";
         this.#twitchInp.value = socials.twitch || "";
         this.#ytInp.value = socials.yt || "";
+        this.#mastoInp.value = socials.masto || "";
+        this.#cohostInp.value = socials.cohost || "";
 
         // give tab index so we can jump from input to input with the keyboard
         this.#setTabIndex(0);
@@ -94,12 +100,9 @@ class ProfileInfo {
      * @param {Number} num - Tab index value
      */
     #setTabIndex(num) {
-        this.#pronounsInp.setAttribute("tabindex", num);
-        this.#tagInp.setAttribute("tabindex", num);
-        this.#nameInp.setAttribute("tabindex", num);
-        this.#twitterInp.setAttribute("tabindex", num);
-        this.#twitchInp.setAttribute("tabindex", num);
-        this.#ytInp.setAttribute("tabindex", num);
+        for (let i = 0; i < this.#inputs.length; i++) {
+            this.#inputs[i].setAttribute("tabindex", num);
+        }
     }
 
     /** Updates player data with values from input fields */
@@ -112,7 +115,9 @@ class ProfileInfo {
         const socials = {
             twitter : this.#twitterInp.value,
             twitch : this.#twitchInp.value,
-            yt : this.#ytInp.value
+            yt : this.#ytInp.value,
+            masto : this.#mastoInp.value,
+            cohost : this.#cohostInp.value,
         }
         this.#curProfile.setSocials(socials);
         

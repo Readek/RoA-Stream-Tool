@@ -705,16 +705,16 @@ button:hover {
   flex-shrink: 0;
 }
 
-.twitterIcon {
-  margin-right: 3px;
-  margin-left: 5px;
-}
 .twitchIcon {
   margin-right: 4px;
   margin-left: 5px;
 }
 .ytIcon {
   margin-right: 4px;
+  margin-left: 5px;
+}
+.twitterIcon {
+  margin-right: 3px;
   margin-left: 5px;
 }
 
@@ -1115,6 +1115,7 @@ button:hover {
 .pInfoRow {
   display: flex;
   gap: 10px;
+  justify-content: center;
 }
 
 .pInfoEl {
@@ -1129,12 +1130,15 @@ button:hover {
   width: 30px;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 .pInfoIcon {
   width: 20px;
   height: 20px;
   fill: var(--iconFill);
-  display: inline-block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .pInfoInput {
   width: 100px;
@@ -1154,6 +1158,13 @@ button:hover {
 }
 .pInfoBotButt:hover {
   border-color: var(--selected);
+}
+
+
+.pInfoSep {
+  height: 1px;
+  width: 100%;
+  background-color: var(--focused);
 }
 
 

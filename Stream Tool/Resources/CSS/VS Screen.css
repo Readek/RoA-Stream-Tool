@@ -395,6 +395,7 @@ body {
     justify-content: center;
     align-items: center;
     gap: 2px;
+    min-height: 28px;
 }
 .socialText {
     color: rgb(65, 65, 65);
@@ -410,8 +411,8 @@ body {
     width: 20px;
 }
 .twitterIcon {
-    height: 19px;
-    width: 19px;
+    height: 18px;
+    width: 18px;
 }
 .twitchIcon {
     height: 17px;
@@ -421,6 +422,16 @@ body {
 .ytIcon {
     height: 19px;
     width: 19px;
+    transform: translate(-1px, 0px);
+}
+.mastoIcon {
+    height: 19px;
+    width: 19px;
+    transform: translate(-2px, 0px);
+}
+.cohostIcon {
+    height: 20px;
+    width: 20px;
     transform: translate(-1px, 0px);
 }
 .personIcon {
