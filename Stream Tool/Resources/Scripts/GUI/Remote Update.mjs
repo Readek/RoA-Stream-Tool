@@ -1,5 +1,5 @@
 import { bestOf } from "./BestOf.mjs";
-import { casters } from "./Caster/Casters.mjs";
+import { addCaster, casters } from "./Caster/Casters.mjs";
 import { currentColors, updateColor } from "./Colors.mjs";
 import { customChange, setCurrentPlayer } from "./Custom Skin.mjs";
 import { gamemode } from "./Gamemode Change.mjs";
@@ -59,10 +59,8 @@ export async function updateGUI(data) {
         // player info
         players[i].setName(data.player[i].name);
         players[i].setTag(data.player[i].tag);
-        players[i].pronouns = data.player[i].pronouns;
-        players[i].twitter = data.player[i].twitter;
-        players[i].twitch = data.player[i].twitch;
-        players[i].yt = data.player[i].yt;
+        players[i].setPronouns(data.player[i].pronouns);
+        players[i].setSocials(data.player[i].socials);
 
         // player character and skin
         if (data.player[i].char != players[i].char || data.player[i].skin != players[i].skin.name) {
@@ -93,13 +91,26 @@ export async function updateGUI(data) {
     wl.setRight(data.wl[1]);
     tournament.setText(data.tournamentName);
 
-    // and finally, casters
+    // commentators!
+    const homeCasterLength = casters.length;
+    const incCasterLength = data.caster.length;
+    // add or remove casters if needed
+    if (homeCasterLength < incCasterLength) {
+        for (let i = 0; i < incCasterLength - homeCasterLength; i++) {
+            addCaster();
+        }
+    } else if (homeCasterLength > incCasterLength) {
+        for (let i = homeCasterLength-1; i > incCasterLength-1; i--) {
+            casters[i].delet();            
+        }
+    }
+    // update the actual data
     for (let i = 0; i < casters.length; i++) {
         casters[i].setName(data.caster[i].name);
-        casters[i].setTwitter(data.caster[i].twitter);
-        casters[i].setTwitch(data.caster[i].twitch);
-        casters[i].setYt(data.caster[i].yt);
-    }
+        casters[i].setPronouns(data.caster[i].pronouns);
+        casters[i].setTag(data.caster[i].tag);
+        casters[i].setSocials(data.caster[i].socials);
+    };
 
     // write it down
     displayNotif("GUI was remotely updated");

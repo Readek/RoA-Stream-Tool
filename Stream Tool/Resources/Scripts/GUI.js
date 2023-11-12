@@ -7,7 +7,7 @@ import { scores } from './GUI/Score/Scores.mjs';
 import { Team } from './GUI/Team/Team.mjs';
 import { teams } from './GUI/Team/Teams.mjs';
 import './GUI/Swap Players.mjs'; // so it loads the listener
-import { casters } from './GUI/Caster/Casters.mjs';
+import { addCaster, casters } from './GUI/Caster/Casters.mjs';
 import { writeScoreboard } from './GUI/Write Scoreboard.mjs';
 import { loadKeybinds } from './GUI/Keybinds.mjs';
 import { updateBracket } from './GUI/Bracket.mjs';
@@ -66,10 +66,8 @@ async function init() {
 
 
     // initialize the commentators
-    casters.push(
-        new Caster(),
-        new Caster(),
-    );
+    addCaster();
+    addCaster();
 
 
     // start up those team classes

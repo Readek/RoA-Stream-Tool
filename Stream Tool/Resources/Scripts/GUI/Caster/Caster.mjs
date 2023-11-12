@@ -1,10 +1,14 @@
 import { commFinder } from "../Finder/Comm Finder.mjs";
 import { inside } from "../Globals.mjs";
 import { profileInfo } from "../Profile Info.mjs";
+import { deletCaster } from "./Casters.mjs";
 
 export class Caster {
 
-    profileType = "commentator"
+    #id = 0;
+    #el;
+
+    profileType = "commentator";
 
     tag = "";
     pronouns = "";
@@ -12,11 +16,13 @@ export class Caster {
 
     #nameEl;
 
-    constructor() {
+    constructor(id) {
 
-        const el = this.#createElements();
+        this.#id = id;
 
-        this.#nameEl = el.getElementsByClassName(`cName`)[0];
+        this.#el = this.#createElements();
+
+        this.#nameEl = this.#el.getElementsByClassName(`cName`)[0];
 
         // every time we type on name
         this.#nameEl.addEventListener("input", () => {
@@ -42,13 +48,21 @@ export class Caster {
         });
 
         // open player info menu if clicking on the icon
-        el.getElementsByClassName("pInfoButt")[0].addEventListener("click", () => {
+        this.#el.getElementsByClassName("pInfoButt")[0].addEventListener("click", () => {
             profileInfo.show(this);
+        });
+
+        // remove this commentator when clicking on the button
+        this.#el.getElementsByClassName(`cDeleteButt`)[0].addEventListener("click", () => {
+            this.delet();
         });
 
     }
 
     
+    getId() {
+        return this.#id;
+    }
     getName() {
         return this.#nameEl.value;
     }
@@ -74,6 +88,11 @@ export class Caster {
         this.socials = socials;
     }
 
+    delet() {
+        this.#el.remove();
+        deletCaster(this.#id);
+    }
+
 
     /** Creates the HTML elements on the GUI */
     #createElements() {
@@ -82,15 +101,15 @@ export class Caster {
         newDiv.innerHTML = `
             <div class="caster">
 
-            <button class="pInfoButt" title="Edit commentator info" tabindex="-1">
-            <load-svg src="SVGs/Mic.svg" class="casterIcon"></load-svg>
-            </button>
+                <button class="pInfoButt" title="Edit commentator info" tabindex="-1">
+                    <load-svg src="SVGs/Mic.svg" class="casterIcon"></load-svg>
+                </button>
 
-            <div class="finderPosition cFinderPosition">
-            <input type="text" class="cName textInput mousetrap" placeholder="Caster name" spellcheck="false">
-            </div>
+                <div class="finderPosition cFinderPosition">
+                    <input type="text" class="cName textInput mousetrap" placeholder="Caster name" spellcheck="false">
+                </div>
 
-            <button class="cDeleteButt" title="Remove commentator">-</button>
+                <button class="cDeleteButt" title="Remove commentator">-</button>
 
             </div>
         `

@@ -690,11 +690,14 @@ button:hover {
   display: flex;
   justify-content: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 #casterDiv {
   display: flex;
   gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .casterIcon {
@@ -764,37 +767,14 @@ button:hover {
 #addCasterButt:active {
   background-color: var(--bg2);
 }
+#addCasterButt:disabled {
+  pointer-events: none;
+  opacity: .5;
+}
 
 .casterInput {
   width: 100%;
   margin-left: 1px;
-}
-
-.saveCasterButt {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid var(--focused);
-  border-radius: 3px;
-  margin-left: 6px;
-  transition: border-color 100ms, opacity 100ms;
-  background-color: var(--bg4);
-}
-.saveCasterButt:hover {
-  border-color: var(--selected);
-  cursor: pointer;
-}
-.saveCasterButt:active {
-  background-color: var(--bg2);
-}
-.saveCasterButt:disabled {
-  pointer-events: none;
-  opacity: .4;
-}
-
-.saveCasterIcon {
-  width: 22px;
-  height: 22px;
 }
 
 #casterFinder {
