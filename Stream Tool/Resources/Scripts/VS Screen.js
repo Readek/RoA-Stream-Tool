@@ -201,10 +201,6 @@ async function updateData(data) {
 
 		// initialize the caster class
 		casters.initCasters(data.socialNames);
-		// for each caster found, create one
-		for (let i = 0; i < data.caster.length; i++) {
-			casters.createCaster();
-		}
 		// and update them
 		casters.updateCasters(data.caster);
 

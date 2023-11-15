@@ -708,36 +708,10 @@ button:hover {
   flex-shrink: 0;
 }
 
-.twitchIcon {
-  margin-right: 4px;
-  margin-left: 5px;
-}
-.ytIcon {
-  margin-right: 4px;
-  margin-left: 5px;
-}
-.twitterIcon {
-  margin-right: 3px;
-  margin-left: 5px;
-}
-
-#caster1 {
-  padding-bottom: 4px;
-}
-
 .caster {
   display: flex;
 }
 
-.casterGroup {
-  display: flex;
-}
-.casterNameG {
-  width: 28%;
-}
-.casterSocialG {
-  width: 24%;
-}
 
 .cName {
   width: 100px;
@@ -760,6 +734,7 @@ button:hover {
   transition: border-color 100ms, opacity 100ms;
   background-color: var(--bg4);
   padding: 1px 2px 1px 5px;
+  height: 30px;
 }
 #addCasterButt:hover {
   border-color: var(--selected);
@@ -770,11 +745,6 @@ button:hover {
 #addCasterButt:disabled {
   pointer-events: none;
   opacity: .5;
-}
-
-.casterInput {
-  width: 100%;
-  margin-left: 1px;
 }
 
 #casterFinder {

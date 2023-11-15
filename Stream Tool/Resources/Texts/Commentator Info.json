@@ -10,5 +10,17 @@
       "masto": "Readek",
       "cohost": "Readek"
     }
+  },
+  {
+    "name": "Test",
+    "tag": "Tag",
+    "pronouns": "Pronouns",
+    "socials": {
+      "twitter": "Twitter",
+      "twitch": "Twitch",
+      "yt": "Youtube",
+      "masto": "Mastodon",
+      "cohost": "Cohost"
+    }
   }
 ]

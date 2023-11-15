@@ -4,7 +4,7 @@ import { resizeText } from "../../Utils/Resize Text.mjs";
 import { updateText } from "../../Utils/Update Text.mjs";
 import { fadeInTimeVs, fadeOutTimeVs } from "../VsGlobals.mjs";
 
-const casterInfoDiv = document.getElementById("casterInfo"); // TODO remove 2
+const casterInfoDiv = document.getElementById("casters");
 
 const nameSize = 25;
 const socialSize = 19;
@@ -16,17 +16,19 @@ export class Caster {
     #pronouns = "";
     #socials = {};
 
+    #el;
+
     #nameEl;
     #socialTextEl;
     #socialBox;
 
 	constructor() {
 
-        const el = this.#createElement();
+        this.#el = this.#createElement();
 
-        this.#nameEl = el.getElementsByClassName("casterName")[0];
-        this.#socialTextEl = el.getElementsByClassName("socialText")[0];
-        this.#socialBox = el.getElementsByClassName("socialBox")[0];
+        this.#nameEl = this.#el.getElementsByClassName("casterName")[0];
+        this.#socialTextEl = this.#el.getElementsByClassName("socialText")[0];
+        this.#socialBox = this.#el.getElementsByClassName("socialBox")[0];
 
 	}
 
@@ -197,6 +199,11 @@ export class Caster {
         casterInfoDiv.appendChild(newEl);
         return newEl;
 
+    }
+
+    /** Removes commentator HTML element from the DOM */
+    delet() {
+        this.#el.remove();
     }
 
 }

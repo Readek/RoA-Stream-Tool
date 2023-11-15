@@ -37,9 +37,17 @@ class Casters {
 
 
     /** Adds in a new commentator */
-    createCaster() {
+    #createCaster() {
 
         this.#casters.push(new Caster);
+
+    }
+
+    /** Removes the last commentator from the array */
+    #deletCaster() {
+        
+        this.#casters.at(-1).delet();
+        this.#casters.splice(this.#casters.length-1);
 
     }
 
@@ -47,8 +55,43 @@ class Casters {
      * Updates commentators with the provided data
      * @param {Object} data - New data with all commentators
      */
-    updateCasters(data) {
+    async updateCasters(data) {
 
+        // fist of all, check if we have the same amount of casters
+        const incCasterLength = data.length;
+        const homeCasterLength = this.#casters.length;
+
+        if (incCasterLength != homeCasterLength) {
+
+            // hide displayed info so nobody can see
+            if (!current.startup) { // skip if loading up
+                await fadeOut(castersDiv.firstElementChild, fadeOutTimeVs);
+            }
+
+            if (this.#casters.length < data.length) {
+        
+                // if more casters than previously, add that many casters
+                for (let i = 0; i < incCasterLength - homeCasterLength; i++) {
+                    this.#createCaster();
+                }
+    
+            } else {
+    
+                // if less casters than previously, remove that many casters
+                for (let i = 0; i < homeCasterLength - incCasterLength; i++) {
+                    this.#deletCaster();
+                }
+    
+            }
+
+            // resize the commentator container
+            this.#resizeDiv();
+            // and show it all back again
+            fadeIn(castersDiv.firstElementChild, fadeInTimeVs, .3);
+
+
+        }
+        
         // in case we are waiting for animations, store promises here
         const allReady = []
 
@@ -167,6 +210,21 @@ class Casters {
             })
             
         }
+
+    }
+
+    /** Resizes the commentators div with a smooth transition */
+    #resizeDiv() {
+
+        // dirty tricks to gather data
+        const prevWidth = window.getComputedStyle(castersDiv).width;
+        castersDiv.style.width = "auto";
+        const nextWidth = window.getComputedStyle(castersDiv).width;
+        castersDiv.style.width = prevWidth;
+        
+        // now we need to do this on the next tick or else transition wont trigger
+        castersDiv.offsetWidth; // force finish css calcs
+        castersDiv.style.width = nextWidth;
 
     }
 

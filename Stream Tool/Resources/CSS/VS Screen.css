@@ -343,10 +343,6 @@ body {
 
 
 #casterInfo {
-    position: relative;
-    text-align: center;
-    font-family: "Deansgate";
-    white-space: nowrap;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -355,11 +351,21 @@ body {
     border-image: url('../Overlay/VS\ Screen/Caster Border.png') 9 54 fill;
     height: 76px;
     transition: width .5s, height .3s, border-width .3s;
+}
+#casters {
+    position: relative;
+    text-align: center;
+    font-family: "Deansgate";
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 30px;
 }
+
 .casterDiv ~ .casterDiv::before {
     position: absolute;
-    transform: translate(-11px, 1px);
+    transform: translate(-11px, 6px);
     width: 2px;
     height: 80%;
     background-color: black;
@@ -372,6 +378,7 @@ body {
     flex-direction: column;
     width: 172px;
     margin: 0 -5px;
+    flex-shrink: 0;
 }
 
 .casterNameBox {
