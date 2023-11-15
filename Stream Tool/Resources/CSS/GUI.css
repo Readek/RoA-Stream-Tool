@@ -1031,20 +1031,28 @@ button:hover {
 
 /* player info menu that appears on top of viewport */
 #pInfoDiv {
-  width: 100%;
+  display: flex;
   height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0px;
+  opacity: 0;
+  transform: scale(1.15);
+  pointer-events: none;
+  transition: opacity 150ms, transform 150ms;
+  z-index: 100;
+}
+#pInfoCenter {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  height: 100%;
+  margin-top: auto;
+  margin-bottom: auto;
   background-color: var(--bg4);
-  z-index: 100;
   flex-direction: column;
-  opacity: 0;
-  pointer-events: none;
-  transform: scale(1.15);
-  transition: opacity 150ms, transform 150ms;
-  position: absolute;
-  top: 0px;
+  overflow: auto;
 }
 
 .pInfoTitle {

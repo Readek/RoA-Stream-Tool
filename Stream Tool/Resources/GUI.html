@@ -414,69 +414,95 @@ They will always appear when typing 'Grand' in the round box.">
 <!-- stuff that will get overlayed on the entire screen -->
 <div id="pInfoDiv">
 
-  <div class="pInfoTitle">Editing <span id="pInfoType"></span> info</div>
+  <div id="pInfoCenter">
 
-  <div id="pInfoStuff">
+    <div class="pInfoTitle">Editing <span id="pInfoType"></span> info</div>
 
-    <div class="pInfoRow">
+    <div id="pInfoStuff">
+
+      <div class="pInfoRow">
+
+          <div class="pInfoEl">
+
+            <div class="pInfoIconCont">
+              <load-svg src="SVGs/Person.svg" class="pInfoIcon"></load-svg>
+            </div>
+            <input type="text" id="pInfoInputPronouns" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Pronouns" title="Type them pronouns here" spellcheck="false">
+
+          </div>
+
+          <div class="pInfoEl">
+
+            <div class="pInfoIconCont">
+              <load-svg src="SVGs/Tag.svg" class="pInfoIcon"></load-svg>
+            </div>
+            <input type="text" id="pInfoInputTag" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Tag/Sponsor" title="Type the tag/sponsor here" spellcheck="false">
+
+          </div>
+
+          <div class="pInfoEl">
+
+            <div class="pInfoIconCont">
+              <load-svg src="SVGs/Person.svg" class="pInfoIcon"></load-svg>
+            </div>
+            <input type="text" id="pInfoInputName" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Name" title="Type the name here" spellcheck="false">
+
+          </div>
+
+      </div>
+
+      <div class="pInfoSep"></div>
+
+      <div class="pInfoRow">
 
         <div class="pInfoEl">
 
           <div class="pInfoIconCont">
-            <load-svg src="SVGs/Person.svg" class="pInfoIcon"></load-svg>
+            <load-svg src="SVGs/Twitch.svg" class="pInfoIcon"></load-svg>
           </div>
-          <input type="text" id="pInfoInputPronouns" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Pronouns" title="Type them pronouns here" spellcheck="false">
+          <input type="text" id="pInfoInputTwitch" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Twitch" spellcheck="false">
 
         </div>
 
         <div class="pInfoEl">
 
           <div class="pInfoIconCont">
-            <load-svg src="SVGs/Tag.svg" class="pInfoIcon"></load-svg>
+            <load-svg src="SVGs/Yt.svg" class="pInfoIcon"></load-svg>
           </div>
-          <input type="text" id="pInfoInputTag" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Tag/Sponsor" title="Type the tag/sponsor here" spellcheck="false">
+          <input type="text" id="pInfoInputYt" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Youtube" spellcheck="false">
 
         </div>
 
         <div class="pInfoEl">
 
           <div class="pInfoIconCont">
-            <load-svg src="SVGs/Person.svg" class="pInfoIcon"></load-svg>
+            <load-svg src="SVGs/Twitter.svg" class="pInfoIcon"></load-svg>
           </div>
-          <input type="text" id="pInfoInputName" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Name" title="Type the name here" spellcheck="false">
+          <input type="text" id="pInfoInputTwitter" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Twitter" spellcheck="false">
 
         </div>
-
-    </div>
-
-    <div class="pInfoSep"></div>
-
-    <div class="pInfoRow">
-
-      <div class="pInfoEl">
-
-        <div class="pInfoIconCont">
-          <load-svg src="SVGs/Twitch.svg" class="pInfoIcon"></load-svg>
-        </div>
-        <input type="text" id="pInfoInputTwitch" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Twitch" spellcheck="false">
 
       </div>
 
-      <div class="pInfoEl">
+      <div class="pInfoRow">
 
-        <div class="pInfoIconCont">
-          <load-svg src="SVGs/Yt.svg" class="pInfoIcon"></load-svg>
+        <div class="pInfoEl">
+
+          <div class="pInfoIconCont">
+            <load-svg src="SVGs/Masto.svg" class="pInfoIcon"></load-svg>
+          </div>
+          <input type="text" id="pInfoInputMasto" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Mastodon" spellcheck="false">
+
         </div>
-        <input type="text" id="pInfoInputYt" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Youtube" spellcheck="false">
 
-      </div>
+        <div class="pInfoEl">
 
-      <div class="pInfoEl">
+          <div class="pInfoIconCont">
+            <load-svg src="SVGs/Cohost.svg" class="pInfoIcon"></load-svg>
+          </div>
+          <input type="text" id="pInfoInputCohost" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Cohost" spellcheck="false">
 
-        <div class="pInfoIconCont">
-          <load-svg src="SVGs/Twitter.svg" class="pInfoIcon"></load-svg>
         </div>
-        <input type="text" id="pInfoInputTwitter" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Twitter" spellcheck="false">
 
       </div>
 
@@ -484,50 +510,28 @@ They will always appear when typing 'Grand' in the round box.">
 
     <div class="pInfoRow">
 
-      <div class="pInfoEl">
-
+      <button class="pInfoBotButt" id="pInfoBackButt" tabindex="-1">
         <div class="pInfoIconCont">
-          <load-svg src="SVGs/Masto.svg" class="pInfoIcon"></load-svg>
+          <load-svg src="SVGs/Close.svg" class="pInfoIcon"></load-svg>
         </div>
-        <input type="text" id="pInfoInputMasto" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Mastodon" spellcheck="false">
+        <span>Go back</span>
+      </button>
 
-      </div>
-
-      <div class="pInfoEl">
-
+      <button class="pInfoBotButt" id="pInfoSaveButt" tabindex="-1">
         <div class="pInfoIconCont">
-          <load-svg src="SVGs/Cohost.svg" class="pInfoIcon"></load-svg>
+          <load-svg src="SVGs/Save.svg" class="pInfoIcon"></load-svg>
         </div>
-        <input type="text" id="pInfoInputCohost" class="textInput mousetrap pInfoInput" tabindex="-1" placeholder="Cohost" spellcheck="false">
+        <span>Save preset and apply</span>
+      </button>
 
-      </div>
+      <button class="pInfoBotButt" id="pInfoApplyButt" tabindex="-1">
+        <div class="pInfoIconCont">
+          <load-svg src="SVGs/Check.svg" class="pInfoIcon"></load-svg>
+        </div>
+        <span>Apply</span>
+      </button>
 
     </div>
-
-  </div>
-
-  <div class="pInfoRow">
-
-    <button class="pInfoBotButt" id="pInfoBackButt" tabindex="-1">
-      <div class="pInfoIconCont">
-        <load-svg src="SVGs/Close.svg" class="pInfoIcon"></load-svg>
-      </div>
-      <span>Go back</span>
-    </button>
-
-    <button class="pInfoBotButt" id="pInfoSaveButt" tabindex="-1">
-      <div class="pInfoIconCont">
-        <load-svg src="SVGs/Save.svg" class="pInfoIcon"></load-svg>
-      </div>
-      <span>Save preset and apply</span>
-    </button>
-
-    <button class="pInfoBotButt" id="pInfoApplyButt" tabindex="-1">
-      <div class="pInfoIconCont">
-        <load-svg src="SVGs/Check.svg" class="pInfoIcon"></load-svg>
-      </div>
-      <span>Apply</span>
-    </button>
 
   </div>
 
