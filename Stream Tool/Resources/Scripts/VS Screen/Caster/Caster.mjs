@@ -7,6 +7,7 @@ import { fadeInTimeVs, fadeOutTimeVs } from "../VsGlobals.mjs";
 const casterInfoDiv = document.getElementById("casters");
 
 const nameSize = 25;
+const tagSize = 15;
 const socialSize = 19;
 
 export class Caster {
@@ -19,6 +20,7 @@ export class Caster {
     #el;
 
     #nameEl;
+    #tagEl;
     #socialTextEl;
     #socialBox;
 
@@ -27,6 +29,7 @@ export class Caster {
         this.#el = this.#createElement();
 
         this.#nameEl = this.#el.getElementsByClassName("casterName")[0];
+        this.#tagEl = this.#el.getElementsByClassName("casterTag")[0];
         this.#socialTextEl = this.#el.getElementsByClassName("socialText")[0];
         this.#socialBox = this.#el.getElementsByClassName("socialBox")[0];
 
@@ -35,6 +38,9 @@ export class Caster {
 	getName() {
 		return this.#name;
 	}
+    getTag() {
+        return this.#tag;
+    }
 	getSocials() {
 		return this.#socials;
 	}
@@ -47,6 +53,16 @@ export class Caster {
         this.#name = text;
 		updateText(this.#nameEl, text || "-", nameSize);
 		resizeText(this.#nameEl.parentElement);
+	}
+
+    /**
+     * Changes the commentator tag, resizing text if necessary
+     * @param {String} text - Text to display
+     */
+	setTag(text) {
+        this.#tag = text;
+		updateText(this.#tagEl, text, tagSize);
+		resizeText(this.#tagEl.parentElement);
 	}
     
     /**
@@ -187,6 +203,7 @@ export class Caster {
         newEl.innerHTML = `
             <div class="casterNameBox">
                 <load-svg src="Resources/SVGs/Mic.svg" class="socialIcon micIcon"></load-svg>
+                <div class="casterTag"></div>
                 <div class="casterName"></div>
             </div>
             <div class="casterSep"></div>

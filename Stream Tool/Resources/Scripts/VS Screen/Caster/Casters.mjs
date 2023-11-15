@@ -99,16 +99,19 @@ class Casters {
         for (let i = 0; i < data.length; i++) {
            
             // check if the we have is different than the new one
-            if (this.#casters[i].getName() != data[i].name) {
+            if (this.#casters[i].getName() != data[i].name
+                || this.#casters[i].getTag() != data[i].tag) {
 
                 // if we arent loading the view up, wait for fade out
                 if (!current.startup) {
                     allReady.push(this.#casters[i].fadeOutName().then(() => {
                         this.#casters[i].setName(data[i].name);
+                        this.#casters[i].setTag(data[i].tag);
                         this.#casters[i].fadeInName();
                     }))
                 } else {
                     this.#casters[i].setName(data[i].name);
+                    this.#casters[i].setTag(data[i].tag);
                     this.#casters[i].fadeInName();
                 }
             

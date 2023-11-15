@@ -386,9 +386,14 @@ body {
     justify-content: center;
     align-items: center;
     gap: 2px;
+    min-height: 36px;
 }
 .casterName {
     color: black;
+}
+.casterTag {
+    color: gray;
+    transform: translateY(4px);
 }
 
 .casterSep {
