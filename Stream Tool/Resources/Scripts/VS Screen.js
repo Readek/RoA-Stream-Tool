@@ -3,6 +3,7 @@ import { fadeOut } from "./Utils/Fade Out.mjs";
 import { current } from "./Utils/Globals.mjs";
 import { resizeText } from "./Utils/Resize Text.mjs";
 import { updateText } from "./Utils/Update Text.mjs";
+import { bestOf } from "./VS Screen/BestOf.mjs";
 import { casters } from "./VS Screen/Caster/Casters.mjs";
 import { roundInfo } from "./VS Screen/Round Info/Round Info.mjs";
 import { fadeInTimeVs, fadeOutTimeVs, introDelayVs } from "./VS Screen/VsGlobals.mjs";
@@ -26,7 +27,7 @@ const teamSize = 72;
 
 //to avoid the code constantly running the same method over and over
 const pCharPrev = [], pBgPrev = [], scorePrev = [], colorPrev = [];
-let bestOfPrev, gamemodePrev;
+let gamemodePrev;
 
 //to consider how many loops will we do
 let maxPlayers = 2; //will change when doubles comes
@@ -54,7 +55,6 @@ const scoreNums = document.getElementsByClassName("scoreNum");
 const colorBG = document.getElementsByClassName("colorBG");
 const textBG = document.getElementsByClassName("textBG");
 const scoreOverlay = document.getElementById("scores");
-const scoreBorder = document.getElementById("scoreBorder");
 
 
 // first we will start by connecting with the GUI with a websocket
@@ -98,7 +98,6 @@ async function updateData(data) {
 	const color = data.color;
 	const score = data.score;
 
-	const bestOf = data.bestOf;
 	const gamemode = data.gamemode;
 
 	// first of all, things that will always happen on each cycle
@@ -107,10 +106,7 @@ async function updateData(data) {
 	maxPlayers = gamemode == 1 ? 2 : 4;
 
 	// depending on best of, show or hide some score ticks
-	if (bestOfPrev != bestOf) {
-		updateBo(bestOf);
-		bestOfPrev = bestOf;
-	}
+	bestOf.update(data.bestOf)
 
 	// now, things that will happen only the first time the html loads
 	if (current.startup) {
@@ -544,31 +540,6 @@ function updateColor(gradEL, textBGEL, color, i, gamemode) {
 function updateBG(vidEL, vidSrc) {
 	// well this used to be more complicated than this
 	vidEL.src = vidSrc;
-}
-
-
-// to hide some score ticks and change score border
-function updateBo(bestOf) {
-
-	const scoreTicks = document.getElementById("scoreTicks");
-	const scoreNumerical = document.getElementById("scoreNumerical");
-
-	if (bestOf == 5) {
-		scoreTicks.style.display = "block";
-		scoreNumerical.style.display = "none";
-		scoreImg[2].style.opacity = 1;
-		scoreImg[5].style.opacity = 1;
-		scoreBorder.src = "Resources/Overlay/VS Screen/Score Border Bo5.png";
-	} else if (bestOf == 3) {
-		scoreTicks.style.display = "block";
-		scoreNumerical.style.display = "none";
-		scoreImg[2].style.opacity = 0;
-		scoreImg[5].style.opacity = 0;
-		scoreBorder.src = "Resources/Overlay/VS Screen/Score Border Bo3.png";
-	} else if (bestOf == "X") {
-		scoreTicks.style.display = "none";
-		scoreNumerical.style.display = "flex";
-	}
 }
 
 
