@@ -166,23 +166,29 @@ body {
     color: gray;
 }
 
-#overlayRound {
-    opacity: 0;
-    width: 1920px;
+#roundDiv {
     display: flex;
     justify-content: center;
-    top: 900px;
+    align-items: center;
+    width: 100%;
+    transform: translateY(892px);
 }
-
-#round {
-    position: absolute;
-    width: 215px;
-    height: 34px;
-    top: 13px;
-    line-height: 32px;
-    text-align: center;
+#roundBorder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 14px;
+    border: solid;
+    border-width: 19px 43px;
+    border-image: url('../Overlay/Scoreboard/Round\ BG.png') 19 43 fill;
+    transition: width .5s;
+    height: 36px;
+    min-width: 170px;
+}
+#roundText {
     font-family: "Roboto";
     white-space: nowrap;
+    font-weight: bolder;
 }
 
 

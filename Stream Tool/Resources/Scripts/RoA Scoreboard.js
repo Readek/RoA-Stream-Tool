@@ -1,6 +1,8 @@
+import { roundClass } from "./Scoreboard/Round.mjs";
 import { fadeInTimeSc, fadeOutTimeSc } from "./Scoreboard/ScGlobals.mjs";
 import { fadeIn } from "./Utils/Fade In.mjs";
 import { fadeOut } from "./Utils/Fade Out.mjs";
+import { current } from "./Utils/Globals.mjs";
 import { resizeText } from "./Utils/Resize Text.mjs";
 import { updateText } from "./Utils/Update Text.mjs";
 
@@ -15,7 +17,6 @@ const nameSizeDubs = 22;
 const tagSizeDubs = 15;
 const teamSize = 22;
 let numSize = 36;
-const roundSize = 19;
 
 //to avoid the code constantly running the same method over and over
 const pCharPrev = [], scorePrev = [], colorPrev = [], wlPrev = [], topBarMoved = [];
@@ -41,7 +42,6 @@ const scoreImg = document.getElementsByClassName("scoreImgs");
 const scoreNums = document.getElementsByClassName("scoreNum");
 const scoreAnim = document.getElementsByClassName("scoreVid");
 const tLogoImg = document.getElementsByClassName("tLogos");
-const textRound = document.getElementById('round');
 const borderImg = document.getElementsByClassName('border');
 
 // we want the correct order, we cant use getClassName here
@@ -90,19 +90,19 @@ function errorWebsocket() {
 
 }
 
-async function updateData(scInfo) {
+async function updateData(data) {
 
-	const player = scInfo.player;
-	const teamName = scInfo.teamName;
+	const player = data.player;
+	const teamName = data.teamName;
 
-	const color = scInfo.color;
-	const score = scInfo.score;
-	const wl = scInfo.wl;
+	const color = data.color;
+	const score = data.score;
+	const wl = data.wl;
 
-	const bestOf = scInfo.bestOf;
-	const gamemode = scInfo.gamemode;
+	const bestOf = data.bestOf;
+	const gamemode = data.gamemode;
 
-	const round = scInfo.round;
+	const round = data.round;
 
 
 	// first of all, things that will always happen on each cycle
@@ -134,7 +134,7 @@ async function updateData(scInfo) {
 	if (startup) {
 
 		//of course, we have to start with the cool intro stuff
-		if (scInfo.allowIntro) {
+		if (data.allowIntro) {
 
 			//lets see that intro
 			document.getElementById('overlayIntro').style.opacity = 1;
@@ -200,7 +200,7 @@ async function updateData(scInfo) {
 			}
 
 			document.getElementById('roundIntro').textContent = round;
-			document.getElementById('tNameIntro').textContent = scInfo.tournamentName;
+			document.getElementById('tNameIntro').textContent = data.tournamentName;
 			
 			//round, tournament and VS/GameX text fade in
 			document.querySelectorAll(".textIntro").forEach(el => {
@@ -297,13 +297,11 @@ async function updateData(scInfo) {
 		}
 
 		//update the round text	and fade it in
-		updateText(textRound, round, roundSize);
-		resizeText(textRound);
-		if (round) { // but only if theres any text to display
-			fadeIn(textRound.parentElement, fadeInTimeSc, introDelay);
-		}
+		roundClass.update(data.round);
 
 		startup = false; //next time we run this function, it will skip all we just did
+		current.startup = false;
+
 	}
 
 	// now things that will happen on all the other cycles
@@ -446,19 +444,7 @@ async function updateData(scInfo) {
 		}
 		
 		//and finally, update the round text
-		if (textRound.textContent != round){
-			fadeOut(textRound, fadeOutTimeSc).then( () => {
-				updateText(textRound, round, roundSize);
-				resizeText(textRound);
-				fadeIn(textRound, fadeInTimeSc);
-			});
-			// if theres no text, hide everything
-			if (round && textRound.parentElement.style.opacity == 0) {
-				fadeIn(textRound.parentElement, fadeInTimeSc, fadeOutTimeSc);
-			} else if (!round) {
-				fadeOut(textRound.parentElement, fadeOutTimeSc);
-			}
-		}
+		roundClass.update(data.round);
 
 	}
 }
