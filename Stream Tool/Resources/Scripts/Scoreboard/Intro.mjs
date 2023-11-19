@@ -5,7 +5,8 @@ import { resizeText } from "../Utils/Resize Text.mjs";
 import { fadeInTimeSc, introDelaySc } from "./ScGlobals.mjs";
 
 const introDiv = document.getElementById('overlayIntro');
-const introVid = document.getElementById('introVid');
+const introWhiteBarTop = document.getElementById("introWhiteBarTop");
+const introWhiteBarBot = document.getElementById("introWhiteBarBot");
 const pIntroEls = document.getElementsByClassName('pIntro');
 const midTextEL = document.getElementById('midTextIntro');
 const roundText = document.getElementById('roundIntro');
@@ -26,9 +27,9 @@ class ScoreboardIntro {
         // set all things visible
         introDiv.style.opacity = 1;
 
-        // this vid is just the bars moving (todo: maybe do it through css?)
-        introVid.src = 'Resources/Overlay/Scoreboard/Intro.webm';
-        introVid.play();
+        // move the white bars because it looks cool
+        introWhiteBarTop.style.animation = `introWhiteBarTop .5s ${introDelaySc}s cubic-bezier(0, 0, .2, 1) both`;
+        introWhiteBarBot.style.animation = `introWhiteBarBot .5s ${introDelaySc}s cubic-bezier(0, 0, .2, 1) both`;
 
         // if this is the first game, introduce players
         if (data.score[0] + data.score[1] == 0) { 

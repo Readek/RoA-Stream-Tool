@@ -193,105 +193,116 @@ body {
 }
 
 
-#introVid {
+#overlayIntro {
+    opacity: 0;
     position: absolute;
-}
-
-
-.pIntro {
-    position: absolute;
-    width: 500px;
-    height: 94px;
-    line-height: 74px;
-    bottom: 485px;
-    font-family: "LemonMilk";
-    white-space: nowrap;
-}
-
-#p1Intro {
-    text-align: right;
-    left: 355px;
-    text-shadow: 0px 0px 20px;
-}
-
-#p2Intro {
-    text-align: left;
-    right: 355px;
-    text-shadow: 0px 0px 20px;
-}
-
-
-.textIntro {
-    position: absolute;
-    text-align: center;
-    white-space: nowrap;
-}
-
-#midTextIntro {
-    width: 1100px;
-    height: 74px;
-    left: 410px;
-    bottom: 505px;
-    font-family: "LemonMilk";
-    line-height: 74px;
-    font-size: 110px;
-}
-
-#rtIntro {
-    line-height: 40px;
-    font-size: 48px;
-}
-
-#roundIntro {
-    left: 510px;
-    width: 900px;
-    height: 40px;
-    top: 406px;
-}
-
-#tNameIntro {
-    left: 510px;
-    width: 900px;
-    height: 40px;
-    bottom: 400px;
+    width: 100%;
+    height: 100%;
 }
 
 #introBG {
     position: absolute;
-    width: 1920px;
-    height: 1080px;
+    width: 100%;
+    height: 100%;
     background-color: rgba(0, 0, 0, 0.50);
 }
-
 .blackBar {
     position: absolute;
-    width: 1920px;
+    width: 100%;
     background-color: black;
 }
-
 #introTopBar {
     height: 100px;
 }
-
 #introBotBar {
     height: 100px;
     bottom: 0px;
 }
 
+#introWhiteBars {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+#introWhiteBarsClip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 150px;
+    width: 960px;
+    overflow: hidden;
+}
+.introWhiteBar {
+    width: 100%;
+    height: 4px;
+    background-color: white;
+}
+
+#playersIntro {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    gap: 200px;
+}
+.pIntro {
+    width: 500px;
+    line-height: 74px;
+    font-family: "LemonMilk";
+    white-space: nowrap;
+}
+#p1Intro {
+    text-align: right;
+    text-shadow: 0px 0px 20px;
+}
+
+#p2Intro {
+    text-shadow: 0px 0px 20px;
+}
+
+
+#midTextIntro {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-family: "LemonMilk";
+    font-size: 110px;
+    white-space: nowrap;
+}
+
+#rtIntro {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column-reverse;
+    width: 100%;
+    height: 100%;
+    gap: 170px;
+    font-size: 48px;
+    white-space: nowrap;
+}
+
 #superCoolInterrogation {
     position: absolute;
-    height: 74px;
+    display: flex;
+    align-items: center;
+    height: 100%;
     right: 550px;
     font-family: "LemonMilk";
-    line-height: 74px;
-    bottom: 505px;
     font-size: 110px;
     opacity: 0;
 }
 
-#overlayIntro {
-    opacity: 0;
-}
 
 .dubEL {
     display: none;
@@ -331,15 +342,16 @@ body {
 
 /* Animations! */
 
+
 @keyframes fadeOut {
     from {opacity: 1}
     to {opacity: 0}
 }
-
 @keyframes fadeIn {
     from {opacity: 0}
     to {opacity: 1}
 }
+
 
 @keyframes moveOutLeft {
     from {transform: translateX(0)}
@@ -350,6 +362,7 @@ body {
     to {transform: translateX(-40px)}
 }
 
+
 @keyframes moveInLeft {
     from {transform: translateX(-40px)}
     to {transform: translateX(0)}
@@ -359,22 +372,32 @@ body {
     to {transform: translateX(0)}
 }
 
+
 @keyframes charaMoveOut {
     from {transform: translateX(0)}
     to {transform: translateX(-20px)}
 }
-
 @keyframes charaMoveIn {
     from {transform: translateX(-20px)}
     to {transform: translateX(0)}
 }
 
+
 @keyframes wlMoveOut {
     from {transform: translateY(0)}
     to {transform: translateY(20px)}
 }
-
 @keyframes wlMoveIn {
     from {transform: translateY(20px)}
     to {transform: translateY(0)}
+}
+
+
+@keyframes introWhiteBarTop {
+    from {transform: translateX(-100%);}
+    to {transform: translateX(0);}
+}
+@keyframes introWhiteBarBot {
+    from {transform: translateX(100%);}
+    to {transform: translateX(0);}
 }
