@@ -1,16 +1,14 @@
-import { roundClass } from "./Scoreboard/Round.mjs";
-import { fadeInTimeSc, fadeOutTimeSc } from "./Scoreboard/ScGlobals.mjs";
-import { fadeIn } from "./Utils/Fade In.mjs";
+import { scoreboardIntro } from "./Scoreboard/Intro.mjs";
+import { round } from "./Scoreboard/Round.mjs";
+import { fadeInTimeSc, fadeOutTimeSc, introDelaySc } from "./Scoreboard/ScGlobals.mjs";
+import { fadeIn, fadeInMove } from "./Utils/Fade In.mjs";
 import { fadeOut } from "./Utils/Fade Out.mjs";
 import { current } from "./Utils/Globals.mjs";
 import { resizeText } from "./Utils/Resize Text.mjs";
 import { updateText } from "./Utils/Update Text.mjs";
 
-//animation stuff
-let introDelay = .5; //all animations will get this delay when the html loads (use this so it times with your transition)
 
 //max text sizes (used when resizing back)
-const introSize = 85;
 const nameSize = 24;
 const tagSize = 17;
 const nameSizeDubs = 22;
@@ -102,8 +100,6 @@ async function updateData(data) {
 	const bestOf = data.bestOf;
 	const gamemode = data.gamemode;
 
-	const round = data.round;
-
 
 	// first of all, things that will always happen on each cycle
 	
@@ -133,85 +129,17 @@ async function updateData(data) {
 	// now, things that will happen only once, when the html loads
 	if (startup) {
 
-		//of course, we have to start with the cool intro stuff
+		// of course, we have to start with the cool intro stuff
 		if (data.allowIntro) {
 
-			//lets see that intro
-			document.getElementById('overlayIntro').style.opacity = 1;
+			// play that intro
+			scoreboardIntro.play(data);
 
-			//this vid is just the bars moving (todo: maybe do it through javascript?)
-			const introVid = document.getElementById('introVid');
-			introVid.src = 'Resources/Overlay/Scoreboard/Intro.webm';
-			introVid.play();
+			// increase the delay so everything animates after the intro
+			current.delay = introDelaySc + 2;
 
-			if (score[0] + score[1] == 0) { //if this is the first game, introduce players
-
-				for (let i = 0; i < maxSides; i++) {
-					const pIntroEL = document.getElementById('p'+(i+1)+'Intro');
-
-					//update players intro text
-					if (gamemode == 1) { //if singles, show player 1 and 2 names
-						pIntroEL.textContent = player[i].name;
-					} else { //if doubles
-						if (teamName[i] == color[i].name + " Team") { //if theres no team name, show player names
-							pIntroEL.textContent = player[i].name + " & " + player[i+2].name;
-						} else { //else, show the team name
-							pIntroEL.textContent = teamName[i];
-						}
-					}
-
-					pIntroEL.style.fontSize = introSize + "px"; //resize the font to its max size
-					resizeText(pIntroEL); //resize the text if its too large
-
-					//change the color of the player text shadows
-					pIntroEL.style.textShadow = '0px 0px 20px ' + color[i].hex;
-					
-				};
-
-				//player name fade in
-				fadeInMove(document.getElementById("p1Intro"), introDelay, null, true);
-				fadeInMove(document.getElementById("p2Intro"), introDelay, null, false);
-
-
-			} else { //if its not the first game, show game count
-				const midTextEL = document.getElementById('midTextIntro');
-				if ((score[0] + score[1]) != 4) { //if its not the last game of a bo5
-
-					//just show the game count in the intro
-					midTextEL.textContent = "Game " + (score[0] + score[1] + 1);
-
-				} else { //if game 5
-
-					if ((round.toUpperCase() == "TRUE FINALS")) { //if true finals
-
-						midTextEL.textContent = "True Final Game"; //i mean shit gets serious here
-						
-					} else {
-
-						midTextEL.textContent = "Final Game";
-						
-						//if GF, we dont know if its the last game or not, right?
-						if (round.toLocaleUpperCase() == "GRAND FINALS" && !(wl[0] == "L" && wl[1] == "L")) {
-							fadeIn(document.getElementById("superCoolInterrogation"), 1.5, introDelay+.5);
-						}
-
-					}
-				}
-			}
-
-			document.getElementById('roundIntro').textContent = round;
-			document.getElementById('tNameIntro').textContent = data.tournamentName;
-			
-			//round, tournament and VS/GameX text fade in
-			document.querySelectorAll(".textIntro").forEach(el => {
-				fadeIn(el, fadeInTimeSc, introDelay-.2);
-			});
-
-			//aaaaand fade out everything
-			fadeOut(document.getElementById("overlayIntro"), fadeInTimeSc+.2, introDelay+1.8)
-
-			//lets delay everything that comes after this so it shows after the intro
-			introDelay = 2.5;
+		} else {
+			current.delay = introDelaySc;
 		}
 
 
@@ -232,9 +160,9 @@ async function updateData(data) {
 			updatePlayerName(i, player[i].name, player[i].tag, gamemode);
 			if (gamemode == 1) { //if this is singles, fade the names in with a sick motion
 				const side = (i % 2 == 0) ? true : false; //to know direction
-				fadeInMove(pWrapper[i], introDelay, null, side); // fade it in with some movement
+				fadeInMove(pWrapper[i], null, side, current.delay); // fade it in with some movement
 			} else { //if doubles, just fade them in
-				fadeIn(pWrapper[i], fadeInTimeSc, introDelay+.15)
+				fadeIn(pWrapper[i], fadeInTimeSc, current.delay+.15)
 			}
 
 			// show player pronouns if any
@@ -253,7 +181,7 @@ async function updateData(data) {
 		// now we use that array from earlier to animate all characters at the same time
 		Promise.all(charsLoaded).then( (value) => { // when all images are loaded
 			for (let i = 0; i < value.length; i++) { // for every character loaded
-				fadeInMove(value[i], introDelay+.2, true); // fade it in
+				fadeInMove(value[i], true, false, current.delay+.2); // fade it in
 			}
 		})
 
@@ -267,11 +195,11 @@ async function updateData(data) {
 			if (gamemode != 1) {
 				updateText(teamNames[i], teamName[i], teamSize);
 				resizeText(teamNames[i]);
-				fadeInMove(teamNames[i], introDelay, null, side);
+				fadeInMove(teamNames[i], null, side, current.delay);
 			}
 
 			// fade in move the scoreboards
-			fadeInMove(scoreboard[i].parentElement, introDelay-.1, null, side);
+			fadeInMove(scoreboard[i].parentElement, null, side, current.delay-.1);
 			
 			//if its grands, we need to show the [W] and/or the [L] on the players
 			updateWL(wl[i], i);
@@ -292,12 +220,12 @@ async function updateData(data) {
 			}
 
 			// fade in the top bar
-			fadeInTopBar(topBars[i], introDelay+.6);
+			fadeInTopBar(topBars[i], current.delay+.6);
 			
 		}
 
 		//update the round text	and fade it in
-		roundClass.update(data.round);
+		round.update(data.round);
 
 		startup = false; //next time we run this function, it will skip all we just did
 		current.startup = false;
@@ -337,7 +265,7 @@ async function updateData(data) {
 						//now that nobody is seeing it, quick, change the text's content!
 						updatePlayerName(i, player[i].name, player[i].tag, gamemode);
 						//fade the name back in with a sick movement
-						fadeInMove(pWrapper[i], 0, null, side);
+						fadeInMove(pWrapper[i], null, side);
 					});
 				} else { //if not singles, dont move the texts
 					fadeOut(pWrapper[i], fadeOutTimeSc).then( () => {
@@ -374,7 +302,7 @@ async function updateData(data) {
 		Promise.all(animsEnded).then( () => { // need to sync somehow
 			Promise.all(charsLoaded).then( (value) => { // when all images are loaded
 				for (let i = 0; i < value.length; i++) { // for every character loaded
-					fadeInMove(value[i], .1, true); // fade it in
+					fadeInMove(value[i], true, false, .1); // fade it in
 				}
 			})
 		})
@@ -391,7 +319,7 @@ async function updateData(data) {
 					fadeOutMove(teamNames[i], null, side).then( () => {
 						updateText(teamNames[i], teamName[i], teamSize);
 						resizeText(teamNames[i]);
-						fadeInMove(teamNames[i], 0, null, side);
+						fadeInMove(teamNames[i], null, side);
 					});
 				}
 			}
@@ -444,7 +372,7 @@ async function updateData(data) {
 		}
 		
 		//and finally, update the round text
-		roundClass.update(data.round);
+		round.update(data.round);
 
 	}
 }
@@ -669,25 +597,6 @@ async function fadeOutMove(itemID, chara, side) {
 
 }
 
-
-//fade in but with movement
-function fadeInMove(itemID, delay = 0, chara, side) {
-	if (chara) {
-		itemID.parentElement.style.animation = `charaMoveIn ${fadeOutTimeSc}s ${delay}s both
-			, fadeIn ${fadeOutTimeSc}s ${delay}s both`
-		;
-	} else {
-		if (side) {
-			itemID.style.animation = `moveInLeft ${fadeInTimeSc}s ${delay}s both
-				, fadeIn ${fadeInTimeSc}s ${delay}s both`
-			;
-		} else {
-			itemID.style.animation = `moveInRight ${fadeInTimeSc}s ${delay}s both
-				, fadeIn ${fadeInTimeSc}s ${delay}s both`
-			;
-		}
-	}
-}
 
 //movement for the [W]/[L] images
 async function fadeOutTopBar(el) {

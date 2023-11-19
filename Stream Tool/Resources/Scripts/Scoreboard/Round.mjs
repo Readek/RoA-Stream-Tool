@@ -2,7 +2,7 @@ import { fadeIn } from "../Utils/Fade In.mjs";
 import { fadeOut } from "../Utils/Fade Out.mjs";
 import { current } from "../Utils/Globals.mjs";
 import { updateText } from "../Utils/Update Text.mjs";
-import { fadeInTimeSc, fadeOutTimeSc, introDelaySc } from "./ScGlobals.mjs";
+import { fadeInTimeSc, fadeOutTimeSc } from "./ScGlobals.mjs";
 
 const roundEl = document.getElementById('roundBorder');
 const textEl = document.getElementById('roundText');
@@ -33,7 +33,7 @@ class Round {
                 await fadeOut(textEl, fadeOutTimeSc);
             } else {
                 // if loading, add an extra delay to fade in for later
-                fadeInDelay = introDelaySc;
+                fadeInDelay = current.delay;
             }
 
             // update local text
@@ -49,7 +49,7 @@ class Round {
             if (this.#text) {
 
                 // fade in the round element
-                fadeIn(roundEl, fadeInTimeSc, fadeOutTimeSc);
+                fadeIn(roundEl, fadeInTimeSc, fadeInDelay);
 
                 // fade in the round text
                 fadeIn(textEl, fadeInTimeSc, fadeInDelay);
@@ -80,4 +80,4 @@ class Round {
 
 }
 
-export const roundClass = new Round; // todo update name
+export const round = new Round; // todo update name

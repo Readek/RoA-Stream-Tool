@@ -204,7 +204,6 @@ body {
     height: 94px;
     line-height: 74px;
     bottom: 485px;
-    opacity: 0;
     font-family: "LemonMilk";
     white-space: nowrap;
 }
@@ -225,7 +224,6 @@ body {
 .textIntro {
     position: absolute;
     text-align: center;
-    opacity: 0;
     white-space: nowrap;
 }
 
