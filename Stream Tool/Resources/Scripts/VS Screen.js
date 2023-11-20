@@ -1,10 +1,11 @@
 import { fadeIn } from "./Utils/Fade In.mjs";
 import { fadeOut } from "./Utils/Fade Out.mjs";
-import { current } from "./Utils/Globals.mjs";
+import { current, maxSides } from "./Utils/Globals.mjs";
 import { resizeText } from "./Utils/Resize Text.mjs";
 import { updateText } from "./Utils/Update Text.mjs";
 import { bestOf } from "./VS Screen/BestOf.mjs";
 import { casters } from "./VS Screen/Caster/Casters.mjs";
+import { gamemodeClass } from "./VS Screen/Gamemode Change.mjs";
 import { roundInfo } from "./VS Screen/Round Info/Round Info.mjs";
 import { fadeInTimeVs, fadeOutTimeVs, introDelayVs } from "./VS Screen/VsGlobals.mjs";
 
@@ -31,7 +32,6 @@ let gamemodePrev;
 
 //to consider how many loops will we do
 let maxPlayers = 2; //will change when doubles comes
-const maxSides = 2;
 
 // this will connect us to the GUI
 let webSocket;
@@ -102,25 +102,21 @@ async function updateData(data) {
 
 	// first of all, things that will always happen on each cycle
 
+	// if this isnt a singles match, rearrange stuff
+	gamemodeClass.change(gamemode);
+
 	// set the max players depending on singles or doubles
-	maxPlayers = gamemode == 1 ? 2 : 4;
+	maxPlayers = gamemodeClass.getGm() == 1 ? 2 : 4;
 
 	// depending on best of, show or hide some score ticks
-	bestOf.update(data.bestOf)
+	bestOf.update(data.bestOf);
 
 	// now, things that will happen only the first time the html loads
 	if (current.startup) {
 
-		//if this isnt a singles match, rearrange stuff
-		if (gamemode != 1) {
-			changeGM(gamemode);
-		}
-		//save this variable so we know the next time it gets changed
-		gamemodePrev = gamemode;
-		
-
 		// this will be used later to sync the animations for all character images
 		const charsLoaded = [];
+
 		// now the real part begins
 		for (let i = 0; i < maxPlayers; i++) {
 
@@ -154,6 +150,7 @@ async function updateData(data) {
 			pBgPrev[i] = player[i].vs.bgVid;
 
 		}
+
 		// now we use that array from earlier to animate all characters at the same time
 		Promise.all(charsLoaded).then( (value) => { // when all images are loaded
 			for (let i = 0; i < value.length; i++) { // for every character loaded
@@ -210,14 +207,12 @@ async function updateData(data) {
 	else {
 
 		//of course, check if the gamemode has changed
-		if (gamemodePrev != gamemode) {
-			changeGM(gamemode);	
+		//if (gamemodePrev != gamemode) {
 			//calling updateColor here so the text background gets added
 			for (let i = 0; i < maxSides; i++) {
 				updateColor(colorBG[i], textBG[i], color[i], i, gamemode);
 			}
-			gamemodePrev = gamemode;
-		}
+		//}
 
 
 		for (let i = 0; i < maxSides; i++) {
@@ -354,119 +349,6 @@ async function updateData(data) {
 		casters.updateCasters(data.caster);
 
 	}
-}
-
-
-// the gamemode manager
-function changeGM(gm) {
-	if (gm == 2) {
-
-		//change the white overlay
-		document.getElementById("vsOverlay").src = "Resources/Overlay/VS Screen/VS Overlay Dubs.png";
-
-		//make all the extra doubles elements visible
-		const dubELs = document.getElementsByClassName("dubEL");
-		for (let i = 0; i < dubELs.length; i++) {
-			dubELs[i].style.display = "flex";
-		}
-
-		//change the positions for the text backgrounds (will now be used for the team names)
-		for (let i = 0; i < maxSides; i++) {
-			textBG[i].style.bottom = "477px";
-		}
-		textBG[1].style.right = "-10px";
-
-		//move the match info to the center of the screen
-		document.getElementById("roundInfo").style.top = "434px";
-		document.getElementById("casterInfo").style.top = "417px";
-		document.getElementById("scores").style.top = "415px";
-
-		//reposition the top characters (bot ones are already positioned)
-		document.getElementById("topRow").style.top = "-180px";
-		//change the clip mask
-		document.getElementById("clipP1").classList.remove("singlesClip");
-		document.getElementById("clipP1").classList.add("dubsClip");
-		document.getElementById("clipP2").classList.remove("singlesClip");
-		document.getElementById("clipP2").classList.add("dubsClip");
-		
-		// lastly, change the positions for the player texts
-		for (let i = 0; i < 2; i++) {
-			pWrapper[i].classList.remove("wrappersSingles");
-			pWrapper[i].classList.add("wrappersDoubles");
-			pWrapper[i].classList.remove("p"+(i+1)+"WSingles");
-			pWrapper[i].classList.add("p"+(i+1)+"WDub");
-			//update the text size and resize it if it overflows
-			pName[i].style.fontSize = playerSizeDubs + "px";
-			pTag[i].style.fontSize = tagSizeDubs + "px";
-			resizeText(pWrapper[i]);
-		};
-
-		// player info positions
-		const pInfo1 = document.getElementById("playerInfoDivL");
-		pInfo1.classList.remove("playerInfoDiv", "playerInfoDivL");
-		pInfo1.classList.add("playerInfoDiv2", "playerInfoDivL1");
-		const pInfos1 = pInfo1.getElementsByClassName("playerInfo");
-		for (let i = 0; i < pInfos1.length; i++) {
-			pInfos1[i].classList.add("playerInfo1L");
-		};
-
-		const pInfo2 = document.getElementById("playerInfoDivR");
-		pInfo2.classList.remove("playerInfoDiv", "playerInfoDivR");
-		pInfo2.classList.add("playerInfoDiv2", "playerInfoDivR1");
-		const pInfos2 = pInfo2.getElementsByClassName("playerInfo");
-		for (let i = 0; i < pInfos2.length; i++) {
-			pInfos2[i].classList.add("playerInfo1R");
-		};
-
-	} else {
-
-		document.getElementById("vsOverlay").src = "Resources/Overlay/VS Screen/VS Overlay.png";
-
-		//hide the extra elements
-		const dubELs = document.getElementsByClassName("dubEL");
-		for (let i = 0; i < dubELs.length; i++) {
-			dubELs[i].style.display = "none";
-		}
-
-		//move everything back to where it was
-		for (let i = 0; i < maxSides; i++) {
-			textBG[i].style.bottom = "0px";
-		}
-		textBG[1].style.right = "-2px";
-		document.getElementById("roundInfo").style.top = "0px";
-		document.getElementById("casterInfo").style.top = "0px";
-		document.getElementById("scores").style.top = "0px";
-		document.getElementById("topRow").style.top = "0px";
-		document.getElementById("clipP1").classList.remove("dubsClip");
-		document.getElementById("clipP1").classList.add("singlesClip");
-		document.getElementById("clipP2").classList.remove("dubsClip");
-		document.getElementById("clipP2").classList.add("singlesClip");
-		for (let i = 0; i < 2; i++) {
-			pWrapper[i].classList.remove("wrappersDoubles");
-			pWrapper[i].classList.add("wrappersSingles");
-			pWrapper[i].classList.remove("p"+(i+1)+"WDub");
-			pWrapper[i].classList.add("p"+(i+1)+"WSingles");
-			updatePlayerName(i, "", "", gm); //resize didnt do anything here for some reason
-		}
-
-		const pInfo1 = document.getElementById("playerInfoDivL");
-		pInfo1.classList.add("playerInfoDiv", "playerInfoDivL");
-		pInfo1.classList.remove("playerInfoDiv2", "playerInfoDivL1");
-		const pInfos1 = pInfo1.getElementsByClassName("playerInfo");
-		for (let i = 0; i < pInfos1.length; i++) {
-			pInfos1[i].classList.remove("playerInfo1L");
-		};
-
-		const pInfo2 = document.getElementById("playerInfoDivR");
-		pInfo2.classList.add("playerInfoDiv", "playerInfoDivR");
-		pInfo2.classList.remove("playerInfoDiv2", "playerInfoDivR1");
-		const pInfos2 = pInfo2.getElementsByClassName("playerInfo");
-		for (let i = 0; i < pInfos2.length; i++) {
-			pInfos2[i].classList.remove("playerInfo1R");
-		};
-		
-	}
-
 }
 
 

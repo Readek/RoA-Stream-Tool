@@ -305,7 +305,9 @@ body {
 
 
 #middleDivs {
-    --topMargin: 10px;
+    --singlesTopMargin: 10px;
+    --doublesTopMargin: 454px;
+    --topMargin: var(--singlesTopMargin);
     position: absolute;
     width: 100%;
     display: flex;
@@ -324,12 +326,17 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border: solid;
-    border-width: 10px 63px;
-    border-image: url('../Overlay/VS\ Screen/Round Border.png') 10 63 fill;
     height: 90px;
     transition: width .5s, height .3s, border-width .3s;
 }
+.roundInfoSingles {
+    border: solid;
+    border-width: 10px 63px;
+    border-image: url('../Overlay/VS\ Screen/Round Border.png') 10 63 fill;
+}
+/* .roundInfoDoubles {
+
+} */
 
 #tournament {
     color: rgb(65, 65, 65);
@@ -346,12 +353,18 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    border: solid;
-    border-width: 9px 54px;
-    border-image: url('../Overlay/VS\ Screen/Caster Border.png') 9 54 fill;
     height: 76px;
     transition: width .5s, height .3s, border-width .3s;
 }
+.casterInfoSingles {
+    border: solid;
+    border-width: 9px 54px;
+    border-image: url('../Overlay/VS\ Screen/Caster Border.png') 9 54 fill;
+}
+.casterInfoDoubles {
+    margin-top: -7px;
+}
+
 #casters {
     position: relative;
     text-align: center;

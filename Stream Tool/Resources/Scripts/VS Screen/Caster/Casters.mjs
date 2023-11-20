@@ -254,6 +254,26 @@ class Casters {
 
     }
 
+    /**
+     * Changes behaviour to adapt to requested gamemode
+     * @param {Number} gamemode - Current gamemode
+     */
+    changeGamemode(gamemode) {
+
+        if (gamemode == 2) { // doubles
+            
+            castersDiv.classList.remove("casterInfoSingles");
+            castersDiv.classList.add("casterInfoDoubles");
+
+        } else { // singles
+            
+            castersDiv.classList.add("casterInfoSingles");
+            castersDiv.classList.remove("casterInfoDoubles");
+
+        }
+
+    }
+
 }
 
 export const casters = new Casters;

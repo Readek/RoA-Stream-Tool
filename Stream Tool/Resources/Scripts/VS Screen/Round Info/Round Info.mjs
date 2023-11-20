@@ -103,6 +103,25 @@ class RoundInfo {
 
     }
 
+    /**
+     * Changes behaviour to adapt to requested gamemode
+     * @param {Number} gamemode - Current gamemode
+     */
+    changeGamemode(gamemode) {
+
+        if (gamemode == 2) { // doubles
+            
+            roundInfoEl.classList.remove("roundInfoSingles");
+            roundInfoEl.classList.add("roundInfoDoubles");
+
+        } else { // singles
+            
+            roundInfoEl.classList.add("roundInfoSingles");
+            roundInfoEl.classList.remove("roundInfoDoubles");
+
+        }
+
+    }
 
 }
 
