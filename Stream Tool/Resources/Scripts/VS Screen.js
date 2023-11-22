@@ -6,6 +6,7 @@ import { updateText } from "./Utils/Update Text.mjs";
 import { bestOf } from "./VS Screen/BestOf.mjs";
 import { casters } from "./VS Screen/Caster/Casters.mjs";
 import { gamemodeClass } from "./VS Screen/Gamemode Change.mjs";
+import { players } from "./VS Screen/Player/Players.mjs";
 import { roundInfo } from "./VS Screen/Round Info/Round Info.mjs";
 import { fadeInTimeVs, fadeOutTimeVs, introDelayVs } from "./VS Screen/VsGlobals.mjs";
 
@@ -20,15 +21,10 @@ customElements.define("load-svg", class extends HTMLElement {
 
 
 //max text sizes (used when resizing back)
-const playerSize = 90;
-const tagSize = 50;
-const playerSizeDubs = 45;
-const tagSizeDubs = 25;
 const teamSize = 72;
 
 //to avoid the code constantly running the same method over and over
 const pCharPrev = [], pBgPrev = [], scorePrev = [], colorPrev = [];
-let gamemodePrev;
 
 //to consider how many loops will we do
 let maxPlayers = 2; //will change when doubles comes
@@ -39,8 +35,6 @@ let webSocket;
 
 //next, global variables for the html elements
 const pWrapper = document.getElementsByClassName("wrappers");
-const pTag = document.getElementsByClassName("tag");
-const pName = document.getElementsByClassName("name");
 const teamNames = document.getElementsByClassName("teamName");
 const pInfoProns = document.getElementsByClassName("playerInfoProns");
 const pInfoTwitter = document.getElementsByClassName("playerInfoTwitter");
@@ -111,6 +105,9 @@ async function updateData(data) {
 	// depending on best of, show or hide some score ticks
 	bestOf.update(data.bestOf);
 
+	// update that player data (names, info, characters, backgrounds)
+	players.update(data.player);
+
 	// now, things that will happen only the first time the html loads
 	if (current.startup) {
 
@@ -119,13 +116,6 @@ async function updateData(data) {
 
 		// now the real part begins
 		for (let i = 0; i < maxPlayers; i++) {
-
-			//lets start simple with the player names & tags 
-			updatePlayerName(i, player[i].name, player[i].tag, gamemode);
-
-			//fade in the player text
-			fadeIn(pWrapper[i], introDelayVs+.3);
-
 
 			// now lets update all that player info
 			updatePlayerInfo(i, player[i]);
@@ -267,17 +257,6 @@ async function updateData(data) {
 		// this will be used later to sync the animations for all character images
 		const charsLoaded = [], animsEnded = [];
 		for (let i = 0; i < maxPlayers; i++) {
-
-			// players name change, if either name or tag have changed
-			if (pName[i].textContent != player[i].name || pTag[i].textContent != player[i].tag) {
-				//fade out the player's text
-				fadeOut(pWrapper[i], fadeOutTimeVs).then( () => {
-					//now that nobody is seeing it, change the content of the texts!
-					updatePlayerName(i, player[i].name, player[i].tag, gamemode);
-					//and fade the texts back in
-					fadeIn(pWrapper[i], fadeInTimeVs, .2);
-				});
-			};
 
 			// all that player info must be updated!
 			if (pInfoProns[i].textContent != player[i].pronouns ||
@@ -424,21 +403,6 @@ function updateBG(vidEL, vidSrc) {
 	vidEL.src = vidSrc;
 }
 
-
-//player text change
-function updatePlayerName(pNum, name, tag, gamemode = 1) {
-	if (gamemode == 2) {
-		pName[pNum].style.fontSize = playerSizeDubs + "px"; //set original text size
-		pTag[pNum].style.fontSize = tagSizeDubs + "px";
-	} else {
-		pName[pNum].style.fontSize = playerSize + "px";
-		pTag[pNum].style.fontSize = tagSize + "px";
-	}
-	pName[pNum].textContent = name; //change the actual text
-	pTag[pNum].textContent = tag;
-
-	resizeText(pWrapper[pNum]); //resize if it overflows
-}
 
 // player info change
 function updatePlayerInfo(pNum, pInfo) {
