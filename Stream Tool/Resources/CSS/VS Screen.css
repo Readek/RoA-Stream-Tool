@@ -149,8 +149,8 @@ body {
 
 
 .playerInfo {
-    display: none;
-    text-align: center;
+    display: flex;
+    gap: 7px;
     font-family: "Deansgate";
     color: white;
     white-space: nowrap;
@@ -174,14 +174,24 @@ body {
     transform: translate(0px, 2px);
 }
 .playerInfoIconTwitch {
-    height: 22px;
-    width: 22px;
-    transform: translate(0px, 1px);
+    height: 23px;
+    width: 23px;
+    transform: translate(0px, 2px);
 }
-.playerInfoIconYT {
+.playerInfoIconYt {
     height: 24px;
     width: 24px;
     transform: translate(0px, 2px);
+}
+.playerInfoIconMasto {
+    height: 24px;
+    width: 24px;
+    transform: translate(0px, 2px);
+}
+.playerInfoIconCohost {
+    height: 24px;
+    width: 24px;
+    transform: translate(0px, -1px);
 }
 
 

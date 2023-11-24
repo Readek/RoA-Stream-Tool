@@ -7,6 +7,8 @@ class Players {
 
     constructor() {
 
+        const pInfoEls = document.getElementsByClassName("pInfo");
+
         // add new players to our array, max 4 players for 2v2
         for (let i = 0; i < 4; i++) {
 
@@ -14,7 +16,7 @@ class Players {
             const wrapEl = document.getElementById(`p${i+1}Wrapper`);
 
             // and create them
-            this.#players.push(new Player(wrapEl));
+            this.#players.push(new Player(wrapEl, pInfoEls[i], null, null, i+1));
 
         }
 
@@ -41,6 +43,20 @@ class Players {
             // update background
             this.#players[i].updateBG(data[i]);
 
+        }
+
+    }
+
+    /**
+     * Adapts players to the selected gamemode
+     * @param {Number} gamemode - Gamemode to change to
+     */
+    changeGm(gamemode) {
+
+        // this only affects the first 2 players,
+        // as players 3 and 4 are already configured
+        for (let i = 0; i < 2; i++) {
+            this.#players[i].changeGm(gamemode, i+1);
         }
 
     }

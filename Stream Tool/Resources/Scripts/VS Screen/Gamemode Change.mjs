@@ -1,33 +1,18 @@
 import { maxSides } from "../Utils/Globals.mjs";
-import { resizeText } from "../Utils/Resize Text.mjs";
 import { casters } from "./Caster/Casters.mjs";
+import { players } from "./Player/Players.mjs";
 import { roundInfo } from "./Round Info/Round Info.mjs";
 
 const overlay = document.getElementById("vsOverlay");
 
 const dubELs = document.getElementsByClassName("dubEL");
 const textBG = document.getElementsByClassName("textBG");
-const pWrapper = document.getElementsByClassName("wrappers");
 
 const middleDivs = document.getElementById("middleDivs");
 
 const topRow = document.getElementById("topRow");
 const clipP1 = document.getElementById("clipP1");
 const clipP2 = document.getElementById("clipP2");
-
-const pTag = document.getElementsByClassName("tag");
-const pName = document.getElementsByClassName("name");
-
-const pInfo1 = document.getElementById("playerInfoDivL");
-const pInfos1 = pInfo1.getElementsByClassName("playerInfo");
-const pInfo2 = document.getElementById("playerInfoDivR");
-const pInfos2 = pInfo2.getElementsByClassName("playerInfo");
-
-
-const playerSize = 90;
-const tagSize = 50;
-const tagSizeDubs = 25;
-const playerSizeDubs = 45;
 
 
 class Gamemode {
@@ -89,30 +74,8 @@ class Gamemode {
 		clipP2.classList.remove("singlesClip");
 		clipP2.classList.add("dubsClip");
 		
-		// change the positions for the player texts
-		for (let i = 0; i < 2; i++) {
-			pWrapper[i].classList.remove("wrappersSingles");
-			pWrapper[i].classList.add("wrappersDoubles");
-			pWrapper[i].classList.remove("p"+(i+1)+"WSingles");
-			pWrapper[i].classList.add("p"+(i+1)+"WDub");
-			// update the text size and resize it if it overflows
-			pName[i].style.fontSize = playerSizeDubs + "px";
-			pTag[i].style.fontSize = tagSizeDubs + "px";
-			resizeText(pWrapper[i]);
-		};
-
-		// player info positions
-		pInfo1.classList.remove("playerInfoDiv", "playerInfoDivL");
-		pInfo1.classList.add("playerInfoDiv2", "playerInfoDivL1");
-		for (let i = 0; i < pInfos1.length; i++) {
-			pInfos1[i].classList.add("playerInfo1L");
-		};
-
-		pInfo2.classList.remove("playerInfoDiv", "playerInfoDivR");
-		pInfo2.classList.add("playerInfoDiv2", "playerInfoDivR1");
-		for (let i = 0; i < pInfos2.length; i++) {
-			pInfos2[i].classList.add("playerInfo1R");
-		};
+		// adapt the players for the new gamemode
+		players.changeGm(this.getGm());
 
     }
 
@@ -143,27 +106,8 @@ class Gamemode {
 		clipP1.classList.add("singlesClip");
 		clipP2.classList.remove("dubsClip");
 		clipP2.classList.add("singlesClip");
-		for (let i = 0; i < 2; i++) {
-			pWrapper[i].classList.remove("wrappersDoubles");
-			pWrapper[i].classList.add("wrappersSingles");
-			pWrapper[i].classList.remove("p"+(i+1)+"WDub");
-			pWrapper[i].classList.add("p"+(i+1)+"WSingles");
-            pName[i].style.fontSize = playerSize + "px";
-			pTag[i].style.fontSize = tagSize + "px";
-            resizeText(pWrapper[i]);//resize didnt do anything here for some reason
-		}
-
-		pInfo1.classList.add("playerInfoDiv", "playerInfoDivL");
-		pInfo1.classList.remove("playerInfoDiv2", "playerInfoDivL1");
-		for (let i = 0; i < pInfos1.length; i++) {
-			pInfos1[i].classList.remove("playerInfo1L");
-		};
-
-		pInfo2.classList.add("playerInfoDiv", "playerInfoDivR");
-		pInfo2.classList.remove("playerInfoDiv2", "playerInfoDivR1");
-		for (let i = 0; i < pInfos2.length; i++) {
-			pInfos2[i].classList.remove("playerInfo1R");
-		};
+		
+		players.changeGm(this.getGm());
 
     }
 

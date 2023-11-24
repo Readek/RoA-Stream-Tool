@@ -19,15 +19,19 @@ export class PlayerName {
     #tagEl;
     #wrapperEl;
 
+    #id = 0;
+
     /**
      * Controls the player's name and tags
      * @param {HTMLElement} nameEl - Name element
      * @param {HTMLElement} tagEl - Tag element
+     * @param {Number} id - Player Slot
      */
-    constructor(nameEl, tagEl) {
+    constructor(nameEl, tagEl, id) {
         this.#nameEl = nameEl;
         this.#tagEl = tagEl;
         this.#wrapperEl = nameEl.parentElement;
+        this.#id = id;
     }
 
     getName() {
@@ -88,7 +92,39 @@ export class PlayerName {
         resizeText(this.#wrapperEl);
 
         // and fade everything in!
-        fadeIn(this.#wrapperEl, fadeInTimeVs, delayTime);
+        if (this.getName() || this.getTag()) { // only if theres content
+            fadeIn(this.#wrapperEl, fadeInTimeVs, delayTime);
+        }
+
+    }
+
+    /**
+     * Adapts the text elements depending on the gamemode
+     * @param {Number} gamemode - Gamemode to change to
+     */
+    changeGm(gamemode) {
+
+        if (gamemode == 2) { // doubles
+            
+            // remove and add doubles classes
+            this.#wrapperEl.classList.remove("wrappersSingles", "p"+(this.#id)+"WSingles");
+			this.#wrapperEl.classList.add("wrappersDoubles", "p"+(this.#id)+"WDub");
+			// update the text size and resize it if it overflows
+			this.#nameEl.style.fontSize = playerSizeDubs + "px";
+			this.#tagEl.style.fontSize = tagSizeDubs + "px";
+            // and, of course, resize it
+			resizeText(this.#wrapperEl);
+
+        } else { // singles
+            
+            // same as doubles, but for singles
+            this.#wrapperEl.classList.remove("wrappersDoubles", "p"+(this.#id)+"WDub");
+			this.#wrapperEl.classList.add("wrappersSingles", "p"+(this.#id)+"WSingles");
+            this.#nameEl.style.fontSize = playerSize + "px";
+			this.#tagEl.style.fontSize = tagSize + "px";
+            resizeText(this.#wrapperEl);
+
+        }
 
     }
 

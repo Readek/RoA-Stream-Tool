@@ -36,10 +36,6 @@ let webSocket;
 //next, global variables for the html elements
 const pWrapper = document.getElementsByClassName("wrappers");
 const teamNames = document.getElementsByClassName("teamName");
-const pInfoProns = document.getElementsByClassName("playerInfoProns");
-const pInfoTwitter = document.getElementsByClassName("playerInfoTwitter");
-const pInfoTwitch = document.getElementsByClassName("playerInfoTwitch");
-const pInfoYt = document.getElementsByClassName("playerInfoYt");
 const pChara = document.getElementsByClassName("chara");
 const pChar = document.getElementsByClassName("char");
 const pTrail = document.getElementsByClassName("trail");
@@ -116,16 +112,6 @@ async function updateData(data) {
 
 		// now the real part begins
 		for (let i = 0; i < maxPlayers; i++) {
-
-			// now lets update all that player info
-			updatePlayerInfo(i, player[i]);
-
-			// and gradually fade them in
-			fadeIn(pInfoProns[i].parentElement, fadeInTimeVs, introDelayVs+.6);
-			fadeIn(pInfoTwitter[i].parentElement, fadeInTimeVs, introDelayVs+.75);
-			fadeIn(pInfoTwitch[i].parentElement, fadeInTimeVs, introDelayVs+.9);
-			fadeIn(pInfoYt[i].parentElement, fadeInTimeVs, introDelayVs+1.05);
-
 
 			//change the player's character image, and position it
 			charsLoaded.push(updateChar(player[i].vs, i));
@@ -258,28 +244,6 @@ async function updateData(data) {
 		const charsLoaded = [], animsEnded = [];
 		for (let i = 0; i < maxPlayers; i++) {
 
-			// all that player info must be updated!
-			if (pInfoProns[i].textContent != player[i].pronouns ||
-				pInfoTwitter[i].textContent != player[i].socials.twitter ||
-				pInfoTwitch[i].textContent != player[i].socials.twitch ||
-				pInfoYt[i].textContent != player[i].socials.yt) {
-
-				// fade all of them out, we only need to wait for one
-				fadeOut(pInfoProns[i].parentElement, fadeOutTimeVs);
-				fadeOut(pInfoTwitter[i].parentElement, fadeOutTimeVs);
-				fadeOut(pInfoTwitch[i].parentElement, fadeOutTimeVs);
-				fadeOut(pInfoYt[i].parentElement, fadeOutTimeVs).then( () => {
-					// update the texts!
-					updatePlayerInfo(i, player[i]);
-					// but woudnt it be cool if we faded all of them with progression
-					fadeIn(pInfoProns[i].parentElement, fadeInTimeVs, .2);
-					fadeIn(pInfoTwitter[i].parentElement, fadeInTimeVs, .35);
-					fadeIn(pInfoTwitch[i].parentElement, fadeInTimeVs, .5);
-					fadeIn(pInfoYt[i].parentElement, fadeInTimeVs, .65);
-				});
-				
-			}
-
 			// player character change
 			if (pCharPrev[i] != player[i].vs.charImg) {
 				
@@ -401,39 +365,6 @@ function updateColor(gradEL, textBGEL, color, i, gamemode) {
 function updateBG(vidEL, vidSrc) {
 	// well this used to be more complicated than this
 	vidEL.src = vidSrc;
-}
-
-
-// player info change
-function updatePlayerInfo(pNum, pInfo) {
-	
-	pInfoProns[pNum].innerText = pInfo.pronouns;
-	pInfoTwitter[pNum].innerText = pInfo.socials.twitter;
-	pInfoTwitch[pNum].innerText = pInfo.socials.twitch;
-	pInfoYt[pNum].innerText = pInfo.socials.yt;
-
-	// there must be a cleaner way to do this right?
-	if (pInfo.pronouns) {
-		pInfoProns[pNum].parentElement.style.display = "block";
-	} else {
-		pInfoProns[pNum].parentElement.style.display = "none";
-	}
-	if (pInfo.socials.twitter) {
-		pInfoTwitter[pNum].parentElement.style.display = "block";
-	} else {
-		pInfoTwitter[pNum].parentElement.style.display = "none";
-	}
-	if (pInfo.socials.twitch) {
-		pInfoTwitch[pNum].parentElement.style.display = "block";
-	} else {
-		pInfoTwitch[pNum].parentElement.style.display = "none";
-	}
-	if (pInfo.socials.yt) {
-		pInfoYt[pNum].parentElement.style.display = "block";
-	} else {
-		pInfoYt[pNum].parentElement.style.display = "none";
-	}
-
 }
 
 
