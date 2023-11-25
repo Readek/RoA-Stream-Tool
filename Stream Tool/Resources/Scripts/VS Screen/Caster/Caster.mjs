@@ -1,5 +1,6 @@
 import { fadeIn } from "../../Utils/Fade In.mjs";
 import { fadeOut } from "../../Utils/Fade Out.mjs";
+import { isEmpty } from "../../Utils/Is Object Empty.mjs";
 import { resizeText } from "../../Utils/Resize Text.mjs";
 import { updateText } from "../../Utils/Update Text.mjs";
 import { fadeInTimeVs, fadeOutTimeVs } from "../VsGlobals.mjs";
@@ -136,6 +137,9 @@ export class Caster {
         if (data.pronouns != this.#pronouns) {
             return true;
         }
+
+        // for empty socials
+        return isEmpty(data.socials);
 
     }
 

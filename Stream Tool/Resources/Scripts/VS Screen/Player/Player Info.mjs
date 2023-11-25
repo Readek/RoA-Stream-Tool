@@ -1,6 +1,7 @@
 import { fadeIn } from "../../Utils/Fade In.mjs";
 import { fadeOut } from "../../Utils/Fade Out.mjs";
 import { current } from "../../Utils/Globals.mjs";
+import { isEmpty } from "../../Utils/Is Object Empty.mjs";
 import { gamemodeClass } from "../Gamemode Change.mjs";
 import { fadeInTimeVs, fadeOutTimeVs, introDelayVs } from "../VsGlobals.mjs";
 
@@ -49,18 +50,22 @@ export class PlayerInfo {
      */
     hasChanged(data) {
 
+        // check them pronouns
         if (data.pronouns != this.#pronouns) {
             return true;
         }
 
+        // check if socials match
         for (const social in data.socials) {
             if (data.socials[social] != this.#socials[social]) {
                 return true;
             }
         }
 
-    }
+        // for empty socials
+        return isEmpty(data.socials);
 
+    }
 
     async update(data) {
 
