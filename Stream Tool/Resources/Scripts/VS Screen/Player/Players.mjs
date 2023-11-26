@@ -8,6 +8,8 @@ class Players {
     constructor() {
 
         const pInfoEls = document.getElementsByClassName("pInfo");
+        const pCharEls = document.getElementsByClassName("chara");
+        const pBgEls = document.getElementsByClassName("bgVid");
 
         // add new players to our array, max 4 players for 2v2
         for (let i = 0; i < 4; i++) {
@@ -16,7 +18,9 @@ class Players {
             const wrapEl = document.getElementById(`p${i+1}Wrapper`);
 
             // and create them
-            this.#players.push(new Player(wrapEl, pInfoEls[i], null, null, i+1));
+            this.#players.push(
+                new Player(wrapEl, pInfoEls[i], pCharEls[i], pBgEls[i], i+1)
+            );
 
         }
 
@@ -28,22 +32,31 @@ class Players {
      */
     update(data) {
 
+        // we will need to keep track of character loading
+        const charsLoaded = [];
+
         // for every player sent
         for (let i = 0; i < data.length; i++) {
 
             // update player name and tag
-            this.#players[i].updateName(data[i]);
+            this.#players[i].updateName(data[i].name, data[i].tag);
 
             // update pronouns and socials
-            this.#players[i].updateInfo(data[i]);
+            this.#players[i].updateInfo(data[i].pronouns, data[i].socials);
 
             // update character
-            this.#players[i].updateChar(data[i]);
-
-            // update background
-            this.#players[i].updateBG(data[i]);
+            charsLoaded.push(this.#players[i].updateChar(data[i].vs));
 
         }
+
+        // when character images have fully lodaded, fade them in at once
+        Promise.all(charsLoaded).then( (pChar) => {
+            for (let i = 0; i < pChar.length; i++) {
+                if (pChar[i]) {
+                    pChar[i][0].fadeInChar(pChar[i][1]);
+                }
+            }
+        })
 
     }
 

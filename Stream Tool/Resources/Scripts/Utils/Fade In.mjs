@@ -42,3 +42,19 @@ export function fadeInMove(itemID, chara, side, delay = 0) {
 	}
 
 }
+
+/**
+ * Fades out a player's character and trail
+ * @param {HTMLElement} charaEL - Element containing both char and trail
+ * @param {HTMLElement} trailEL - Trail element
+ * @param {Number} dur - Time in seconds for the animation to last
+ * @param {Number} delay - Time in seconds to wait until fade happens
+ */
+export function charaFadeIn(charaEL, trailEL, dur, delay = 0) {
+	charaEL.style.animation = `charaMoveIn ${dur + .1}s ${delay + .2}s both
+		, fadeIn ${dur + .1}s ${delay + .2}s both`
+	;
+	trailEL.parentElement.style.animation = `trailMoveIn ${dur + .1}s ${delay + .4}s both
+		, fadeIn ${dur + .1}s ${delay + .4}s both`
+	;
+}

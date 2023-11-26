@@ -72,7 +72,12 @@ export class PlayerName {
 
     }
 
-    async update(data) {
+    /**
+     * Update player name and tag, fading them out and in
+     * @param {String} name - Name of the player
+     * @param {String} tag - Tag of the player
+     */
+    async update(name, tag) {
 
         let delayTime = introDelayVs + .3;
 
@@ -87,8 +92,8 @@ export class PlayerName {
         }
 
         // update them texts
-        this.#setName(data.name);
-        this.#setTag(data.tag);
+        this.#setName(name);
+        this.#setTag(tag);
         resizeText(this.#wrapperEl);
 
         // and fade everything in!

@@ -24,7 +24,7 @@ customElements.define("load-svg", class extends HTMLElement {
 const teamSize = 72;
 
 //to avoid the code constantly running the same method over and over
-const pCharPrev = [], pBgPrev = [], scorePrev = [], colorPrev = [];
+const scorePrev = [], colorPrev = [];
 
 //to consider how many loops will we do
 let maxPlayers = 2; //will change when doubles comes
@@ -39,7 +39,6 @@ const teamNames = document.getElementsByClassName("teamName");
 const pChara = document.getElementsByClassName("chara");
 const pChar = document.getElementsByClassName("char");
 const pTrail = document.getElementsByClassName("trail");
-const pBG = document.getElementsByClassName("bgVid");
 const scoreImg = document.getElementsByClassName("scoreTick");
 const scoreNums = document.getElementsByClassName("scoreNum");
 const colorBG = document.getElementsByClassName("colorBG");
@@ -106,34 +105,6 @@ async function updateData(data) {
 
 	// now, things that will happen only the first time the html loads
 	if (current.startup) {
-
-		// this will be used later to sync the animations for all character images
-		const charsLoaded = [];
-
-		// now the real part begins
-		for (let i = 0; i < maxPlayers; i++) {
-
-			//change the player's character image, and position it
-			charsLoaded.push(updateChar(player[i].vs, i));
-			//character will fade in when the image finishes loading
-
-			//save character info so we change them later if different
-			pCharPrev[i] = player[i].vs.charImg;
-
-
-			//set the character backgrounds
-			updateBG(pBG[i], player[i].vs.bgVid);
-			pBgPrev[i] = player[i].vs.bgVid;
-
-		}
-
-		// now we use that array from earlier to animate all characters at the same time
-		Promise.all(charsLoaded).then( (value) => { // when all images are loaded
-			for (let i = 0; i < value.length; i++) { // for every character loaded
-				charaFadeIn(value[i][0], value[i][1], introDelayVs); // fade it in
-			}
-		})
-
 
 		// this will run for each side (so twice)
 		for (let i = 0; i < maxSides; i++) {
@@ -240,47 +211,6 @@ async function updateData(data) {
 		}
 
 
-		// this will be used later to sync the animations for all character images
-		const charsLoaded = [], animsEnded = [];
-		for (let i = 0; i < maxPlayers; i++) {
-
-			// player character change
-			if (pCharPrev[i] != player[i].vs.charImg) {
-				
-				//move and fade out the character
-				animsEnded.push(charaFadeOut(pChara[i], pTrail[i]).then( () => {
-					//update the character image and trail, and also storing its scale for later
-					charsLoaded.push(updateChar(player[i].vs, i));
-					//will fade back in when the images load
-				}));
-				
-				pCharPrev[i] = player[i].vs.charImg;
-
-			}
-
-			// background change here!
-			if (pBgPrev[i] != player[i].vs.bgVid) {
-				//fade it out
-				fadeOut(pBG[i], fadeOutTimeVs+.2).then( () => {
-					//update the bg vid
-					updateBG(pBG[i], player[i].vs.bgVid);
-					//fade it back
-					fadeIn(pBG[i], .3, fadeInTimeVs, fadeInTimeVs+.2);
-				});
-				pBgPrev[i] = player[i].vs.bgVid;
-			}
-
-		}
-		// now we use that array from earlier to animate all characters at the same time
-		Promise.all(animsEnded).then( () => { // need to sync somehow
-			Promise.all(charsLoaded).then( (value) => { // when all images are loaded
-				for (let i = 0; i < value.length; i++) { // for every character loaded
-					charaFadeIn(value[i][0], value[i][1]); // fade it in
-				}
-			})
-		})
-		
-
 		//update round text
 		roundInfo.updateRound(data.round);
 
@@ -358,37 +288,6 @@ function updateColor(gradEL, textBGEL, color, i, gamemode) {
 	scoreNums[i].style.webkitTextStroke = "1px " + color.hex;
 	scoreNums[i].style.textShadow = "0px 0px 3px " + color.hex;
 
-}
-
-
-//background change
-function updateBG(vidEL, vidSrc) {
-	// well this used to be more complicated than this
-	vidEL.src = vidSrc;
-}
-
-
-//fade out for the characters
-async function charaFadeOut(charaEL, trailEL) {
-
-	charaEL.style.animation = `charaMoveOut ${fadeOutTimeVs}s both
-		,fadeOut ${fadeOutTimeVs}s both`
-	;
-	// this is only so the animation change gets activated on fade in
-	trailEL.parentElement.style.animation = `trailMoveOut 0s both`;
-
-	await new Promise(resolve => setTimeout(resolve, fadeOutTimeVs * 1000));
-
-}
-
-//fade in characters edition
-function charaFadeIn(charaEL, trailEL, delay = 0) {
-	charaEL.style.animation = `charaMoveIn ${fadeInTimeVs + .1}s ${delay + .2}s both
-		, fadeIn ${fadeInTimeVs + .1}s ${delay + .2}s both`
-	;
-	trailEL.parentElement.style.animation = `trailMoveIn ${fadeInTimeVs + .1}s ${delay + .4}s both
-		, fadeIn ${fadeInTimeVs + .1}s ${delay + .4}s both`
-	;
 }
 
 

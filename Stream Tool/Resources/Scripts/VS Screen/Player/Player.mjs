@@ -1,3 +1,4 @@
+import { PlayerCharacter } from "./Player Character.mjs";
 import { PlayerInfo } from "./Player Info.mjs";
 import { PlayerName } from "./Player Name.mjs";
 
@@ -5,6 +6,7 @@ export class Player {
 
     #pName;
     #pInfo;
+    #pChar;
 
     /**
      * Manages all info related to a player on the VS Screen
@@ -24,39 +26,48 @@ export class Player {
         // player info
         this.#pInfo = new PlayerInfo(infoEl, id);
 
+        // player character
+        const charEl = charaEl.getElementsByClassName("char")[0];
+        const trailEl = charaEl.getElementsByClassName("trail")[0];
+        this.#pChar = new PlayerCharacter(charEl, trailEl, bgEl);
+
     }
 
 
     /**
      * Update player name and tag, fading them out and in
-     * @param {Object} data - Entire player data
+     * @param {String} name - Name of the player
+     * @param {String} tag - Tag of the player
      */
-    updateName(data) {
+    updateName(name, tag) {
 
         // if either name or tag do not match
-        if (data.name != this.#pName.getName() || data.tag != this.#pName.getTag()) {
-            this.#pName.update(data);
+        if (name != this.#pName.getName() || tag != this.#pName.getTag()) {
+            this.#pName.update(name, tag);
         }
 
     }
 
     /**
      * Updates the displayed player info (pronouns, socials)
-     * @param {Object} data - Entire player data
+     * @param {String} pronouns - The player's pronouns
+     * @param {Object} socials - The player's socials
      */
-    updateInfo(data) {
+    updateInfo(pronouns, socials) {
 
-        if (this.#pInfo.hasChanged(data)) {
-            this.#pInfo.update(data);
+        if (this.#pInfo.hasChanged(pronouns, socials)) {
+            this.#pInfo.update(pronouns, socials);
         }
 
     }
 
-    updateChar(data) {
+    /**
+     * Updates all player's character elements
+     * @param {Object} vsData - Data for the VS Screen
+     */
+    updateChar(vsData) {
 
-    }
-
-    updateBG(data) {
+        return this.#pChar.update(vsData);
 
     }
 

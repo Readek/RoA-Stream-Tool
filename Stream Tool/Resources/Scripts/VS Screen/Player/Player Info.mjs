@@ -45,29 +45,35 @@ export class PlayerInfo {
 
     /**
      * Checks if the current socials dont match with the provided data
-     * @param {Object} data - Player data
+     * @param {String} pronouns - The player's pronouns
+     * @param {Object} socials - The player's socials
      * @returns {Boolean} - True if missmatch
      */
-    hasChanged(data) {
+    hasChanged(pronouns, socials) {
 
         // check them pronouns
-        if (data.pronouns != this.#pronouns) {
+        if (pronouns != this.#pronouns) {
             return true;
         }
 
         // check if socials match
-        for (const social in data.socials) {
-            if (data.socials[social] != this.#socials[social]) {
+        for (const social in socials) {
+            if (socials[social] != this.#socials[social]) {
                 return true;
             }
         }
 
         // for empty socials
-        return isEmpty(data.socials);
+        return isEmpty(socials);
 
     }
 
-    async update(data) {
+    /**
+     * Updates the displayed player info (pronouns, socials)
+     * @param {String} pronouns - The player's pronouns
+     * @param {Object} socials - The player's socials
+     */
+    async update(pronouns, socials) {
 
         let delayTime = introDelayVs + .6;
 
@@ -85,8 +91,8 @@ export class PlayerInfo {
         this.#deleteInfo();
 
         // update that data
-        this.#setPronouns(data.pronouns);
-        this.#setSocials(data.socials);
+        this.#setPronouns(pronouns);
+        this.#setSocials(socials);
 
         // create new elements with the new data
         this.#createElements();
