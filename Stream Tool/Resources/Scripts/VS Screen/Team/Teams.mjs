@@ -26,7 +26,7 @@ class Teams {
      */
     update(name, color, score) {
         for (let i = 0; i < this.#teams.length; i++) {
-            this.#teams[i].update(name[i], color[i], score);
+            this.#teams[i].update(name[i], color[i], score[i]);
         }
     }
 

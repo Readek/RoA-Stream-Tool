@@ -78,6 +78,39 @@ body {
 }
 
 
+#colorGrads {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+.colorBg {
+    width: 50%;
+    height: 100%;
+    opacity: .7;
+}
+#colorBgL {
+    background: linear-gradient(135deg, var(--colorL) 0%, #FFFFFF00 75%, #FFFFFF00);
+}
+#colorBgL::after {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #ffffff81 0%, #FFFFFF00 75%, #FFFFFF00);
+    content: '';
+}
+#colorBgR {
+    background: linear-gradient(225deg, var(--colorR) 0%, #FFFFFF00 75%, #FFFFFF00);
+}
+#colorBgR::after {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(225deg, #ffffff81 0%, #FFFFFF00 75%, #FFFFFF00);
+    content: '';
+}
+
+
 .playerInfoDiv {
     display: flex;
     flex-wrap: wrap-reverse;

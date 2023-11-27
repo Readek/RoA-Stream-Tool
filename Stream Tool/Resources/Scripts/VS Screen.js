@@ -28,12 +28,9 @@ const scorePrev = [], colorPrev = [];
 
 //next, global variables for the html elements
 const pWrapper = document.getElementsByClassName("wrappers");
-const pChara = document.getElementsByClassName("chara");
-const pChar = document.getElementsByClassName("char");
 const pTrail = document.getElementsByClassName("trail");
 const scoreImg = document.getElementsByClassName("scoreTick");
 const scoreNums = document.getElementsByClassName("scoreNum");
-const colorBG = document.getElementsByClassName("colorBG");
 const textBG = document.getElementsByClassName("textBG");
 const scoreOverlay = document.getElementById("scores");
 
@@ -77,7 +74,7 @@ function updateData(data) {
 		for (let i = 0; i < maxSides; i++) {
 
 			//set the colors
-			updateColor(colorBG[i], textBG[i], color[i], i, gamemode);
+			updateColor(textBG[i], color[i], i, gamemode);
 			colorPrev[i] = color[i].name;
 
 			//initialize the score ticks
@@ -117,7 +114,7 @@ function updateData(data) {
 		//if (gamemodePrev != gamemode) {
 			//calling updateColor here so the text background gets added
 			for (let i = 0; i < maxSides; i++) {
-				updateColor(colorBG[i], textBG[i], color[i], i, gamemode);
+				updateColor(textBG[i], color[i], i, gamemode);
 			}
 		//}
 
@@ -127,7 +124,7 @@ function updateData(data) {
 			//color change, this is up here before char/skin change so it doesnt change the
 			//trail to the next one if the character has changed, but it will change its color
 			if (colorPrev[i] != color[i].name) {
-				updateColor(colorBG[i], textBG[i], color[i], i, gamemode);
+				updateColor(textBG[i], color[i], i, gamemode);
 				colorTrail(pTrail[i], player[i]);
 				//if this is doubles, we also need to change the colors for players 3 and 4
 				if (gamemode == 2) {
@@ -205,10 +202,7 @@ function updateScore(side, pScore, pColor) {
 
 
 //color change
-function updateColor(gradEL, textBGEL, color, i, gamemode) {
-
-	//change the color gradient image path depending on the color
-	gradEL.src = `Resources/Overlay/VS Screen/Grads/${color.name}.png`;
+function updateColor(textBGEL, color, i, gamemode) {
 
 	//same but with the text background
 	textBGEL.src = `Resources/Overlay/VS Screen/Text BGs/${gamemode}/${color.name}.png`;
@@ -233,45 +227,6 @@ function updateColor(gradEL, textBGEL, color, i, gamemode) {
 	// change the text shadows for the numerical scores
 	scoreNums[i].style.webkitTextStroke = "1px " + color.hex;
 	scoreNums[i].style.textShadow = "0px 0px 3px " + color.hex;
-
-}
-
-
-//character update!
-async function updateChar(charInfo, pNum) {
-
-	//store so code looks cleaner later
-	const charEL = pChar[pNum];
-	const trailEL = pTrail[pNum];
-
-	//change the image path depending on the character and skin
-	charEL.src = charInfo.charImg;
-	trailEL.src = charInfo.trailImg;
-
-	//to position the character
-	const charPos = charInfo.charPos;
-	charEL.style.transform = `translate(${charPos[0]}px, ${charPos[1]}px) scale(${charPos[2]})`;
-	trailEL.style.transform = `translate(${charPos[0]}px, ${charPos[1]}px) scale(${charPos[2]})`;
-
-	//to decide scalling
-	if (charInfo.skin.includes("HD")) {
-		charEL.style.imageRendering = "auto"; // default scalling
-		trailEL.style.imageRendering = "auto";
-	} else {
-		charEL.style.imageRendering = "pixelated"; // pixel art scalling
-		trailEL.style.imageRendering = "pixelated";
-	}
-
-	// here we will store promises to use later
-	const charsLoaded = [];
-	//this will make the thing wait till the images are fully loaded
-	charsLoaded.push(charEL.decode(),
-		trailEL.decode().catch( () => {} ) // if no trail, do nothing
-	);
-	// this function will send a promise when the images finish loading
-	await Promise.all(charsLoaded);
-
-	return [pChara[pNum], trailEL];
 
 }
 
