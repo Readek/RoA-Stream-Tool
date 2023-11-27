@@ -9,7 +9,8 @@ import { casters } from "./VS Screen/Caster/Casters.mjs";
 import { gamemodeClass } from "./VS Screen/Gamemode Change.mjs";
 import { players } from "./VS Screen/Player/Players.mjs";
 import { roundInfo } from "./VS Screen/Round Info/Round Info.mjs";
-import { fadeInTimeVs, fadeOutTimeVs, introDelayVs } from "./VS Screen/VsGlobals.mjs";
+import { teams } from "./VS Screen/Team/Teams.mjs";
+import { fadeInTimeVs, fadeOutTimeVs } from "./VS Screen/VsGlobals.mjs";
 
 // this is a weird way to have file svg's that can be recolored by css
 customElements.define("load-svg", class extends HTMLElement {
@@ -21,19 +22,12 @@ customElements.define("load-svg", class extends HTMLElement {
 })
 
 
-//max text sizes (used when resizing back)
-const teamSize = 72;
-
 //to avoid the code constantly running the same method over and over
 const scorePrev = [], colorPrev = [];
-
-//to consider how many loops will we do
-let maxPlayers = 2; //will change when doubles comes
 
 
 //next, global variables for the html elements
 const pWrapper = document.getElementsByClassName("wrappers");
-const teamNames = document.getElementsByClassName("teamName");
 const pChara = document.getElementsByClassName("chara");
 const pChar = document.getElementsByClassName("char");
 const pTrail = document.getElementsByClassName("trail");
@@ -56,7 +50,6 @@ initWebsocket("gameData", (data) => updateData(data));
 function updateData(data) {
 
 	const player = data.player;
-	const teamName = data.teamName;
 
 	const color = data.color;
 	const score = data.score;
@@ -68,27 +61,20 @@ function updateData(data) {
 	// if this isnt a singles match, rearrange stuff
 	gamemodeClass.change(data.gamemode);
 
-	// set the max players depending on singles or doubles
-	maxPlayers = gamemodeClass.getGm() == 1 ? 2 : 4;
-
 	// depending on best of, show or hide some score ticks
 	bestOf.update(data.bestOf);
 
 	// update that player data (names, info, characters, backgrounds)
 	players.update(data.player);
 
+	// update everything related to teams (names, score, color)
+	teams.update(data.teamName, data.color, data.score);
+
 	// now, things that will happen only the first time the html loads
 	if (current.startup) {
 
 		// this will run for each side (so twice)
 		for (let i = 0; i < maxSides; i++) {
-
-			//update team names (if gamemode is not set to singles)
-			if (gamemode != 1) {
-				updateText(teamNames[i], teamName[i], teamSize);
-				resizeText(teamNames[i]);
-				fadeIn(teamNames[i], fadeInTimeVs, introDelayVs+.15);
-			}
 
 			//set the colors
 			updateColor(colorBG[i], textBG[i], color[i], i, gamemode);
@@ -166,20 +152,6 @@ function updateData(data) {
 
 				scorePrev[i] = score[i];
 
-			}
-
-			//did any of the team names change?
-			if (gamemode != 1) {
-				if (teamNames[i].textContent != teamName[i]) {
-					//hide the text before doing anything
-					fadeOut(teamNames[i], fadeOutTimeVs).then( () => {
-						//update the text while nobody can see it
-						updateText(teamNames[i], teamName[i], teamSize);
-						resizeText(teamNames[i]);
-						//and fade it back to normal
-						fadeIn(teamNames[i], fadeInTimeVs);
-					});
-				}
 			}
 
 		}
