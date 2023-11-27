@@ -64,6 +64,7 @@ export class Player {
     /**
      * Updates all player's character elements
      * @param {Object} vsData - Data for the VS Screen
+     * @returns {Promise <() => void>} Promise with fade in animation function
      */
     updateChar(vsData) {
 

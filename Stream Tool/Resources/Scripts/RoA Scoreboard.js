@@ -6,6 +6,7 @@ import { fadeOut } from "./Utils/Fade Out.mjs";
 import { current } from "./Utils/Globals.mjs";
 import { resizeText } from "./Utils/Resize Text.mjs";
 import { updateText } from "./Utils/Update Text.mjs";
+import { initWebsocket } from "./Utils/WebSocket.mjs";
 
 
 //max text sizes (used when resizing back)
@@ -24,8 +25,6 @@ let bestOfPrev, gamemodePrev;
 let maxPlayers = 2;
 const maxSides = 2;
 
-// this will connect us to the GUI
-let webSocket;
 
 let startup = true;
 
@@ -56,38 +55,15 @@ pushArrayInOrder(pProns, "Pronouns");
 pushArrayInOrder(charImg, "Character");
 
 
-// first we will start by connecting with the GUI with a websocket
-startWebsocket();
-function startWebsocket() {
+// start the connection to the GUI so everything gets
+// updated once the GUI sends back some data
+initWebsocket("gameData", (data) => updateData(data));
 
-	// change this to the IP of where the GUI is being used for remote control
-	webSocket = new WebSocket("ws://localhost:8080?id=gameData");
-	webSocket.onopen = () => { // if it connects successfully
-		// everything will update everytime we get data from the server (the GUI)
-		webSocket.onmessage = function (event) {
-			updateData(JSON.parse(event.data));
-		}
-		// hide error message in case it was up
-		document.getElementById('connErrorDiv').style.display = 'none';
-	}
 
-	// if the connection closes, wait for it to reopen
-	webSocket.onclose = () => {errorWebsocket()}
-
-}
-function errorWebsocket() {
-
-	// show error message
-	document.getElementById('connErrorDiv').style.display = 'flex';
-	// delete current webSocket
-	webSocket = null;
-	// we will attempt to reconect every 5 seconds
-	setTimeout(() => {
-		startWebsocket();
-	}, 5000);
-
-}
-
+/**
+ * Updates all displayed data
+ * @param {Object} data - All data related to the VS Screen
+ */
 async function updateData(data) {
 
 	const player = data.player;

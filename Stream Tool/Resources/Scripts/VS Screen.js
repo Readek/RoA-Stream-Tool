@@ -3,6 +3,7 @@ import { fadeOut } from "./Utils/Fade Out.mjs";
 import { current, maxSides } from "./Utils/Globals.mjs";
 import { resizeText } from "./Utils/Resize Text.mjs";
 import { updateText } from "./Utils/Update Text.mjs";
+import { initWebsocket } from "./Utils/WebSocket.mjs";
 import { bestOf } from "./VS Screen/BestOf.mjs";
 import { casters } from "./VS Screen/Caster/Casters.mjs";
 import { gamemodeClass } from "./VS Screen/Gamemode Change.mjs";
@@ -29,9 +30,6 @@ const scorePrev = [], colorPrev = [];
 //to consider how many loops will we do
 let maxPlayers = 2; //will change when doubles comes
 
-// this will connect us to the GUI
-let webSocket;
-
 
 //next, global variables for the html elements
 const pWrapper = document.getElementsByClassName("wrappers");
@@ -46,40 +44,16 @@ const textBG = document.getElementsByClassName("textBG");
 const scoreOverlay = document.getElementById("scores");
 
 
-// first we will start by connecting with the GUI with a websocket
-startWebsocket();
-function startWebsocket() {
-
-	// change this to the IP of where the GUI is being used for remote control
-	webSocket = new WebSocket("ws://localhost:8080?id=gameData");
-	webSocket.onopen = () => { // if it connects successfully
-		// everything will update everytime we get data from the server (the GUI)
-		webSocket.onmessage = function (event) {
-			updateData(JSON.parse(event.data));
-		}
-		// hide error message in case it was up
-		document.getElementById('connErrorDiv').style.display = 'none';
-	}
-
-	// if the connection closes, wait for it to reopen
-	webSocket.onclose = () => {errorWebsocket()}
-
-}
-function errorWebsocket() {
-
-	// show error message
-	document.getElementById('connErrorDiv').style.display = 'flex';
-	// delete current webSocket
-	webSocket = null;
-	// we will attempt to reconect every 5 seconds
-	setTimeout(() => {
-		startWebsocket();
-	}, 5000);
-
-}
+// start the connection to the GUI so everything gets
+// updated once the GUI sends back some data
+initWebsocket("gameData", (data) => updateData(data));
 
 
-async function updateData(data) {
+/**
+ * Updates all displayed data
+ * @param {Object} data - All data related to the VS Screen
+ */
+function updateData(data) {
 
 	const player = data.player;
 	const teamName = data.teamName;
@@ -92,7 +66,7 @@ async function updateData(data) {
 	// first of all, things that will always happen on each cycle
 
 	// if this isnt a singles match, rearrange stuff
-	gamemodeClass.change(gamemode);
+	gamemodeClass.change(data.gamemode);
 
 	// set the max players depending on singles or doubles
 	maxPlayers = gamemodeClass.getGm() == 1 ? 2 : 4;

@@ -34,6 +34,7 @@ export class PlayerCharacter {
      /**
      * Updates all player's character elements
      * @param {Object} vsData - Data for the VS Screen
+     * @returns {Promise <() => void>} Promise with fade in animation function
      */
     update(vsData) {
 
@@ -48,6 +49,7 @@ export class PlayerCharacter {
     /**
      * Updates character and trail images
      * @param {Object} vsData - Data for the VS Screen
+     * @returns {Promise <() => void>} Promise with fade in animation function
      */
     async #updateChar(data) {
 
@@ -94,7 +96,7 @@ export class PlayerCharacter {
             await Promise.all(charsLoaded);
 
             // return the fade in animation, to be used when rest of players load
-            return [this, fadeInDelay];
+            return () => this.fadeInChar(fadeInDelay);
             
         }
 

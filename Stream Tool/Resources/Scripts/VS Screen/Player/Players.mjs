@@ -51,11 +51,9 @@ class Players {
 
         // when character images have fully lodaded, fade them in at once
         Promise.all(charsLoaded).then( (pChar) => {
-            for (let i = 0; i < pChar.length; i++) {
-                if (pChar[i]) {
-                    pChar[i][0].fadeInChar(pChar[i][1]);
-                }
-            }
+            pChar.forEach(fade => {
+                if (fade) fade() // promise can return undefined if no update
+            });
         })
 
     }
