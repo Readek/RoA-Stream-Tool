@@ -31,7 +31,6 @@ const pWrapper = document.getElementsByClassName("wrappers");
 const pTrail = document.getElementsByClassName("trail");
 const scoreImg = document.getElementsByClassName("scoreTick");
 const scoreNums = document.getElementsByClassName("scoreNum");
-const textBG = document.getElementsByClassName("textBG");
 const scoreOverlay = document.getElementById("scores");
 
 
@@ -74,7 +73,7 @@ function updateData(data) {
 		for (let i = 0; i < maxSides; i++) {
 
 			//set the colors
-			updateColor(textBG[i], color[i], i, gamemode);
+			updateColor(color[i], i, gamemode);
 			colorPrev[i] = color[i].name;
 
 			//initialize the score ticks
@@ -114,7 +113,7 @@ function updateData(data) {
 		//if (gamemodePrev != gamemode) {
 			//calling updateColor here so the text background gets added
 			for (let i = 0; i < maxSides; i++) {
-				updateColor(textBG[i], color[i], i, gamemode);
+				updateColor(color[i], i, gamemode);
 			}
 		//}
 
@@ -124,7 +123,7 @@ function updateData(data) {
 			//color change, this is up here before char/skin change so it doesnt change the
 			//trail to the next one if the character has changed, but it will change its color
 			if (colorPrev[i] != color[i].name) {
-				updateColor(textBG[i], color[i], i, gamemode);
+				updateColor(color[i], i, gamemode);
 				colorTrail(pTrail[i], player[i]);
 				//if this is doubles, we also need to change the colors for players 3 and 4
 				if (gamemode == 2) {
@@ -202,11 +201,8 @@ function updateScore(side, pScore, pColor) {
 
 
 //color change
-function updateColor(textBGEL, color, i, gamemode) {
+function updateColor(color, i, gamemode) {
 
-	//same but with the text background
-	textBGEL.src = `Resources/Overlay/VS Screen/Text BGs/${gamemode}/${color.name}.png`;
-	
 	// update the root css color variable
 	const r = document.querySelector(':root');
 	if (i % 2 == 0) {

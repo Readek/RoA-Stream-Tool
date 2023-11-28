@@ -6,7 +6,8 @@ import { roundInfo } from "./Round Info/Round Info.mjs";
 const overlay = document.getElementById("vsOverlay");
 
 const dubELs = document.getElementsByClassName("dubEL");
-const textBG = document.getElementsByClassName("textBG");
+
+const textBG = document.getElementsByClassName("textBg");
 
 const middleDivs = document.getElementById("middleDivs");
 
@@ -55,11 +56,12 @@ class Gamemode {
 			dubELs[i].style.display = "flex";
 		}
 
-		// change the positions for the text backgrounds (will now be used for team names)
+		// change size/angle of text backgrounds (will now be used for team names)
         for (let i = 0; i < maxSides; i++) {
-			textBG[i].style.bottom = "477px";
+			textBG[i].classList.add("textBgDubs");
 		}
-		textBG[1].style.right = "-10px";
+		// vertically align them to the center of the screen
+		textBG[0].parentElement.classList.add("textBGsDubs");
 
 		// move the match info to the center of the screen
         middleDivs.style.setProperty("--topMargin", " var(--doublesTopMargin)");
@@ -91,10 +93,10 @@ class Gamemode {
 		}
 
 		// move everything back to where it was
-		for (let i = 0; i < maxSides; i++) {
-			textBG[i].style.bottom = "0px";
+        for (let i = 0; i < maxSides; i++) {
+			textBG[i].classList.remove("textBgDubs");
 		}
-		textBG[1].style.right = "-2px";
+		textBG[0].parentElement.classList.remove("textBGsDubs");
 
 		middleDivs.style.setProperty("--topMargin", " var(--singlesTopMargin)");
         roundInfo.changeGamemode(this.getGm());
