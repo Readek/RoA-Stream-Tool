@@ -11,16 +11,10 @@ const textBG = document.getElementsByClassName("textBg");
 
 const middleDivs = document.getElementById("middleDivs");
 
-const topRow = document.getElementById("topRow");
-const clipP1 = document.getElementById("clipP1");
-const clipP2 = document.getElementById("clipP2");
-
 
 class Gamemode {
 
     #currentGamemode = 1;
-
-    // todo move most of the logic to their respective classes
 
     /**
      * Rearranges all DOM elements depending on current gamemode
@@ -64,17 +58,9 @@ class Gamemode {
 		textBG[0].parentElement.classList.add("textBGsDubs");
 
 		// move the match info to the center of the screen
-        middleDivs.style.setProperty("--topMargin", " var(--doublesTopMargin)");
+        middleDivs.style.setProperty("--topMargin", "var(--doublesTopMargin)");
         roundInfo.changeGamemode(this.getGm());
         casters.changeGamemode(this.getGm());
-
-		// reposition the top characters (bot ones are already positioned)
-		topRow.style.top = "-180px";
-		// change the clip mask
-		clipP1.classList.remove("singlesClip");
-		clipP1.classList.add("dubsClip");
-		clipP2.classList.remove("singlesClip");
-		clipP2.classList.add("dubsClip");
 		
 		// adapt the players for the new gamemode
 		players.changeGm(this.getGm());
@@ -101,13 +87,6 @@ class Gamemode {
 		middleDivs.style.setProperty("--topMargin", " var(--singlesTopMargin)");
         roundInfo.changeGamemode(this.getGm());
         casters.changeGamemode(this.getGm());
-
-		topRow.style.top = "0px";
-
-		clipP1.classList.remove("dubsClip");
-		clipP1.classList.add("singlesClip");
-		clipP2.classList.remove("dubsClip");
-		clipP2.classList.add("singlesClip");
 		
 		players.changeGm(this.getGm());
 

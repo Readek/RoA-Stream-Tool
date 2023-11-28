@@ -1,4 +1,3 @@
-import { maxSides } from "../../Utils/Globals.mjs";
 import { Team } from "./Team.mjs";
 
 class Teams {
@@ -10,11 +9,13 @@ class Teams {
 
         // gather the data needed for our classes
         const nameEls = document.getElementsByClassName("teamName");
+        const cssRoot = document.querySelector(':root');
 
         // for both sides, create them teams
-        for (let i = 0; i < maxSides; i++) {
-            this.#teams.push(new Team(nameEls[i]));
-        }
+        this.#teams.push(
+            new Team(nameEls[0], cssRoot, "L"),
+            new Team(nameEls[1], cssRoot, "R"),
+        );
 
     }
 

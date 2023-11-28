@@ -79,6 +79,7 @@ export class Player {
     changeGm(gamemode) {
         this.#pName.changeGm(gamemode);
         this.#pInfo.changeGm(gamemode);
+        this.#pChar.changeGm(gamemode);
     }
 
 }

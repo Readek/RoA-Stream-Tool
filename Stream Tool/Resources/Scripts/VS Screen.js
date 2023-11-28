@@ -27,8 +27,6 @@ const scorePrev = [], colorPrev = [];
 
 
 //next, global variables for the html elements
-const pWrapper = document.getElementsByClassName("wrappers");
-const pTrail = document.getElementsByClassName("trail");
 const scoreImg = document.getElementsByClassName("scoreTick");
 const scoreNums = document.getElementsByClassName("scoreNum");
 const scoreOverlay = document.getElementById("scores");
@@ -45,12 +43,8 @@ initWebsocket("gameData", (data) => updateData(data));
  */
 function updateData(data) {
 
-	const player = data.player;
-
 	const color = data.color;
 	const score = data.score;
-
-	const gamemode = data.gamemode;
 
 	// first of all, things that will always happen on each cycle
 
@@ -71,10 +65,6 @@ function updateData(data) {
 
 		// this will run for each side (so twice)
 		for (let i = 0; i < maxSides; i++) {
-
-			//set the colors
-			updateColor(color[i], i, gamemode);
-			colorPrev[i] = color[i].name;
 
 			//initialize the score ticks
 			updateScore(i, score[i], color[i]);
@@ -109,26 +99,11 @@ function updateData(data) {
 	// now things that will happen every other cycle
 	else {
 
-		//of course, check if the gamemode has changed
-		//if (gamemodePrev != gamemode) {
-			//calling updateColor here so the text background gets added
-			for (let i = 0; i < maxSides; i++) {
-				updateColor(color[i], i, gamemode);
-			}
-		//}
-
-
 		for (let i = 0; i < maxSides; i++) {
 
 			//color change, this is up here before char/skin change so it doesnt change the
 			//trail to the next one if the character has changed, but it will change its color
 			if (colorPrev[i] != color[i].name) {
-				updateColor(color[i], i, gamemode);
-				colorTrail(pTrail[i], player[i]);
-				//if this is doubles, we also need to change the colors for players 3 and 4
-				if (gamemode == 2) {
-					colorTrail(pTrail[i+2], player[i+2]);
-				}
 				updateScore(i, score[i], color[i]);
 				colorPrev[i] = color[i].name;
 			}
@@ -197,36 +172,4 @@ function updateScore(side, pScore, pColor) {
 		scoreImg[side+2].style.fill = pColor.hex;
 	}
 
-}
-
-
-//color change
-function updateColor(color, i, gamemode) {
-
-	// update the root css color variable
-	const r = document.querySelector(':root');
-	if (i % 2 == 0) {
-		r.style.setProperty("--colorL", color.hex);
-	} else {
-		r.style.setProperty("--colorR", color.hex);
-	}
-
-	// if 2v2, add a background to the name wrapper
-	if (gamemode == 2) {
-		pWrapper[i].style.backgroundColor = `${color.hex}ff`;
-		pWrapper[i+2].style.backgroundColor = `${color.hex}ff`;
-	} else {
-		pWrapper[i].style.backgroundColor = "";
-		pWrapper[i+2].style.backgroundColor = "";
-	}
-
-	// change the text shadows for the numerical scores
-	scoreNums[i].style.webkitTextStroke = "1px " + color.hex;
-	scoreNums[i].style.textShadow = "0px 0px 3px " + color.hex;
-
-}
-
-//this gets called just to change the color of a trail
-function colorTrail(trailEL, char) {
-	trailEL.src = char.vs.trailImg;
 }

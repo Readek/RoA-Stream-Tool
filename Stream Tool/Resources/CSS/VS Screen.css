@@ -121,7 +121,7 @@ body {
     font-size: 28px;
 }
 .playerInfoDivL {
-    bottom: 225px;
+    bottom: 223px;
     left: 12px;
     transform-origin: bottom left;
 }
@@ -265,7 +265,7 @@ body {
 .textBg {
     height: 157px;
     width: 50%;
-    transform: skewY(-3.2deg);
+    transform: skewY(-3.3deg);
 }
 .textBg::after {
     position: absolute;
@@ -323,21 +323,25 @@ body {
     top: 50px;
     left: 40px;
     transform: rotate(-3.3deg);
+    background-color: var(--colorL);
 }
 .p2WDub {
     top: 50px;
     right: 40px;
     transform: rotate(3.3deg);
+    background-color: var(--colorR);
 }
 #p3Wrapper {
     bottom: 50px;
     left: 40px;
     transform: rotate(3.3deg);
+    background-color: var(--colorL);
 }
 #p4Wrapper {
     bottom: 50px;
     right: 40px;
     transform: rotate(-3.3deg);
+    background-color: var(--colorR);
 }
 
 .name {
@@ -586,6 +590,14 @@ body {
     justify-content: center;
     align-items: center;
     transform: translateY(24px);
+}
+#scoreNumL {
+    -webkit-text-stroke: 1px var(--colorL);
+    text-shadow: 0px 0px 3px var(--colorL);
+}
+#scoreNumR {
+    -webkit-text-stroke: 1px var(--colorR);
+    text-shadow: 0px 0px 3px var(--colorR);
 }
 
 #connErrorDiv {

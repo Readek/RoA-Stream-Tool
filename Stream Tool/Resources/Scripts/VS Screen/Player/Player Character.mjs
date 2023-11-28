@@ -6,6 +6,7 @@ import { fadeInTimeVs, fadeOutTimeVs, introDelayVs } from "../VsGlobals.mjs";
 export class PlayerCharacter {
 
     #charSrc = "";
+    #trailSrc = "";
     #bgSrc = "";
 
     #charEl;
@@ -54,13 +55,14 @@ export class PlayerCharacter {
     async #updateChar(data) {
 
         // if that character image is not the same as the local one
-        if (this.#charSrc != data.charImg) {
+        if (this.#charSrc != data.charImg || this.#trailSrc != data.trailImg) {
 
             // calculate delay for the final fade in
             const fadeInDelay = current.startup ? introDelayVs : 0;
 
             // remember the change
             this.#charSrc = data.charImg;
+            this.#trailSrc = data.trailImg;
             
             // dont do this if loading
             if (!current.startup) {
@@ -133,6 +135,22 @@ export class PlayerCharacter {
             // remember, remember
             this.#bgSrc = bgSrc;
 
+        }
+
+    }
+    
+    /**
+     * Adapts the character elements to singles or doubles
+     * @param {Number} gamemode - New gamemode
+     */
+    changeGm(gamemode) {
+
+        if (gamemode == 1) { // singles
+            this.#charDiv.parentElement.classList.add("singlesClip");
+            this.#charDiv.parentElement.classList.remove("dubsClip");
+        } else { // doubles
+            this.#charDiv.parentElement.classList.remove("singlesClip");
+            this.#charDiv.parentElement.classList.add("dubsClip");
         }
 
     }
