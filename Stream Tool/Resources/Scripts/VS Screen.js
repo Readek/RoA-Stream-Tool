@@ -41,7 +41,7 @@ function updateData(data) {
 	}
 
 	// if this isnt a singles match, rearrange stuff
-	gamemode.change(data.gamemode);
+	gamemode.update(data.gamemode);
 
 	// depending on best of, show or hide some score ticks
 	bestOf.update(data.bestOf);
@@ -52,14 +52,11 @@ function updateData(data) {
 	// update everything related to teams (names, score, color)
 	teams.update(data.teamName, data.color, data.score);
 
-	// update round text
-	roundInfo.updateRound(data.round);
-
-	// update tournament text
-	roundInfo.updateTournament(data.tournamentName);
+	// update round and tournament text
+	roundInfo.update(data.tournamentName, data.round);
 
 	// and update commentators
-	casters.updateCasters(data.caster);
+	casters.update(data.caster);
 
 	// many modules need to know if we are loading the view up or not
 	if (current.startup) {
@@ -67,3 +64,27 @@ function updateData(data) {
 	}
 
 }
+
+// this will trigger every time the browser goes out of view (or back to view)
+// on OBS, this triggers when swapping in and out of the scene
+document.addEventListener("visibilitychange", () => {
+
+	if (document.hidden) { // if lights go out
+
+		current.startup = true;
+
+		// hide some stuff so we save on some resources
+		players.hide();
+		teams.hide();
+	
+	} else { // when the user comes back
+	
+		// display and animate hidden stuff
+		players.show();
+		teams.show();
+
+		current.startup = false;
+	
+	}
+
+});

@@ -106,7 +106,7 @@ export class PlayerInfo {
             // make the animation happen
             fadeIn(this.#infoEl.children[i], fadeInTimeVs, delayTime);
             // add in an extra delay for the next one
-            delayTime = delayTime+.15
+            delayTime = delayTime+.15;
             
         }
 
@@ -208,6 +208,30 @@ export class PlayerInfo {
             for (let i = 0; i < this.#infoEl.children.length; i++) {
                 this.#infoEl.children[i].classList.remove(`playerInfo1${this.#side}`);
             };
+
+        }
+
+    }
+
+    /** Hides the text elements */
+    hide() {
+        for (let i = 0; i < this.#infoEl.children.length; i++) {
+            this.#infoEl.children[i].style.display = "none";
+        }
+    }
+
+    /** Displays the text elements, fading them in */
+    show() {
+
+        let delayTime = introDelayVs + .6;
+
+        for (let i = 0; i < this.#infoEl.children.length; i++) {
+
+            // display the element and make the animation happen
+            fadeIn(this.#infoEl.children[i], fadeInTimeVs, delayTime);
+            this.#infoEl.children[i].style.display = "flex";
+            // add in an extra delay for the next one
+            delayTime = delayTime+.15;
 
         }
 

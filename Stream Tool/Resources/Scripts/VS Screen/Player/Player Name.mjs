@@ -133,4 +133,15 @@ export class PlayerName {
 
     }
 
+    /** Hides the text wrapper */
+    hide() {
+        this.#wrapperEl.style.display = "none";
+    }
+
+    /** Displays the text wrapper, fading it in */
+    show() {
+        fadeIn(this.#wrapperEl, fadeInTimeVs, introDelayVs + .3);
+        this.#wrapperEl.style.display = "block";
+    }
+
 }

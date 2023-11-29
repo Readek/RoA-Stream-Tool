@@ -12,24 +12,15 @@ const round = new RoundTournament(document.getElementById("round"), 30);
 class RoundInfo {
 
     /**
-     * Updates the shown text, fading it out and in if needed,
-     * and resizing its containing box
-     * @param {String} text - Text to be displayed
+     * Updates the shown texts, fading them out and in if needed,
+     * and resizing their containing box
+     * @param {String} tournamentText - Tournament text to be displayed
+     * @param {String} roundText - Round text to be displayed
      */
-    updateTournament(text) {
+    update(tournamentText, roundText) {
 
-        this.#actualUpdate(tournament, text);
-
-    }
-
-    /**
-     * Updates the shown text, fading it out and in if needed,
-     * and resizing its containing box
-     * @param {String} text - Text to be displayed
-     */
-    updateRound(text) {
-
-        this.#actualUpdate(round, text);
+        this.#actualUpdate(tournament, tournamentText);
+        this.#actualUpdate(round, roundText);
 
     }
 

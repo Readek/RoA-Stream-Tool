@@ -82,4 +82,18 @@ export class Player {
         this.#pChar.changeGm(gamemode);
     }
 
+    /** Hides some stuff when browser goes out of view */
+    hide() {
+        this.#pName.hide();
+        this.#pInfo.hide();
+        this.#pChar.hide();
+    }
+
+    /** Display elements and animations when user comes back to the browser */
+    show() {
+        this.#pName.show();
+        this.#pInfo.show();
+        this.#pChar.show();
+    }
+
 }

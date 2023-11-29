@@ -51,4 +51,15 @@ export class TeamName {
 
     }
 
+    /** Hides the text element */
+    hide() {
+        this.#nameEl.style.display = "none";
+    }
+
+    /** Displays the text wrapper, fading it in */
+    show() {
+        fadeIn(this.#nameEl, fadeInTimeVs, introDelayVs + .2);
+        this.#nameEl.style.display = "flex";
+    }
+
 }

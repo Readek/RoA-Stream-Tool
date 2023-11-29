@@ -55,7 +55,7 @@ class Casters {
      * Updates commentators with the provided data
      * @param {Object} data - New data with all commentators
      */
-    async updateCasters(data) {
+    async update(data) {
 
         // fist of all, check if we have the same amount of casters
         const incCasterLength = data.length;

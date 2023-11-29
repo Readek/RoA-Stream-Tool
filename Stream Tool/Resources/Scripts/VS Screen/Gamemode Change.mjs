@@ -20,7 +20,7 @@ class Gamemode {
      * Rearranges all DOM elements depending on current gamemode
      * @param {Number} gamemode - Gamemode to change to
      */
-    change(gamemode) {
+    update(gamemode) {
 
         if (gamemode != this.#currentGamemode) {
 

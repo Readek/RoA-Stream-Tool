@@ -57,6 +57,24 @@ class Teams {
 
     }
 
+    /** Hides some elements when browser goes out of view */
+    hide() {
+
+        for (let i = 0; i < this.#teams.length; i++) {
+            this.#teams[i].hide();            
+        }
+
+    }
+
+    /** Returns some elements back to view, animating them */
+    show() {
+
+        for (let i = 0; i < this.#teams.length; i++) {
+            this.#teams[i].show();            
+        }
+
+    }
+
 }
 
 export const teams = new Teams;
