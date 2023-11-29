@@ -2,7 +2,7 @@ import { fadeIn } from "../../Utils/Fade In.mjs";
 import { fadeOut } from "../../Utils/Fade Out.mjs";
 import { current } from "../../Utils/Globals.mjs";
 import { resizeText } from "../../Utils/Resize Text.mjs";
-import { gamemodeClass } from "../Gamemode Change.mjs";
+import { gamemode } from "../Gamemode Change.mjs";
 import { fadeInTimeVs, fadeOutTimeVs, introDelayVs } from "../VsGlobals.mjs";
 
 const playerSize = 90;
@@ -45,7 +45,7 @@ export class PlayerName {
         this.#nameEl.innerHTML = name;
 
         // resize it depending on the gamemode
-        if (gamemodeClass.getGm() == 1) {
+        if (gamemode.getGm() == 1) {
             this.#nameEl.style.fontSize = playerSize + "px";
         } else {
             this.#nameEl.style.fontSize = playerSizeDubs + "px";
@@ -64,7 +64,7 @@ export class PlayerName {
         this.#tagEl.innerHTML = tag;
 
         // resize it depending on the gamemode
-        if (gamemodeClass.getGm() == 1) {
+        if (gamemode.getGm() == 1) {
             this.#tagEl.style.fontSize = tagSize + "px";
         } else {
             this.#tagEl.style.fontSize = tagSizeDubs + "px";

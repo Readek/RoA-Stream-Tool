@@ -2,7 +2,7 @@ import { fadeIn } from "../../Utils/Fade In.mjs";
 import { fadeOut } from "../../Utils/Fade Out.mjs";
 import { current } from "../../Utils/Globals.mjs";
 import { isEmpty } from "../../Utils/Is Object Empty.mjs";
-import { gamemodeClass } from "../Gamemode Change.mjs";
+import { gamemode } from "../Gamemode Change.mjs";
 import { fadeInTimeVs, fadeOutTimeVs, introDelayVs } from "../VsGlobals.mjs";
 
 export class PlayerInfo {
@@ -170,7 +170,7 @@ export class PlayerInfo {
 
                 this.#infoEl.children[i].classList.add(`playerInfo2${this.#side}`);
 
-            } else if (gamemodeClass.getGm() == 2) { // if in doubles
+            } else if (gamemode.getGm() == 2) { // if in doubles
 
                 this.#infoEl.children[i].classList.add(`playerInfo1${this.#side}`);
 

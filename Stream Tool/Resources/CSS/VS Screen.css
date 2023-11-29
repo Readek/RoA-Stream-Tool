@@ -540,6 +540,7 @@ body {
 #scores {
     position: relative;
     margin-top: 8px;
+    --greyScore: #414141;
 }
 
 .scoreTick {

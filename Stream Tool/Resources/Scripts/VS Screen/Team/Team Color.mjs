@@ -3,7 +3,7 @@ export class TeamColor {
     #cssRoot;
     #side;
 
-    #color;
+    #color = "";
 
     /**
      * Controls the colors of a team

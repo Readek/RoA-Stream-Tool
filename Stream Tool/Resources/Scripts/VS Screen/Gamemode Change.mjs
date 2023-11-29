@@ -94,4 +94,4 @@ class Gamemode {
 
 }
 
-export const gamemodeClass = new Gamemode; // todo remove class from name
+export const gamemode = new Gamemode;
