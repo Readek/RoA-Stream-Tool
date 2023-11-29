@@ -67,6 +67,8 @@ function updateData(data) {
 
 // this will trigger every time the browser goes out of view (or back to view)
 // on OBS, this triggers when swapping in and out of the scene
+// on Chromium (OBS browsers run on it), hide() won't be done until
+// the user tabs back, displaying everything for around 1 frame
 document.addEventListener("visibilitychange", () => {
 
 	if (document.hidden) { // if lights go out
@@ -79,10 +81,12 @@ document.addEventListener("visibilitychange", () => {
 	
 	} else { // when the user comes back
 	
-		// display and animate hidden stuff
-		players.show();
-		teams.show();
-
+		setTimeout(() => { // i absolutely hate Chromium
+			// display and animate hidden stuff
+			players.show();
+			teams.show();
+		}, 0);
+		
 		current.startup = false;
 	
 	}

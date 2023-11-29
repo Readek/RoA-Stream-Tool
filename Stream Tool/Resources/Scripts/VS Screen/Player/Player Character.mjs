@@ -155,17 +155,15 @@ export class PlayerCharacter {
 
     }
 
-    /** Hides the character's elements */
+    /** Hides the character's images */
     hide() {
         this.#charDiv.style.display = "none";
-        this.#bgEl.style.display = "none";
     }
 
-    /** Displays hidden elements, fading them in */
+    /** Displays hidden images, fading them in */
     show() {
         charaFadeIn(this.#charDiv, this.#trailEl, fadeInTimeVs, introDelayVs);
         this.#charDiv.style.display = "block";
-        this.#bgEl.style.display = "block";
     }
 
 }
