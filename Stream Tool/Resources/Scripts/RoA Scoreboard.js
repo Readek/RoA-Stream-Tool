@@ -1,4 +1,5 @@
 import { scoreboardIntro } from "./Scoreboard/Intro.mjs";
+import { players } from "./Scoreboard/Player/Players.mjs";
 import { round } from "./Scoreboard/Round.mjs";
 import { fadeInTimeSc, fadeOutTimeSc, introDelaySc } from "./Scoreboard/ScGlobals.mjs";
 import { fadeIn, fadeInMove } from "./Utils/Fade In.mjs";
@@ -125,21 +126,14 @@ async function updateData(data) {
 		}
 		gamemodePrev = gamemode;
 
+		
+
 
 		// this will be used later to sync the animations for all character images
 		const charsLoaded = [];
 
 		// now for the actual initialization of players
 		for (let i = 0; i < maxPlayers; i++) {
-			
-			//lets start with the player names and tags
-			updatePlayerName(i, player[i].name, player[i].tag, gamemode);
-			if (gamemode == 1) { //if this is singles, fade the names in with a sick motion
-				const side = (i % 2 == 0) ? true : false; //to know direction
-				fadeInMove(pWrapper[i], null, side, current.delay); // fade it in with some movement
-			} else { //if doubles, just fade them in
-				fadeIn(pWrapper[i], fadeInTimeSc, current.delay+.15)
-			}
 
 			// show player pronouns if any
 			updatePronouns(i, player[i].pronouns);
@@ -200,9 +194,6 @@ async function updateData(data) {
 			
 		}
 
-		//update the round text	and fade it in
-		round.update(data.round);
-
 		startup = false; //next time we run this function, it will skip all we just did
 		current.startup = false;
 
@@ -227,30 +218,6 @@ async function updateData(data) {
 		const charsLoaded = [], animsEnded = [];
 		//lets check each player
 		for (let i = 0; i < maxPlayers; i++) {
-			
-			//player names and tags
-			if (pName[i].textContent != player[i].name || pTag[i].textContent != player[i].tag) {
-
-				//check the player's side so we know the direction of the movement
-				const side = (i % 2 == 0) ? true : false;
-
-				//if this is singles, move the texts while updating
-				if (gamemode == 1) {
-					//move and fade out the player 1's text
-					fadeOutMove(pWrapper[i], null, side).then( () => {
-						//now that nobody is seeing it, quick, change the text's content!
-						updatePlayerName(i, player[i].name, player[i].tag, gamemode);
-						//fade the name back in with a sick movement
-						fadeInMove(pWrapper[i], null, side);
-					});
-				} else { //if not singles, dont move the texts
-					fadeOut(pWrapper[i], fadeOutTimeSc).then( () => {
-						updatePlayerName(i, player[i].name, player[i].tag, gamemode);
-						fadeIn(pWrapper[i], fadeInTimeSc);
-					}); 
-				}
-				
-			}
 
 			// show player pronouns if any
 			if (player[i].pronouns != pProns[i].textContent) {
@@ -347,10 +314,14 @@ async function updateData(data) {
 
 		}
 		
-		//and finally, update the round text
-		round.update(data.round);
-
 	}
+
+	// update players (names, info, characters)
+	players.update(data.player);
+
+	// and finally, update the round text
+	round.update(data.round);
+
 }
 
 
