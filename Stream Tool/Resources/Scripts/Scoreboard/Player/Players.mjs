@@ -64,16 +64,9 @@ class Players {
 
         // this only affects the first 2 players,
         // as players 3 and 4 are already configured
-        /* for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < 2; i++) {
             this.#players[i].changeGm(gamemode);
-        } */
-
-        // reposition the top characters (bot ones are already positioned)
-        /* if (gamemode == 1) {
-            topRow.style.top = "0";
-        } else {
-		    topRow.style.top = "-180px";
-        } */
+        }
 
     }
 

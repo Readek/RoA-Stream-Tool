@@ -14,8 +14,12 @@
 }
 
 :root {
-    --scoreboardX: 470px;
-    --scoreboardY: 25px;
+    --scoreboardX: var(--scoreboardXSingles);
+    --scoreboardY: var(--scoreboardYSingles);
+    --scoreboardXSingles: 470px;
+    --scoreboardXDoubles: 15px;
+    --scoreboardYSingles: 25px;
+    --scoreboardYDoubles: 13px;
     --colorL: #14bb89;
     --colorR: #14bb89;
   }

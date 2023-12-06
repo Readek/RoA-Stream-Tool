@@ -2,6 +2,7 @@ import { fadeIn, fadeInMove } from "../../Utils/Fade In.mjs";
 import { fadeOutMove } from "../../Utils/Fade Out.mjs";
 import { current } from "../../Utils/Globals.mjs";
 import { resizeText } from "../../Utils/Resize Text.mjs";
+import { gamemode } from "../Gamemode Change.mjs";
 import { fadeInTimeSc } from "../ScGlobals.mjs";
 
 const playerSize = 24;
@@ -47,11 +48,11 @@ export class PlayerName {
         this.#nameEl.innerHTML = name;
 
         // resize it depending on the gamemode
-        /* if (gamemode.getGm() == 1) { */
+        if (gamemode.getGm() == 1) {
             this.#nameEl.style.fontSize = playerSize + "px";
-        /* } else {
+        } else {
             this.#nameEl.style.fontSize = playerSizeDubs + "px";
-        } */
+        }
 
     }
 
@@ -66,11 +67,11 @@ export class PlayerName {
         this.#tagEl.innerHTML = tag;
 
         // resize it depending on the gamemode
-        /* if (gamemode.getGm() == 1) { */
+        if (gamemode.getGm() == 1) {
             this.#tagEl.style.fontSize = tagSize + "px";
-        /* } else {
+        } else {
             this.#tagEl.style.fontSize = tagSizeDubs + "px";
-        } */
+        }
 
     }
 
@@ -100,11 +101,11 @@ export class PlayerName {
 
         // and fade everything in!
         if (this.getName() || this.getTag()) { // only if theres content
-            /* if (gamemode.getGm() == 2) {
+            if (gamemode.getGm() == 2) {
                 fadeIn(this.#wrapperEl, fadeInTimeSc, delayTime)
-            } else { */
+            } else {
                 fadeInMove(this.#wrapperEl, null, this.#side, delayTime);
-            /* } */
+            }
             
         }
 
@@ -119,22 +120,34 @@ export class PlayerName {
         if (gamemode == 2) { // doubles
             
             // remove and add doubles classes
-            this.#wrapperEl.classList.remove("wrappersSingles", "p"+(this.#id)+"WSingles");
-			this.#wrapperEl.classList.add("wrappersDoubles", "p"+(this.#id)+"WDub");
+            this.#wrapperEl.classList.remove("wrappersSingles");
+			this.#wrapperEl.classList.add("wrappersDoubles");
 			// update the text size and resize it if it overflows
 			this.#nameEl.style.fontSize = playerSizeDubs + "px";
 			this.#tagEl.style.fontSize = tagSizeDubs + "px";
             // and, of course, resize it
 			resizeText(this.#wrapperEl);
 
+            // move that text
+            if (this.#id == 1) {
+                this.#wrapperEl.style.left = "257px";
+            } else {
+                this.#wrapperEl.style.right = "257px";
+            }
+
         } else { // singles
             
             // same as doubles, but for singles
-            this.#wrapperEl.classList.remove("wrappersDoubles", "p"+(this.#id)+"WDub");
-			this.#wrapperEl.classList.add("wrappersSingles", "p"+(this.#id)+"WSingles");
-            this.#nameEl.style.fontSize = playerSize + "px";
+            this.#wrapperEl.classList.add("wrappersSingles");
+			this.#wrapperEl.classList.remove("wrappersDoubles");
+			this.#nameEl.style.fontSize = playerSize + "px";
 			this.#tagEl.style.fontSize = tagSize + "px";
-            resizeText(this.#wrapperEl);
+			resizeText(this.#wrapperEl);
+            if (this.#id == 1) {
+                this.#wrapperEl.style.left = "38px";
+            } else {
+                this.#wrapperEl.style.right = "38px";
+            }
 
         }
 

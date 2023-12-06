@@ -77,8 +77,8 @@ export class Player {
      */
     changeGm(gamemode) {
         this.#pName.changeGm(gamemode);
-        this.#pInfo.changeGm(gamemode);
-        this.#pChar.changeGm(gamemode);
+        /* this.#pInfo.changeGm(gamemode);
+        this.#pChar.changeGm(gamemode); */
     }
 
     /** Hides some stuff when browser goes out of view */
