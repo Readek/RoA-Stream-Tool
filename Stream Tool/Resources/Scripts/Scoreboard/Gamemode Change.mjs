@@ -2,13 +2,10 @@ import { players } from "./Player/Players.mjs";
 
 const r = document.querySelector(':root');
 const topBars = document.getElementsByClassName("topBarTexts");
-const charImg = [
-    document.getElementById("p1Character"),
-    document.getElementById("p2Character"),
-]
 const tLogoImg = document.getElementsByClassName("tLogos");
 const scoreNums = document.getElementsByClassName("scoreNum");
 let numSize = 36;
+const nameBg = document.getElementsByClassName("nameBg");;
 
 class Gamemode {
 
@@ -48,9 +45,6 @@ class Gamemode {
         players.changeGm(this.getGm());
 
         /* TO IMPLEMENT */
-        // add new positions for the character images
-		charImg[0].parentElement.parentElement.classList.add("charTop");
-		charImg[1].parentElement.parentElement.classList.add("charTop");
         // move the pronouns / [W]/[L] top bars
 		topBars[0].parentElement.parentElement.style.width = "285px";
 		topBars[1].parentElement.parentElement.style.width = "285px";
@@ -78,15 +72,16 @@ class Gamemode {
 			dubELs[i].style.display = "block";
 		}
 
+        // update the background images
+        nameBg[0].src = `Resources/Overlay/Scoreboard/Name BG ${this.getGm()}.png`;
+        nameBg[1].src = `Resources/Overlay/Scoreboard/Name BG ${this.getGm()}.png`;
+
     }
 
     #toSingles() {
 
         r.style.setProperty("--scoreboardX", "var(--scoreboardXSingles)");
 		r.style.setProperty("--scoreboardY", "var(--scoreboardYSingles)");
-
-		charImg[0].parentElement.parentElement.classList.remove("charTop");
-		charImg[1].parentElement.parentElement.classList.remove("charTop");
 
         players.changeGm(this.getGm());
 
@@ -112,6 +107,9 @@ class Gamemode {
 		for (let i = 0; i < dubELs.length; i++) {
 			dubELs[i].style.display = "none";
 		}
+
+        nameBg[0].src = `Resources/Overlay/Scoreboard/Name BG ${this.getGm()}.png`;
+        nameBg[1].src = `Resources/Overlay/Scoreboard/Name BG ${this.getGm()}.png`;
 
     }
 

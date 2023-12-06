@@ -12,10 +12,10 @@ export class Player {
      * Manages all info related to a player on the Scoreboard
      * @param {HTMLElement} wrapEl - Wrapper containing name and tag
      * @param {HTMLElement} infoEl - Element containing player info
-     * @param {HTMLElement} charaEl - Element containing character image
+     * @param {HTMLElement} charEl - Element containing character image
      * @param {Number} id - Player slot
      */
-    constructor(wrapEl, id) {
+    constructor(wrapEl, charEl, id) {
 
         // player name and tag
         const nameEl = wrapEl.getElementsByClassName("names")[0];
@@ -26,9 +26,7 @@ export class Player {
         /* this.#pInfo = new PlayerInfo(infoEl, id); */
 
         // player character
-        /* const charEl = charaEl.getElementsByClassName("char")[0];
-        const trailEl = charaEl.getElementsByClassName("trail")[0];
-        this.#pChar = new PlayerCharacter(charEl, trailEl, bgEl); */
+        this.#pChar = new PlayerCharacter(charEl);
 
     }
 
@@ -77,8 +75,8 @@ export class Player {
      */
     changeGm(gamemode) {
         this.#pName.changeGm(gamemode);
-        /* this.#pInfo.changeGm(gamemode);
-        this.#pChar.changeGm(gamemode); */
+        /* this.#pInfo.changeGm(gamemode); */
+        this.#pChar.changeGm(gamemode);
     }
 
     /** Hides some stuff when browser goes out of view */

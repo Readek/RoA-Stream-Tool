@@ -1,9 +1,9 @@
 import { fadeIn, fadeInMove } from "../../Utils/Fade In.mjs";
-import { fadeOutMove } from "../../Utils/Fade Out.mjs";
+import { fadeOut, fadeOutMove } from "../../Utils/Fade Out.mjs";
 import { current } from "../../Utils/Globals.mjs";
 import { resizeText } from "../../Utils/Resize Text.mjs";
 import { gamemode } from "../Gamemode Change.mjs";
-import { fadeInTimeSc } from "../ScGlobals.mjs";
+import { fadeInTimeSc, fadeOutTimeSc } from "../ScGlobals.mjs";
 
 const playerSize = 24;
 const tagSize = 17;
@@ -19,7 +19,6 @@ export class PlayerName {
     #tagEl;
     #wrapperEl;
 
-    #id = 0;
     #side = false;
 
     /**
@@ -32,7 +31,6 @@ export class PlayerName {
         this.#nameEl = nameEl;
         this.#tagEl = tagEl;
         this.#wrapperEl = nameEl.parentElement;
-        this.#id = id;
         // this determines the direction of fade movements
         this.#side = !(id % 2 == 0);
     }
@@ -90,7 +88,12 @@ export class PlayerName {
             // we wont need delay
             delayTime = 0;
             // wait for the fadeout to proceed
-            await fadeOutMove(this.#wrapperEl, null, this.#side);
+            if (gamemode.getGm() == 2) {
+                await fadeOut(this.#wrapperEl, fadeOutTimeSc);
+            } else {
+                await fadeOutMove(this.#wrapperEl, null, this.#side);
+            }
+            
 
         }
 
@@ -121,7 +124,7 @@ export class PlayerName {
             
             // remove and add doubles classes
             this.#wrapperEl.classList.remove("wrappersSingles");
-			this.#wrapperEl.classList.add("wrappersDoubles");
+			this.#wrapperEl.classList.add("wrappersDubs");
 			// update the text size and resize it if it overflows
 			this.#nameEl.style.fontSize = playerSizeDubs + "px";
 			this.#tagEl.style.fontSize = tagSizeDubs + "px";
@@ -129,7 +132,7 @@ export class PlayerName {
 			resizeText(this.#wrapperEl);
 
             // move that text
-            if (this.#id == 1) {
+            if (this.#side == 1) {
                 this.#wrapperEl.style.left = "257px";
             } else {
                 this.#wrapperEl.style.right = "257px";
@@ -139,11 +142,11 @@ export class PlayerName {
             
             // same as doubles, but for singles
             this.#wrapperEl.classList.add("wrappersSingles");
-			this.#wrapperEl.classList.remove("wrappersDoubles");
+			this.#wrapperEl.classList.remove("wrappersDubs");
 			this.#nameEl.style.fontSize = playerSize + "px";
 			this.#tagEl.style.fontSize = tagSize + "px";
 			resizeText(this.#wrapperEl);
-            if (this.#id == 1) {
+            if (this.#side) {
                 this.#wrapperEl.style.left = "38px";
             } else {
                 this.#wrapperEl.style.right = "38px";

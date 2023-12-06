@@ -14,10 +14,11 @@ class Players {
 
             // gather the data needed for our classes
             const wrapEl = document.getElementById(`p${i+1}Wrapper`);
+            const charEl = document.getElementById(`p${i+1}Character`)
 
             // and create them
             this.#players.push(
-                new Player(wrapEl, i+1)
+                new Player(wrapEl, charEl, i+1)
             );
 
         }
@@ -43,16 +44,16 @@ class Players {
             /* this.#players[i].updateInfo(data[i].pronouns, data[i].socials); */
 
             // update character
-            /* charsLoaded.push(this.#players[i].updateChar(data[i].vs)); */
+            charsLoaded.push(this.#players[i].updateChar(data[i].sc));
 
         }
 
         // when character images have fully lodaded, fade them in at once
-        /* Promise.all(charsLoaded).then( (pChar) => {
+        Promise.all(charsLoaded).then( (pChar) => {
             pChar.forEach(fade => {
                 if (fade) fade() // promise can return undefined if no update
             });
-        }) */
+        })
 
     }
 

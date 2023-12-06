@@ -1,3 +1,4 @@
+import { gamemode } from "./Scoreboard/Gamemode Change.mjs";
 import { scoreboardIntro } from "./Scoreboard/Intro.mjs";
 import { players } from "./Scoreboard/Player/Players.mjs";
 import { round } from "./Scoreboard/Round.mjs";
@@ -11,15 +12,11 @@ import { initWebsocket } from "./Utils/WebSocket.mjs";
 
 
 //max text sizes (used when resizing back)
-const nameSize = 24;
-const tagSize = 17;
-const nameSizeDubs = 22;
-const tagSizeDubs = 15;
 const teamSize = 22;
 let numSize = 36;
 
 //to avoid the code constantly running the same method over and over
-const pCharPrev = [], scorePrev = [], colorPrev = [], wlPrev = [], topBarMoved = [];
+const scorePrev = [], colorPrev = [], wlPrev = [], topBarMoved = [];
 let bestOfPrev, gamemodePrev;
 
 //to consider how many loops will we do
@@ -43,17 +40,14 @@ const tLogoImg = document.getElementsByClassName("tLogos");
 const borderImg = document.getElementsByClassName('border');
 
 // we want the correct order, we cant use getClassName here
-const pWrapper = [], pTag = [], pName = [], pProns = [], charImg = [];
+const pTag = [], pProns = [];
 function pushArrayInOrder(array, string) {
     for (let i = 0; i < 4; i++) {
         array.push(document.getElementById("p"+(i+1)+string));
     }
 }
-pushArrayInOrder(pWrapper, "Wrapper");
 pushArrayInOrder(pTag, "Tag");
-pushArrayInOrder(pName, "Name");
 pushArrayInOrder(pProns, "Pronouns");
-pushArrayInOrder(charImg, "Character");
 
 
 // start the connection to the GUI so everything gets
@@ -75,33 +69,12 @@ async function updateData(data) {
 	const wl = data.wl;
 
 	const bestOf = data.bestOf;
-	const gamemode = data.gamemode;
 
 
 	// first of all, things that will always happen on each cycle
 	
 	// set the max players depending on singles or doubles
-	maxPlayers = gamemode == 1 ? 2 : 4;
-
-	// change border depending of the Best Of status
-	if (bestOfPrev != bestOf) {
-		updateBorder(bestOf, gamemode); // update the border
-		// update the score ticks so they fit the bestOf border
-		updateScore(score[0], bestOf, color[0], 0, gamemode, false);
-		updateScore(score[1], bestOf, color[1], 1, gamemode, false);
-	}
-
-	// things that will happen for each side
-	for (let i = 0; i < maxSides; i++) {
-
-		// change the player background colors
-		if (colorPrev[i] != color[i].name) {
-			updateColor(colorImg[i], color[i], gamemode, scoreNums[i]);
-			colorPrev[i] = color[i].name;
-		}
-
-	}
-
+	maxPlayers = gamemode.getGm() == 1 ? 2 : 4;
 
 	// now, things that will happen only once, when the html loads
 	if (startup) {
@@ -119,18 +92,39 @@ async function updateData(data) {
 			current.delay = introDelaySc;
 		}
 
+	}
 
-		//if this isnt a singles match, rearrange stuff
-		if (gamemode != 1) {
-			changeGM(gamemode);
+	// if this isnt a singles match, rearrange stuff
+	gamemode.update(data.gamemode);
+
+	// update players (names, info, characters)
+	players.update(data.player);
+
+	// and finally, update the round text
+	round.update(data.round);
+
+	// change border depending of the Best Of status
+	if (bestOfPrev != bestOf) {
+		updateBorder(bestOf, gamemode.getGm()); // update the border
+		// update the score ticks so they fit the bestOf border
+		updateScore(score[0], bestOf, color[0], 0, gamemode.getGm(), false);
+		updateScore(score[1], bestOf, color[1], 1, gamemode.getGm(), false);
+	}
+
+	// things that will happen for each side
+	for (let i = 0; i < maxSides; i++) {
+
+		// change the player background colors
+		if (colorPrev[i] != color[i].name) {
+			updateColor(colorImg[i], color[i], gamemode.getGm(), scoreNums[i]);
+			colorPrev[i] = color[i].name;
 		}
-		gamemodePrev = gamemode;
 
-		
+	}
 
 
-		// this will be used later to sync the animations for all character images
-		const charsLoaded = [];
+	// now, things that will happen only once, when the html loads
+	if (startup) {
 
 		// now for the actual initialization of players
 		for (let i = 0; i < maxPlayers; i++) {
@@ -139,21 +133,7 @@ async function updateData(data) {
 			updatePronouns(i, player[i].pronouns);
 			displayTopBarElement(pProns[i]);
 
-			//set the character image for the player
-			charsLoaded.push(updateChar(player[i].sc.charImg, player[i].sc.charPos, i));
-			//the animation will be fired below, when the image finishes loading
-
-			//save the character so we run the character change code only when this doesnt equal to the next
-			pCharPrev[i] = player[i].sc.charImg;
-
 		}
-
-		// now we use that array from earlier to animate all characters at the same time
-		Promise.all(charsLoaded).then( (value) => { // when all images are loaded
-			for (let i = 0; i < value.length; i++) { // for every character loaded
-				fadeInMove(value[i], true, false, current.delay+.2); // fade it in
-			}
-		})
 
 		// this will run for each side (so twice)
 		for (let i = 0; i < maxSides; i++) {
@@ -162,7 +142,7 @@ async function updateData(data) {
 			const side = (i % 2 == 0) ? true : false;
 
 			//set the team names if not singles
-			if (gamemode != 1) {
+			if (gamemode.getGm() != 1) {
 				updateText(teamNames[i], teamName[i], teamSize);
 				resizeText(teamNames[i]);
 				fadeInMove(teamNames[i], null, side, current.delay);
@@ -179,11 +159,11 @@ async function updateData(data) {
 			wlPrev[i] = wl[i];
 
 			//set the current score
-			updateScore(score[i], bestOf, color[i], i, gamemode, false);
+			updateScore(score[i], bestOf, color[i], i, gamemode.getGm(), false);
 			scorePrev[i] = score[i];
 
 			//check if we have a logo we can place on the overlay
-			if (gamemode == 1) { //if this is singles, check the player tag
+			if (gamemode.getGm() == 1) { //if this is singles, check the player tag
 				updateLogo(tLogoImg[i], player[i].tag);
 			} else { //if doubles, check the team name
 				updateLogo(tLogoImg[i], teamName[i]);
@@ -203,19 +183,17 @@ async function updateData(data) {
 	else {
 
 		//of course, check if the gamemode has changed
-		if (gamemodePrev != gamemode) {
-			changeGM(gamemode);
+		if (gamemodePrev != gamemode.getGm()) {
+			//changeGM(gamemodeClass.getGm());
 			// we need to update some things
-			updateBorder(bestOf, gamemode);
+			updateBorder(bestOf, gamemode.getGm());
 			for (let i = 0; i < maxSides; i++) {
-				updateColor(colorImg[i], color[i], gamemode, scoreNums[i]);
-				updateScore(score[i], bestOf, color[i], i, gamemode, false);
+				updateColor(colorImg[i], color[i], gamemode.getGm(), scoreNums[i]);
+				updateScore(score[i], bestOf, color[i], i, gamemode.getGm(), false);
 			}
-			gamemodePrev = gamemode;
+			gamemodePrev = gamemode.getGm();
 		}
 		
-		// this will be used later to sync the animations for all character images
-		const charsLoaded = [], animsEnded = [];
 		//lets check each player
 		for (let i = 0; i < maxPlayers; i++) {
 
@@ -228,33 +206,13 @@ async function updateData(data) {
 				});
 			}
 
-			//player characters and skins
-			if (pCharPrev[i] != player[i].sc.charImg) {
-
-				//fade out the image while also moving it because that always looks cool
-				animsEnded.push(fadeOutMove(charImg[i], true, null).then( () => {
-					//now that nobody can see it, lets change the image!
-					charsLoaded.push(updateChar(player[i].sc.charImg, player[i].sc.charPos, i));
-					//will fade in when image finishes loading
-				}));
-				pCharPrev[i] = player[i].sc.charImg;
-			}
-
 		}
-		// now we use that array from earlier to animate all characters at the same time
-		Promise.all(animsEnded).then( () => { // need to sync somehow
-			Promise.all(charsLoaded).then( (value) => { // when all images are loaded
-				for (let i = 0; i < value.length; i++) { // for every character loaded
-					fadeInMove(value[i], true, false, .1); // fade it in
-				}
-			})
-		})
 
 		//now let's check stuff from each side
 		for (let i = 0; i < maxSides; i++) {
 
 			//check if the team names changed
-			if (gamemode != 1) {
+			if (gamemode.getGm() != 1) {
 
 				const side = (i % 2 == 0) ? true : false;
 
@@ -290,12 +248,12 @@ async function updateData(data) {
 
 			//score check
 			if (scorePrev[i] != score[i]) {
-				updateScore(score[i], bestOf, color[i], i, gamemode, true);
+				updateScore(score[i], bestOf, color[i], i, gamemode.getGm(), true);
 				scorePrev[i] = score[i];
 			}
 
 			//check if we have a logo we can place on the overlay
-			if (gamemode == 1) { //if this is singles, check the player tag
+			if (gamemode.getGm() == 1) { //if this is singles, check the player tag
 				if (pTag[i].textContent != player[i].tag) {
 					fadeOut(tLogoImg[i], fadeOutTimeSc).then( () => {
 						updateLogo(tLogoImg[i], player[i].tag);
@@ -316,118 +274,7 @@ async function updateData(data) {
 		
 	}
 
-	// update players (names, info, characters)
-	players.update(data.player);
-
-	// and finally, update the round text
-	round.update(data.round);
-
 }
-
-
-// the gamemode manager
-function changeGM(gm) {
-			
-	if (gm == 2) {
-
-		// move the scoreboard to the new positions
-		const r = document.querySelector(':root');
-		r.style.setProperty("--scoreboardX", "15px");
-		r.style.setProperty("--scoreboardY", "13px");
-
-		// add new positions for the character images
-		charImg[0].parentElement.parentElement.classList.add("charTop");
-		charImg[1].parentElement.parentElement.classList.add("charTop");
-
-		//change the positions for the player texts
-		for (let i = 0; i < 2; i++) {
-			pWrapper[i].classList.remove("wrappersSingles");
-			pWrapper[i].classList.add("wrappersDubs");
-			//update the text size and resize it if it overflows
-			pName[i].style.fontSize = nameSizeDubs + "px";
-			pTag[i].style.fontSize = tagSizeDubs + "px";
-			resizeText(pWrapper[i]);
-		}
-		pWrapper[0].style.left = "257px";
-		pWrapper[1].style.right = "257px";
-
-		// move the pronouns / [W]/[L] top bars
-		topBars[0].parentElement.parentElement.style.width = "285px";
-		topBars[1].parentElement.parentElement.style.width = "285px";
-		topBars[0].parentElement.parentElement.style.transform = "translateX(95px)";
-		topBars[1].parentElement.parentElement.style.transform = "translateX(95px)";
-		topBars[0].parentElement.parentElement.style.justifyContent = "center";
-		topBars[1].parentElement.parentElement.style.justifyContent = "center";
-
-		// move the team logos
-		tLogoImg[0].style.left = "352px";
-		tLogoImg[0].style.top = "65px";
-		tLogoImg[1].style.right = "352px";
-		tLogoImg[1].style.top = "65px";
-
-		// move the score numbers
-		scoreNums[0].style.left = "225px";
-		scoreNums[1].style.left = "225px";
-		scoreNums[0].style.top = "23px";
-		scoreNums[1].style.top = "23px";
-		numSize = 30;
-
-		//show all hidden elements
-		const dubELs = document.getElementsByClassName("dubEL");
-		for (let i = 0; i < dubELs.length; i++) {
-			dubELs[i].style.display = "block";
-		}
-
-	} else {
-
-		const r = document.querySelector(':root');
-		r.style.setProperty("--scoreboardX", "470px");
-		r.style.setProperty("--scoreboardY", "25px");
-
-		charImg[0].parentElement.parentElement.classList.remove("charTop");
-		charImg[1].parentElement.parentElement.classList.remove("charTop");
-
-		for (let i = 0; i < 2; i++) {
-			pWrapper[i].classList.remove("wrappersDubs");
-			pWrapper[i].classList.add("wrappersSingles");
-			pName[i].style.fontSize = nameSize + "px";
-			pTag[i].style.fontSize = tagSize + "px";
-			resizeText(pWrapper[i]);
-		}
-		pWrapper[0].style.left = "38px";
-		pWrapper[1].style.right = "38px";
-
-		topBars[0].parentElement.parentElement.style.width = "380px";
-		topBars[1].parentElement.parentElement.style.width = "380px";
-		topBars[0].parentElement.parentElement.style.transform = "";
-		topBars[1].parentElement.parentElement.style.transform = "";
-		topBars[0].parentElement.parentElement.style.justifyContent = "";
-		topBars[1].parentElement.parentElement.style.justifyContent = "";
-
-		tLogoImg[0].style.left = "248px";
-		tLogoImg[0].style.top = "33px";
-		tLogoImg[1].style.right = "248px";
-		tLogoImg[1].style.top = "33px";
-
-		scoreNums[0].style.left = "-12px";
-		scoreNums[1].style.left = "-12px";
-		scoreNums[0].style.top = "27px";
-		scoreNums[1].style.top = "27px";
-		numSize = 36;
-
-		const dubELs = document.getElementsByClassName("dubEL");
-		for (let i = 0; i < dubELs.length; i++) {
-			dubELs[i].style.display = "none";
-		}
-		
-	}
-
-	// update the background images
-	document.getElementById("bgL").src = `Resources/Overlay/Scoreboard/Name BG ${gm}.png`;
-	document.getElementById("bgR").src = `Resources/Overlay/Scoreboard/Name BG ${gm}.png`;
-
-}
-
 
 // update functions
 async function updateScore(pScore, bestOf, pColor, pNum, gamemode, playAnim) {
@@ -476,19 +323,6 @@ function updateBorder(bestOf, gamemode) {
 
 function updateLogo(logoEL, nameLogo) {
 	logoEL.src = `Resources/Logos/${nameLogo}.png`;
-}
-
-function updatePlayerName(pNum, name, tag, gamemode) {
-	if (gamemode == 2) {
-		pName[pNum].style.fontSize = nameSizeDubs + "px"; //set original text size
-		pTag[pNum].style.fontSize = tagSizeDubs + "px";
-	} else {
-		pName[pNum].style.fontSize = nameSize + "px";
-		pTag[pNum].style.fontSize = tagSize + "px";
-	}
-	pName[pNum].textContent = name; //change the actual text
-	pTag[pNum].textContent = tag;
-	resizeText(pWrapper[pNum]); //resize if it overflows
 }
 
 function updateWL(pWL, pNum) {
@@ -552,21 +386,4 @@ async function fadeOutTopBar(el) {
 }
 function fadeInTopBar(el, delay = 0) {
 	el.style.animation = `wlMoveIn .4s ${delay}s both`;
-}
-
-
-// time to change that image!
-async function updateChar(charSrc, charPos, pNum) {
-
-	// change the image path
-	charImg[pNum].src = charSrc;
-
-	// position the character
-	charImg[pNum].style.transform = `translate(${charPos[0]}px, ${charPos[1]}px) scale(${charPos[2]})`;
-
-	// this will make the thing wait till the image is fully loaded
-	await charImg[pNum].decode();
-
-	return charImg[pNum];
-
 }

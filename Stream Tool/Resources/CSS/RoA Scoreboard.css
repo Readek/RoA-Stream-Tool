@@ -28,7 +28,7 @@ body {
     width: 1920px;
     height: 1080px;
     overflow: hidden;
-    background: transparent;
+    background: lightgrey;
     padding: 0px;
     margin: 0px;
     text-transform: uppercase;
@@ -191,6 +191,7 @@ body {
     transition: width .5s;
     height: 36px;
     min-width: 170px;
+    opacity: 0;
 }
 #roundText {
     font-family: "Roboto";
