@@ -3,6 +3,7 @@ import { scoreboardIntro } from "./Scoreboard/Intro.mjs";
 import { players } from "./Scoreboard/Player/Players.mjs";
 import { round } from "./Scoreboard/Round.mjs";
 import { fadeInTimeSc, fadeOutTimeSc, introDelaySc } from "./Scoreboard/ScGlobals.mjs";
+import { teams } from "./Scoreboard/Team/Teams.mjs";
 import { fadeIn, fadeInMove } from "./Utils/Fade In.mjs";
 import { fadeOut } from "./Utils/Fade Out.mjs";
 import { current } from "./Utils/Globals.mjs";
@@ -32,7 +33,6 @@ const scoreboard = document.getElementsByClassName("scoreboard");
 const teamNames = document.getElementsByClassName("teamName");
 const colorImg = document.getElementsByClassName("colors");
 const topBars = document.getElementsByClassName("topBarTexts");
-const wlText = document.getElementsByClassName("wlText");
 const scoreImg = document.getElementsByClassName("scoreImgs");
 const scoreNums = document.getElementsByClassName("scoreNum");
 const scoreAnim = document.getElementsByClassName("scoreVid");
@@ -100,6 +100,9 @@ async function updateData(data) {
 	// update players (names, info, characters)
 	players.update(data.player);
 
+	// update team info (names, topbar, colors, scores)
+	teams.update(data.teamName, data.wl, data.color, data.score);
+
 	// and finally, update the round text
 	round.update(data.round);
 
@@ -126,14 +129,6 @@ async function updateData(data) {
 	// now, things that will happen only once, when the html loads
 	if (startup) {
 
-		// now for the actual initialization of players
-		for (let i = 0; i < maxPlayers; i++) {
-
-			// show player pronouns if any
-			displayTopBarElement(pProns[i]);
-
-		}
-
 		// this will run for each side (so twice)
 		for (let i = 0; i < maxSides; i++) {
 
@@ -150,10 +145,6 @@ async function updateData(data) {
 			// fade in move the scoreboards
 			fadeInMove(scoreboard[i].parentElement, null, side, current.delay-.1);
 			
-			//if its grands, we need to show the [W] and/or the [L] on the players
-			updateWL(wl[i], i);
-			displayTopBarElement(wlText[i]);
-			
 			//save for later so the animation doesn't repeat over and over
 			wlPrev[i] = wl[i];
 
@@ -167,9 +158,6 @@ async function updateData(data) {
 			} else { //if doubles, check the team name
 				updateLogo(tLogoImg[i], teamName[i]);
 			}
-
-			// fade in the top bar
-			fadeInTopBar(topBars[i], current.delay+.6);
 			
 		}
 
@@ -192,19 +180,6 @@ async function updateData(data) {
 			}
 			gamemodePrev = gamemode.getGm();
 		}
-		
-		//lets check each player
-		for (let i = 0; i < maxPlayers; i++) {
-
-			// show player pronouns if any
-			if (player[i].pronouns != pProns[i].textContent) {
-				topBarMoved[i % 2] = true;
-				fadeOutTopBar(topBars[i % 2]).then( () => {
-					displayTopBarElement(pProns[i]);
-				});
-			}
-
-		}
 
 		//now let's check stuff from each side
 		for (let i = 0; i < maxSides; i++) {
@@ -221,27 +196,6 @@ async function updateData(data) {
 						fadeInMove(teamNames[i], null, side);
 					});
 				}
-			}
-			
-			//the [W] and [L] status for grand finals
-			if (wlPrev[i] != wl[i]) {
-				//move it away!
-				fadeOutTopBar(topBars[i]).then( () => {
-					//change the thing!
-					updateWL(wl[i], i);
-					displayTopBarElement(wlText[i]);
-				});
-				wlPrev[i] = wl[i];
-				topBarMoved[i] = true;
-			}
-
-			// if either W/L status or pronouns changed
-			if (topBarMoved[i]) {
-				setTimeout(() => {
-					// move it back up!
-					fadeInTopBar(topBars[i]);
-					topBarMoved[i] = false;
-				}, 500);
 			}
 
 			//score check
@@ -323,28 +277,6 @@ function updateLogo(logoEL, nameLogo) {
 	logoEL.src = `Resources/Logos/${nameLogo}.png`;
 }
 
-function updateWL(pWL, pNum) {
-	//check if winning or losing in a GF, then change image
-	if (pWL == "W") {
-		wlText[pNum].textContent = "WINNERS";
-		wlText[pNum].style.color = "#76a276";
-	} else if (pWL == "L") {
-		wlText[pNum].textContent = "LOSERS";
-		wlText[pNum].style.color = "#a27677";
-	} else if (wlText[pNum].textContent == "WINNERS" || wlText[pNum].textContent == "LOSERS") {
-		// clear contents if there are no pronouns
-		wlText[pNum].textContent = "";
-	}
-}
-
-function displayTopBarElement(el) {
-	if (el.textContent) {
-		el.style.display = "block";
-	} else {
-		el.style.display = "none";
-	}
-}
-
 
 //fade out but with movement
 async function fadeOutMove(itemID, chara, side) {
@@ -370,14 +302,4 @@ async function fadeOutMove(itemID, chara, side) {
 	
 	await new Promise(resolve => setTimeout(resolve, fadeOutTimeSc * 1000));
 
-}
-
-
-//movement for the [W]/[L] images
-async function fadeOutTopBar(el) {
-	el.style.animation = `wlMoveOut .4s both`;
-	await new Promise(resolve => setTimeout(resolve, 400));
-}
-function fadeInTopBar(el, delay = 0) {
-	el.style.animation = `wlMoveIn .4s ${delay}s both`;
 }

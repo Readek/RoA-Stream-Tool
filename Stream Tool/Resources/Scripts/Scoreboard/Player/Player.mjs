@@ -23,7 +23,7 @@ export class Player {
         this.#pName = new PlayerName(nameEl, tagEl, id);
 
         // player info
-        this.#pProns = new PlayerInfo(pronEl);
+        this.#pProns = new PlayerInfo(pronEl, id);
 
         // player character
         this.#pChar = new PlayerCharacter(charEl);

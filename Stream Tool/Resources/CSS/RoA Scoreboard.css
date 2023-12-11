@@ -169,6 +169,7 @@ body {
 }
 
 .topBarProns {
+    display: none;
     color: gray;
 }
 
