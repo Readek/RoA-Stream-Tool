@@ -130,7 +130,6 @@ async function updateData(data) {
 		for (let i = 0; i < maxPlayers; i++) {
 
 			// show player pronouns if any
-			updatePronouns(i, player[i].pronouns);
 			displayTopBarElement(pProns[i]);
 
 		}
@@ -201,7 +200,6 @@ async function updateData(data) {
 			if (player[i].pronouns != pProns[i].textContent) {
 				topBarMoved[i % 2] = true;
 				fadeOutTopBar(topBars[i % 2]).then( () => {
-					updatePronouns(i, player[i].pronouns);
 					displayTopBarElement(pProns[i]);
 				});
 			}
@@ -337,10 +335,6 @@ function updateWL(pWL, pNum) {
 		// clear contents if there are no pronouns
 		wlText[pNum].textContent = "";
 	}
-}
-
-function updatePronouns(pNum, pronouns) {
-	pProns[pNum].textContent = pronouns;
 }
 
 function displayTopBarElement(el) {

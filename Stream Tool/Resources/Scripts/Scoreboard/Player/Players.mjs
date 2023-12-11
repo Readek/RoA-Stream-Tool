@@ -7,18 +7,17 @@ class Players {
 
     constructor() {
 
-        const pInfoEls = document.getElementsByClassName("topBarTexts");
-
         // add new players to our array, max 4 players for 2v2
         for (let i = 0; i < 4; i++) {
 
             // gather the data needed for our classes
             const wrapEl = document.getElementById(`p${i+1}Wrapper`);
-            const charEl = document.getElementById(`p${i+1}Character`)
+            const pronEl = document.getElementById(`p${i+1}Pronouns`);
+            const charEl = document.getElementById(`p${i+1}Character`);
 
             // and create them
             this.#players.push(
-                new Player(wrapEl, charEl, i+1)
+                new Player(wrapEl, pronEl, charEl, i+1)
             );
 
         }
@@ -40,8 +39,8 @@ class Players {
             // update player name and tag
             this.#players[i].updateName(data[i].name, data[i].tag);
 
-            // update pronouns and socials
-            /* this.#players[i].updateInfo(data[i].pronouns, data[i].socials); */
+            // update pronouns
+            this.#players[i].updatePronouns(data[i].pronouns);
 
             // update character
             charsLoaded.push(this.#players[i].updateChar(data[i].sc));

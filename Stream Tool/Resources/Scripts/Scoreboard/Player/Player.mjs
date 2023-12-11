@@ -1,21 +1,21 @@
 import { PlayerCharacter } from "./Player Character.mjs";
-import { PlayerInfo } from "./Player Info.mjs";
 import { PlayerName } from "./Player Name.mjs";
+import { PlayerInfo } from "./Player Pronouns.mjs";
 
 export class Player {
 
     #pName;
-    #pInfo;
+    #pProns;
     #pChar;
 
     /**
      * Manages all info related to a player on the Scoreboard
      * @param {HTMLElement} wrapEl - Wrapper containing name and tag
-     * @param {HTMLElement} infoEl - Element containing player info
+     * @param {HTMLElement} pronEl - Element containing player pronouns
      * @param {HTMLElement} charEl - Element containing character image
      * @param {Number} id - Player slot
      */
-    constructor(wrapEl, charEl, id) {
+    constructor(wrapEl, pronEl, charEl, id) {
 
         // player name and tag
         const nameEl = wrapEl.getElementsByClassName("names")[0];
@@ -23,7 +23,7 @@ export class Player {
         this.#pName = new PlayerName(nameEl, tagEl, id);
 
         // player info
-        /* this.#pInfo = new PlayerInfo(infoEl, id); */
+        this.#pProns = new PlayerInfo(pronEl);
 
         // player character
         this.#pChar = new PlayerCharacter(charEl);
@@ -48,12 +48,11 @@ export class Player {
     /**
      * Updates the displayed player info (pronouns, socials)
      * @param {String} pronouns - The player's pronouns
-     * @param {Object} socials - The player's socials
      */
-    updateInfo(pronouns, socials) {
+    updatePronouns(pronouns) {
 
-        if (this.#pInfo.hasChanged(pronouns, socials)) {
-            this.#pInfo.update(pronouns, socials);
+        if (this.#pProns.getPronouns() != pronouns) {
+            this.#pProns.update(pronouns);
         }
 
     }
@@ -75,21 +74,18 @@ export class Player {
      */
     changeGm(gamemode) {
         this.#pName.changeGm(gamemode);
-        /* this.#pInfo.changeGm(gamemode); */
         this.#pChar.changeGm(gamemode);
     }
 
     /** Hides some stuff when browser goes out of view */
     hide() {
         this.#pName.hide();
-        this.#pInfo.hide();
         this.#pChar.hide();
     }
 
     /** Display elements and animations when user comes back to the browser */
     show() {
         this.#pName.show();
-        this.#pInfo.show();
         this.#pChar.show();
     }
 
