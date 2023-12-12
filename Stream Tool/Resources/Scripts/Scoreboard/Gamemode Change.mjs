@@ -1,11 +1,11 @@
 import { players } from "./Player/Players.mjs";
+import { teams } from "./Team/Teams.mjs";
 
 const r = document.querySelector(':root');
-const topBars = document.getElementsByClassName("topBarTexts");
 const tLogoImg = document.getElementsByClassName("tLogos");
 const scoreNums = document.getElementsByClassName("scoreNum");
 let numSize = 36;
-const nameBg = document.getElementsByClassName("nameBg");;
+const nameBg = document.getElementsByClassName("nameBg");
 
 class Gamemode {
 
@@ -44,15 +44,10 @@ class Gamemode {
         // update players for the new 2v2 positions
         players.changeGm(this.getGm());
 
-        /* TO IMPLEMENT */
-        // move the pronouns / [W]/[L] top bars
-		topBars[0].parentElement.parentElement.style.width = "285px";
-		topBars[1].parentElement.parentElement.style.width = "285px";
-		topBars[0].parentElement.parentElement.style.transform = "translateX(95px)";
-		topBars[1].parentElement.parentElement.style.transform = "translateX(95px)";
-		topBars[0].parentElement.parentElement.style.justifyContent = "center";
-		topBars[1].parentElement.parentElement.style.justifyContent = "center";
+		// update those team positions
+		teams.changeGm(this.getGm());
 
+        /* TO IMPLEMENT */
 		// move the team logos
 		tLogoImg[0].style.left = "352px";
 		tLogoImg[0].style.top = "65px";
@@ -85,12 +80,7 @@ class Gamemode {
 
         players.changeGm(this.getGm());
 
-		topBars[0].parentElement.parentElement.style.width = "380px";
-		topBars[1].parentElement.parentElement.style.width = "380px";
-		topBars[0].parentElement.parentElement.style.transform = "";
-		topBars[1].parentElement.parentElement.style.transform = "";
-		topBars[0].parentElement.parentElement.style.justifyContent = "";
-		topBars[1].parentElement.parentElement.style.justifyContent = "";
+		teams.changeGm(this.getGm());
 
 		tLogoImg[0].style.left = "248px";
 		tLogoImg[0].style.top = "33px";

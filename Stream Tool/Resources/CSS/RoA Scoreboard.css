@@ -158,6 +158,14 @@ body {
     height: 25px;
     transform: translateX(-1px);
 }
+.topBarDoubles {
+    width: 285px;
+    transform: translateX(95px);
+    justify-content: center;
+}
+.topBarSinglesNum {
+    transform: translateX(-26px);
+}
 
 .topBarTexts {
     display: flex;

@@ -63,6 +63,24 @@ export class TeamTopBar {
 
     }
 
+    /**
+     * Moves the top bar depending on the gamemode
+     * @param {Number} gamemode - Gamemode to change to
+     */
+    changeGm(gamemode) {
+
+        if (gamemode == 2) { // doubles
+            
+            this.#topBarEl.parentElement.parentElement.classList.add("topBarDoubles");
+
+        } else { // singles
+            
+            this.#topBarEl.parentElement.parentElement.classList.remove("topBarDoubles");
+
+        }
+            
+    }
+
     /** Moves the top bar down, hiding it */
     async hide() {
         this.#topBarEl.style.animation = `wlMoveOut .4s both`;

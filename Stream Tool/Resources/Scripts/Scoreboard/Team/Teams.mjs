@@ -56,6 +56,15 @@ class Teams {
         await this.#teams[teamNum].showTopBar(delay);
     }
 
+    /**
+     * Adapts team elements to the selected gamemode
+     * @param {Number} gamemode - Gamemode to change to
+     */
+    changeGm(gamemode) {
+        this.#teams[0].changeGm(gamemode);
+        this.#teams[1].changeGm(gamemode);
+    }
+
     /** Hides some elements when browser goes out of view */
     hide() {
 

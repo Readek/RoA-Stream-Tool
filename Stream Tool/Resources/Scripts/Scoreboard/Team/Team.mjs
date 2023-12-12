@@ -61,6 +61,14 @@ export class Team {
         this.#tTopBar.show(delay)
     }
 
+    /**
+     * Adapts the team to the selected gamemode
+     * @param {Number} gamemode - Gamemode to change to
+     */
+    changeGm(gamemode) {
+        this.#tTopBar.changeGm(gamemode);
+    }
+
     /** Hides some stuff when browser goes out of view */
     hide() {
         this.#tName.hide();
