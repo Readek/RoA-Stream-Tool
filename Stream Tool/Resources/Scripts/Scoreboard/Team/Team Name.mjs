@@ -1,24 +1,30 @@
-import { fadeIn } from "../../Utils/Fade In.mjs";
-import { fadeOut } from "../../Utils/Fade Out.mjs";
+import { fadeIn, fadeInMove } from "../../Utils/Fade In.mjs";
+import { fadeOutMove } from "../../Utils/Fade Out.mjs";
 import { current } from "../../Utils/Globals.mjs";
 import { resizeText } from "../../Utils/Resize Text.mjs";
 import { updateText } from "../../Utils/Update Text.mjs";
-/* import { fadeInTimeVs, fadeOutTimeVs, introDelayVs } from "../VsGlobals.mjs"; */
+import { gamemode } from "../Gamemode Change.mjs";
 
-const teamSize = 72;
+const teamSize = 22;
 
 export class TeamName {
 
     #name = "";
+    #side;
+
     #nameEl;
 
     /**
      * Manages the team's name
      * @param {HTMLElement} nameEl - Team text element
+     * @param {String} side - L for left, R for right
      */
-    constructor(nameEl) {
+    constructor(nameEl, side) {
 
         this.#nameEl = nameEl;
+
+        // to know animation direction
+        this.#side = side == "L" ? true : false;
 
     }
 
@@ -28,16 +34,17 @@ export class TeamName {
      */
     async update(name) {
 
-        if (name != this.#name) {
+        if (name != this.#name && gamemode.getGm() == 2) {
 
             this.#name = name;
             
             // set some delay time to sync with everything else if needed
-            const delay = current.startup ? introDelayVs+.2 : 0;
+            let delay = current.delay;
 
             // fade the text out (unless we're loading)
             if (!current.startup) {
-                await fadeOut(this.#nameEl, fadeOutTimeVs);
+                delay = 0;
+                await fadeOutMove(this.#nameEl, false, this.#side);
             }
 
             // update that text while nobody is seeing it!
@@ -45,7 +52,7 @@ export class TeamName {
             resizeText(this.#nameEl);
 
             // and fade it back to normal
-            fadeIn(this.#nameEl, fadeInTimeVs, delay);
+            fadeInMove(this.#nameEl, false, this.#side, delay);
 
         }
 

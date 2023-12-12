@@ -21,7 +21,7 @@ export class Team {
      */
     constructor(nameEl, topBar, cssRoot, side, scoreImg, scoreNum) {
 
-        this.#tName = new TeamName(nameEl);
+        this.#tName = new TeamName(nameEl, side);
         this.#tTopBar = new TeamTopBar(topBar);
         this.#tColor = new TeamColor(cssRoot, side);
         this.#tScore = new TeamScore(scoreImg, scoreNum, side);
@@ -41,7 +41,7 @@ export class Team {
      */
     update(name, wl, color, score) {
 
-        /* this.#tName.update(name); */
+        this.#tName.update(name);
         this.#tTopBar.update(wl);
         /* this.#tColor.update(color.hex); */
         /* this.#tScore.update(score); */

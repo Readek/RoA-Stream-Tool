@@ -7,13 +7,11 @@ import { teams } from "./Scoreboard/Team/Teams.mjs";
 import { fadeIn, fadeInMove } from "./Utils/Fade In.mjs";
 import { fadeOut } from "./Utils/Fade Out.mjs";
 import { current } from "./Utils/Globals.mjs";
-import { resizeText } from "./Utils/Resize Text.mjs";
 import { updateText } from "./Utils/Update Text.mjs";
 import { initWebsocket } from "./Utils/WebSocket.mjs";
 
 
 //max text sizes (used when resizing back)
-const teamSize = 22;
 let numSize = 36;
 
 //to avoid the code constantly running the same method over and over
@@ -135,13 +133,6 @@ async function updateData(data) {
 			// to know animation direction
 			const side = (i % 2 == 0) ? true : false;
 
-			//set the team names if not singles
-			if (gamemode.getGm() != 1) {
-				updateText(teamNames[i], teamName[i], teamSize);
-				resizeText(teamNames[i]);
-				fadeInMove(teamNames[i], null, side, current.delay);
-			}
-
 			// fade in move the scoreboards
 			fadeInMove(scoreboard[i].parentElement, null, side, current.delay-.1);
 			
@@ -183,20 +174,6 @@ async function updateData(data) {
 
 		//now let's check stuff from each side
 		for (let i = 0; i < maxSides; i++) {
-
-			//check if the team names changed
-			if (gamemode.getGm() != 1) {
-
-				const side = (i % 2 == 0) ? true : false;
-
-				if (teamNames[i].textContent != teamName[i]) {
-					fadeOutMove(teamNames[i], null, side).then( () => {
-						updateText(teamNames[i], teamName[i], teamSize);
-						resizeText(teamNames[i]);
-						fadeInMove(teamNames[i], null, side);
-					});
-				}
-			}
 
 			//score check
 			if (scorePrev[i] != score[i]) {
@@ -273,31 +250,4 @@ function updateBorder(bestOf, gamemode) {
 
 function updateLogo(logoEL, nameLogo) {
 	logoEL.src = `Resources/Logos/${nameLogo}.png`;
-}
-
-
-//fade out but with movement
-async function fadeOutMove(itemID, chara, side) {
-
-	if (chara) {
-		// we need to target a different element since chromium
-		// does not support idependent transforms on css yet
-		itemID.parentElement.style.animation = `charaMoveOut ${fadeOutTimeSc}s both
-			,fadeOut ${fadeOutTimeSc}s both`
-		;
-	} else {
-		if (side) {
-			itemID.style.animation = `moveOutLeft ${fadeOutTimeSc}s both
-				,fadeOut ${fadeOutTimeSc}s both`
-			;
-		} else {
-			itemID.style.animation = `moveOutRight ${fadeOutTimeSc}s both
-				,fadeOut ${fadeOutTimeSc}s both`
-			;
-		}
-		
-	}
-	
-	await new Promise(resolve => setTimeout(resolve, fadeOutTimeSc * 1000));
-
 }

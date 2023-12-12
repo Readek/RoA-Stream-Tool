@@ -51,6 +51,7 @@ export class Player {
      */
     updatePronouns(pronouns) {
 
+        console.log(pronouns, this.#pProns.getPronouns());
         if (this.#pProns.getPronouns() != pronouns) {
             this.#pProns.update(pronouns);
         }

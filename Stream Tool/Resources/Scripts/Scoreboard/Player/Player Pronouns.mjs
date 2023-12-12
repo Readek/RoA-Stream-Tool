@@ -56,6 +56,7 @@ export class PlayerInfo {
             this.#pronsEl.style.display = "block";
         } else {
             this.#pronsEl.style.display = "none";
+            
         }
 
         // call that top bar to come back up
