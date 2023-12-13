@@ -106,3 +106,18 @@ export async function getTrailImage(shader, char, skin, color) {
     }
 
 }
+
+export async function genericRecolor(src, color) {
+
+    // we add "FFFFFF" to the color to avoid shader issues when using only 1 color
+    const colorForShader = color.substring(1) + "FFFFFF";
+
+    return await anonShader.getRoARecolor(
+        "Trail",
+        src,
+        [127, 127, 127, 1], // any color would do
+        [360, 100, 100, 1], // range picks up all colors
+        {hex : colorForShader, ea : true}, // with blend true, only 1 color will be applied to everything
+    ) 
+
+}

@@ -15,7 +15,7 @@ import { initWebsocket } from "./Utils/WebSocket.mjs";
 let numSize = 36;
 
 //to avoid the code constantly running the same method over and over
-const scorePrev = [], colorPrev = [], wlPrev = [], topBarMoved = [];
+const scorePrev = [], colorPrev = [], wlPrev = [];
 let bestOfPrev, gamemodePrev;
 
 //to consider how many loops will we do
@@ -112,18 +112,6 @@ async function updateData(data) {
 		updateScore(score[1], bestOf, color[1], 1, gamemode.getGm(), false);
 	}
 
-	// things that will happen for each side
-	for (let i = 0; i < maxSides; i++) {
-
-		// change the player background colors
-		if (colorPrev[i] != color[i].name) {
-			updateColor(colorImg[i], color[i], gamemode.getGm(), scoreNums[i]);
-			colorPrev[i] = color[i].name;
-		}
-
-	}
-
-
 	// now, things that will happen only once, when the html loads
 	if (startup) {
 
@@ -166,7 +154,6 @@ async function updateData(data) {
 			// we need to update some things
 			updateBorder(bestOf, gamemode.getGm());
 			for (let i = 0; i < maxSides; i++) {
-				updateColor(colorImg[i], color[i], gamemode.getGm(), scoreNums[i]);
 				updateScore(score[i], bestOf, color[i], i, gamemode.getGm(), false);
 			}
 			gamemodePrev = gamemode.getGm();
@@ -218,14 +205,6 @@ async function updateScore(pScore, bestOf, pColor, pNum, gamemode, playAnim) {
 	// update that score number in case we are using those
 	updateText(scoreNums[pNum], pScore, numSize);
 
-}
-
-function updateColor(colorEL, pColor, gamemode, scoreNum) {
-	colorEL.src = `Resources/Overlay/Scoreboard/Colors/${gamemode}/${pColor.name}.png`;
-
-	// change the text shadows for the numerical scores
-	scoreNum.style.webkitTextStroke = "1px " + pColor.hex;
-	scoreNum.style.textShadow = "0px 0px 2px " + pColor.hex;
 }
 
 function updateBorder(bestOf, gamemode) {

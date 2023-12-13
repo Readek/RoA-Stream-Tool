@@ -15,15 +15,16 @@ export class Team {
      * @param {HTMLElement} nameEl - Team name element
      * @param {HTMLElement} topBar - Team top bar element
      * @param {Element} cssRoot - Where the css variables may be
+     * @param {HTMLElement} colorImg - Team color image
      * @param {String} side - Side of team, L or R
      * @param {HTMLElement} scoreImg - Team score ticks
      * @param {HTMLElement} scoreNum - Team score number
      */
-    constructor(nameEl, topBar, cssRoot, side, scoreImg, scoreNum) {
+    constructor(nameEl, topBar, cssRoot, colorImg, side, scoreImg, scoreNum) {
 
         this.#tName = new TeamName(nameEl, side);
         this.#tTopBar = new TeamTopBar(topBar);
-        this.#tColor = new TeamColor(cssRoot, side);
+        this.#tColor = new TeamColor(cssRoot, colorImg, side);
         this.#tScore = new TeamScore(scoreImg, scoreNum, side);
 
     }
@@ -43,7 +44,7 @@ export class Team {
 
         this.#tName.update(name);
         this.#tTopBar.update(wl);
-        /* this.#tColor.update(color.hex); */
+        this.#tColor.update(color);
         /* this.#tScore.update(score); */
 
     }

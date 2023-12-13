@@ -63,9 +63,6 @@ class ScoreboardIntro {
                 pIntroEls[i].style.fontSize = introFontSize + "px";
                 // resize the text if its too large
                 resizeText(pIntroEls[i]);
-
-                // change the color of the player text shadows
-                pIntroEls[i].style.textShadow = '0px 0px 20px ' + data.color[i].hex;
                 
             };
 

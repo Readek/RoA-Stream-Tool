@@ -2,18 +2,18 @@ import { charFinder } from './GUI/Finder/Char Finder.mjs';
 import { players } from './GUI/Player/Players.mjs';
 import { PlayerGame } from './GUI/Player/Player Game.mjs';
 import { settings } from './GUI/Settings.mjs';
-import { Caster } from './GUI/Caster/Caster.mjs';
 import { scores } from './GUI/Score/Scores.mjs';
 import { Team } from './GUI/Team/Team.mjs';
 import { teams } from './GUI/Team/Teams.mjs';
 import './GUI/Swap Players.mjs'; // so it loads the listener
-import { addCaster, casters } from './GUI/Caster/Casters.mjs';
+import { addCaster } from './GUI/Caster/Casters.mjs';
 import { writeScoreboard } from './GUI/Write Scoreboard.mjs';
 import { loadKeybinds } from './GUI/Keybinds.mjs';
 import { updateBracket } from './GUI/Bracket.mjs';
 import { inside, stPath } from './GUI/Globals.mjs';
 import { Score } from './GUI/Score/Score.mjs';
 import { getPluginList } from './GUI/File System.mjs';
+import { initColors } from './GUI/Colors.mjs';
 
 // this is a weird way to have file svg's that can be recolored by css
 customElements.define("load-svg", class extends HTMLElement {
@@ -40,6 +40,8 @@ async function init() {
     await settings.load();
     stPath.char = settings.isWsChecked() ? stPath.charWork : stPath.charBase;
 
+    // colors need to be up and running before players
+    await initColors();
 
     // initialize our player class
     const pInfoEls = document.getElementsByClassName("playerInfo");

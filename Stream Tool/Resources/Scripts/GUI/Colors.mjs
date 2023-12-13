@@ -1,10 +1,18 @@
 import { stPath } from './Globals.mjs';
 import { players } from './Player/Players.mjs';
 import { getJson } from './File System.mjs';
+import { genericRecolor } from './GetImage.mjs';
+import { gamemode } from './Gamemode Change.mjs';
 
 export const currentColors = [];
 const colorRectangles = document.getElementsByClassName("pColorRect");
 const colorGradients = document.getElementsByClassName("side");
+
+// store scoreboard color images to be used later
+const scColor1 = new Image();
+scColor1.src = stPath.overlay + "/Scoreboard/Color 1.png";
+const scColor2 = new Image();
+scColor2.src = stPath.overlay + "/Scoreboard/Color 2.png";
 
 // load the color list from a json file
 const colorList = await getJson(stPath.text + "/Color Slots");
@@ -71,19 +79,43 @@ export async function updateColor(side, color) {
     // remove focus from the menu so it hides on click
     document.activeElement.blur();
 
+    await updateScImage(side, color.hex);
+
     await Promise.all(promises);
     return;
 
 }
 
-initColors();
 /** set the initial colors for the interface (the first color for p1, and the second for p2) */
-function initColors() {
+export async function initColors() {
+
+    // initial values
     currentColors[0] = colorList[0];
     currentColors[1] = colorList[1];
+
     // change both the color rectangle and the background gradient
     colorRectangles[0].style.backgroundColor = colorList[0].hex;
     colorGradients[0].style.backgroundImage = `linear-gradient(to bottom left, ${colorList[0].hex}50, #00000000, #00000000)`;
     colorRectangles[1].style.backgroundColor = colorList[1].hex;
     colorGradients[1].style.backgroundImage = `linear-gradient(to bottom left, ${colorList[1].hex}50, #00000000, #00000000)`;
+
+    // have some images ready for the scoreboard
+    currentColors[0].scImg = await genericRecolor(scColor1.src, colorList[0].hex);
+    currentColors[1].scImg = await genericRecolor(scColor1.src, colorList[1].hex);
+
+}
+
+/**
+ * Updates the scoreboard image of a team
+ * @param {Number} side - Which side was clicked
+ * @param {String} color - Color hex code
+ */
+export async function updateScImage(side, color) {
+
+    if (gamemode.getGm() == 1) {
+        currentColors[side].scImg = await genericRecolor(scColor1.src, color);
+    } else {
+        currentColors[side].scImg = await genericRecolor(scColor2.src, color);
+    }
+
 }

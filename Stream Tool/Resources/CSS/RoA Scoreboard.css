@@ -149,6 +149,14 @@ body {
     color: black;
     font-family: "LemonMilk";
 }
+#scoreNumL {
+    -webkit-text-stroke: 1px var(--colorL);
+    text-shadow: 0px 0px 2px var(--colorL);
+}
+#scoreNumR {
+    -webkit-text-stroke: 1px var(--colorR);
+    text-shadow: 0px 0px 2px var(--colorR);
+}
 
 
 .topBarMask {
@@ -275,11 +283,11 @@ body {
 }
 #p1Intro {
     text-align: right;
-    text-shadow: 0px 0px 20px;
+    text-shadow: 0px 0px 20px var(--colorL);
 }
 
 #p2Intro {
-    text-shadow: 0px 0px 20px;
+    text-shadow: 0px 0px 20px var(--colorR);
 }
 
 

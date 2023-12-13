@@ -57,7 +57,7 @@ export async function writeScoreboard() {
             teams[0].getName(),
             teams[1].getName()
         ],
-        color: [],
+        color: currentColors,
         score: [
             scores[0].getScore(),
             scores[1].getScore()
@@ -117,11 +117,6 @@ export async function writeScoreboard() {
 
     // stuff that needs to be done for both sides
     for (let i = 0; i < 2; i++) {
-        // add color info
-        scoreboardJson.color.push({
-            name: currentColors[i].name,
-            hex: currentColors[i].hex
-        });
         // if the team inputs dont have anything, display as [Color Team]
         if (!teams[i].getName()) {
             scoreboardJson.teamName[i] = `${currentColors[i].name} Team`

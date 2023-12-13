@@ -13,6 +13,7 @@ export const stPath = {
     charRandom : realPath + '/Characters/Random',
     charBase : realPath + '/Characters',
     charWork : realPath + '/Characters/_Workshop',
+    overlay: realPath + '/Overlay',
     text : realPath + '/Texts',
     scripts: realPath + '/Scripts'
 };

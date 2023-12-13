@@ -1,3 +1,4 @@
+import { currentColors, updateScImage } from "./Colors.mjs";
 import { hideBgCharImgs, showBgCharImgs } from "./Player/BG Char Image.mjs";
 import { players } from "./Player/Players.mjs";
 import { teams } from "./Team/Teams.mjs";
@@ -106,6 +107,10 @@ class Gamemode {
             document.getElementById("dropdownColorR").style.left = "0px";
 
         }
+
+        // scoreboard color images will need to be updated
+        updateScImage(0, currentColors[0].hex);
+        updateScImage(1, currentColors[1].hex);
 
     }
 

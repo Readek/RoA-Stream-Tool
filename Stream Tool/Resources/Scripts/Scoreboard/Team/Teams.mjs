@@ -11,13 +11,14 @@ class Teams {
         const nameEls = document.getElementsByClassName("teamName");
         const topBars = document.getElementsByClassName("topBarTexts");
         const cssRoot = document.querySelector(':root');
+        const colorImg = document.getElementsByClassName("colors")
         const scoreImgs = document.getElementsByClassName("scoreImgs");
         const scoreNums = document.getElementsByClassName("scoreNum");
 
         // for both sides, create them teams
         this.#teams.push(
-            new Team(nameEls[0], topBars[0], cssRoot, "L", scoreImgs[0], scoreNums[0]),
-            new Team(nameEls[1], topBars[1], cssRoot, "R", scoreImgs[1], scoreNums[1]),
+            new Team(nameEls[0], topBars[0], cssRoot, colorImg[0], "L", scoreImgs[0], scoreNums[0]),
+            new Team(nameEls[1], topBars[1], cssRoot, colorImg[1], "R", scoreImgs[1], scoreNums[1]),
         );
 
     }
