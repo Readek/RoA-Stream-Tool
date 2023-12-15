@@ -8,19 +8,24 @@ class Teams {
     constructor() {
 
         // gather the data needed for our classes
-        const nameEls = document.getElementsByClassName("teamName");
-        const topBars = document.getElementsByClassName("topBarTexts");
+        const scoreboardEls = document.getElementsByClassName("scoreboard");
         const cssRoot = document.querySelector(':root');
-        const colorImg = document.getElementsByClassName("colors")
-        const scoreImgs = document.getElementsByClassName("scoreImgs");
-        const scoreNums = document.getElementsByClassName("scoreNum");
 
         // for both sides, create them teams
         this.#teams.push(
-            new Team(nameEls[0], topBars[0], cssRoot, colorImg[0], "L", scoreImgs[0], scoreNums[0]),
-            new Team(nameEls[1], topBars[1], cssRoot, colorImg[1], "R", scoreImgs[1], scoreNums[1]),
+            new Team(scoreboardEls[0], cssRoot, "L"),
+            new Team(scoreboardEls[1], cssRoot, "R"),
         );
 
+    }
+
+    /**
+     * Gets the selected team class
+     * @param {Number} teamNumber - 0 for left, 1 for right
+     * @returns {Team}
+     */
+    team(teamNumber) {
+        return this.#teams[teamNumber];
     }
 
     /**
@@ -36,25 +41,6 @@ class Teams {
             this.#teams[i].update(name[i], wl[i], color[i], score[i]);
         }
 
-    }
-
-    /**
-     * Moves down the team's top bar
-     * @param {String} side - L for left team or R for right team
-     */
-    async hideTopBar(side) {
-        const teamNum = side == "L" ? 0 : 1;
-        await this.#teams[teamNum].hideTopBar();
-    }
-
-    /**
-     * Moves the top bar up, showing it
-     * @param {Number} delay - Time in seconds to wait until movement happens
-     * @param {String} side - L for left team or R for right team
-     */
-    async showTopBar(delay, side) {
-        const teamNum = side == "L" ? 0 : 1;
-        await this.#teams[teamNum].showTopBar(delay);
     }
 
     /**

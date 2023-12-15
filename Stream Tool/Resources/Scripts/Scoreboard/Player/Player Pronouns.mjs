@@ -4,7 +4,7 @@ import { teams } from "../Team/Teams.mjs";
 export class PlayerInfo {
 
     #pronouns = "";
-    #side;
+    #pNum;
 
     #pronsEl;
 
@@ -17,8 +17,7 @@ export class PlayerInfo {
 
         this.#pronsEl = infoEl;
 
-        // L for left side or R for right side
-        this.#side = (id % 2 == 0) ? "R" : "L";
+        this.#pNum = id;
 
     }
 
@@ -44,7 +43,7 @@ export class PlayerInfo {
             delay = 0;
 
             // wait for the top bar animation to proceed
-            await teams.hideTopBar(this.#side);
+            await teams.team(this.#pNum - 1).topBar().hide();
 
         }
 
@@ -60,7 +59,7 @@ export class PlayerInfo {
         }
 
         // call that top bar to come back up
-        teams.showTopBar(delay, this.#side);
+        teams.team(this.#pNum - 1).topBar().show(delay);
 
     }
 

@@ -7,15 +7,10 @@ import { teams } from "./Scoreboard/Team/Teams.mjs";
 import { fadeIn, fadeInMove } from "./Utils/Fade In.mjs";
 import { fadeOut } from "./Utils/Fade Out.mjs";
 import { current } from "./Utils/Globals.mjs";
-import { updateText } from "./Utils/Update Text.mjs";
 import { initWebsocket } from "./Utils/WebSocket.mjs";
 
-
-//max text sizes (used when resizing back)
-let numSize = 36;
-
 //to avoid the code constantly running the same method over and over
-const scorePrev = [], colorPrev = [], wlPrev = [];
+const wlPrev = [];
 let bestOfPrev, gamemodePrev;
 
 //to consider how many loops will we do
@@ -29,11 +24,8 @@ let startup = true;
 //next, global variables for the html elements
 const scoreboard = document.getElementsByClassName("scoreboard");
 const teamNames = document.getElementsByClassName("teamName");
-const colorImg = document.getElementsByClassName("colors");
 const topBars = document.getElementsByClassName("topBarTexts");
-const scoreImg = document.getElementsByClassName("scoreImgs");
 const scoreNums = document.getElementsByClassName("scoreNum");
-const scoreAnim = document.getElementsByClassName("scoreVid");
 const tLogoImg = document.getElementsByClassName("tLogos");
 const borderImg = document.getElementsByClassName('border');
 
@@ -62,8 +54,6 @@ async function updateData(data) {
 	const player = data.player;
 	const teamName = data.teamName;
 
-	const color = data.color;
-	const score = data.score;
 	const wl = data.wl;
 
 	const bestOf = data.bestOf;
@@ -108,8 +98,8 @@ async function updateData(data) {
 	if (bestOfPrev != bestOf) {
 		updateBorder(bestOf, gamemode.getGm()); // update the border
 		// update the score ticks so they fit the bestOf border
-		updateScore(score[0], bestOf, color[0], 0, gamemode.getGm(), false);
-		updateScore(score[1], bestOf, color[1], 1, gamemode.getGm(), false);
+		/* updateScore(score[0], bestOf, color[0], 0, gamemode.getGm(), false);
+		updateScore(score[1], bestOf, color[1], 1, gamemode.getGm(), false); */
 	}
 
 	// now, things that will happen only once, when the html loads
@@ -126,10 +116,6 @@ async function updateData(data) {
 			
 			//save for later so the animation doesn't repeat over and over
 			wlPrev[i] = wl[i];
-
-			//set the current score
-			updateScore(score[i], bestOf, color[i], i, gamemode.getGm(), false);
-			scorePrev[i] = score[i];
 
 			//check if we have a logo we can place on the overlay
 			if (gamemode.getGm() == 1) { //if this is singles, check the player tag
@@ -154,19 +140,13 @@ async function updateData(data) {
 			// we need to update some things
 			updateBorder(bestOf, gamemode.getGm());
 			for (let i = 0; i < maxSides; i++) {
-				updateScore(score[i], bestOf, color[i], i, gamemode.getGm(), false);
+				/* updateScore(score[i], bestOf, color[i], i, gamemode.getGm(), false); */
 			}
 			gamemodePrev = gamemode.getGm();
 		}
 
 		//now let's check stuff from each side
 		for (let i = 0; i < maxSides; i++) {
-
-			//score check
-			if (scorePrev[i] != score[i]) {
-				updateScore(score[i], bestOf, color[i], i, gamemode.getGm(), true);
-				scorePrev[i] = score[i];
-			}
 
 			//check if we have a logo we can place on the overlay
 			if (gamemode.getGm() == 1) { //if this is singles, check the player tag
@@ -193,20 +173,6 @@ async function updateData(data) {
 }
 
 // update functions
-async function updateScore(pScore, bestOf, pColor, pNum, gamemode, playAnim) {
-
-	if (playAnim) { //do we want to play the score up animation?
-		// depending on the color, change the clip
-		scoreAnim[pNum].src = `Resources/Overlay/Scoreboard/Score/${gamemode}/${pColor.name}.webm`;
-		scoreAnim[pNum].play();
-	} 
-	// change the score image with the new values
-	scoreImg[pNum].src = `Resources/Overlay/Scoreboard/Score/${gamemode}/Bo${bestOf} ${pScore}.png`;
-	// update that score number in case we are using those
-	updateText(scoreNums[pNum], pScore, numSize);
-
-}
-
 function updateBorder(bestOf, gamemode) {
 	for (let i = 0; i < borderImg.length; i++) {
 		borderImg[i].src = `Resources/Overlay/Scoreboard/Borders/Border ${gamemode} Bo${bestOf}.png`;
