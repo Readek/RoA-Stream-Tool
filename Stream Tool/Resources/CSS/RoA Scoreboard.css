@@ -157,6 +157,14 @@ body {
     -webkit-text-stroke: 1px var(--colorR);
     text-shadow: 0px 0px 2px var(--colorR);
 }
+.scoreNumDubs {
+    left: 225px;
+    top: 23px;
+}
+
+.borderX {
+    transform: translateX(-26px);
+}
 
 
 .topBarMask {

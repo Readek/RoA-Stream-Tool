@@ -64,6 +64,22 @@ export class TeamTopBar {
     }
 
     /**
+     * Updates elements to desired Best Of mode
+     * @param {*} bo - Current Best Of type
+     * @param {Number} gm - Current gamemode
+     */
+    updateBo(bo, gm) {
+
+        // moves top bar to compensate for new border image width
+        if (bo == "X" && gm == 1) {
+            this.#topBarEl.parentElement.parentElement.classList.add("topBarSinglesNum");
+        } else {
+            this.#topBarEl.parentElement.parentElement.classList.remove("topBarSinglesNum");
+        }
+
+    }
+
+    /**
      * Moves the top bar depending on the gamemode
      * @param {Number} gamemode - Gamemode to change to
      */

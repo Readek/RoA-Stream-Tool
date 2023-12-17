@@ -28,12 +28,13 @@ export class Team {
         const scoreImg = scoreboardEl.getElementsByClassName("scoreImgs")[0];
         const scoreNum = scoreboardEl.getElementsByClassName("scoreNum")[0];
         const scoreVid = scoreboardEl.getElementsByClassName("scoreVid")[0];
+        const scoreBordder = scoreboardEl.getElementsByClassName("border")[0];
 
         // and create those internal classes
         this.#tName = new TeamName(nameEl, side);
         this.#tTopBar = new TeamTopBar(topBar);
         this.#tColor = new TeamColor(cssRoot, colorImg, side);
-        this.#tScore = new TeamScore(scoreImg, scoreNum, scoreVid, side);
+        this.#tScore = new TeamScore(scoreImg, scoreNum, scoreVid, scoreBordder, side);
 
     }
 
@@ -91,6 +92,7 @@ export class Team {
      */
     changeGm(gamemode) {
         this.#tTopBar.changeGm(gamemode);
+        this.#tScore.changeGm(gamemode);
     }
 
     /** Hides some stuff when browser goes out of view */

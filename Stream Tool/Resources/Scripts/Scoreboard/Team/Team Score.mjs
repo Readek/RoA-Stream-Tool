@@ -1,16 +1,18 @@
 import { current } from "../../Utils/Globals.mjs";
 import { resizeText } from "../../Utils/Resize Text.mjs";
 import { updateText } from "../../Utils/Update Text.mjs";
+import { bestOf } from "../BestOf.mjs";
 import { gamemode } from "../Gamemode Change.mjs";
 import { teams } from "./Teams.mjs";
 
-const scoreSize = 36;
+let scoreSize = 36;
 
 export class TeamScore {
 
     #scoreImg;
     #scoreNum;
     #scoreVid;
+    #borderImg;
 
     #score = -1;
     #teamNum = -1;
@@ -20,13 +22,15 @@ export class TeamScore {
      * @param {HTMLElement} scoreImg - Team score ticks
      * @param {HTMLElement} scoreNum - Team score number
      * @param {HTMLElement} scoreVid - Team score animation video
+     * @param {HTMLElement} border - Team border image
      * @param {String} side - Side of team, L or R
      */
-    constructor(scoreImg, scoreNum, scoreVid, side) {
+    constructor(scoreImg, scoreNum, scoreVid, border, side) {
 
         this.#scoreImg = scoreImg;
         this.#scoreNum = scoreNum;
         this.#scoreVid = scoreVid;
+        this.#borderImg = border;
 
         this.#teamNum = side == "L" ? 0 : 1;
 
@@ -54,7 +58,7 @@ export class TeamScore {
 
             // change the score image with the new values
             // todo link best of to class
-            this.updateImg(gamemode.getGm(), 5, score);
+            this.updateImg(gamemode.getGm(), bestOf.getBo(), score);
 
             // update the numerical score in case we are displaying that
             updateText(this.#scoreNum, score, scoreSize);
@@ -76,6 +80,55 @@ export class TeamScore {
         if (bo != "X") {
             this.#scoreImg.src = `Resources/Overlay/Scoreboard/Score/${gm}/Bo${bo} ${score}.png`;
         }
+
+    }
+
+    /**
+     * Updates elements to desired Best Of mode
+     * @param {*} bo - Current Best Of type
+     * @param {Number} gm - Current gamemode
+     */
+    updateBo(bo, gm) {
+
+        // update the border image
+        this.#borderImg.src = `Resources/Overlay/Scoreboard/Borders/Border ${gm} Bo${bo}.png`;
+
+        // update score image
+        this.updateImg(gm, bo, this.#score);
+
+        // show or hide number element
+        if (bo == "X") {
+            this.#scoreNum.style.display = "flex";
+        } else {
+            this.#scoreNum.style.display = "none";
+        }
+
+        // move border images to compensate for new image width
+        if (bo == "X" && gm == 1) {
+            this.#borderImg.classList.add("borderX");
+        } else {
+            this.#borderImg.classList.remove("borderX");
+        }
+
+    }
+
+    changeGm(gamemode) {
+
+        if (gamemode == 2) { // doubles
+            
+            this.#scoreNum.classList.add("scoreNumDubs");
+            scoreSize = 30;
+            
+        } else { // singles
+
+            this.#scoreNum.classList.remove("scoreNumDubs");
+            scoreSize = 36;
+
+        }
+
+        // update them images
+        this.updateImg(gamemode, bestOf.getBo(), this.#score);
+        this.updateBo(bestOf.getBo(), gamemode);
 
     }
 

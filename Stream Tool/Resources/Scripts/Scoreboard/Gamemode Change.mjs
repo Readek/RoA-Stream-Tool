@@ -3,8 +3,6 @@ import { teams } from "./Team/Teams.mjs";
 
 const r = document.querySelector(':root');
 const tLogoImg = document.getElementsByClassName("tLogos");
-const scoreNums = document.getElementsByClassName("scoreNum");
-let numSize = 36;
 const nameBg = document.getElementsByClassName("nameBg");
 
 class Gamemode {
@@ -54,13 +52,6 @@ class Gamemode {
 		tLogoImg[1].style.right = "352px";
 		tLogoImg[1].style.top = "65px";
 
-		// move the score numbers
-		scoreNums[0].style.left = "225px";
-		scoreNums[1].style.left = "225px";
-		scoreNums[0].style.top = "23px";
-		scoreNums[1].style.top = "23px";
-		numSize = 30;
-
 		//show all hidden elements
 		const dubELs = document.getElementsByClassName("dubEL");
 		for (let i = 0; i < dubELs.length; i++) {
@@ -86,12 +77,6 @@ class Gamemode {
 		tLogoImg[0].style.top = "33px";
 		tLogoImg[1].style.right = "248px";
 		tLogoImg[1].style.top = "33px";
-
-		scoreNums[0].style.left = "-12px";
-		scoreNums[1].style.left = "-12px";
-		scoreNums[0].style.top = "27px";
-		scoreNums[1].style.top = "27px";
-		numSize = 36;
 
 		const dubELs = document.getElementsByClassName("dubEL");
 		for (let i = 0; i < dubELs.length; i++) {
