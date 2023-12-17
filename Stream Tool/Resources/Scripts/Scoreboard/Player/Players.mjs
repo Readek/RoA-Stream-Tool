@@ -25,6 +25,15 @@ class Players {
     }
 
     /**
+     * Gets the selected player class
+     * @param {Number} playerNumber - Player number, 0~3
+     * @returns {Player}
+     */
+    player(playerNumber) {
+        return this.#players[playerNumber];
+    }
+
+    /**
      * Updates player names, info, characters and backgrounds
      * @param {Object} data - Data for all players
      */

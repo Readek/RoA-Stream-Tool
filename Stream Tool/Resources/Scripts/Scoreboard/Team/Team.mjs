@@ -1,14 +1,21 @@
+import { fadeInMove } from "../../Utils/Fade In.mjs";
+import { current } from "../../Utils/Globals.mjs";
 import { TeamColor } from "./Team Color.mjs";
+import { TeamLogo } from "./Team Logo.mjs";
 import { TeamName } from "./Team Name.mjs";
 import { TeamScore } from "./Team Score.mjs";
 import { TeamTopBar } from "./Team Top Bar.mjs";
 
 export class Team {
 
+    #scoreboardEl;
+    #side;
+
     #tName;
     #tTopBar;
     #tColor;
     #tScore;
+    #tLogo;
 
     /**
      * Controls name, color and score info for a team
@@ -18,8 +25,15 @@ export class Team {
      */
     constructor(scoreboardEl, cssRoot, side) {
 
+        // get some main stuff
+        this.#scoreboardEl = scoreboardEl.parentElement;
+
+        // to know animation direction
+	    this.#side = side == "L" ? true : false;
+
         // gather the data needed for our classes
         const nameEl = scoreboardEl.getElementsByClassName("teamName")[0];
+        const nameBg = scoreboardEl.getElementsByClassName("nameBg")[0];
 
         const topBar = scoreboardEl.getElementsByClassName("topBarTexts")[0];
 
@@ -30,11 +44,14 @@ export class Team {
         const scoreVid = scoreboardEl.getElementsByClassName("scoreVid")[0];
         const scoreBordder = scoreboardEl.getElementsByClassName("border")[0];
 
+        const logoImg = scoreboardEl.getElementsByClassName("tLogos")[0];
+
         // and create those internal classes
-        this.#tName = new TeamName(nameEl, side);
+        this.#tName = new TeamName(nameEl, nameBg, side);
         this.#tTopBar = new TeamTopBar(topBar);
         this.#tColor = new TeamColor(cssRoot, colorImg, side);
         this.#tScore = new TeamScore(scoreImg, scoreNum, scoreVid, scoreBordder, side);
+        this.#tLogo = new TeamLogo(logoImg, side);
 
     }
 
@@ -71,6 +88,14 @@ export class Team {
     }
 
     /**
+     * Gets this team's logo class
+     * @returns {TeamScore}
+     */
+    logo() {
+        return this.#tLogo;
+    }
+
+    /**
      * Updates team data (name, W/L, color and score)
      * @param {String} name - Team's name
      * @param {String} name - Team's W/L status
@@ -79,10 +104,17 @@ export class Team {
      */
     update(name, wl, color, score) {
 
+        // neat fade animation for the scoreboard when loading
+        if (current.startup) {
+            fadeInMove(this.#scoreboardEl, null, this.#side, current.delay-.1);
+        }
+
+        // actual updates
         this.#tName.update(name);
         this.#tTopBar.update(wl);
         this.#tColor.update(color);
         this.#tScore.update(score);
+        this.#tLogo.update();
 
     }
 
@@ -91,8 +123,12 @@ export class Team {
      * @param {Number} gamemode - Gamemode to change to
      */
     changeGm(gamemode) {
+
+        this.#tName.changeGm(gamemode);
         this.#tTopBar.changeGm(gamemode);
         this.#tScore.changeGm(gamemode);
+        this.#tLogo.changeGm(gamemode);
+
     }
 
     /** Hides some stuff when browser goes out of view */

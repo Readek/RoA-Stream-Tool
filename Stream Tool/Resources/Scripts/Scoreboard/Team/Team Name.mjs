@@ -13,19 +13,25 @@ export class TeamName {
     #side;
 
     #nameEl;
+    #nameBg;
 
     /**
      * Manages the team's name
      * @param {HTMLElement} nameEl - Team text element
      * @param {String} side - L for left, R for right
      */
-    constructor(nameEl, side) {
+    constructor(nameEl, nameBg, side) {
 
         this.#nameEl = nameEl;
+        this.#nameBg = nameBg;
 
         // to know animation direction
         this.#side = side == "L" ? true : false;
 
+    }
+
+    getName() {
+        return this.#name;
     }
 
     /**
@@ -56,6 +62,14 @@ export class TeamName {
 
         }
 
+    }
+
+    /**
+     * Updates the name background depending on the gamemode
+     * @param {Number} gamemode - Gamemode to change to
+     */
+    changeGm(gamemode) {
+        this.#nameBg.src = `Resources/Overlay/Scoreboard/Name BG ${gamemode}.png`;
     }
 
     /** Hides the text element */

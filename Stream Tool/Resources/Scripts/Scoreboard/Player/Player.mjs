@@ -30,6 +30,29 @@ export class Player {
 
     }
 
+    /**
+     * Gets this player's name class
+     * @returns {PlayerName}
+     */
+    name() {
+        return this.#pName;
+    }
+
+    /**
+     * Gets this player's pronouns class
+     * @returns {PlayerInfo}
+     */
+    info() {
+        return this.#pProns;
+    }
+
+    /**
+     * Gets this player's character class
+     * @returns {PlayerCharacter}
+     */
+    char() {
+        return this.#pChar;
+    }
 
     /**
      * Update player name and tag, fading them out and in

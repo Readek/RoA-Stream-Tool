@@ -35,7 +35,7 @@ class Gamemode {
 
     #toDoubles() {
 
-        // move the scoreboard to the new positions
+        // move the scoreboards to the new positions
 		r.style.setProperty("--scoreboardX", "var(--scoreboardXDoubles)");
 		r.style.setProperty("--scoreboardY", "var(--scoreboardYDoubles)");
 
@@ -45,22 +45,11 @@ class Gamemode {
 		// update those team positions
 		teams.changeGm(this.getGm());
 
-        /* TO IMPLEMENT */
-		// move the team logos
-		tLogoImg[0].style.left = "352px";
-		tLogoImg[0].style.top = "65px";
-		tLogoImg[1].style.right = "352px";
-		tLogoImg[1].style.top = "65px";
-
 		//show all hidden elements
 		const dubELs = document.getElementsByClassName("dubEL");
 		for (let i = 0; i < dubELs.length; i++) {
 			dubELs[i].style.display = "block";
 		}
-
-        // update the background images
-        nameBg[0].src = `Resources/Overlay/Scoreboard/Name BG ${this.getGm()}.png`;
-        nameBg[1].src = `Resources/Overlay/Scoreboard/Name BG ${this.getGm()}.png`;
 
     }
 
@@ -72,11 +61,6 @@ class Gamemode {
         players.changeGm(this.getGm());
 
 		teams.changeGm(this.getGm());
-
-		tLogoImg[0].style.left = "248px";
-		tLogoImg[0].style.top = "33px";
-		tLogoImg[1].style.right = "248px";
-		tLogoImg[1].style.top = "33px";
 
 		const dubELs = document.getElementsByClassName("dubEL");
 		for (let i = 0; i < dubELs.length; i++) {

@@ -112,6 +112,10 @@ export class TeamScore {
 
     }
 
+    /**
+     * Updates elements depending on the gamemode
+     * @param {Number} gamemode - Gamemode to change to
+     */
     changeGm(gamemode) {
 
         if (gamemode == 2) { // doubles
