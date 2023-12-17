@@ -162,7 +162,11 @@ export class PlayerName {
 
     /** Displays the text wrapper, fading it in */
     show() {
-        fadeIn(this.#wrapperEl, fadeInTimeSc, current.delay + .3);
+        if (gamemode.getGm() == 2) {
+            fadeIn(this.#wrapperEl, fadeInTimeSc, current.delay)
+        } else {
+            fadeInMove(this.#wrapperEl, null, this.#side, current.delay);
+        }
         this.#wrapperEl.style.display = "block";
     }
 

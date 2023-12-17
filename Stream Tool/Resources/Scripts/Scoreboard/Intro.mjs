@@ -16,13 +16,45 @@ const superCoolQuestionMark = document.getElementById("superCoolInterrogation");
 
 const introFontSize = 85;
 
+let isAllowed = false;
+const data = {}
+
 class ScoreboardIntro {
 
+    isAllowed() {
+        return isAllowed;
+    }
+
     /**
-     * Plays a cool and sexy intro that covers the entire screen
-     * @param {Object} data - All of the scoreboard data
+     * Updates data used in the scoreboard intro
+     * @param {Object} incData - All of the scoreboard data
      */
-    play(data) {
+    updateData(incData) {
+
+        // this will notify to the outside that we're doing the intro
+        isAllowed = incData.allowIntro;
+
+        // this is so we dont end up storing a potentionally really big object
+        data.score = incData.score;
+        data.gamemode = incData.gamemode;
+        data.player = [{}, {}, {}, {}];
+        for (let i = 0; i < incData.player.length; i++) {
+            data.player[i].name = incData.player[i].name;            
+        }
+        data.teamName = incData.teamName;
+        data.color = [{}, {}];
+        for (let i = 0; i < incData.color.length; i++) {
+            data.color[i].name = incData.color[i].name;
+        }
+        data.score = incData.score;
+        data.wl = incData.wl;
+        data.round = incData.round;
+        data.tournamentName = incData.tournamentName;
+
+    }
+
+    /** Plays a cool and sexy intro that covers the entire screen */
+    play() {
 
         // set all things visible
         introDiv.style.opacity = 1;
@@ -104,11 +136,32 @@ class ScoreboardIntro {
         roundText.textContent = data.round;
         tournamentText.textContent = data.tournamentName;
         
-        //round, tournament and VS/GameX text fade in
+        // round, tournament and VS/GameX text fade in
         fadeIn(textsIntro, fadeInTimeSc, introDelaySc-.2);
 
-        //aaaaand fade out everything
+        // aaaaand fade out everything
         fadeOut(introDiv, fadeInTimeSc+.2, introDelaySc+1.8);
+
+    }
+
+    /** Resets all animation states for intro elements */
+    reset() {
+
+        introWhiteBarTop.style.animation = "";
+        introWhiteBarBot.style.animation = "";
+
+        pIntroEls[0].style.animation = "";
+        pIntroEls[1].style.animation = "";
+        pIntroEls[0].textContent = "";
+        pIntroEls[1].textContent = "";
+
+        midTextEL.textContent = "VS";
+
+        superCoolQuestionMark.style.animation = "";
+
+        textsIntro.style.animation = "";
+
+        introDiv.style.animation = "";
 
     }
 

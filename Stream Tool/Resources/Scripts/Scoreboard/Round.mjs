@@ -78,6 +78,21 @@ class Round {
 
     }
 
+    /** Hides the round element */
+    hide() {
+
+        roundEl.style.display = "none";
+
+    }
+
+    /** Shows the logo image */
+    show() {
+
+        fadeIn(roundEl, fadeInTimeSc, current.delay);
+        roundEl.style.display = "flex";
+
+    }
+
 }
 
 export const round = new Round; // todo update name

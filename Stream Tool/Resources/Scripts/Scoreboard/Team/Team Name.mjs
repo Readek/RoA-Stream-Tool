@@ -79,8 +79,8 @@ export class TeamName {
 
     /** Displays the text wrapper, fading it in */
     show() {
-        fadeIn(this.#nameEl, fadeInTimeVs, introDelayVs + .2);
-        this.#nameEl.style.display = "flex";
+        fadeInMove(this.#nameEl, null, this.#side, current.delay);
+        this.#nameEl.style.display = "block";
     }
 
 }
