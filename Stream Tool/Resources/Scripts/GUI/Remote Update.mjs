@@ -54,7 +54,7 @@ export async function updateGUI(data) {
     }
 
     // player time
-    for (let i = 0; i < players.length; i++) {
+    for (let i = 0; i < data.player.length; i++) {
 
         // player info
         players[i].setName(data.player[i].name);
