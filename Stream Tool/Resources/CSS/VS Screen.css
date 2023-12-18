@@ -461,7 +461,7 @@ body {
 .casterDiv {
     display: flex;
     flex-direction: column;
-    width: 172px;
+    width: 185px;
     margin: 0 -5px;
     flex-shrink: 0;
 }
@@ -502,6 +502,7 @@ body {
     display: inline-block;
     object-fit: scale-down;
     fill: rgb(65, 65, 65);
+    flex-shrink: 0;
 }
 .micIcon {
     height: 20px;
