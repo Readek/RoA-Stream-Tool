@@ -187,17 +187,14 @@ class GuiSettings {
         }
 
         // to update character images
-        const promises = [];
         for (let i = 0; i < players.length; i++) {
-            promises.push(players[i].setVsImg());
-            promises.push(players[i].setVsBg());
-            promises.push(players[i].setTrailImage());
+            await players[i].setVsImg();
+            players[i].setTrailImage(); // needs to wait for setVsImg
+            players[i].setVsBg();
         }
 
         // save current checkbox value to the settings file
         await this.save("forceHD", this.isHDChecked());
-
-        await Promise.all(promises);
 
     }
 
