@@ -48,6 +48,12 @@
             "hex": "FFC5-2643-BD47-43BD-47CF-9C00-FFCE-CEFF-8C0D-E139-01FF"
         },
         {
+            "name": "Champion",
+            "hex": "92F2-B7EC-EEED-ECEE-ED94-F2B7-3F3F-465A-5A5A-3F3F-467A",
+            "alpha": [1, 0.9, 1, 0.5, 1, 1, 1],
+            "force": true
+        },
+        {
             "name": "Genesis",
             "hex": "FF3A-3ABD-BABA-BDBA-BAEC-0000-E5DE-DE3D-3D3D-1E1C-1CEC"
         },
