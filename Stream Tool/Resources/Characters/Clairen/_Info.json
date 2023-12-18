@@ -94,7 +94,8 @@
         {
             "name": "Golden",
             "hex": "FCFC-FC75-5C00-FFDD-1EFC-D535-FFDD-1EA9-A9A9-FFDD-1E5B",
-            "golden": true
+            "golden": true,
+            "force": true
         },
         {
             "name": "Heat Wave",

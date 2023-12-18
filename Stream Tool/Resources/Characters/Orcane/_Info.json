@@ -53,7 +53,8 @@
         {
             "name": "Golden",
             "hex": "ECC9-21EC-C921-C800",
-            "golden": true
+            "golden": true,
+            "force": true
         },
         {
             "name": "Summit",

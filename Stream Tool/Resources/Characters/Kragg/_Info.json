@@ -76,7 +76,8 @@
         {
             "name": "Golden",
             "hex": "FFBB-00FF-FFFF-FFFD-FB6B-4E1C-4A00",
-            "golden": true
+            "golden": true,
+            "force": true
         },
         {
             "name": "Ranked",

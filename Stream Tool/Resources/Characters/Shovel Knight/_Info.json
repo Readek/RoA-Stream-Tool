@@ -50,7 +50,8 @@
         {
             "name": "Golden",
             "hex": "FCD5-3575-5C00-FCFC-FCFF-FFFE-BA00",
-            "golden": true
+            "golden": true,
+            "force": true
         },
         {
             "name": "Infamous",

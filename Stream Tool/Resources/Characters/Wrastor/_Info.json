@@ -80,7 +80,8 @@
         {
             "name": "Golden",
             "hex": "FFDD-1EFC-D535-FCFC-FCFF-F7CA-FFF2-AB4D",
-            "golden": true
+            "golden": true,
+            "force": true
         },
         {
             "name": "Ranked",

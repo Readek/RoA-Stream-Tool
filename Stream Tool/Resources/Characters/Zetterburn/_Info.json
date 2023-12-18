@@ -74,7 +74,8 @@
         {
             "name": "Golden",
             "hex": "F1CC-3FF0-D94F-FFFF-FFFD-FFFC-FFF8-C46F",
-            "golden": true
+            "golden": true,
+            "force": true
         },
         {
             "name": "LoA",

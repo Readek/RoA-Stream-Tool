@@ -89,7 +89,8 @@
         {
             "name": "Golden",
             "hex": "FFDD-1EE1-BA25-FFFF-FFFD-FFFC-FFF8-C48E-5C00-FFF7-CAFC",
-            "golden": true
+            "golden": true,
+            "force": true
         },
         {
             "name": "HD"

@@ -57,7 +57,8 @@
         {
             "name": "Golden",
             "hex": "FFE9-81FF-E981-FBD4-3475-5B00-F5EA-CAFE-FDFE-A78A-1BCB",
-            "golden": true
+            "golden": true,
+            "force": true
         },
         {
             "name": "Abyss",

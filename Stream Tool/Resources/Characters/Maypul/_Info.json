@@ -81,7 +81,8 @@
         {
             "name": "Golden",
             "hex": "FFDC-1EFF-FFFF-FFDC-1EFF-DC1E-FFE6-1E04",
-            "golden": true
+            "golden": true,
+            "force": true
         },
         {
             "name": "Champion",

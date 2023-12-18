@@ -76,7 +76,8 @@
         {
             "name": "Golden",
             "hex": "FFF7-CAFF-DD1E-FFDD-1EFF-DD1E-FEFF-0533",
-            "golden": true
+            "golden": true,
+            "force": true
         },
         {
             "name": "Infamous",
