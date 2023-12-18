@@ -285,8 +285,11 @@ class PlayerFinder extends Finder {
         // all them player data
         player.setName(pData.name);
         player.setTag(pData.tag);
-        player.setPronouns(pData.pronouns);
-        player.setSocials(pData.socials);
+        // this will exclude bracket players
+        if (player.profileType == "player") {
+            player.setPronouns(pData.pronouns);
+            player.setSocials(pData.socials);
+        }
 
         // character change
         await player.charChange(pData.char, true);
