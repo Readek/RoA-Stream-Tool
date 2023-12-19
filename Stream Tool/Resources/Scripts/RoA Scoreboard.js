@@ -72,42 +72,70 @@ async function updateData(data) {
 
 }
 
-// this will trigger every time the browser goes out of view (or back to view)
-// on OBS, this triggers when swapping in and out of the scene
-// on Chromium (OBS browsers run on it), hide() won't be done until
-// the user tabs back, displaying everything for around 1 frame
-document.addEventListener("visibilitychange", () => {
-
-	if (document.hidden) { // if lights go out
-
-		current.startup = true;
-
-		// reset animation states for the intro
-		scoreboardIntro.reset();
-
-		// hide some stuff so we save on some resources
-		players.hide();
-		teams.hide();
-		round.hide();
+// if browser is on OBS
+if (window.obsstudio) {
 	
-	} else { // when the user comes back
+	// every time the browser source becomes active
+	window.addEventListener('obsSourceActiveChanged', (event) => {
+
+		if (event.detail.active) { // when its show time
+			showElements();
+		} else { // when browser goes to the backstage
+			hideElements();
+		}
 	
-		setTimeout(() => { // i absolutely hate Chromium
+	})
 
-			// play that sexy intro
-			if (scoreboardIntro.isAllowed()) {
-				scoreboardIntro.play();
-			}
-
-			// display and animate hidden stuff
-			players.show();
-			teams.show();
-			round.show();
-
-		}, 0);
-		
-		current.startup = false;
+} else {
 	
-	}
+	// this is here for regular browsers for better developer experiece
+	// this will trigger every time the browser goes out of view (or back to view)
+	document.addEventListener("visibilitychange", () => {
 
-});
+		if (document.hidden) { // if lights go out
+			hideElements();
+		} else { // when the user comes back
+			showElements();
+		}
+
+	});
+
+}
+
+
+function hideElements() {
+	
+	current.startup = true;
+
+	// reset animation states for the intro
+	scoreboardIntro.reset();
+
+	// hide some stuff so we save on some resources
+	players.hide();
+	teams.hide();
+	round.hide();
+
+}
+
+function showElements() {
+
+	// on Chromium (OBS browsers run on it), hide() won't be done until
+	// the user tabs back, displaying everything for around 1 frame
+	
+	setTimeout(() => { // i absolutely hate Chromium
+
+		// play that sexy intro
+		if (scoreboardIntro.isAllowed()) {
+			scoreboardIntro.play();
+		}
+
+		// display and animate hidden stuff
+		players.show();
+		teams.show();
+		round.show();
+
+	}, 0);
+	
+	current.startup = false;
+
+}
