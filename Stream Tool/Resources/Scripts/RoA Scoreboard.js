@@ -6,6 +6,7 @@ import { round } from "./Scoreboard/Round.mjs";
 import { introDelaySc } from "./Scoreboard/ScGlobals.mjs";
 import { teams } from "./Scoreboard/Team/Teams.mjs";
 import { current} from "./Utils/Globals.mjs";
+import { initOnBrowserActive, isBrowserActive } from "./Utils/On Transition Event.mjs";
 import { initWebsocket } from "./Utils/WebSocket.mjs";
 
 // used to initialize some stuff just once
@@ -31,19 +32,18 @@ async function updateData(data) {
 		// before anything else, check if the Intro wants to come out
 		if (data.allowIntro) {
 
-			if (firstUpdate) {
-				scoreboardIntro.play();
-			} else {
-				// intro will trigger with the visibilityChange event below
-			}
+			// run that intro!
+			scoreboardIntro.play();
 
-			// increase the delay so everything animates after the intro
-			current.delay = introDelaySc + 2;
-
-		} else {
-			current.delay = introDelaySc;
 		}
 
+	}
+
+	// determine startup delay
+	if (data.allowIntro) {
+		current.delay = introDelaySc + 2;
+	} else {
+		current.delay = introDelaySc;
 	}
 
 	// if this isnt a singles match, rearrange stuff
@@ -66,43 +66,23 @@ async function updateData(data) {
 		current.startup = false;
 	}
 
+	// this is to prevent things not animating when browser loaded while not active
 	if (firstUpdate) {
+		if (!isBrowserActive()) {
+			hideElements();
+		}
 		firstUpdate = false;
 	}
 
 }
 
-// if browser is on OBS
-if (window.obsstudio) {
-	
-	// every time the browser source becomes active
-	window.addEventListener('obsSourceActiveChanged', (event) => {
+// listen to obs transition / tab active states
+initOnBrowserActive(() => hideElements(), () => showElements());
 
-		if (event.detail.active) { // when its show time
-			showElements();
-		} else { // when browser goes to the backstage
-			hideElements();
-		}
-	
-	})
+// now, this is a workaround to force CSS reflow, and we need any existing element
+const randomEl = document.getElementById("roundDiv"); // can be anything
 
-} else {
-	
-	// this is here for regular browsers for better developer experiece
-	// this will trigger every time the browser goes out of view (or back to view)
-	document.addEventListener("visibilitychange", () => {
-
-		if (document.hidden) { // if lights go out
-			hideElements();
-		} else { // when the user comes back
-			showElements();
-		}
-
-	});
-
-}
-
-
+/** Hides elements that are animated when browser becomes active */
 function hideElements() {
 	
 	current.startup = true;
@@ -115,8 +95,12 @@ function hideElements() {
 	teams.hide();
 	round.hide();
 
+	// trigger CSS reflow
+	randomEl.offsetWidth;
+
 }
 
+/** Shows elements to be animated when browser becomes active */
 function showElements() {
 
 	// on Chromium (OBS browsers run on it), hide() won't be done until

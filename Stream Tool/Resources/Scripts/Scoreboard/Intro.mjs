@@ -147,21 +147,26 @@ class ScoreboardIntro {
     /** Resets all animation states for intro elements */
     reset() {
 
-        introWhiteBarTop.style.animation = "";
-        introWhiteBarBot.style.animation = "";
+        // only do this if intro toggle is active
+        if (this.isAllowed()) {
 
-        pIntroEls[0].style.animation = "";
-        pIntroEls[1].style.animation = "";
-        pIntroEls[0].textContent = "";
-        pIntroEls[1].textContent = "";
+            introWhiteBarTop.style.animation = "";
+            introWhiteBarBot.style.animation = "";
 
-        midTextEL.textContent = "VS";
+            pIntroEls[0].style.animation = "";
+            pIntroEls[1].style.animation = "";
+            pIntroEls[0].textContent = "";
+            pIntroEls[1].textContent = "";
 
-        superCoolQuestionMark.style.animation = "";
+            midTextEL.textContent = "VS";
 
-        textsIntro.style.animation = "";
+            superCoolQuestionMark.style.animation = "";
 
-        introDiv.style.animation = "";
+            textsIntro.style.animation = "";
+
+            introDiv.style.animation = "";
+
+        }
 
     }
 

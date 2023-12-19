@@ -46,6 +46,7 @@ class Teams {
 
             // if loading, just skip the fade
             if (current.startup) {
+                scoreEl.style.animation = "";
                 scoreEl.style.opacity = 0;
             } else {
                 fadeOut(scoreEl, fadeOutTimeVs);

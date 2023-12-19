@@ -1,4 +1,5 @@
 import { current } from "./Utils/Globals.mjs";
+import { initOnBrowserActive, isBrowserActive } from "./Utils/On Transition Event.mjs";
 import { initWebsocket } from "./Utils/WebSocket.mjs";
 import { bestOf } from "./VS Screen/BestOf.mjs";
 import { casters } from "./VS Screen/Caster/Casters.mjs";
@@ -36,8 +37,6 @@ function updateData(data) {
 		// initialize the caster class
 		casters.initCasters(data.socialNames);
 
-		firstUpdate = false;
-
 	}
 
 	// if this isnt a singles match, rearrange stuff
@@ -63,39 +62,23 @@ function updateData(data) {
 		current.startup = false;
 	}
 
-}
-
-// if browser is on OBS
-if (window.obsstudio) {
-	
-	// every time the browser source becomes active
-	window.addEventListener('obsSourceActiveChanged', (event) => {
-
-		if (event.detail.active) { // when its show time
-			showElements();
-		} else { // when browser goes to the backstage
+	// this is to prevent things not animating when browser loaded while not active
+	if (firstUpdate) {
+		if (!isBrowserActive()) {
 			hideElements();
 		}
-	
-	})
-
-} else {
-	
-	// this is here for regular browsers for better developer experiece
-	// this will trigger every time the browser goes out of view (or back to view)
-	document.addEventListener("visibilitychange", () => {
-
-		if (document.hidden) { // if lights go out
-			hideElements();
-		} else { // when the user comes back
-			showElements();
-		}
-
-	});
+		firstUpdate = false;
+	}
 
 }
 
+// listen to obs transition / tab active states
+initOnBrowserActive(() => hideElements(), () => showElements());
 
+// now, this is a workaround to force CSS reflow, and we need any existing element
+const randomEl = document.getElementById("round"); // can be anything
+
+/** Hides elements that are animated when browser becomes active */
 function hideElements() {
 	
 	current.startup = true;
@@ -104,18 +87,20 @@ function hideElements() {
 	players.hide();
 	teams.hide();
 
+	// trigger CSS reflow
+	randomEl.offsetWidth;
+
 }
 
+/** Shows elements to be animated when browser becomes active */
 function showElements() {
 
 	// on Chromium (OBS browsers run on it), hide() won't be done until
 	// the user tabs back, displaying everything for around 1 frame
 	
-	setTimeout(() => { // i absolutely hate Chromium
-		// display and animate hidden stuff
-		players.show();
-		teams.show();
-	}, 0);
+	// display and animate hidden stuff
+	players.show();
+	teams.show();
 	
 	current.startup = false;
 
