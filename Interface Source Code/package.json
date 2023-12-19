@@ -1,14 +1,14 @@
 {
   "name": "roa-st-gui",
-  "version": "9.0.0",
+  "version": "10.0.0",
   "description": "An electron interface for RoA tournament streams.",
   "main": "index.js",
   "repository": "https://github.com/Readek/RoA-Stream-Tool",
   "author": "Readek",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^22.0.0",
-    "electron-builder": "^23.6.0"
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
   },
   "scripts": {
     "start": "electron .",
@@ -24,6 +24,6 @@
     }
   },
   "dependencies": {
-    "ws": "^8.8.1"
+    "ws": "^8.15.1"
   }
 }

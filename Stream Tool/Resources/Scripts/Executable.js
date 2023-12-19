@@ -22,7 +22,7 @@ module.exports = function initExec(rPath, nPath, wSocket) {
         guiWidth = guiSettings.guiWidth;
         guiHeight = guiSettings.guiHeight;
         if (process.platform == "win32") {
-            guiWidth = guiWidth + 4; // windows why cant you be normal
+            guiWidth = guiWidth + 8; // windows why cant you be normal
             guiHeight = guiHeight + 30;
         }
 
@@ -103,8 +103,6 @@ function createWindow() {
 
     const win = new BrowserWindow({
 
-        width: guiWidth,
-        height: guiHeight,
         minHeight: 250,
         minWidth: 350,
         resizable: false,
@@ -126,6 +124,9 @@ function createWindow() {
 
     // we dont like menus
     win.removeMenu()
+
+    // set the initial window dimensions
+    win.setBounds({width: guiWidth, height: guiHeight});
 
     // load the main page
     if (failed) { // in case something failed earlier
@@ -158,9 +159,9 @@ function createWindow() {
 
     // restore default window dimensions
     ipcMain.on('defaultWindow', (event) => {
-        // windows includes flame borders on the window dimensions and i hate it
+        // windows includes frame borders on the window dimensions and i hate it
         if (process.platform == "win32") {
-            win.setBounds({width: 604, height: 330});
+            win.setBounds({width: 608, height: 330});
         } else {
             win.setBounds({width: 600, height: 300});
         }
@@ -216,7 +217,7 @@ app.on('window-all-closed', () => {
         // save current window dimensions
         const data = JSON.parse(fs.readFileSync(`${resourcesPath}/Texts/GUI Settings.json`));
         if (process.platform == "win32") {
-            data.guiWidth = guiWidth - 4;
+            data.guiWidth = guiWidth - 8;
             data.guiHeight = guiHeight - 30;
         } else {
             data.guiWidth = guiWidth;
