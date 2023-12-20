@@ -1,4 +1,5 @@
 import { current } from "../../Utils/Globals.mjs";
+import { bestOf } from "../BestOf.mjs";
 
 export class TeamTopBar {
 
@@ -94,6 +95,8 @@ export class TeamTopBar {
             this.#topBarEl.parentElement.parentElement.classList.remove("topBarDoubles");
 
         }
+
+        this.updateBo(bestOf.getBo(), gamemode);
             
     }
 

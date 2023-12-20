@@ -95,4 +95,4 @@ class Round {
 
 }
 
-export const round = new Round; // todo update name
+export const round = new Round;

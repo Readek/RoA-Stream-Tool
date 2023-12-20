@@ -41,7 +41,8 @@ export class Team {
 
         const scoreImg = scoreboardEl.getElementsByClassName("scoreImgs")[0];
         const scoreNum = scoreboardEl.getElementsByClassName("scoreNum")[0];
-        const scoreVid = scoreboardEl.getElementsByClassName("scoreVid")[0];
+        const scoreGrad = scoreboardEl.getElementsByClassName("scoreAnimGrad")[0];
+        const scoreAnim = scoreboardEl.getElementsByClassName("scoreAnimMask")[0];
         const scoreBordder = scoreboardEl.getElementsByClassName("border")[0];
 
         const logoImg = scoreboardEl.getElementsByClassName("tLogos")[0];
@@ -50,7 +51,7 @@ export class Team {
         this.#tName = new TeamName(nameEl, nameBg, side);
         this.#tTopBar = new TeamTopBar(topBar);
         this.#tColor = new TeamColor(cssRoot, colorImg, side);
-        this.#tScore = new TeamScore(scoreImg, scoreNum, scoreVid, scoreBordder, side);
+        this.#tScore = new TeamScore(scoreImg, scoreNum, scoreAnim, scoreGrad, scoreBordder);
         this.#tLogo = new TeamLogo(logoImg, side);
 
     }

@@ -22,7 +22,7 @@
     --scoreboardYDoubles: 13px;
     --colorL: #14bb89;
     --colorR: #14bb89;
-  }
+}
 
 body {
     width: 1920px;
@@ -33,6 +33,7 @@ body {
     text-transform: uppercase;
     color: white;
     font-family: "Deansgate";
+    background-color: grey;
 }
 
 .absol {
@@ -221,6 +222,92 @@ body {
     font-family: "Roboto";
     white-space: nowrap;
     font-weight: bolder;
+}
+
+
+.scoreAnimGrad {
+    position: absolute;
+    width: 80px;
+    height: 34px;
+    opacity: 0;
+}
+.scoreAnimGrad1 {
+    transform: translate(27px, 30px) skewX(15deg);
+    height: 40px;
+}
+.scoreAnimGrad2 {
+    transform: translate(110px, 66px) skewX(15deg);
+    height: 34px;
+}
+#scoreAnimGradL {
+    background: linear-gradient(90deg, var(--colorL) 0%, #FFFFFF00);
+}
+#scoreAnimGradR {
+    background: linear-gradient(90deg, var(--colorR) 0%, #FFFFFF00);
+}
+
+.scoreAnimMask {
+    -webkit-mask-repeat: no-repeat;
+}
+/*
+ok, hear me out
+turns out obs's browser does NOT support just mask-image,
+you NEED to add the webkit prefix, and i have no idea why
+this means i cant add mask-image through javascript style
+because javascript will ALWAYS add mask-image WITHOUT the prefix
+so the only solution i could think of was to have a ccs
+classses for every single possibility
+man i hate chromium
+*/
+.scoreAnimMask15 {
+    -webkit-mask-image: url("../Overlay/Scoreboard/Borders/Border\ 1\ Bo5.png");
+}
+.scoreAnimMask13 {
+    -webkit-mask-image: url("../Overlay/Scoreboard/Borders/Border\ 1\ Bo3.png");
+}
+.scoreAnimMask1X {
+    -webkit-mask-image: url("../Overlay/Scoreboard/Borders/Border\ 1\ BoX.png");
+}
+.scoreAnimMask25 {
+    -webkit-mask-image: url("../Overlay/Scoreboard/Borders/Border\ 2\ Bo5.png");
+}
+.scoreAnimMask23 {
+    -webkit-mask-image: url("../Overlay/Scoreboard/Borders/Border\ 2\ Bo3.png");
+}
+.scoreAnimMask2X {
+    -webkit-mask-image: url("../Overlay/Scoreboard/Borders/Border\ 2\ BoX.png");
+}
+
+.scoreAnimDiv {
+    display: flex;
+    justify-content: center;
+    transform: translateX(-100%);
+}
+
+.scoreAnimMove {
+    height: 150px;
+    width: 150px;
+    opacity: .8;
+}
+#scoreAnimMoveL{
+    background: linear-gradient(
+        90deg,
+        #FFFFFF00 0%,
+        var(--colorL) 50%,
+        #FFFFFF00
+    );
+}
+#scoreAnimMoveR {
+    background: linear-gradient(
+        90deg,
+        #FFFFFF00 0%,
+        var(--colorR) 50%,
+        #FFFFFF00
+    );
+}
+
+.scoreAnimImgForWidth {
+    opacity: 0;
 }
 
 
@@ -431,4 +518,16 @@ body {
 @keyframes introWhiteBarBot {
     from {transform: translateX(100%);}
     to {transform: translateX(0);}
+}
+
+
+@keyframes scoreUpMove {
+    from {transform: translateX(-100%);}
+    to {transform: translateX(100%);}
+}
+
+@keyframes scoreUpGrad {
+    0% {opacity: 0;}
+    5% {opacity: 1;}
+    100% {opacity: 0;}
 }
