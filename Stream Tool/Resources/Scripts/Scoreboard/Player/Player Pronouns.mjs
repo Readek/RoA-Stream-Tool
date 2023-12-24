@@ -43,7 +43,7 @@ export class PlayerInfo {
             delay = 0;
 
             // wait for the top bar animation to proceed
-            await teams.team(this.#pNum - 1).topBar().hide();
+            await teams.team((this.#pNum - 1) % 2).topBar().hide();
 
         }
 
@@ -59,7 +59,7 @@ export class PlayerInfo {
         }
 
         // call that top bar to come back up
-        teams.team(this.#pNum - 1).topBar().show(delay);
+        teams.team((this.#pNum - 1) % 2).topBar().show(delay);
 
     }
 

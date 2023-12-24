@@ -135,7 +135,8 @@ export class Team {
     /** Hides some stuff when browser goes out of view */
     hide() {
 
-        this.#scoreboardEl.style.display = "none";
+        // this will reset the scoreboard fade in animation
+        this.#scoreboardEl.style.animation = "";
 
         this.#tName.hide();
         this.#tTopBar.hide();

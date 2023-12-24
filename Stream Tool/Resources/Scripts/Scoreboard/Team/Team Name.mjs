@@ -1,4 +1,4 @@
-import { fadeIn, fadeInMove } from "../../Utils/Fade In.mjs";
+import { fadeInMove } from "../../Utils/Fade In.mjs";
 import { fadeOutMove } from "../../Utils/Fade Out.mjs";
 import { current } from "../../Utils/Globals.mjs";
 import { resizeText } from "../../Utils/Resize Text.mjs";
@@ -79,8 +79,10 @@ export class TeamName {
 
     /** Displays the text wrapper, fading it in */
     show() {
-        fadeInMove(this.#nameEl, null, this.#side, current.delay);
-        this.#nameEl.style.display = "block";
+        if (gamemode.getGm() == 2) {
+            fadeInMove(this.#nameEl, null, this.#side, current.delay);
+            this.#nameEl.style.display = "block";
+        }
     }
 
 }

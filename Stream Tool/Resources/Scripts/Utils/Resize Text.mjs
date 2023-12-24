@@ -4,6 +4,14 @@
  */
 export function resizeText(textEL) {
 
+	// there's a chance the element gets resized when its not being rendered
+	// because of this, we need to briefly display it so we get its boundaries
+	const isHidden = textEL.style.display == "none" ? true : false;
+	if (isHidden) {
+		textEL.style.display = "block";
+	}
+
+	// this is where the magic happens
 	const childrens = textEL.children;
 	while (textEL.scrollWidth > textEL.offsetWidth) {
 		if (childrens.length > 0) { // for wrappers with more than 1 text
@@ -14,6 +22,12 @@ export function resizeText(textEL) {
 			textEL.style.fontSize = getFontSize(textEL) + "px";
 		}
 	}
+
+	// hide it back if the element came as hidden
+	if (isHidden) {
+		textEL.style.display = "none";
+	}
+
     
 }
 

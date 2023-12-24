@@ -190,12 +190,14 @@ function createWindow() {
 
     // when the GUI is ready to send data to browsers
     ipcMain.on('sendData', (event, data) => {
-        const jsonData = JSON.parse(data);
-        sockets.forEach(socket => {
-            if (jsonData.id == socket.id) {
-                socket.ws.send(data)
-            }
-        })
+        if (data) {
+            const jsonData = JSON.parse(data);
+            sockets.forEach(socket => {
+                if (jsonData.id == socket.id) {
+                    socket.ws.send(data)
+                }
+            })
+        }
     })
 
     win.on("close", () => {

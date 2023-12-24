@@ -1,3 +1,4 @@
+import { gamemode } from "../Gamemode Change.mjs";
 import { Player } from "./Player.mjs";
 
 const topRow = document.getElementById("topRow");
@@ -93,8 +94,11 @@ class Players {
     /** Returns some elements back to view, animating them */
     show() {
 
-        for (let i = 0; i < this.#players.length; i++) {
-            this.#players[i].show();            
+        // this is for hiding sometimes residual player info for players 3 and 4
+        const itTimes = gamemode.getGm() == 1 ? 2 : 4;
+
+        for (let i = 0; i < itTimes; i++) {
+            this.#players[i].show();
         }
 
     }
