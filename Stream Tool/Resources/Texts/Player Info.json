@@ -47,9 +47,16 @@
   },
   {
     "name": "Test",
-    "pronouns": "",
     "tag": "One",
-    "socials": {},
+    "pronouns": "Pronouns",
+    "socials": {
+      "twitter": "Twitter",
+      "twitch": "Twich",
+      "yt": "Youtube",
+      "bsky": "Bluesky",
+      "masto": "Mastodon",
+      "cohost": "Cohost"
+    },
     "characters": [
       {
         "character": "Absa",

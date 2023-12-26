@@ -1,65 +1,91 @@
 {
-    "name": "Test",
-    "pronouns": "",
-    "tag": "One",
-    "socials": {},
-    "characters": [
-        {
-            "character": "Absa",  "skin": "Default"
-        },
-        {
-            "character": "Clairen",  "skin": "Default"
-        },
-        {
-            "character": "Elliana",  "skin": "Default"
-        },
-        {
-            "character": "Etalus",  "skin": "Default"
-        },
-        {
-            "character": "Forsburn",  "skin": "Default"
-        },
-        {
-            "character": "Hodan",  "skin": "Default"
-        },
-        {
-            "character": "Kragg",  "skin": "Default"
-        },
-        {
-            "character": "Maypul",  "skin": "Default"
-        },
-        {
-            "character": "Mollo",  "skin": "Default"
-        },
-        {
-            "character": "Olympia",  "skin": "Default"
-        },
-        {
-            "character": "Orcane",  "skin": "Default"
-        },
-        {
-            "character": "Ori and Sein",  "skin": "Default"
-        },
-        {
-            "character": "Pomme",  "skin": "Default"
-        },
-        {
-            "character": "Ranno",  "skin": "Default"
-        },
-{
-            "character": "Shovel Knight",  "skin": "Default"
-        },
-{
-            "character": "Sylvanos",  "skin": "Default"
-        },
-{
-            "character": "Wrastor",  "skin": "Default"
-        },
-{
-            "character": "Zetterburn",  "skin": "Default"
-        },
-        {
-            "character": "Error",  "skin": "Default"
-        }
-    ]
+  "name": "Test",
+  "tag": "One",
+  "pronouns": "Pronouns",
+  "socials": {
+    "twitter": "Twitter",
+    "twitch": "Twich",
+    "yt": "Youtube",
+    "bsky": "Bluesky",
+    "masto": "Mastodon",
+    "cohost": "Cohost"
+  },
+  "characters": [
+    {
+      "character": "Absa",
+      "skin": "Default"
+    },
+    {
+      "character": "Clairen",
+      "skin": "Default"
+    },
+    {
+      "character": "Elliana",
+      "skin": "Default"
+    },
+    {
+      "character": "Etalus",
+      "skin": "Default"
+    },
+    {
+      "character": "Forsburn",
+      "skin": "Default"
+    },
+    {
+      "character": "Hodan",
+      "skin": "Default"
+    },
+    {
+      "character": "Kragg",
+      "skin": "Default"
+    },
+    {
+      "character": "Maypul",
+      "skin": "Default"
+    },
+    {
+      "character": "Mollo",
+      "skin": "Default"
+    },
+    {
+      "character": "Olympia",
+      "skin": "Default"
+    },
+    {
+      "character": "Orcane",
+      "skin": "Default"
+    },
+    {
+      "character": "Ori and Sein",
+      "skin": "Default"
+    },
+    {
+      "character": "Pomme",
+      "skin": "Default"
+    },
+    {
+      "character": "Ranno",
+      "skin": "Default"
+    },
+    {
+      "character": "Shovel Knight",
+      "skin": "Default"
+    },
+    {
+      "character": "Sylvanos",
+      "skin": "Default"
+    },
+    {
+      "character": "Wrastor",
+      "skin": "Default"
+    },
+    {
+      "character": "Zetterburn",
+      "skin": "Default"
+    },
+    {
+      "character": "Error",
+      "skin": "Default"
+    }
+  ]
 }

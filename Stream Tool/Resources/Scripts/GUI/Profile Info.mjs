@@ -19,6 +19,7 @@ class ProfileInfo {
     #twitchInp = document.getElementById("pInfoInputTwitch");
     #ytInp = document.getElementById("pInfoInputYt");
     #twitterInp = document.getElementById("pInfoInputTwitter");
+    #bskyInp = document.getElementById("pInfoInputBsky");
     #mastoInp = document.getElementById("pInfoInputMasto");
     #cohostInp = document.getElementById("pInfoInputCohost");
 
@@ -66,6 +67,7 @@ class ProfileInfo {
         this.#twitterInp.value = socials.twitter || "";
         this.#twitchInp.value = socials.twitch || "";
         this.#ytInp.value = socials.yt || "";
+        this.#bskyInp.value = socials.bsky || "";
         this.#mastoInp.value = socials.masto || "";
         this.#cohostInp.value = socials.cohost || "";
 
@@ -116,6 +118,7 @@ class ProfileInfo {
             twitter : this.#twitterInp.value,
             twitch : this.#twitchInp.value,
             yt : this.#ytInp.value,
+            bsky : this.#bskyInp.value,
             masto : this.#mastoInp.value,
             cohost : this.#cohostInp.value,
         }

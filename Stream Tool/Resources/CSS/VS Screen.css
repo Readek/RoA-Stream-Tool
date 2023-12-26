@@ -216,6 +216,11 @@ body {
     width: 24px;
     transform: translate(0px, 2px);
 }
+.playerInfoIconBsky {
+    height: 24px;
+    width: 24px;
+    transform: translate(0px, 0px);
+}
 .playerInfoIconMasto {
     height: 24px;
     width: 24px;
@@ -521,6 +526,11 @@ body {
     height: 19px;
     width: 19px;
     transform: translate(-1px, 0px);
+}
+.bskyIcon {
+    height: 19px;
+    width: 19px;
+    transform: translate(-2px, 0px);
 }
 .mastoIcon {
     height: 19px;
