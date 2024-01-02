@@ -16,29 +16,28 @@ So you want to do a Rivals of Aether stream, huh? Well, today is your lucky day,
 ---
 
 ## Features
-- [Easy and fast setup](https://gfycat.com/rectangulartintedabyssiniangroundhornbill) using a browser source. Drag and drop!
-- [Handy interface](https://gfycat.com/distanthairyaurochs) to quickly change everything you need, like player names, pronouns, characters, scores, round, casters...
-  - With customizable [Player Presets](https://gfycat.com/melodicwearybuzzard) to setup your match in no time! Caster presets are now also supported!
-- Every single character and skin the game has to offer is supported (more than 300 different skins!), including HD renders.
+- [Easy and fast setup](https://file.garden/ZW90VTBJky9JVpp_/RoAST/Setup) using a browser source. Drag and drop!
+- [Handy interface](https://file.garden/ZW90VTBJky9JVpp_/RoAST/GUIDemo) to quickly change everything you need, like player names, pronouns, characters, scores, round, casters...
+  - With customizable **Player and Commentator Presets** to setup your match in no time!
+- Every single character and skin the game has to offer is supported (more than 300 different skins!).
   - You can also add in **custom skin** codes for any character!
+  - This includes **recolorable HD renders**!
   - **Workshop** characters are also supported!
-- A "[VS Screen](https://gfycat.com/peacefulelatedblowfish)" to be displayed when waiting for the next game.
-- A [Bracket View](https://gfycat.com/skinnyforsakenfly) to showcase the Top 8 of your tournament!
-- A [Remote GUI](https://gfycat.com/complexexaltedchupacabra) that can be accessed by any device within the local network, including mobile devices!
-- Now with [2v2 support](https://gfycat.com/brokenbravehumpbackwhale)!
-- [Dynamic, optional intro](https://gfycat.com/revolvingsmarteuropeanpolecat) to be played when changing to the game scene.
-- Easy to customize! Add workshop characters, custom overlays or even dive into the code if you're brave enough!
+- A "[VS Screen](https://file.garden/ZW90VTBJky9JVpp_/RoAST/VSDemo)" to be displayed when waiting for the next game.
+- A [Bracket View](https://file.garden/ZW90VTBJky9JVpp_/RoAST/BracketPreview) to showcase the Top 8 of your tournament!
+- A [Remote GUI](https://raw.githubusercontent.com/Readek/RoA-Stream-Tool/master/Git%20wiki%20images/8%20-%20Remote%20GUI/Mobile%20View.png) that can be accessed by any device within the local network, including mobile devices!
+- Now with **2v2 support**!
+- Made to be customized! Add workshop characters, custom overlays or even dive into the code if you're brave enough!
 
 ---
 
 ## How to setup
-These are instructions for regular OBS Studio, but I imagine you can do the same with other streaming software:
+These are instructions for **OBS Studio**:
 - Get the [latest release](https://github.com/Readek/RoA-Stream-Control/releases).
 - Extract somewhere.
 - Drag and drop `RoA Scoreboard.html` into OBS, or add a new browser source in OBS pointing at the local file.
-  - If the source looks weird, manually set the source's properties to 1920 width and 1080 height, or set your OBS canvas resolution to 1080p, or make the source fit the screen.
+  - If the source looks weird, manually set the source's properties to 1920 width and 1080 height, or set your OBS canvas resolution to 1080p, or make the source fit the screen (Ctrl+F).
 - In the source's properties, change *Use custom frame rate* -> `60` (if streaming at 60fps of course).
-- **Also tick `Refresh browser when scene becomes active`**. With it, the intro animation of the html will play each time we swap to this scene.
 - Manage it all with the `RoA Stream Tool` executable.
 
 Repeat from the 3rd step to add the `VS Screen.html` and `Bracket.html` views, though I recommend you to do so on another scene.
@@ -59,7 +58,7 @@ For developing, there are some shorcuts to make things easier:
 ---
 
 ## Advanced setup
-Yes, the instructions above are enough, but we can do better. **All of this is optional** of course.
+Yes, those instructions above are enough, but we can do better. **All of this is optional** of course.
  
 2 basic transitions are included in the `Resources/OBS Transitions` folder, intended to be used to change to the game scene and to the vs screen, if you don't have a transition yourself of course. To use them on OBS:
 - Add a new stinger transition.
@@ -84,7 +83,7 @@ The project now has a **Discord server**! If you need support about this (or oth
 
 **Workshop creators**! Do you want your character added to the Stream Tool? There's [a guide](https://github.com/Readek/RoA-Stream-Tool/wiki/6.-Workshop-characters) to help you do that, don't worry!
 
-Do you want to adapt this project to another game but can't figure out how to? Lucky for you, I'm open for commisions! Contact me on Twitter [@Readeku](https://twitter.com/Readeku) or on Discord `Readek#5869`!
+Do you want to adapt this project to another game but can't figure out how to? Lucky for you, I'm open for commisions! Contact me on [Mastodon](https://mstdn.social/@Readek) or on the project's [Discord Server](https://discord.gg/EX22CTBNrM)!
 
 Do you want to support this project? You can contribute, and get some extra rewards, on [Ko-fi](https://ko-fi.com/readek) or [Patreon](https://www.patreon.com/Readek)! Every bit helps towards development of more features and stream tools!
 
