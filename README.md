@@ -16,7 +16,7 @@ So you want to do a Rivals of Aether stream, huh? Well, today is your lucky day,
 ---
 
 ## Features
-- [Easy and fast setup](https://file.garden/ZW90VTBJky9JVpp_/RoAST/Setup.pm4) using a browser source. Drag and drop!
+- [Easy and fast setup](https://file.garden/ZW90VTBJky9JVpp_/RoAST/Setup.mp4) using a browser source. Drag and drop!
 - [Handy interface](https://file.garden/ZW90VTBJky9JVpp_/RoAST/GUIDemo.mp4) to quickly change everything you need, like player names, pronouns, characters, scores, round, casters...
   - With customizable **Player and Commentator Presets** to setup your match in no time!
 - Every single character and skin the game has to offer is supported (more than 300 different skins!).
