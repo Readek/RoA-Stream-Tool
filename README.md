@@ -16,15 +16,15 @@ So you want to do a Rivals of Aether stream, huh? Well, today is your lucky day,
 ---
 
 ## Features
-- [Easy and fast setup](https://file.garden/ZW90VTBJky9JVpp_/RoAST/Setup) using a browser source. Drag and drop!
-- [Handy interface](https://file.garden/ZW90VTBJky9JVpp_/RoAST/GUIDemo) to quickly change everything you need, like player names, pronouns, characters, scores, round, casters...
+- [Easy and fast setup](https://file.garden/ZW90VTBJky9JVpp_/RoAST/Setup.pm4) using a browser source. Drag and drop!
+- [Handy interface](https://file.garden/ZW90VTBJky9JVpp_/RoAST/GUIDemo.mp4) to quickly change everything you need, like player names, pronouns, characters, scores, round, casters...
   - With customizable **Player and Commentator Presets** to setup your match in no time!
 - Every single character and skin the game has to offer is supported (more than 300 different skins!).
   - You can also add in **custom skin** codes for any character!
   - This includes **recolorable HD renders**!
   - **Workshop** characters are also supported!
-- A "[VS Screen](https://file.garden/ZW90VTBJky9JVpp_/RoAST/VSDemo)" to be displayed when waiting for the next game.
-- A [Bracket View](https://file.garden/ZW90VTBJky9JVpp_/RoAST/BracketPreview) to showcase the Top 8 of your tournament!
+- A "[VS Screen](https://file.garden/ZW90VTBJky9JVpp_/RoAST/VSDemo.mp4)" to be displayed when waiting for the next game.
+- A [Bracket View](https://file.garden/ZW90VTBJky9JVpp_/RoAST/BracketPreview.mp4) to showcase your tournament's top 8 positions!
 - A [Remote GUI](https://raw.githubusercontent.com/Readek/RoA-Stream-Tool/master/Git%20wiki%20images/8%20-%20Remote%20GUI/Mobile%20View.png) that can be accessed by any device within the local network, including mobile devices!
 - Now with **2v2 support**!
 - Made to be customized! Add workshop characters, custom overlays or even dive into the code if you're brave enough!
