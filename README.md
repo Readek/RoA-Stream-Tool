@@ -24,7 +24,7 @@ So you want to do a Rivals of Aether stream, huh? Well, today is your lucky day,
   - This includes **recolorable HD renders**!
   - **Workshop** characters are also supported!
 - A "[VS Screen](https://file.garden/ZW90VTBJky9JVpp_/RoAST/VSDemo.mp4)" to be displayed when waiting for the next game.
-- A [Bracket View](https://file.garden/ZW90VTBJky9JVpp_/RoAST/BracketPreview.mp4) to showcase your tournament's top 8 positions!
+- A [Bracket View](https://file.garden/ZW90VTBJky9JVpp_/RoAST/BracketPreview.png) to showcase your tournament's top 8 positions!
 - A [Remote GUI](https://raw.githubusercontent.com/Readek/RoA-Stream-Tool/master/Git%20wiki%20images/8%20-%20Remote%20GUI/Mobile%20View.png) that can be accessed by any device within the local network, including mobile devices!
 - Now with **2v2 support**!
 - Made to be customized! Add workshop characters, custom overlays or even dive into the code if you're brave enough!
