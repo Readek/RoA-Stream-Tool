@@ -50,7 +50,8 @@
         {
             "name": "Champion",
             "hex": "CECE-DD3F-3F46-B2FF-D089-E46A-66A0-7C2E-BC16-9000",
-            "alpha": [1,1,1,1,0.75,1]
+            "alpha": [1,1,1,1,0.75,1],
+            "force": true
         },
         {
             "name": "Pool Party",
