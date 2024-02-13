@@ -135,24 +135,23 @@ export class Team {
     /** Hides some stuff when browser goes out of view */
     hide() {
 
-        // this will reset the scoreboard fade in animation
-        this.#scoreboardEl.style.animation = "";
+        // this will reset all scoreboard animations
+        this.#scoreboardEl.style.display = "none";
 
-        this.#tName.hide();
         this.#tTopBar.hide();
-        this.#tLogo.hide();
 
     }
 
     /** Display elements and animations when user comes back to the browser */
-    show() {
+    show() {        
 
-        fadeInMove(this.#scoreboardEl, null, this.#side, current.delay-.1);
-        this.#scoreboardEl.style.display = "block";
-
+        // this will update animation values when they become visible
         this.#tName.show();
         this.#tTopBar.show(current.delay+.6);
         this.#tLogo.show();
+
+        fadeInMove(this.#scoreboardEl, null, this.#side, current.delay-.1);
+        this.#scoreboardEl.style.display = "block";
 
     }
 

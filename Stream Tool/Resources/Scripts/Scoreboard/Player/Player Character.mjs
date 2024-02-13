@@ -76,15 +76,9 @@ export class PlayerCharacter {
 
     }
 
-    /** Hides the character's image */
-    hide() {
-        this.#charEl.parentElement.style.display = "none";
-    }
-
     /** Displays hidden image, fading it in */
     show() {
         this.fadeInChar(current.delay+.15);
-        this.#charEl.parentElement.style.display = "block";
     }
 
 }

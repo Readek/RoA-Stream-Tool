@@ -12,7 +12,6 @@ export function initOnBrowserActive(hide, show) {
         window.addEventListener('obsSourceActiveChanged', (event) => {
 
             if (event.detail.active) { // when its show time
-                hide(); // this is a workaraound for an startup issue :(
                 show();
             } else { // when browser goes to the backstage
                 hide();

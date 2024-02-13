@@ -158,14 +158,14 @@ export class PlayerCharacter {
     /** Hides the character's images */
     hide() {
         this.#charDiv.style.display = "none";
-        this.#bgEl.pause();
+        this.#bgEl.style.display = "none";
     }
 
     /** Displays hidden images, fading them in */
     show() {
         charaFadeIn(this.#charDiv, this.#trailEl, fadeInTimeVs, introDelayVs);
-        this.#bgEl.play();
         this.#charDiv.style.display = "block";
+        this.#bgEl.style.display = "block";
     }
 
 }

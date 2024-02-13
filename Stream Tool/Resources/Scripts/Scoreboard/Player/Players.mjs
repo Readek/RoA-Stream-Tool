@@ -80,15 +80,6 @@ class Players {
 
     }
 
-    /** Hides some elements when browser goes out of view */
-    hide() {
-
-        for (let i = 0; i < this.#players.length; i++) {
-            this.#players[i].hide();            
-        }
-
-    }
-
     /** Returns some elements back to view, animating them */
     show() {
 

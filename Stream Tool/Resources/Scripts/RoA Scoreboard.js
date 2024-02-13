@@ -26,19 +26,6 @@ async function updateData(data) {
 	// update intro data just in case we end up playing it
 	scoreboardIntro.updateData(data);
 
-	// this will only happen on view load
-	if (current.startup) {
-
-		// before anything else, check if the Intro wants to come out
-		if (data.allowIntro) {
-
-			// run that intro!
-			scoreboardIntro.play();
-
-		}
-
-	}
-
 	// determine startup delay
 	if (data.allowIntro) {
 		current.delay = introDelaySc + 2;
@@ -91,7 +78,6 @@ function hideElements() {
 	scoreboardIntro.reset();
 
 	// hide some stuff so we save on some resources
-	players.hide();
 	teams.hide();
 	round.hide();
 

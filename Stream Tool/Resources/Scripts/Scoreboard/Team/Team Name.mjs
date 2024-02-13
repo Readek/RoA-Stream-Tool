@@ -72,16 +72,10 @@ export class TeamName {
         this.#nameBg.src = `Resources/Overlay/Scoreboard/Name BG ${gamemode}.png`;
     }
 
-    /** Hides the text element */
-    hide() {
-        this.#nameEl.style.display = "none";
-    }
-
     /** Displays the text wrapper, fading it in */
     show() {
         if (gamemode.getGm() == 2) {
             fadeInMove(this.#nameEl, null, this.#side, current.delay);
-            this.#nameEl.style.display = "block";
         }
     }
 

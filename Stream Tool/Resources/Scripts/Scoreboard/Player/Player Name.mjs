@@ -155,11 +155,6 @@ export class PlayerName {
 
     }
 
-    /** Hides the text wrapper */
-    hide() {
-        this.#wrapperEl.style.display = "none";
-    }
-
     /** Displays the text wrapper, fading it in */
     show() {
         if (gamemode.getGm() == 2) {
@@ -167,7 +162,6 @@ export class PlayerName {
         } else {
             fadeInMove(this.#wrapperEl, null, this.#side, current.delay);
         }
-        this.#wrapperEl.style.display = "block";
     }
 
 }

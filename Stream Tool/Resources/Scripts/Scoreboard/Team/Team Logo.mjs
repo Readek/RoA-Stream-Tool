@@ -96,19 +96,9 @@ export class TeamLogo {
         
     }
 
-    /** Hides the logo image */
-    hide() {
-
-        this.#logoImg.style.display = "none";
-
-    }
-
     /** Shows the logo image */
     show() {
-
         fadeIn(this.#logoImg, fadeInTimeSc, current.delay + .35);
-        this.#logoImg.style.display = "block";
-
     }
 
 }

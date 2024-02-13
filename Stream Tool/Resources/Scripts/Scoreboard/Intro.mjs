@@ -58,6 +58,7 @@ class ScoreboardIntro {
 
         // set all things visible
         introDiv.style.opacity = 1;
+        introDiv.style.display = "block";
 
         // move the white bars because it looks cool
         introWhiteBarTop.style.animation = `introWhiteBarTop .5s ${introDelaySc}s cubic-bezier(0, 0, .2, 1) both`;
@@ -165,6 +166,8 @@ class ScoreboardIntro {
             textsIntro.style.animation = "";
 
             introDiv.style.animation = "";
+
+            introDiv.style.display = "none";
 
         }
 
