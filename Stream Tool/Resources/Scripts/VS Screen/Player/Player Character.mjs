@@ -159,6 +159,7 @@ export class PlayerCharacter {
     hide() {
         this.#charDiv.style.display = "none";
         this.#bgEl.style.display = "none";
+        this.#bgEl.style.animation = "";
     }
 
     /** Displays hidden images, fading them in */

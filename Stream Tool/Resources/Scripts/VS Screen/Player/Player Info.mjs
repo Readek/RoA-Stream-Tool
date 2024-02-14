@@ -40,7 +40,7 @@ export class PlayerInfo {
         return this.#socials;
     }
     #setSocials(socials) {
-        this.#socials = socials;
+        this.#socials = socials || {};
     }
 
     /**
