@@ -76,6 +76,12 @@
             "force": true
         },
         {
+            "name": "Golden",
+            "hex": "C68F-11FE-FEFE-FDE5-86FF-C508-F9F5-FDFE-DC80-7E41-01F8",
+            "golden": true,
+            "force": true
+        },
+        {
             "name": "Ranked",
             "hex": "A260-A0D2-D2D2-FDD2-5152-2B5A-FFE9-00FF-6E00-0000-0030"
         },
