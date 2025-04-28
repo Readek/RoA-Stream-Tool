@@ -5,23 +5,23 @@
         },
         {
             "name": "Blue",
-            "hex": "BED2-E923-4160-1550-5810-1574-65B8-9C87-E7D1-1A00"
+            "hex": "BED2-E949-5FA4-1550-5810-1574-65B8-9C87-E7D1-F000"
         },
         {
             "name": "Red",
-            "hex": "E9BE-CA6C-1B2E-3320-1974-101E-B897-65E2-CE7F-D500"
+            "hex": "E9BE-CAB0-2E4A-3320-1974-101E-B897-65E2-CE7F-F200"
         },
         {
             "name": "Green",
-            "hex": "CDEE-E242-6C1B-0834-3A10-7469-747A-BF97-9FF7-2700"
+            "hex": "CDEE-E23A-A327-0834-3A10-7469-747A-BF97-9FF7-F800"
         },
         {
             "name": "White",
-            "hex": "EAE6-EE3D-384F-4950-6213-2837-AEAF-CE93-9BB4-2200"
+            "hex": "EAE6-EE9F-96BE-4950-6213-2837-AEAF-CE93-9BB4-1800"
         },
         {
             "name": "Purple",
-            "hex": "D7C5-FF32-2347-1611-272A-083D-6840-8AC1-8FFF-3700"
+            "hex": "D7C5-FF5A-358F-1611-272A-083D-6840-8AC1-8FFF-A500"
         },
         {
             "name": "Christmas",
@@ -66,6 +66,13 @@
             "hex": "D3E2-9A53-7A3E-2343-3123-4331-A7BA-4AD3-E29A-3900",
             "ea": true,
             "force": true
+        },
+        {
+            "name": "Golden",
+            "hex": "FBFF-EDFF-DC3B-FFC2-44FF-9C00-FFE0-65E0-BF00-1600",
+            "golden": true,
+            "force": true
+            
         },
         {
             "name": "Ranked",
